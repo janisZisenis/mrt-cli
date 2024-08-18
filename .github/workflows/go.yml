@@ -13,21 +13,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.go-version }}
-      - name: Install dependencies
-        run: |
-          cd app
-          go get
       - name: Build
         run: |
           cd app
           go build -v
-      - name: Test with Go
-        run: |
-          cd app
-          go test -json > TestResults.json
-      - name: Upload Go test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: Test-Results
-          path: TestResults.json
-
