@@ -1,0 +1,11 @@
+name: Run E2E Tests
+
+on: push
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run E2E Tests
+        run: ./do run-e2e-tests

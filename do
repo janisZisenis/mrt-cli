@@ -34,6 +34,11 @@ build(){
   go build -v -o "$BINARY_PATH"
 }
 
+run-e2e-tests() {
+  $(build)
+  ./e2e-test/bats/bin/bats e2e-test/*.bats
+}
+
 subcommand=$1
 case $subcommand in
     "" | "-h" | "--help")
