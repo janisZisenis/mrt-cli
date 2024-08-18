@@ -14,6 +14,4 @@ jobs:
         with:
           go-version: ${{ env.go-version }}
       - name: Build
-        run: |
-          cd app
-          go build -v
+        run: ./do build
