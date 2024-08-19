@@ -1,80 +1,87 @@
 setup() {
-    load 'test_helper/common-setup'
-    _common_setup
+  load 'test_helper/assertArrayEquals'
+  load 'test_helper/findRepositories'
+  load 'test_helper/writeTeamFile'
+  load 'test_helper/common'
 
-    load 'test_helper/assertArrayEquals'
-    load 'test_helper/findRepositories'
-
-    mkdir -p "$(testEnvDir)"
-    cp "$(which mrt)" "$(testEnvDir)"/mrt
+  _common_setup "$(testEnvDir)"
 }
 
 teardown() {
-    rm -rf "$(testEnvDir)"
+  _common_teardown "$(testEnvDir)"
 }
 
 testEnvDir() {
-    echo "./testEnv"
-}
-
-teamFileName() {
-  echo "team.json"
-}
-
-writeTeamJson() {
-      echo $1 > "$(testEnvDir)/$(teamFileName)"
+  echo "./testEnv"
 }
 
 @test "if team json contains repositories 'setup --all' clones that repository into given repository path" {
-    repositoriesPath=repositories
-    firstRepository=BoardGames.TDD-London-School
-    secondRepository=BowlingGameKata
-    writeTeamJson "{
-        \"repositoriesPath\": \"$repositoriesPath\",
-        \"repositories\": [
-            \"$firstRepository\",
-            \"$secondRepository\"
-        ]
-    }"
+  repositoriesPath=repositories
+  firstRepository=BoardGames.TDD-London-School
+  secondRepository=BowlingGameKata
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": [
+          \"$firstRepository\",
+          \"$secondRepository\"
+      ]
+  }"
 
-    run "$(testEnvDir)"/mrt setup --all
+  run "$(testEnvDir)"/mrt setup --all
 
-    actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-    expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
-    assert_array_equals "${actual[*]}" "${expected[*]}"
+  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
+  expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
+  assert_array_equals "${actual[*]}" "${expected[*]}"
+}
+
+@test "if team json contains xyz as repositoriesPath 'setup --all' clones the repositories into given xyz folder" {
+  repositoriesPath=xyz
+  repository=BoardGames.TDD-London-School
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": [
+          \"$repository\"
+      ]
+  }"
+
+  run "$(testEnvDir)"/mrt setup --all
+
+  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
+  expected=("$(testEnvDir)/$repositoriesPath/$repository/.git")
+  assert_array_equals "${actual[*]}" "${expected[*]}"
 }
 
 @test "if team json contains already existing repositories 'setup --all' clones remaining repositories given repository path" {
-    repositoriesPath=repositories
-    git clone git@github.com:janisZisenis/BoardGames.TDD-London-School.git "$(testEnvDir)"/$repositoriesPath/BoardGames.TDD-London-School
-    firstRepository=BoardGames.TDD-London-School
-    secondRepository=BowlingGameKata
-    writeTeamJson "{
-        \"repositoriesPath\": \"$repositoriesPath\",
-        \"repositories\": [
-            \"$firstRepository\",
-            \"$secondRepository\"
-        ]
-    }"
+  repositoriesPath=repositories
+  git clone git@github.com:janisZisenis/BoardGames.TDD-London-School.git "$(testEnvDir)"/$repositoriesPath/BoardGames.TDD-London-School
+  firstRepository=BoardGames.TDD-London-School
+  secondRepository=BowlingGameKata
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": [
+          \"$firstRepository\",
+          \"$secondRepository\"
+      ]
+  }"
 
-    run "$(testEnvDir)"/mrt setup --all
+  run "$(testEnvDir)"/mrt setup --all
 
-    actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-    expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
-    assert_array_equals "${actual[*]}" "${expected[*]}"
+  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
+  expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
+  assert_array_equals "${actual[*]}" "${expected[*]}"
 }
 
-@test "if does not team json contains any repository, setup --all does not clone any repository" {
-    repositoriesPath=repositories
-    writeTeamJson "{
-        \"repositoriesPath\": \"$repositoriesPath\",
-        \"repositories\": []
-    }"
+@test "if team json does not contains any repository, 'setup --all' does not clone any repository" {
+  repositoriesPath=repositories
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": []
+  }"
 
-    run "$(testEnvDir)"/mrt setup --all
+  run "$(testEnvDir)"/mrt setup --all
 
-    actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-    expected=()
-    assert_array_equals "${actual[*]}" "${expected[*]}"
-    assert_output "The $(teamFileName) file does not contain any repositories"
+  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
+  expected=()
+  assert_array_equals "${actual[*]}" "${expected[*]}"
+  assert_output "The $(teamFileName) file does not contain any repositories"
 }
