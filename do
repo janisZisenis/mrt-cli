@@ -39,6 +39,11 @@ run-e2e-tests() {
   ./e2e-test/bats/bin/bats e2e-test/*.bats
 }
 
+execute() {
+  $(build)
+  ./build/mrt
+}
+
 subcommand=$1
 case $subcommand in
     "" | "-h" | "--help")

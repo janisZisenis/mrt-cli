@@ -1,0 +1,12 @@
+#!/usr/bin/env bash -e
+
+find_repositories() {
+  repositories_path=$1
+
+  if [ ! -d $repositories_path ]
+  then
+    echo ""
+  else
+    find "$repositories_path" -name \*.git -and -type d -maxdepth 2
+  fi
+}
