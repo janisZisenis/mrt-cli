@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -16,12 +17,12 @@ func main() {
 	}
 
 	for _, repository := range teamInfo.Repositories {
-		url := "git@github.com:janisZisenis/" + repository + ".git"
-		directory := getExecutablePath() + "/" + teamInfo.RepositoriesPath + "/" + repository
+		repositoryName := strings.Trim(repository[strings.LastIndex(repository, "/")+1:], ".git")
+		directory := getExecutablePath() + "/" + teamInfo.RepositoriesPath + "/" + repositoryName
 
 		// Clone the given repository to the given directory
 		_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{
-			URL:               url,
+			URL:               repository,
 			RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 		})
 
