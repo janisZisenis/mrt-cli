@@ -22,8 +22,8 @@ testEnvDir() {
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"$firstRepository\",
-          \"$secondRepository\"
+          \"git@github.com:janisZisenis/$firstRepository.git\",
+          \"git@github.com:janisZisenis/$secondRepository.git\"
       ]
   }"
 
@@ -40,7 +40,7 @@ testEnvDir() {
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"$repository\"
+          \"git@github.com:janisZisenis/$repository.git\"
       ]
   }"
 
@@ -59,8 +59,8 @@ testEnvDir() {
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"$firstRepository\",
-          \"$secondRepository\"
+          \"git@github.com:janisZisenis/$firstRepository.git\",
+          \"git@github.com:janisZisenis/$secondRepository.git\"
       ]
   }"
 
