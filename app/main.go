@@ -20,7 +20,6 @@ func main() {
 		repositoryName := strings.Trim(repository[strings.LastIndex(repository, "/")+1:], ".git")
 		directory := getExecutablePath() + "/" + teamInfo.RepositoriesPath + "/" + repositoryName
 
-		// Clone the given repository to the given directory
 		_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{
 			URL:               repository,
 			RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
