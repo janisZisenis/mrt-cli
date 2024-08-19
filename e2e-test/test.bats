@@ -85,3 +85,7 @@ testEnvDir() {
   assert_array_equals "${actual[*]}" "${expected[*]}"
   assert_output "The $(teamFileName) file does not contain any repositories"
 }
+
+@test "if repository is not available, 'setup --all' should print out a message" {
+  assert_array_equals "just to know where to" "start the next time"
+}
