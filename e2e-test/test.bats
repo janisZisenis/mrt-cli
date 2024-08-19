@@ -14,7 +14,6 @@ testEnvDir() {
     echo "./testEnv"
 }
 
-
 @test "clones repository" {
     repositoryPath=repositories
     repositoryName=BoardGames.TDD-London-School
@@ -25,7 +24,7 @@ testEnvDir() {
         ]
     }" > $(testEnvDir)/team.json
 
-    run mrt setup --all
+    run $(testEnvDir)/mrt setup --all
 
     load 'test_helper/assert_directory_exists'
     assert_directory_exists "$(testEnvDir)/$repositoryPath/$repositoryName/.git"
