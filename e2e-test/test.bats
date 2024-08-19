@@ -38,6 +38,26 @@ testEnvDir() {
     assert_array_equals "$actual" "$expected"
 }
 
+@test "if team json contains already existing repositories 'setup --all' clones remaining repositories given repository path" {
+    repositoriesPath=repositories
+    git clone git@github.com:janisZisenis/BoardGames.TDD-London-School.git $(testEnvDir)/$repositoriesPath/BoardGames.TDD-London-School
+    firstRepository=BoardGames.TDD-London-School
+    secondRepository=BowlingGameKata
+    echo "{
+        \"repositoriesPath\": \"$repositoriesPath\",
+        \"repositories\": [
+            \"$firstRepository\",
+            \"$secondRepository\"
+        ]
+    }" > $(testEnvDir)/team.json
+
+    run $(testEnvDir)/mrt setup --all
+
+    actual=$(find_repositories "$(testEnvDir)/$repositoriesPath")
+    expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
+    assert_array_equals "$actual" "$expected"
+}
+
 @test "if does not team json contains any repository, setup --all does not clone any repository" {
     repositoriesPath=repositories
     echo "{
