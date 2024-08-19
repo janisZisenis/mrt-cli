@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"os"
@@ -24,9 +25,9 @@ func main() {
 			RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 		})
 
-		if cloneError != nil {
-			fmt.Println(cloneError)
-			os.Exit(1)
+		if cloneError != nil && errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
+			fmt.Println("Repository " + repository + " already exists. Skipping it")
+			continue
 		}
 	}
 }
