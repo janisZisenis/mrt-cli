@@ -29,5 +29,10 @@ func main() {
 			fmt.Println("Repository " + repository + " already exists. Skipping it")
 			continue
 		}
+
+		if cloneError != nil && cloneError.Error() == "repository not found" {
+			fmt.Println("Repository " + repository + " was not found. Skipping it")
+			continue
+		}
 	}
 }

@@ -1,7 +1,0 @@
-{
-  "repositoriesPath": "repositories",
-  "repositories": [
-    "git@github.com:janisZisenis/BoardGames.TDD-London-School.git",
-    "git@github.com:janisZisenis/BowlingGameKata.git"
-  ]
-}

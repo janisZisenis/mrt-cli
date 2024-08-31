@@ -44,6 +44,25 @@ execute() {
   ./build/mrt
 }
 
+test() {
+  arr=( "" )
+  arr2=( "1" "3" )
+
+  assert_equals "${arr[*]}" "${arr2[*]}"
+}
+
+assert_equals() {
+  actual=$1
+  expected=$2
+
+  if [ "$expected" != "$actual" ]
+  then
+    printf 'actual:\t%s\n' "$actual"
+    printf 'expected:\t%s\n' "$expected"
+    exit 1
+  fi
+}
+
 subcommand=$1
 case $subcommand in
     "" | "-h" | "--help")
