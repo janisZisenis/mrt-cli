@@ -1,9 +1,9 @@
-#!/usr/bin/env bash -e
+#!/bin/bash
 
 find_repositories() {
   repositories_path=$1
 
-  if [ ! -d $repositories_path ]
+  if [ ! -d "$repositories_path" ]
   then
     echo ""
   else

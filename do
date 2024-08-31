@@ -32,21 +32,27 @@ help(){
 build(){
   cd app
   go build -v -o "$BINARY_PATH"
+  cd ..
 }
 
 run-build(){
   build
-  "$SCRIPT_DIR"/build/mrt
+  "$SCRIPT_DIR"/build/mrt "$@"
 }
 
 run-e2e-tests() {
-  $(build)
-  ./e2e-test/bats/bin/bats e2e-test/*.bats
-}
+  if [[ $# -eq 0 ]]
+  then
+    files=(e2e-test/*.bats)
+  else
+    files=($*)
+  fi
 
-execute() {
-  $(build)
-  ./build/mrt
+  echo "Test files to be executed:"
+  printf "\t%s\n" "${files[@]}"
+
+  build
+  ./e2e-test/bats/bin/bats ${files[*]}
 }
 
 test() {

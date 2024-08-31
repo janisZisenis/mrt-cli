@@ -1,14 +1,16 @@
 setup() {
-  load 'test_helper/assertEquals'
   load 'test_helper/findRepositories'
   load 'test_helper/writeTeamFile'
+  load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
 
   _common_setup "$(testEnvDir)"
+  authenticate
 }
 
 teardown() {
   _common_teardown "$(testEnvDir)"
+  revoke-authentication
 }
 
 testEnvDir() {
@@ -31,7 +33,7 @@ testEnvDir() {
 
   actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
   expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
-  assert_equals "${actual[*]}" "${expected[*]}"
+  assert_equal "${actual[*]}" "${expected[*]}"
 }
 
 @test "if team json contains xyz as repositoriesPath 'setup' clones the repositories into given xyz folder" {
@@ -48,7 +50,7 @@ testEnvDir() {
 
   actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
   expected=("$(testEnvDir)/$repositoriesPath/$repository/.git")
-  assert_equals "${actual[*]}" "${expected[*]}"
+  assert_equal "${actual[*]}" "${expected[*]}"
 }
 
 @test "if team json contains already existing repositories 'setup' clones remaining repositories given repository path" {
@@ -68,7 +70,7 @@ testEnvDir() {
 
   actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
   expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
-  assert_equals "${actual[*]}" "${expected[*]}"
+  assert_equal "${actual[*]}" "${expected[*]}"
 }
 
 @test "if team json does not contains any repository, 'setup' does not clone any repository" {
@@ -82,7 +84,7 @@ testEnvDir() {
 
   actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
   expected=()
-  assert_equals "${actual[*]}" "${expected[*]}"
+  assert_equal "${actual[*]}" "${expected[*]}"
   assert_output "The $(teamFileName) file does not contain any repositories"
 }
 
@@ -116,5 +118,5 @@ testEnvDir() {
 
   actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
   expected=("$(testEnvDir)/$repositoriesPath/$repositoryName/.git")
-  assert_equals "${actual[*]}" "${expected[*]}"
+  assert_equal "${actual[*]}" "${expected[*]}"
 }

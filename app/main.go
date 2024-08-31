@@ -8,6 +8,9 @@ import (
 	"strings"
 )
 
+var repositoryNotFoundError = "repository not found"
+var notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain"
+
 func main() {
 	var teamInfo = readTeamInfo()
 
@@ -30,9 +33,13 @@ func main() {
 			continue
 		}
 
-		if cloneError != nil && cloneError.Error() == "repository not found" {
+		if cloneError != nil && cloneError.Error() == repositoryNotFoundError {
 			fmt.Println("Repository " + repository + " was not found. Skipping it")
 			continue
+		}
+
+		if cloneError != nil && cloneError.Error() == notAuthenticatedError {
+			fmt.Println("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
 		}
 	}
 }
