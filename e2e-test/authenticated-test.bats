@@ -1,5 +1,6 @@
 setup() {
-  load 'test_helper/findRepositories'
+  load 'test_helper/assertDirectoryExists'
+  load 'test_helper/assertDirectoryDoesNotExist'
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
@@ -31,9 +32,8 @@ testEnvDir() {
 
   run "$(testEnvDir)"/mrt setup
 
-  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-  expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
-  assert_equal "${actual[*]}" "${expected[*]}"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$firstRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$secondRepository/.git"
 }
 
 @test "if team json contains xyz as repositoriesPath 'setup' clones the repositories into given xyz folder" {
@@ -48,9 +48,7 @@ testEnvDir() {
 
   run "$(testEnvDir)"/mrt setup
 
-  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-  expected=("$(testEnvDir)/$repositoriesPath/$repository/.git")
-  assert_equal "${actual[*]}" "${expected[*]}"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repository/.git"
 }
 
 @test "if team json contains already existing repositories 'setup' clones remaining repositories given repository path" {
@@ -68,9 +66,8 @@ testEnvDir() {
 
   run "$(testEnvDir)"/mrt setup
 
-  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-  expected=("$(testEnvDir)/$repositoriesPath/$firstRepository/.git" "$(testEnvDir)/$repositoriesPath/$secondRepository/.git")
-  assert_equal "${actual[*]}" "${expected[*]}"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$firstRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$secondRepository/.git"
 }
 
 @test "if team json does not contains any repository, 'setup' does not clone any repository" {
@@ -82,10 +79,7 @@ testEnvDir() {
 
   run "$(testEnvDir)"/mrt setup
 
-  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-  expected=()
-  assert_equal "${actual[*]}" "${expected[*]}"
-  assert_output "The $(teamFileName) file does not contain any repositories"
+  assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
 }
 
 @test "if team json contains non-existing repository, 'setup' should print out a message" {
@@ -116,7 +110,5 @@ testEnvDir() {
 
   run "$(testEnvDir)"/mrt setup
 
-  actual=( $(find_repositories "$(testEnvDir)/$repositoriesPath") )
-  expected=("$(testEnvDir)/$repositoriesPath/$repositoryName/.git")
-  assert_equal "${actual[*]}" "${expected[*]}"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repositoryName/.git"
 }

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+assert_directory_does_not_exist() {
+  actual=$1
+
+  if [ -d "$actual" ]
+  then
+    echo "The directory $actual exists, but is was expected to not exist."
+    exit 1
+  fi
+}

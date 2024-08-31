@@ -1,5 +1,4 @@
 setup() {
-  load 'test_helper/findRepositories'
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
