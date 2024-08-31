@@ -52,6 +52,7 @@ run-e2e-tests() {
   printf "\t%s\n" "${files[@]}"
 
   build
+  eval "$(ssh-agent -s)"
   ./e2e-test/bats/bin/bats ${files[*]}
 }
 
