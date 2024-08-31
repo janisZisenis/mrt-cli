@@ -34,6 +34,11 @@ build(){
   go build -v -o "$BINARY_PATH"
 }
 
+run-build(){
+  build
+  "$SCRIPT_DIR"/build/mrt
+}
+
 run-e2e-tests() {
   $(build)
   ./e2e-test/bats/bin/bats e2e-test/*.bats
