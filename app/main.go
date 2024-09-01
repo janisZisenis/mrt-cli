@@ -22,7 +22,20 @@ func main() {
 
 		for _, repository := range teamInfo.Repositories {
 			repositoryName := strings.Trim(repository[strings.LastIndex(repository, "/")+1:], ".git")
-			directory := getExecutablePath() + "/" + teamInfo.RepositoriesPath + "/" + repositoryName
+
+			var cloneDirectory = repositoryName
+			if len(teamInfo.RepositoriesPrefixes) > 0 {
+				if strings.HasPrefix(cloneDirectory, teamInfo.RepositoriesPrefixes[0]) {
+					cloneDirectory = strings.Replace(cloneDirectory, teamInfo.RepositoriesPrefixes[0], "", 1)
+				}
+			}
+			if len(teamInfo.RepositoriesPrefixes) > 1 {
+				if strings.HasPrefix(cloneDirectory, teamInfo.RepositoriesPrefixes[1]) {
+					cloneDirectory = strings.Replace(cloneDirectory, teamInfo.RepositoriesPrefixes[1], "", 1)
+				}
+			}
+
+			directory := getExecutablePath() + "/" + teamInfo.RepositoriesPath + "/" + cloneDirectory
 
 			_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{
 				URL:               repository,

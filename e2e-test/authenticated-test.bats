@@ -1,3 +1,7 @@
+testEnvDir() {
+  echo "./testEnv"
+}
+
 setup() {
   load 'test_helper/assertDirectoryExists'
   load 'test_helper/assertDirectoryDoesNotExist'
@@ -12,10 +16,6 @@ setup() {
 teardown() {
   _common_teardown "$(testEnvDir)"
   revoke-authentication
-}
-
-testEnvDir() {
-  echo "./testEnv"
 }
 
 @test "if team json contains repositories 'setup' clones that repository into given repository path" {
@@ -125,18 +125,57 @@ testEnvDir() {
   assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repositoryName/.git"
 }
 
-
 @test "if team json contains repositories but running without 'setup' does not clone the repositories" {
   repositoriesPath=repositories
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"git@github.com:janisZisenis/repositoryName=BoardGames.TDD-London-School.git\"
+          \"git@github-testing:janisZisenisTesting/1_TestRepository.git\"
       ]
   }"
 
   run "$(testEnvDir)"/mrt
 
   assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
+}
+
+@test "if team json contains repositoriesPrefixes 'setup' should ignore the prefixes while cloning the repositories" {
+  repositoriesPath=repositories
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPrefixes\": [
+        \"Prefix1_\",
+        \"Prefix2_\"
+      ],
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": [
+          \"git@github-testing:janisZisenisTesting/Prefix1_TestRepository1.git\",
+          \"git@github-testing:janisZisenisTesting/Prefix2_TestRepository2.git\"
+      ]
+  }"
+
+  run "$(testEnvDir)"/mrt setup
+
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/TestRepository1/.git"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/TestRepository2/.git"
+}
+
+@test "if team json contains repositoriesPrefixes 'setup' should not ignore the prefixes while cloning when the prefixes are not in the beginning of the repository names" {
+  repositoriesPath=repositories
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPrefixes\": [
+        \"TestRepository1\",
+        \"TestRepository2\"
+      ],
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": [
+          \"git@github-testing:janisZisenisTesting/Prefix1_TestRepository1.git\",
+          \"git@github-testing:janisZisenisTesting/Prefix2_TestRepository2.git\"
+      ]
+  }"
+
+  run "$(testEnvDir)"/mrt setup
+
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/Prefix1_TestRepository1/.git"
+  assert_directory_exists "$(testEnvDir)/$repositoriesPath/Prefix2_TestRepository2/.git"
 }
 

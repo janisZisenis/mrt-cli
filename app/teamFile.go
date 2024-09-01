@@ -10,8 +10,9 @@ import (
 var teamFileName = "team.json"
 
 type TeamInfo struct {
-	RepositoriesPath string   `json:"repositoriesPath"`
-	Repositories     []string `json:"repositories"`
+	RepositoriesPath     string   `json:"repositoriesPath"`
+	Repositories         []string `json:"repositories"`
+	RepositoriesPrefixes []string `json:"repositoriesPrefixes"`
 }
 
 func readTeamInfo() TeamInfo {
