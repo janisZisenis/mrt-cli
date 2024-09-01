@@ -1,7 +1,7 @@
 package main
 
 import (
-	"app/setup"
+	"app/commands/setup"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
