@@ -1,4 +1,4 @@
-package main
+package setup
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var teamFileName = "team.json"
+var TeamFileName = "team.json"
 
 type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`
@@ -15,8 +15,8 @@ type TeamInfo struct {
 	RepositoriesPrefixes []string `json:"repositoriesPrefixes"`
 }
 
-func readTeamInfo() TeamInfo {
-	fileContent, _ := os.Open(getExecutablePath() + "/" + teamFileName)
+func ReadTeamInfo() TeamInfo {
+	fileContent, _ := os.Open(GetExecutablePath() + "/" + TeamFileName)
 
 	defer fileContent.Close()
 

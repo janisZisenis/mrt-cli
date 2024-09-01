@@ -1,11 +1,11 @@
-package main
+package setup
 
 import (
 	"os"
 	"path"
 )
 
-func getExecutablePath() string {
+func GetExecutablePath() string {
 	executable, _ := os.Executable()
 	return path.Dir(executable)
 }
