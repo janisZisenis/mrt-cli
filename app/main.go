@@ -24,14 +24,9 @@ func main() {
 			repositoryName := strings.Trim(repository[strings.LastIndex(repository, "/")+1:], ".git")
 
 			var cloneDirectory = repositoryName
-			if len(teamInfo.RepositoriesPrefixes) > 0 {
-				if strings.HasPrefix(cloneDirectory, teamInfo.RepositoriesPrefixes[0]) {
-					cloneDirectory = strings.Replace(cloneDirectory, teamInfo.RepositoriesPrefixes[0], "", 1)
-				}
-			}
-			if len(teamInfo.RepositoriesPrefixes) > 1 {
-				if strings.HasPrefix(cloneDirectory, teamInfo.RepositoriesPrefixes[1]) {
-					cloneDirectory = strings.Replace(cloneDirectory, teamInfo.RepositoriesPrefixes[1], "", 1)
+			for _, prefix := range teamInfo.RepositoriesPrefixes {
+				if strings.HasPrefix(cloneDirectory, prefix) {
+					cloneDirectory = strings.Replace(cloneDirectory, prefix, "", 1)
 				}
 			}
 
