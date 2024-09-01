@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
 	"strings"
 )
@@ -21,10 +22,13 @@ var notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate,
 
 func command(cmd *cobra.Command, args []string) {
 	if len(os.Args) > 1 && os.Args[1] == "setup" {
-		var teamInfo = ReadTeamInfo()
+		teamInfo, err := LoadTeamJson()
+		if err != nil {
+			log.Fatalf("Could not read team file: %s", err)
+		}
 
 		if len(teamInfo.Repositories) == 0 {
-			fmt.Println("The " + TeamFileName + " file does not contain any repositories")
+			fmt.Println("Your team file does not contain any repositories")
 			os.Exit(1)
 		}
 

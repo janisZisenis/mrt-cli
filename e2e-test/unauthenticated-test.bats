@@ -28,3 +28,15 @@ testEnvDir() {
 
   assert_output "You have no access to $repositoryUrl. Please make sure you have a valid ssh key in place."
 }
+
+@test "if team json does not contains any repository, 'setup' exits with error" {
+  repositoriesPath=repositories
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": []
+  }"
+
+  run "$(testEnvDir)"/mrt setup
+
+  assert_failure
+}

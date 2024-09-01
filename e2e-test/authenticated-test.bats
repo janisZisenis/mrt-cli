@@ -82,18 +82,6 @@ teardown() {
   assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
 }
 
-@test "if team json does not contains any repository, 'setup' exits with error" {
-  repositoriesPath=repositories
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
-      \"repositories\": []
-  }"
-
-  run "$(testEnvDir)"/mrt setup
-
-  assert_failure
-}
-
 @test "if team json contains non-existing repository, 'setup' should print out a message" {
   repositoriesPath=repositories
   nonExistingRepository=git@github-testing:janisZisenisTesting/not-existing.git
