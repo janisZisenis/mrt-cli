@@ -39,4 +39,12 @@ testEnvDir() {
   run "$(testEnvDir)"/mrt setup
 
   assert_failure
+  assert_output "Your team file does not contain any repositories"
+}
+
+@test "if team json does not exist, 'setup' exits with error" {
+  run "$(testEnvDir)"/mrt setup
+
+  assert_failure
+  assert_output 'Could not read team file. Please make sure a "team.json" file exists next to the executable and that it follows proper JSON syntax'
 }

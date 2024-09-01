@@ -51,6 +51,19 @@ teardown() {
   assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repository/.git"
 }
 
+@test "if team json does not contain repositoriesPath 'setup' clones the repositories into repositories folder" {
+  repository=1_TestRepository
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositories\": [
+          \"git@github-testing:janisZisenisTesting/$repository.git\"
+      ]
+  }"
+
+  run "$(testEnvDir)"/mrt setup
+
+  assert_directory_exists "$(testEnvDir)/repositories/$repository/.git"
+}
+
 @test "if team json contains already existing repositories 'setup' clones remaining repositories given repository path" {
   repositoriesPath=repositories
   firstRepository=1_TestRepository

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
-	"log"
 	"os"
 	"strings"
 )
@@ -22,9 +21,11 @@ var notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate,
 
 func command(cmd *cobra.Command, args []string) {
 	if len(os.Args) > 1 && os.Args[1] == "setup" {
-		teamInfo, err := LoadTeamJson()
+		teamInfo, err := LoadTeamConfiguration()
 		if err != nil {
-			log.Fatalf("Could not read team file: %s", err)
+			fmt.Println("Could not read team file. Please make sure a \"team.json\" file exists next " +
+				"to the executable and that it follows proper JSON syntax")
+			os.Exit(1)
 		}
 
 		if len(teamInfo.Repositories) == 0 {

@@ -11,7 +11,7 @@ type TeamInfo struct {
 	RepositoriesPrefixes []string `json:"repositoriesPrefixes"`
 }
 
-func LoadTeamJson() (*TeamInfo, error) {
+func LoadTeamConfiguration() (*TeamInfo, error) {
 	var teamInfo *TeamInfo
 
 	viper.AddConfigPath(GetExecutablePath())
@@ -26,6 +26,10 @@ func LoadTeamJson() (*TeamInfo, error) {
 	err = viper.Unmarshal(&teamInfo)
 	if err != nil {
 		return nil, fmt.Errorf("Could not unmarshall the team file: %s \n", err)
+	}
+
+	if teamInfo.RepositoriesPath == "" {
+		teamInfo.RepositoriesPath = "repositories"
 	}
 
 	return teamInfo, nil
