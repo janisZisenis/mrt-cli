@@ -112,3 +112,19 @@ testEnvDir() {
 
   assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repositoryName/.git"
 }
+
+
+@test "if team json contains repositories but running without 'setup' does not clone the repositories" {
+  repositoriesPath=repositories
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositoriesPath\": \"$repositoriesPath\",
+      \"repositories\": [
+          \"git@github.com:janisZisenis/repositoryName=BoardGames.TDD-London-School.git\"
+      ]
+  }"
+
+  run "$(testEnvDir)"/mrt
+
+  assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
+}
+
