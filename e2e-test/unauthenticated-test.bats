@@ -16,7 +16,7 @@ testEnvDir() {
 
 @test "if team json contains existing repositories but authentication is missing, 'setup' should print message" {
   repositoriesPath=repositories
-  repositoryUrl=git@github.com:janisZisenis/BoardGames.TDD-London-School.git
+  repositoryUrl=git@github-testing:janisZisenisTesting/1_TestRepository.git
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [

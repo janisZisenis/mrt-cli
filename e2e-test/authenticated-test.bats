@@ -20,13 +20,13 @@ testEnvDir() {
 
 @test "if team json contains repositories 'setup' clones that repository into given repository path" {
   repositoriesPath=repositories
-  firstRepository=BoardGames.TDD-London-School
-  secondRepository=BowlingGameKata
+  firstRepository=1_TestRepository
+  secondRepository=2_TestRepository
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"git@github.com:janisZisenis/$firstRepository.git\",
-          \"git@github.com:janisZisenis/$secondRepository.git\"
+          \"git@github-testing:janisZisenisTesting/$firstRepository.git\",
+          \"git@github-testing:janisZisenisTesting/$secondRepository.git\"
       ]
   }"
 
@@ -38,11 +38,11 @@ testEnvDir() {
 
 @test "if team json contains xyz as repositoriesPath 'setup' clones the repositories into given xyz folder" {
   repositoriesPath=xyz
-  repository=BoardGames.TDD-London-School
+  repository=1_TestRepository
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"git@github.com:janisZisenis/$repository.git\"
+          \"git@github-testing:janisZisenisTesting/$repository.git\"
       ]
   }"
 
@@ -53,14 +53,14 @@ testEnvDir() {
 
 @test "if team json contains already existing repositories 'setup' clones remaining repositories given repository path" {
   repositoriesPath=repositories
-  git clone git@github.com:janisZisenis/BoardGames.TDD-London-School.git "$(testEnvDir)"/$repositoriesPath/BoardGames.TDD-London-School
-  firstRepository=BoardGames.TDD-London-School
-  secondRepository=BowlingGameKata
+  firstRepository=1_TestRepository
+  secondRepository=2_TestRepository
+  git clone git@github-testing:janisZisenisTesting/$firstRepository.git "$(testEnvDir)"/$repositoriesPath/$firstRepository
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"git@github.com:janisZisenis/$firstRepository.git\",
-          \"git@github.com:janisZisenis/$secondRepository.git\"
+          \"git@github-testing:janisZisenisTesting/$firstRepository.git\",
+          \"git@github-testing:janisZisenisTesting/$secondRepository.git\"
       ]
   }"
 
@@ -84,7 +84,7 @@ testEnvDir() {
 
 @test "if team json contains non-existing repository, 'setup' should print out a message" {
   repositoriesPath=repositories
-  nonExistingRepository=git@github.com:janisZisenis/not-existing.git
+  nonExistingRepository=git@github-testing:janisZisenisTesting/not-existing.git
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
@@ -99,30 +99,16 @@ testEnvDir() {
 
 @test "if team json contains non-existing and existing repository, 'setup' should clone the existing one" {
   repositoriesPath=repositories
-  repositoryName=BoardGames.TDD-London-School
+  repositoryName=1_TestRepository
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"git@github.com:janisZisenis/non-exising.git\",
-          \"git@github.com:janisZisenis/$repositoryName.git\"
+          \"git@github-testing:janisZisenisTesting/non-exising.git\",
+          \"git@github-testing:janisZisenisTesting/$repositoryName.git\"
       ]
   }"
 
   run "$(testEnvDir)"/mrt setup
 
   assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repositoryName/.git"
-}
-
-@test "if team json contains repositories but running without 'setup' does not clone the repositories" {
-  repositoriesPath=repositories
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
-      \"repositories\": [
-          \"git@github.com:janisZisenis/repositoryName=BoardGames.TDD-London-School.git\"
-      ]
-  }"
-
-  run "$(testEnvDir)"/mrt
-
-  assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
 }

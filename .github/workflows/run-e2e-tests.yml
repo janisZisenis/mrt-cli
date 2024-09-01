@@ -15,10 +15,13 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.go-version }}
-      - name: Install private-key file
+      - name: Setup ssh
         run: |
-          mkdir -p ./.ssh
-          echo "${{ secrets.PRIVATE_KEY }}" > ./.ssh/private-key
+          echo "${{ secrets.PRIVATE_KEY }}" > .ssh/private-key
           chmod 400 ./.ssh/private-key
+          mkdir -p $HOME/.ssh
+          sed "s*WORKSPACE_DIR*$GITHUB_WORKSPACE*g" .ssh/config > $HOME/.ssh/config
+          cat $HOME/.ssh/config
       - name: Run E2E Tests
-        run: ./do run-e2e-tests
+        run: |
+          ./do run-e2e-tests
