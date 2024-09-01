@@ -12,7 +12,7 @@ var repositoryNotFoundError = "repository not found"
 var notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain"
 
 func main() {
-	if os.Args[1] == "setup" {
+	if len(os.Args) > 1 && os.Args[1] == "setup" {
 		var teamInfo = readTeamInfo()
 
 		if len(teamInfo.Repositories) == 0 {
@@ -29,18 +29,18 @@ func main() {
 				RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 			})
 
-			if cloneError != nil && errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
-				fmt.Println("Repository " + repository + " already exists. Skipping it")
-				continue
-			}
+			if cloneError != nil {
+				if errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
+					fmt.Println("Repository " + repository + " already exists. Skipping it")
+				}
 
-			if cloneError != nil && cloneError.Error() == repositoryNotFoundError {
-				fmt.Println("Repository " + repository + " was not found. Skipping it")
-				continue
-			}
+				if cloneError.Error() == repositoryNotFoundError {
+					fmt.Println("Repository " + repository + " was not found. Skipping it")
+				}
 
-			if cloneError != nil && cloneError.Error() == notAuthenticatedError {
-				fmt.Println("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
+				if cloneError.Error() == notAuthenticatedError {
+					fmt.Println("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
+				}
 			}
 		}
 	}
