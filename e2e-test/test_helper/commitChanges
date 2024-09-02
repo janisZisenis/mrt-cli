@@ -1,0 +1,21 @@
+#!/bin/bash
+
+commit_changes() {
+  repository_path=$1
+  branch_name=$2
+
+  git -C "$repository_path" checkout -b $branch_name
+  touch "$repository_path"/some_file
+  git -C "$repository_path" add .
+  git -C "$repository_path" commit -m "Some Commit"
+}
+
+commit_changes_bypassing_githooks() {
+  repository_path=$1
+  branch_name=$2
+
+  git -C "$repository_path" checkout -b $branch_name
+  touch "$repository_path"/some_file
+  git -C "$repository_path" add .
+  git -C "$repository_path" commit -m "Some Commit" --no-verify
+}

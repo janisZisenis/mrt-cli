@@ -8,6 +8,8 @@ setup() {
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
+  load 'test_helper/commitChanges'
+  load 'test_helper/pushChanges'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -32,13 +34,10 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" checkout -b $branchName
-  touch "$(testEnvDir)/$defaultRepositoriesPath/$repository"/some_file
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" add .
 
-  run git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" commit -m "Should be rejected"
+  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
 
-  assert_output "Action \"commit\" not allowed on branch \"$branchName\""
+  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
 }
 
@@ -54,11 +53,8 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" checkout -b $branchName
-  touch "$(testEnvDir)/$defaultRepositoriesPath/$repository"/some_file
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" add .
 
-  run git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" commit -m "Should be rejected"
+  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
 
   assert_success
 }
@@ -76,13 +72,10 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" checkout -b $branchName
-  touch "$(testEnvDir)/$defaultRepositoriesPath/$repository"/some_file
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" add .
 
-  run git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" commit -m "Should be rejected"
+  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
 
-  assert_output "Action \"commit\" not allowed on branch \"$branchName\""
+  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
 }
 
@@ -98,16 +91,9 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" checkout -b $branchName
-  touch "$(testEnvDir)/$defaultRepositoriesPath/$repository"/some_file
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" add .
-  git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" commit -m "Some Commit" --no-verify
+  commit_changes_bypassing_githooks "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
 
-  run git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" push --set-upstream origin "$branchName"
-  if [[ $(git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" ls-remote --heads origin "$branchName") ]]
-  then
-    git -C "$(testEnvDir)/$defaultRepositoriesPath/$repository" push origin --delete "$branchName"
-  fi
+  push_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
 
   assert_output --partial "Action \"push\" not allowed on branch \"$branchName\""
   assert_failure
