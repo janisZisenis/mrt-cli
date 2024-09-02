@@ -52,14 +52,6 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 ` + core.GetExecutable() + ` githook --branch $branch`
 }
 
-func printSlice(s []string) string {
-	if len(s) == 0 {
-		return ""
-	}
-
-	return " " + fmt.Sprint(s[0]) + printSlice(s[1:])
-}
-
 func writePreCommitHook(hooksPath string, teamInfo *core.TeamInfo) {
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
 	err := os.WriteFile(hooksPath+"pre-commit", []byte(getPreCommitHook()), 0755)

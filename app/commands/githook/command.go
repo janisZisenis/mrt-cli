@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"slices"
 )
 
 var branchFlag = "branch"
@@ -25,7 +26,7 @@ func command(cmd *cobra.Command, args []string) {
 	var teamInfo = core.LoadTeamConfiguration()
 	branch, _ := cmd.Flags().GetString(branchFlag)
 
-	if teamInfo.BlockedBranches.Contains(branch) {
+	if slices.Contains(teamInfo.BlockedBranches, branch) {
 		fmt.Println("Action \"commit\" not allowed on branch \"" + branch + "\"")
 		os.Exit(1)
 	}
