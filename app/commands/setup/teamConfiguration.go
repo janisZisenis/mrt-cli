@@ -9,6 +9,7 @@ type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`
 	Repositories         []string `json:"repositories"`
 	RepositoriesPrefixes []string `json:"repositoriesPrefixes"`
+	BlockedBranches      []string `json:"blockedBranches"`
 }
 
 func LoadTeamConfiguration() (*TeamInfo, error) {

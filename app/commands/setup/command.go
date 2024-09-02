@@ -46,14 +46,27 @@ func command(cmd *cobra.Command, args []string) {
 #!/bin/bash -e
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
-echo "Action \"commit\" not allowed on branch \"$branch\""
-exit 1
+
+blocked_branches=(`+printSlice(teamInfo.BlockedBranches)+` )
+if [[ "${blocked_branches[@]}" =~ $branch ]]
+then
+	echo "Action \"commit\" not allowed on branch \"$branch\""
+	exit 1
+fi
 						`), 0755)
 			if err != nil {
 				fmt.Printf("unable to write file: %w", err)
 			}
 		}
 	}
+}
+
+func printSlice(s []string) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	return " " + fmt.Sprint(s[0]) + printSlice(s[1:])
 }
 
 func clone(repository string, directory string) {
