@@ -10,6 +10,7 @@ type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`
 	Repositories         []string `json:"repositories"`
 	RepositoriesPrefixes []string `json:"repositoriesPrefixes"`
+	JiraPrefixRegex      string   `json:"jiraPrefixRegex"`
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 

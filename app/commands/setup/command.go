@@ -41,6 +41,7 @@ func command(cmd *cobra.Command, args []string) {
 			var hooksPath = directory + "/.git/hooks/"
 			writeHook(hooksPath, "pre-commit")
 			writeHook(hooksPath, "pre-push")
+			writeCommitMsgHook(hooksPath, "commit-msg")
 		}
 	}
 }
@@ -58,6 +59,22 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 func writeHook(hooksPath string, hookName string) {
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
 	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0755)
+	if err != nil {
+		fmt.Printf("unable to write file: %w", err)
+	}
+}
+
+func getCommitMsgHook() string {
+	return `
+#!/bin/bash -e
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+` + core.GetExecutable() + ` commit-msg-hook --branch $branch --commit-file $1`
+}
+
+func writeCommitMsgHook(hooksPath string, hookName string) {
+	_ = os.MkdirAll(hooksPath, os.ModePerm)
+	err := os.WriteFile(hooksPath+hookName, []byte(getCommitMsgHook()), 0755)
 	if err != nil {
 		fmt.Printf("unable to write file: %w", err)
 	}

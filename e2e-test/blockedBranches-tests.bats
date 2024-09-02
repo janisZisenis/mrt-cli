@@ -3,12 +3,10 @@ testEnvDir() {
 }
 
 setup() {
-  load 'test_helper/assertDirectoryExists'
-  load 'test_helper/assertDirectoryDoesNotExist'
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
-  load 'test_helper/commitChanges'
+  load 'test_helper/commits'
   load 'test_helper/pushChanges'
 
   _common_setup "$(testEnvDir)"
