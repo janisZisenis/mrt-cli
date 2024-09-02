@@ -33,36 +33,64 @@ func command(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 
-		for _, repository := range teamInfo.Repositories {
-			repositoryName := strings.Trim(repository[strings.LastIndex(repository, "/")+1:], ".git")
+		for _, repositoryUrl := range teamInfo.Repositories {
+			repositoryName := getRepositoryName(repositoryUrl)
+			folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
+			directory := getDirectory(teamInfo.RepositoriesPath, folderName)
 
-			var cloneDirectory = repositoryName
-			for _, prefix := range teamInfo.RepositoriesPrefixes {
-				if strings.HasPrefix(cloneDirectory, prefix) {
-					cloneDirectory = strings.Replace(cloneDirectory, prefix, "", 1)
-				}
-			}
+			clone(repositoryUrl, directory)
 
-			directory := GetExecutablePath() + "/" + teamInfo.RepositoriesPath + "/" + cloneDirectory
+			var hooksPath = directory + "/.git/hooks/"
+			_ = os.MkdirAll(hooksPath, os.ModePerm)
+			err := os.WriteFile(hooksPath+"pre-commit", []byte(`
+#!/bin/bash -e
 
-			_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{
-				URL:               repository,
-				RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-			})
-
-			if cloneError != nil {
-				if errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
-					fmt.Println("Repository " + repository + " already exists. Skipping it")
-				}
-
-				if cloneError.Error() == repositoryNotFoundError {
-					fmt.Println("Repository " + repository + " was not found. Skipping it")
-				}
-
-				if cloneError.Error() == notAuthenticatedError {
-					fmt.Println("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
-				}
+branch="$(git rev-parse --abbrev-ref HEAD)"
+echo "Action \"commit\" not allowed on branch \"$branch\""
+exit 1
+						`), 0755)
+			if err != nil {
+				fmt.Printf("unable to write file: %w", err)
 			}
 		}
 	}
+}
+
+func clone(repository string, directory string) {
+	_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{
+		URL:               repository,
+		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+	})
+
+	if cloneError != nil {
+		if errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
+			fmt.Println("Repository " + repository + " already exists. Skipping it")
+		}
+
+		if cloneError.Error() == repositoryNotFoundError {
+			fmt.Println("Repository " + repository + " was not found. Skipping it")
+		}
+
+		if cloneError.Error() == notAuthenticatedError {
+			fmt.Println("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
+		}
+	}
+}
+
+func getRepositoryName(repositoryUrl string) string {
+	return strings.Trim(repositoryUrl[strings.LastIndex(repositoryUrl, "/")+1:], ".git")
+}
+
+func getDirectory(repositoriesPath string, folderName string) string {
+	return GetExecutablePath() + "/" + repositoriesPath + "/" + folderName
+}
+
+func getFolderName(repositoryName string, prefixes []string) string {
+	var folderName = repositoryName
+	for _, prefix := range prefixes {
+		if strings.HasPrefix(folderName, prefix) {
+			folderName = strings.Replace(folderName, prefix, "", 1)
+		}
+	}
+	return folderName
 }
