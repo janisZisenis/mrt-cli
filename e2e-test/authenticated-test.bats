@@ -18,25 +18,22 @@ teardown() {
   revoke-authentication
 }
 
-@test "if team json contains repositories 'setup' clones that repository into given repository path" {
-  repositoriesPath=repositories
-  firstRepository=1_TestRepository
-  secondRepository=2_TestRepository
+defaultRepositoriesPath="repositories"
+
+@test "if team json does not contain repositoriesPath 'setup' clones repository into 'repositories' folder" {
+  repository=1_TestRepository
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$firstRepository.git\",
-          \"git@github-testing:janisZisenisTesting/$secondRepository.git\"
+          \"git@github-testing:janisZisenisTesting/$repository.git\"
       ]
   }"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$firstRepository/.git"
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$secondRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$repository/.git"
 }
 
-@test "if team json contains xyz as repositoriesPath 'setup' clones the repositories into given xyz folder" {
+@test "if team json contains repositoriesPath 'setup' clones the repositories into given repositoriesPath folder" {
   repositoriesPath=xyz
   repository=1_TestRepository
   writeTeamFile "$(testEnvDir)" "{
@@ -51,26 +48,11 @@ teardown() {
   assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repository/.git"
 }
 
-@test "if team json does not contain repositoriesPath 'setup' clones the repositories into repositories folder" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-
-  run "$(testEnvDir)"/mrt setup
-
-  assert_directory_exists "$(testEnvDir)/repositories/$repository/.git"
-}
-
-@test "if team json contains already existing repositories 'setup' clones remaining repositories given repository path" {
-  repositoriesPath=repositories
+@test "if team json contains already existing repositories 'setup' clones remaining repositories and skips existing ones" {
   firstRepository=1_TestRepository
   secondRepository=2_TestRepository
-  git clone git@github-testing:janisZisenisTesting/$firstRepository.git "$(testEnvDir)"/$repositoriesPath/$firstRepository
+  git clone git@github-testing:janisZisenisTesting/$firstRepository.git "$(testEnvDir)"/$defaultRepositoriesPath/$firstRepository
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
           \"git@github-testing:janisZisenisTesting/$firstRepository.git\",
           \"git@github-testing:janisZisenisTesting/$secondRepository.git\"
@@ -79,27 +61,23 @@ teardown() {
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$firstRepository/.git"
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$secondRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$firstRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$secondRepository/.git"
 }
 
 @test "if team json does not contains any repository, 'setup' does not clone any repository" {
-  repositoriesPath=repositories
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": []
   }"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
+  assert_directory_does_not_exist "$(testEnvDir)/$defaultRepositoriesPath"
 }
 
 @test "if team json contains non-existing repository, 'setup' should print out a message" {
-  repositoriesPath=repositories
   nonExistingRepository=git@github-testing:janisZisenisTesting/not-existing.git
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
         \"$nonExistingRepository\"
       ]
@@ -111,10 +89,8 @@ teardown() {
 }
 
 @test "if team json contains non-existing and existing repository, 'setup' should clone the existing one" {
-  repositoriesPath=repositories
   repositoryName=1_TestRepository
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
           \"git@github-testing:janisZisenisTesting/non-exising.git\",
           \"git@github-testing:janisZisenisTesting/$repositoryName.git\"
@@ -123,13 +99,11 @@ teardown() {
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repositoryName/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$repositoryName/.git"
 }
 
 @test "if team json contains repositories but running without 'setup' does not clone the repositories" {
-  repositoriesPath=repositories
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
           \"git@github-testing:janisZisenisTesting/1_TestRepository.git\"
       ]
@@ -137,17 +111,15 @@ teardown() {
 
   run "$(testEnvDir)"/mrt
 
-  assert_directory_does_not_exist "$(testEnvDir)/$repositoriesPath"
+  assert_directory_does_not_exist "$(testEnvDir)/$defaultRepositoriesPath"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup' should ignore the prefixes while cloning the repositories" {
-  repositoriesPath=repositories
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPrefixes\": [
         \"Prefix1_\",
         \"Prefix2_\"
       ],
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
           \"git@github-testing:janisZisenisTesting/Prefix1_TestRepository1.git\",
           \"git@github-testing:janisZisenisTesting/Prefix2_TestRepository2.git\"
@@ -156,18 +128,16 @@ teardown() {
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/TestRepository1/.git"
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/TestRepository2/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/TestRepository1/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/TestRepository2/.git"
 }
 
-@test "if team json contains repositoriesPrefixes 'setup' should not ignore the prefixes while cloning when the prefixes are not in the beginning of the repository names" {
-  repositoriesPath=repositories
+@test "if team json contains repositoriesPrefixes 'setup' should not ignore the prefixes when the prefixes are not in the beginning of the repository names" {
   writeTeamFile "$(testEnvDir)" "{
       \"repositoriesPrefixes\": [
         \"TestRepository1\",
         \"TestRepository2\"
       ],
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
           \"git@github-testing:janisZisenisTesting/Prefix1_TestRepository1.git\",
           \"git@github-testing:janisZisenisTesting/Prefix2_TestRepository2.git\"
@@ -176,7 +146,7 @@ teardown() {
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/Prefix1_TestRepository1/.git"
-  assert_directory_exists "$(testEnvDir)/$repositoriesPath/Prefix2_TestRepository2/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/Prefix1_TestRepository1/.git"
+  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/Prefix2_TestRepository2/.git"
 }
 

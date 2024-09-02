@@ -15,10 +15,8 @@ testEnvDir() {
 }
 
 @test "if team json contains existing repositories but authentication is missing, 'setup' should print message" {
-  repositoriesPath=repositories
   repositoryUrl=git@github-testing:janisZisenisTesting/1_TestRepository.git
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": [
           \"$repositoryUrl\"
       ]
@@ -30,9 +28,7 @@ testEnvDir() {
 }
 
 @test "if team json does not contains any repository, 'setup' exits with error" {
-  repositoriesPath=repositories
   writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
       \"repositories\": []
   }"
 
