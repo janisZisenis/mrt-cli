@@ -20,10 +20,10 @@ func LoadTeamConfiguration() *TeamInfo {
 	viper.SetConfigName("team")
 	viper.SetConfigType("json")
 
-	err := viper.ReadInConfig()
-	err = viper.Unmarshal(&teamInfo)
+	readErr := viper.ReadInConfig()
+	unmarshalErr := viper.Unmarshal(&teamInfo)
 
-	if err != nil {
+	if readErr != nil || unmarshalErr != nil {
 		fmt.Println("Could not read team file. Please make sure a \"team.json\" file exists next " +
 			"to the executable and that it follows proper JSON syntax")
 		os.Exit(1)

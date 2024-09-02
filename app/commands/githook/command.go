@@ -9,6 +9,7 @@ import (
 )
 
 var branchFlag = "branch"
+var hookNameFlag = "hook-name"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
@@ -18,6 +19,7 @@ func MakeCommand() *cobra.Command {
 	}
 
 	command.Flags().String(branchFlag, "", "The branch the commit hook was executed on")
+	command.Flags().String(hookNameFlag, "", "The name of the git-hook to be executed")
 
 	return command
 }
@@ -25,9 +27,17 @@ func MakeCommand() *cobra.Command {
 func command(cmd *cobra.Command, args []string) {
 	var teamInfo = core.LoadTeamConfiguration()
 	branch, _ := cmd.Flags().GetString(branchFlag)
+	hookName, _ := cmd.Flags().GetString(hookNameFlag)
+
+	var action string
+	if hookName == "pre-commit" {
+		action = "commit"
+	} else {
+		action = "push"
+	}
 
 	if slices.Contains(teamInfo.BlockedBranches, branch) {
-		fmt.Println("Action \"commit\" not allowed on branch \"" + branch + "\"")
+		fmt.Println("Action \"" + action + "\" not allowed on branch \"" + branch + "\"")
 		os.Exit(1)
 	}
 }
