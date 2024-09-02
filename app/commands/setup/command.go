@@ -39,39 +39,25 @@ func command(cmd *cobra.Command, args []string) {
 			clone(repositoryUrl, directory)
 
 			var hooksPath = directory + "/.git/hooks/"
-			writePreCommitHook(hooksPath)
-			writePrePushHook(hooksPath)
+			writeHook(hooksPath, "pre-commit")
+			writeHook(hooksPath, "pre-push")
 		}
 	}
 }
 
-func getPreCommitHook() string {
+func getHookTemplate() string {
 	return `
 #!/bin/bash -e
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
-` + core.GetExecutable() + ` githook --branch $branch --hook-name pre-commit`
-}
-
-func writePreCommitHook(hooksPath string) {
-	_ = os.MkdirAll(hooksPath, os.ModePerm)
-	err := os.WriteFile(hooksPath+"pre-commit", []byte(getPreCommitHook()), 0755)
-	if err != nil {
-		fmt.Printf("unable to write file: %w", err)
-	}
-}
-
-func getPrePushHook() string {
-	return `
-#!/bin/bash -e
+hook_name=$(basename "$0")
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
-` + core.GetExecutable() + ` githook --branch $branch --hook-name pre-push`
+` + core.GetExecutable() + ` githook --branch $branch --hook-name "$hook_name"`
 }
 
-func writePrePushHook(hooksPath string) {
+func writeHook(hooksPath string, hookName string) {
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
-	err := os.WriteFile(hooksPath+"pre-push", []byte(getPrePushHook()), 0755)
+	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0755)
 	if err != nil {
 		fmt.Printf("unable to write file: %w", err)
 	}
