@@ -1,8 +1,9 @@
-package setup
+package core
 
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"os"
 )
 
 type TeamInfo struct {
@@ -12,7 +13,7 @@ type TeamInfo struct {
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 
-func LoadTeamConfiguration() (*TeamInfo, error) {
+func LoadTeamConfiguration() *TeamInfo {
 	var teamInfo *TeamInfo
 
 	viper.AddConfigPath(GetExecutablePath())
@@ -20,18 +21,17 @@ func LoadTeamConfiguration() (*TeamInfo, error) {
 	viper.SetConfigType("json")
 
 	err := viper.ReadInConfig()
-	if err != nil {
-		return nil, fmt.Errorf("Could not read team file: %s \n", err)
-	}
-
 	err = viper.Unmarshal(&teamInfo)
+
 	if err != nil {
-		return nil, fmt.Errorf("Could not unmarshall the team file: %s \n", err)
+		fmt.Println("Could not read team file. Please make sure a \"team.json\" file exists next " +
+			"to the executable and that it follows proper JSON syntax")
+		os.Exit(1)
 	}
 
 	if teamInfo.RepositoriesPath == "" {
 		teamInfo.RepositoriesPath = "repositories"
 	}
 
-	return teamInfo, nil
+	return teamInfo
 }

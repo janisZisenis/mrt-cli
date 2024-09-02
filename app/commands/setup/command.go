@@ -1,6 +1,7 @@
 package setup
 
 import (
+	"app/core"
 	"errors"
 	"fmt"
 	"github.com/go-git/go-git/v5"
@@ -9,11 +10,13 @@ import (
 	"strings"
 )
 
-var Command = &cobra.Command{
-	Use:   "setup",
-	Short: "Sets up you machine for development.",
-	Long:  "Test",
-	Run:   command,
+func MakeCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "setup",
+		Short: "Sets up you machine for development",
+		Run:   command,
+	}
+	return command
 }
 
 var repositoryNotFoundError = "repository not found"
@@ -21,12 +24,7 @@ var notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate,
 
 func command(cmd *cobra.Command, args []string) {
 	if len(os.Args) > 1 && os.Args[1] == "setup" {
-		teamInfo, err := LoadTeamConfiguration()
-		if err != nil {
-			fmt.Println("Could not read team file. Please make sure a \"team.json\" file exists next " +
-				"to the executable and that it follows proper JSON syntax")
-			os.Exit(1)
-		}
+		teamInfo := core.LoadTeamConfiguration()
 
 		if len(teamInfo.Repositories) == 0 {
 			fmt.Println("Your team file does not contain any repositories")
@@ -46,19 +44,12 @@ func command(cmd *cobra.Command, args []string) {
 	}
 }
 
-func getPreCommitHook(blockedBranches []string) string {
+func getPreCommitHook() string {
 	return `
 #!/bin/bash -e
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
-
-blocked_branches=(` + printSlice(blockedBranches) + ` )
-if [[ "${blocked_branches[@]}" =~ $branch ]]
-then
-	echo "Action \"commit\" not allowed on branch \"$branch\""
-	exit 1
-fi
-`
+` + core.GetExecutable() + ` githook --branch $branch`
 }
 
 func printSlice(s []string) string {
@@ -69,9 +60,9 @@ func printSlice(s []string) string {
 	return " " + fmt.Sprint(s[0]) + printSlice(s[1:])
 }
 
-func writePreCommitHook(hooksPath string, teamInfo *TeamInfo) {
+func writePreCommitHook(hooksPath string, teamInfo *core.TeamInfo) {
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
-	err := os.WriteFile(hooksPath+"pre-commit", []byte(getPreCommitHook(teamInfo.BlockedBranches)), 0755)
+	err := os.WriteFile(hooksPath+"pre-commit", []byte(getPreCommitHook()), 0755)
 	if err != nil {
 		fmt.Printf("unable to write file: %w", err)
 	}
@@ -103,7 +94,7 @@ func getRepositoryName(repositoryUrl string) string {
 }
 
 func getDirectory(repositoriesPath string, folderName string) string {
-	return GetExecutablePath() + "/" + repositoriesPath + "/" + folderName
+	return core.GetExecutablePath() + "/" + repositoriesPath + "/" + folderName
 }
 
 func getFolderName(repositoryName string, prefixes []string) string {
