@@ -41,24 +41,24 @@ func command(cmd *cobra.Command, args []string) {
 			clone(repositoryUrl, directory)
 
 			var hooksPath = directory + "/.git/hooks/"
-			_ = os.MkdirAll(hooksPath, os.ModePerm)
-			err := os.WriteFile(hooksPath+"pre-commit", []byte(`
+			writePreCommitHook(hooksPath, teamInfo)
+		}
+	}
+}
+
+func getPreCommitHook(blockedBranches []string) string {
+	return `
 #!/bin/bash -e
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
-blocked_branches=(`+printSlice(teamInfo.BlockedBranches)+` )
+blocked_branches=(` + printSlice(blockedBranches) + ` )
 if [[ "${blocked_branches[@]}" =~ $branch ]]
 then
 	echo "Action \"commit\" not allowed on branch \"$branch\""
 	exit 1
 fi
-						`), 0755)
-			if err != nil {
-				fmt.Printf("unable to write file: %w", err)
-			}
-		}
-	}
+`
 }
 
 func printSlice(s []string) string {
@@ -67,6 +67,14 @@ func printSlice(s []string) string {
 	}
 
 	return " " + fmt.Sprint(s[0]) + printSlice(s[1:])
+}
+
+func writePreCommitHook(hooksPath string, teamInfo *TeamInfo) {
+	_ = os.MkdirAll(hooksPath, os.ModePerm)
+	err := os.WriteFile(hooksPath+"pre-commit", []byte(getPreCommitHook(teamInfo.BlockedBranches)), 0755)
+	if err != nil {
+		fmt.Printf("unable to write file: %w", err)
+	}
 }
 
 func clone(repository string, directory string) {
