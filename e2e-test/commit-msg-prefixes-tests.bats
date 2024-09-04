@@ -7,6 +7,7 @@ setup() {
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
   load 'test_helper/commits'
+  load 'test_helper/defaults'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -16,8 +17,6 @@ teardown() {
   _common_teardown "$(testEnvDir)"
   revoke-authentication
 }
-
-defaultRepositoriesPath="repositories"
 
 @test "if team json contains jiraPrefixRegex 'commiting' with a message and a branch both without matching prefix is blocked" {
   repository=1_TestRepository
@@ -29,7 +28,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" "no-prefix-branch" "no-prefix-message"
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "no-prefix-message"
 
   assert_line --index 1 "The commit message needs a JIRA ID prefix."
   assert_line --index 2 "Either add the JIRA ID to you commit message, or include it in the branch name."
@@ -48,7 +47,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" "no-prefix-branch" "$matchingPrefix: prefixed-message"
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$matchingPrefix: prefixed-message"
 
   assert_line --index 1 "The commit message contains an issue ID ($matchingPrefix). Good job!"
   assert_success
@@ -65,7 +64,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" "feature/$jiraId/prefixed-branch" "not-prefix-message"
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "feature/$jiraId/prefixed-branch" "not-prefix-message"
 
   assert_line --index 1 "JIRA-ID '$jiraId' was found in current branch name, prepended to commit message."
   assert_success
@@ -89,9 +88,9 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" "no-prefix-branch" "$commitMessage"
+  commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commitMessage"
 
-  run get_commit_message_of_last_commit "$(testEnvDir)/$defaultRepositoriesPath/$repository"
+  run get_commit_message_of_last_commit "$(testEnvDir)/$(default_repositories_dir)/$repository"
   assert_output "$commitMessage"
 }
 
@@ -106,9 +105,9 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" "feature/$matchingPrefix/prefixed-branch" "$commitMessage"
+  commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "feature/$matchingPrefix/prefixed-branch" "$commitMessage"
 
-  run get_commit_message_of_last_commit "$(testEnvDir)/$defaultRepositoriesPath/$repository"
+  run get_commit_message_of_last_commit "$(testEnvDir)/$(default_repositories_dir)/$repository"
   assert_output "$matchingPrefix: $commitMessage"
 }
 
@@ -123,7 +122,7 @@ test_merge_commit_messages_are_not_blocked() {
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" "no-prefix-branch" "$commit_message"
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commit_message"
 
   assert_line --index 1 "Merge commit detected, skipping commit-msg hook."
   assert_success

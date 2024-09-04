@@ -8,6 +8,7 @@ setup() {
   load 'test_helper/common'
   load 'test_helper/commits'
   load 'test_helper/pushChanges'
+  load 'test_helper/defaults'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -17,8 +18,6 @@ teardown() {
   _common_teardown "$(testEnvDir)"
   revoke-authentication
 }
-
-defaultRepositoriesPath="repositories"
 
 @test "If team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
   repository=1_TestRepository
@@ -33,7 +32,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
   assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
@@ -52,7 +51,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
   assert_success
 }
@@ -71,7 +70,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run commit_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
   assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
@@ -89,9 +88,9 @@ defaultRepositoriesPath="repositories"
       ]
   }"
   "$(testEnvDir)"/mrt setup
-  commit_changes_bypassing_githooks "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
+  commit_changes_bypassing_githooks "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
-  push_changes "$(testEnvDir)/$defaultRepositoriesPath/$repository" $branchName
+  push_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
   assert_output --partial "Action \"push\" not allowed on branch \"$branchName\""
   assert_failure

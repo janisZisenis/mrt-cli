@@ -8,6 +8,7 @@ setup() {
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
+  load 'test_helper/defaults'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -17,8 +18,6 @@ teardown() {
   _common_teardown "$(testEnvDir)"
   revoke-authentication
 }
-
-defaultRepositoriesPath="repositories"
 
 @test "if team json does not contain repositoriesPath 'setup' clones repository into 'repositories' folder" {
   repository=1_TestRepository
@@ -30,7 +29,7 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$repository/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$repository/.git"
 }
 
 @test "if team json contains repositoriesPath 'setup' clones the repositories into given repositoriesPath folder" {
@@ -51,7 +50,7 @@ defaultRepositoriesPath="repositories"
 @test "if team json contains already existing repositories 'setup' clones remaining repositories and skips existing ones" {
   firstRepository=1_TestRepository
   secondRepository=2_TestRepository
-  git clone git@github-testing:janisZisenisTesting/$firstRepository.git "$(testEnvDir)"/$defaultRepositoriesPath/$firstRepository
+  git clone git@github-testing:janisZisenisTesting/$firstRepository.git "$(testEnvDir)/$(default_repositories_dir)/$firstRepository"
   writeTeamFile "$(testEnvDir)" "{
       \"repositories\": [
           \"git@github-testing:janisZisenisTesting/$firstRepository.git\",
@@ -61,8 +60,8 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$firstRepository/.git"
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$secondRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$firstRepository/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$secondRepository/.git"
 }
 
 @test "if team json does not contains any repository, 'setup' does not clone any repository" {
@@ -72,7 +71,7 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_does_not_exist "$(testEnvDir)/$defaultRepositoriesPath"
+  assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_dir)"
 }
 
 @test "if team json contains non-existing repository, 'setup' should print out a message" {
@@ -99,7 +98,7 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/$repositoryName/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$repositoryName/.git"
 }
 
 @test "if team json contains repositories but running without 'setup' does not clone the repositories" {
@@ -111,7 +110,7 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt
 
-  assert_directory_does_not_exist "$(testEnvDir)/$defaultRepositoriesPath"
+  assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_dir)"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup' should ignore the prefixes while cloning the repositories" {
@@ -128,8 +127,8 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/TestRepository1/.git"
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/TestRepository2/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/TestRepository1/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/TestRepository2/.git"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup' should not ignore the prefixes when the prefixes are not in the beginning of the repository names" {
@@ -146,7 +145,7 @@ defaultRepositoriesPath="repositories"
 
   run "$(testEnvDir)"/mrt setup
 
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/Prefix1_TestRepository1/.git"
-  assert_directory_exists "$(testEnvDir)/$defaultRepositoriesPath/Prefix2_TestRepository2/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/Prefix1_TestRepository1/.git"
+  assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/Prefix2_TestRepository2/.git"
 }
 

@@ -6,6 +6,8 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 	"os"
+	"os/exec"
+	"path/filepath"
 )
 
 var CommandName = "git-hook"
@@ -20,7 +22,7 @@ func MakeCommand() *cobra.Command {
 	}
 
 	command.Flags().String(hookNameFlag, "", "The name of the git-hook to be executed")
-	command.Flags().String(repositoryPath, "", "The path to the repository")
+	command.Flags().String(repositoryPath, ".", "The path to the repository")
 
 	return command
 }
@@ -35,6 +37,7 @@ func command(cmd *cobra.Command, args []string) {
 	switch hookName {
 	case core.PreCommit:
 		preCommitHook(teamInfo, currentBranchName)
+		executeAdditionalScripts(repositoryPath)
 	case core.PrePush:
 		prePushHook(teamInfo, currentBranchName)
 	case core.CommitMsg:
@@ -43,6 +46,16 @@ func command(cmd *cobra.Command, args []string) {
 		fmt.Println("The given git-hook \"" + hookName + "\" does not exist.")
 		os.Exit(1)
 	}
+}
+
+func executeAdditionalScripts(repositoryPath string) {
+	_ = filepath.Walk(repositoryPath+"/hook-scripts/"+core.PreCommit, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			cmd := exec.Command("/bin/bash", path)
+			_ = cmd.Run()
+		}
+		return nil
+	})
 }
 
 func getCurrentBranchName(repositoryPath string) string {

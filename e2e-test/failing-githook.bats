@@ -6,6 +6,7 @@ setup() {
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
+  load 'test_helper/defaults'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -15,8 +16,6 @@ teardown() {
   _common_teardown "$(testEnvDir)"
   revoke-authentication
 }
-
-defaultRepositoriesPath="repositories"
 
 @test "if subcommand 'git-hook' gets called with an unknown git hook it fails" {
   repository=1_TestRepository
@@ -28,7 +27,7 @@ defaultRepositoriesPath="repositories"
   }"
   "$(testEnvDir)"/mrt setup
 
-  run "$(testEnvDir)"/mrt git-hook --hook-name "$hookName" --repository-path "$(testEnvDir)/$defaultRepositoriesPath/$repository"
+  run "$(testEnvDir)"/mrt git-hook --hook-name "$hookName" --repository-path "$(testEnvDir)/$(default_repositories_dir)/$repository"
 
   assert_output --partial "The given git-hook \"$hookName\" does not exist."
   assert_failure
