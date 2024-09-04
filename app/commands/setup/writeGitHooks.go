@@ -1,6 +1,7 @@
 package setup
 
 import (
+	"app/commands/githook"
 	"app/core"
 	"fmt"
 	"os"
@@ -13,7 +14,7 @@ func getHookTemplate() string {
 hook_name=$(basename "$0")
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
-` + core.GetExecutable() + ` githook --hook-name "$hook_name" --repository-path "$pwd" $@`
+` + core.GetExecutable() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path "$pwd" $@`
 }
 
 func writeGitHook(repositoryDirectory string, hookName string) {
