@@ -1,34 +1,15 @@
-package commit_msg_hook
+package githook
 
 import (
 	"app/core"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"regexp"
 	"strings"
 )
 
-var branchFlag = "branch"
-var commitFileFlag = "commit-file"
-
-func MakeCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "commit-msg-hook",
-		Short: "Executes the commit-msg git-hook",
-		Run:   command,
-	}
-
-	command.Flags().String(branchFlag, "", "The branch the commit hook was executed on")
-	command.Flags().String(commitFileFlag, "", "The commit file")
-
-	return command
-}
-
-func command(cmd *cobra.Command, args []string) {
-	var teamInfo = core.LoadTeamConfiguration()
-	branch, _ := cmd.Flags().GetString(branchFlag)
-	commitFile, _ := cmd.Flags().GetString(commitFileFlag)
+func commitMsgHook(branch string, teamInfo core.TeamInfo, args []string) {
+	commitFile := args[0]
 	data, _ := os.ReadFile(commitFile)
 	commitMessage := string(data)
 

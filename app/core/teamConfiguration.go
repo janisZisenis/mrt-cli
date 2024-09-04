@@ -14,8 +14,8 @@ type TeamInfo struct {
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 
-func LoadTeamConfiguration() *TeamInfo {
-	var teamInfo *TeamInfo
+func LoadTeamConfiguration() TeamInfo {
+	var teamInfo TeamInfo
 
 	viper.AddConfigPath(GetExecutablePath())
 	viper.SetConfigName("team")

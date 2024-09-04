@@ -2,18 +2,16 @@ package githook
 
 import (
 	"app/core"
-	"fmt"
 	"github.com/spf13/cobra"
-	"os"
-	"slices"
 )
 
+var commandName = "githook"
 var branchFlag = "branch"
 var hookNameFlag = "hook-name"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   "githook",
+		Use:   commandName,
 		Short: "Executes the specified git-hook for a specified repository",
 		Run:   command,
 	}
@@ -29,15 +27,12 @@ func command(cmd *cobra.Command, args []string) {
 	branch, _ := cmd.Flags().GetString(branchFlag)
 	hookName, _ := cmd.Flags().GetString(hookNameFlag)
 
-	var action string
-	if hookName == "pre-commit" {
-		action = "commit"
-	} else {
-		action = "push"
-	}
-
-	if slices.Contains(teamInfo.BlockedBranches, branch) {
-		fmt.Println("Action \"" + action + "\" not allowed on branch \"" + branch + "\"")
-		os.Exit(1)
+	switch hookName {
+	case core.PreCommit:
+		preCommitHook(teamInfo, branch)
+	case core.PrePush:
+		prePushHook(teamInfo, branch)
+	default:
+		commitMsgHook(branch, teamInfo, args)
 	}
 }
