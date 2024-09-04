@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func commitMsgHook(branch string, teamInfo core.TeamInfo, args []string) {
+func commitMsgHook(teamInfo core.TeamInfo, branch string, args []string) {
 	commitFile := args[0]
 	data, _ := os.ReadFile(commitFile)
 	commitMessage := string(data)

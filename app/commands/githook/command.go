@@ -2,11 +2,12 @@ package githook
 
 import (
 	"app/core"
+	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 )
 
 var commandName = "githook"
-var branchFlag = "branch"
+var repositoryPath = "repository-path"
 var hookNameFlag = "hook-name"
 
 func MakeCommand() *cobra.Command {
@@ -16,23 +17,32 @@ func MakeCommand() *cobra.Command {
 		Run:   command,
 	}
 
-	command.Flags().String(branchFlag, "", "The branch the commit hook was executed on")
 	command.Flags().String(hookNameFlag, "", "The name of the git-hook to be executed")
+	command.Flags().String(repositoryPath, "", "The path to the repository")
 
 	return command
 }
 
 func command(cmd *cobra.Command, args []string) {
 	var teamInfo = core.LoadTeamConfiguration()
-	branch, _ := cmd.Flags().GetString(branchFlag)
 	hookName, _ := cmd.Flags().GetString(hookNameFlag)
+	repositoryPath, _ := cmd.Flags().GetString(repositoryPath)
+
+	currentBranchName := getCurrentBranchName(repositoryPath)
 
 	switch hookName {
 	case core.PreCommit:
-		preCommitHook(teamInfo, branch)
+		preCommitHook(teamInfo, currentBranchName)
 	case core.PrePush:
-		prePushHook(teamInfo, branch)
+		prePushHook(teamInfo, currentBranchName)
 	default:
-		commitMsgHook(branch, teamInfo, args)
+		commitMsgHook(teamInfo, currentBranchName, args)
 	}
+}
+
+func getCurrentBranchName(repositoryPath string) string {
+	repository, _ := git.PlainOpen(repositoryPath)
+	currentBranch, _ := repository.Head()
+	currentBranchName := currentBranch.Name().Short()
+	return currentBranchName
 }
