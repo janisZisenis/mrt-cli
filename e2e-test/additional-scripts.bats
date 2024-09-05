@@ -57,7 +57,7 @@ teardown() {
   assert_output --partial "$scriptOutput"
 }
 
-@test "values in additional pre-commit hook" {
+@test "if pre-commit hook gets executed, it gets passed the git parameters" {
   additionalScriptPath="$(testEnvDir)/$(default_repositories_dir)/$repository/hook-scripts/pre-commit/script"
   writeSpyScript "$additionalScriptPath"
 
@@ -66,7 +66,7 @@ teardown() {
   assert_spy_file_has_content "$(testEnvDir)/$(default_repositories_dir)/$repository/script" ""
 }
 
-@test "values in additional pre-push hook" {
+@test "if pre-push hook gets executed, it gets passed the git parameters" {
   additionalScriptPath="$(testEnvDir)/$(default_repositories_dir)/$repository/hook-scripts/pre-push/script"
   writeSpyScript "$additionalScriptPath"
   commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "some-branch" "some-message"
@@ -78,7 +78,7 @@ teardown() {
   assert_spy_file_has_content "$(testEnvDir)/$(default_repositories_dir)/$repository/script" "$remoteName $originUrl"
 }
 
-@test "values in additional commit-msg hook" {
+@test "if commit-msg hook gets executed, it gets passed the git parameters" {
   additionalScriptPath="$(testEnvDir)/$(default_repositories_dir)/$repository/hook-scripts/commit-msg/script"
   writeSpyScript "$additionalScriptPath"
 
