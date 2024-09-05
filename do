@@ -53,7 +53,7 @@ run-e2e-tests() {
 
   build
   eval "$(ssh-agent)"
-  ./e2e-test/3rdParty/bats/bin/bats ${files[*]}
+  ./e2e-test/3rdParty/bats/bin/bats ${files[*]} --jobs 10
 }
 
 subcommand=$1
