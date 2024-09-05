@@ -18,20 +18,20 @@ func commitMsgHook(teamInfo core.TeamInfo, branch string, args []string) {
 	if strings.HasPrefix(commitMessage, "Merge branch") ||
 		strings.HasPrefix(commitMessage, "Merge remote-tracking branch") {
 		fmt.Println("Merge commit detected, skipping commit-msg hook.")
-		os.Exit(0)
+		return
 	}
 
 	matchesFromMessage := regex.FindStringSubmatch(commitMessage)
 	if len(matchesFromMessage) > 0 && strings.HasPrefix(commitMessage, matchesFromMessage[0]+": ") {
 		fmt.Println("The commit message contains an issue ID (" + matchesFromMessage[0] + "). Good job!")
-		os.Exit(0)
+		return
 	}
 
 	matchesFromBranch := regex.FindStringSubmatch(branch)
 	if len(matchesFromBranch) > 0 {
 		_ = os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0640)
 		fmt.Println("JIRA-ID '" + matchesFromBranch[0] + "' was found in current branch name, prepended to commit message.")
-		os.Exit(0)
+		return
 	}
 
 	fmt.Println("The commit message needs a JIRA ID prefix.")

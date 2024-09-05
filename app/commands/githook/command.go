@@ -37,7 +37,6 @@ func command(cmd *cobra.Command, args []string) {
 	switch hookName {
 	case core.PreCommit:
 		preCommitHook(teamInfo, currentBranchName)
-		executeAdditionalScripts(repositoryPath)
 	case core.PrePush:
 		prePushHook(teamInfo, currentBranchName)
 	case core.CommitMsg:
@@ -46,10 +45,16 @@ func command(cmd *cobra.Command, args []string) {
 		fmt.Println("The given git-hook \"" + hookName + "\" does not exist.")
 		os.Exit(1)
 	}
+
+	executeAdditionalScripts(repositoryPath, hookName)
 }
 
-func executeAdditionalScripts(repositoryPath string) {
-	_ = filepath.Walk(repositoryPath+"/hook-scripts/"+core.PreCommit, func(path string, info os.FileInfo, err error) error {
+func executeAdditionalScripts(repositoryPath string, hookName string) {
+	_ = filepath.Walk(repositoryPath+"/hook-scripts/"+hookName, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if !info.IsDir() {
 			cmd := exec.Command("/bin/bash", path)
 			_ = cmd.Run()

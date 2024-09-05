@@ -90,7 +90,7 @@ teardown() {
   "$(testEnvDir)"/mrt setup
   commit_changes_bypassing_githooks "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
-  push_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
+  push_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "$branchName"
 
   assert_output --partial "Action \"push\" not allowed on branch \"$branchName\""
   assert_failure
