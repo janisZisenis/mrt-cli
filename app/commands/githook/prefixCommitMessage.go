@@ -13,11 +13,11 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
 	data, _ := os.ReadFile(commitFile)
 	commitMessage := string(data)
 
-	if teamInfo.JiraPrefixRegex == "" {
+	if teamInfo.CommitPrefixRegex == "" {
 		return
 	}
 
-	regex := regexp.MustCompile(teamInfo.JiraPrefixRegex)
+	regex := regexp.MustCompile(teamInfo.CommitPrefixRegex)
 
 	if strings.HasPrefix(commitMessage, "Merge branch") ||
 		strings.HasPrefix(commitMessage, "Merge remote-tracking branch") {

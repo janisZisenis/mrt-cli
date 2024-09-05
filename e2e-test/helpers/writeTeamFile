@@ -86,13 +86,13 @@ writeRepositoriesPath() {
   echo "$string" > "$testEnvDir/$(teamFileName)"
 }
 
-writeJiraPrefix() {
+writeCommitPrefixRegex() {
   testEnvDir=$1
   prefix=$2
 
   createTeamFileIfNotExisting "$testEnvDir"
 
-  string=$(jq --arg prefix "$prefix" '. += {"jiraPrefixRegex": ($prefix)}' "$testEnvDir/$(teamFileName)")
+  string=$(jq --arg prefix "$prefix" '. += {"commitPrefixRegex": ($prefix)}' "$testEnvDir/$(teamFileName)")
   echo "$string" > "$testEnvDir/$(teamFileName)"
 }
 

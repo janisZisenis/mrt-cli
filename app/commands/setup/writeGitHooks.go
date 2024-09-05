@@ -12,8 +12,6 @@ func getHookTemplate() string {
 #!/bin/bash -e
 
 hook_name=$(basename "$0")
-
-branch="$(git rev-parse --abbrev-ref HEAD)"
 ` + core.GetExecutable() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $PWD $@`
 }
 
