@@ -2,6 +2,7 @@ setup() {
   load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
+  load 'test_helper/setupRepositories'
 
   _common_setup "$(testEnvDir)"
 }
@@ -15,24 +16,15 @@ testEnvDir() {
 }
 
 @test "if team json contains existing repositories but authentication is missing, 'setup' should print message" {
-  repositoryUrl=git@github-testing:janisZisenisTesting/1_TestRepository.git
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"$repositoryUrl\"
-      ]
-  }"
+  repository="1_TestRepository"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "$repository"
 
-  assert_output "You have no access to $repositoryUrl. Please make sure you have a valid ssh key in place."
+  assert_output "You have no access to git@github-testing:janisZisenisTesting/$repository.git. Please make sure you have a valid ssh key in place."
 }
 
 @test "if team json does not contains any repository, 'setup' exits with error" {
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": []
-  }"
-
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" ""
 
   assert_failure
   assert_output "Your team file does not contain any repositories"

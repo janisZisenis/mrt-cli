@@ -7,3 +7,46 @@ teamFileName() {
 writeTeamFile() {
   echo "$2" > "$1/$(teamFileName)"
 }
+
+writeRepositories() {
+  testEnvDir=$1
+  shift
+  repositories=($*)
+
+  createTeamFileIfNotExisting "$testEnvDir"
+
+  repositoryUrls=""
+  for r in "${repositories[@]}"
+  do
+    repositoryUrls="$repositoryUrls\"git@github-testing:janisZisenisTesting/$r.git\","
+  done
+
+  if [[ ${#repositories[*]} -gt 0 ]]
+  then
+    repositoryUrls=${repositoryUrls::-1}
+  fi
+
+  jsonArray="[$repositoryUrls]"
+
+  string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositories": ($jsonArray)}' "$testEnvDir/$(teamFileName)")
+  echo "$string" > "$testEnvDir/$(teamFileName)"
+}
+
+writeJiraPrefix() {
+  testEnvDir=$1
+  prefix=$2
+
+  createTeamFileIfNotExisting "$testEnvDir"
+
+  string=$(jq --arg prefix "$prefix" '. += {"jiraPrefixRegex": ($prefix)}' "$testEnvDir/$(teamFileName)")
+  echo "$string" > "$testEnvDir/$(teamFileName)"
+}
+
+createTeamFileIfNotExisting() {
+  testEnvDir=$1
+
+  if [[ ! -f "$testEnvDir/$(teamFileName)" ]]
+  then
+      echo "{}" > "$testEnvDir/$(teamFileName)"
+  fi
+}

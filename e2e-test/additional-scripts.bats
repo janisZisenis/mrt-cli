@@ -2,8 +2,10 @@ testEnvDir() {
   echo "./testEnv"
 }
 
+repository=1_TestRepository
+
 setup() {
-  load 'test_helper/writeTeamFile'
+  load 'test_helper/setupRepositories'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
   load 'test_helper/defaults'
@@ -13,6 +15,8 @@ setup() {
 
   _common_setup "$(testEnvDir)"
   authenticate
+
+  setupRepositories "$(testEnvDir)" "$repository"
 }
 
 teardown() {
@@ -21,13 +25,6 @@ teardown() {
 }
 
 @test "if additional pre-commit scripts exist 'committing' will execute them" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
   additionalScriptsPath="$(testEnvDir)/$(default_repositories_dir)/$repository/hook-scripts/pre-commit"
   mkdir -p "$additionalScriptsPath"
   firstSpyFile="script1Executed"
@@ -50,13 +47,6 @@ teardown() {
 }
 
 @test "if additional commit-msg scripts exist 'committing' will execute them" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
   additionalScriptsPath="$(testEnvDir)/$(default_repositories_dir)/$repository/hook-scripts/commit-msg"
   mkdir -p "$additionalScriptsPath"
   firstSpyFile="script1Executed"
@@ -79,13 +69,6 @@ teardown() {
 }
 
 @test "if additional pre-push scripts exist 'pushing' will execute them" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
   branch_name="some-branch"
   additionalScriptsPath="$(testEnvDir)/$(default_repositories_dir)/$repository/hook-scripts/pre-push"
   commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "$branch_name" "no-prefix-message"

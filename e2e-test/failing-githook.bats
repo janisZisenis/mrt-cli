@@ -2,14 +2,17 @@ testEnvDir() {
   echo "./testEnv"
 }
 
+repository="1_TestRepository"
+
 setup() {
-  load 'test_helper/writeTeamFile'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
   load 'test_helper/defaults'
+  load 'test_helper/setupRepositories'
 
   _common_setup "$(testEnvDir)"
   authenticate
+  setupRepositories "$(testEnvDir)" "$repository"
 }
 
 teardown() {
@@ -18,14 +21,7 @@ teardown() {
 }
 
 @test "if subcommand 'git-hook' gets called with an unknown git hook it fails" {
-  repository=1_TestRepository
   hookName="unknown-hook"
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
 
   run "$(testEnvDir)"/mrt git-hook --hook-name "$hookName" --repository-path "$(testEnvDir)/$(default_repositories_dir)/$repository"
 
@@ -34,14 +30,7 @@ teardown() {
 }
 
 @test "if subcommand 'git-hook' gets called with a path that does not contain a repository it fails" {
-  repository=1_TestRepository
   repositoryPath="$(testEnvDir)"
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
 
   run "$(testEnvDir)"/mrt git-hook --hook-name "pre-commit" --repository-path "$repositoryPath"
 

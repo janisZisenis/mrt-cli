@@ -9,6 +9,7 @@ setup() {
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
   load 'test_helper/defaults'
+  load 'test_helper/setupRepositories'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -21,13 +22,8 @@ teardown() {
 
 @test "if team json does not contain repositoriesPath 'setup' clones repository into 'repositories' folder" {
   repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "$repository"
 
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$repository/.git"
 }
@@ -51,52 +47,31 @@ teardown() {
   firstRepository=1_TestRepository
   secondRepository=2_TestRepository
   git clone git@github-testing:janisZisenisTesting/$firstRepository.git "$(testEnvDir)/$(default_repositories_dir)/$firstRepository"
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$firstRepository.git\",
-          \"git@github-testing:janisZisenisTesting/$secondRepository.git\"
-      ]
-  }"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "$firstRepository" "$secondRepository"
 
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$firstRepository/.git"
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$secondRepository/.git"
 }
 
 @test "if team json does not contains any repository, 'setup' does not clone any repository" {
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": []
-  }"
-
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" ""
 
   assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_dir)"
 }
 
 @test "if team json contains non-existing repository, 'setup' should print out a message" {
-  nonExistingRepository=git@github-testing:janisZisenisTesting/not-existing.git
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-        \"$nonExistingRepository\"
-      ]
-  }"
+  nonExistingRepository="not-existing"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "$nonExistingRepository"
 
-  assert_output "Repository $nonExistingRepository was not found. Skipping it"
+  assert_output "Repository git@github-testing:janisZisenisTesting/$nonExistingRepository.git was not found. Skipping it"
 }
 
 @test "if team json contains non-existing and existing repository, 'setup' should clone the existing one" {
   repositoryName=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/non-exising.git\",
-          \"git@github-testing:janisZisenisTesting/$repositoryName.git\"
-      ]
-  }"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "$repositoryName" "non-exising"
 
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/$repositoryName/.git"
 }
@@ -148,4 +123,3 @@ teardown() {
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/Prefix1_TestRepository1/.git"
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/Prefix2_TestRepository2/.git"
 }
-

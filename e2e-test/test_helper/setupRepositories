@@ -1,0 +1,11 @@
+#!/bin/bash
+
+load 'test_helper/writeTeamFile'
+
+setupRepositories() {
+  testEnvDir=$1
+  shift
+
+  writeRepositories "$testEnvDir" $*
+  "$testEnvDir"/mrt setup
+}

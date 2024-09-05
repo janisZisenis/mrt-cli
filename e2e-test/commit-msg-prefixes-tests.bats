@@ -2,8 +2,10 @@ testEnvDir() {
   echo "./testEnv"
 }
 
+repository=1_TestRepository
+
 setup() {
-  load 'test_helper/writeTeamFile'
+  load 'test_helper/setupRepositories'
   load 'test_helper/ssh-authenticate'
   load 'test_helper/common'
   load 'test_helper/commits'
@@ -11,6 +13,8 @@ setup() {
 
   _common_setup "$(testEnvDir)"
   authenticate
+
+  setupRepositories "$(testEnvDir)" "$repository"
 }
 
 teardown() {
@@ -19,14 +23,7 @@ teardown() {
 }
 
 @test "if team json contains jiraPrefixRegex 'commiting' with a message and a branch both without matching prefix is blocked" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"jiraPrefixRegex\": \"Test-[0-9]+\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  writeJiraPrefix "$(testEnvDir)" "Test-[0-9]+"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "no-prefix-message"
 
@@ -37,15 +34,8 @@ teardown() {
 }
 
 @test "if team json contains jiraPrefixRegex 'commiting' with a message that has a matching prefix on a branch without prefix is not blocked" {
-  repository=1_TestRepository
   matchingPrefix="Test-1"
-  writeTeamFile "$(testEnvDir)" "{
-      \"jiraPrefixRegex\": \"Test-[0-9]+\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  writeJiraPrefix "$(testEnvDir)" "Test-[0-9]+"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$matchingPrefix: prefixed-message"
 
@@ -54,15 +44,8 @@ teardown() {
 }
 
 @test "if team json contains jiraPrefixRegex 'commiting' with a message that has no matching prefix on a branch containing prefix is not blocked" {
-  repository=1_TestRepository
   jiraId=Asdf-99
-  writeTeamFile "$(testEnvDir)" "{
-      \"jiraPrefixRegex\": \"Asdf-[0-9]+\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  writeJiraPrefix "$(testEnvDir)" "Asdf-[0-9]+"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "feature/$jiraId/prefixed-branch" "not-prefix-message"
 
@@ -79,15 +62,8 @@ teardown() {
 }
 
 @test "if team json contains jiraPrefixRegex 'commiting' with a message that has a matching prefix leads to commit with given message" {
-  repository=1_TestRepository
   commitMessage="Test-1: prefixed-message"
-  writeTeamFile "$(testEnvDir)" "{
-      \"jiraPrefixRegex\": \"Test-[0-9]+\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  writeJiraPrefix "$(testEnvDir)" "Test-[0-9]+"
   commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commitMessage"
 
   run get_commit_message_of_last_commit "$(testEnvDir)/$(default_repositories_dir)/$repository"
@@ -95,16 +71,9 @@ teardown() {
 }
 
 @test "if team json contains jiraPrefixRegex 'commiting' with a message that has no matching prefix on a branch containing prefix leads to commit with prefixed message" {
-  repository=1_TestRepository
   matchingPrefix=Asdf-99
   commitMessage="not-prefixed-message"
-  writeTeamFile "$(testEnvDir)" "{
-      \"jiraPrefixRegex\": \"Asdf-[0-9]+\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  writeJiraPrefix "$(testEnvDir)" "Asdf-[0-9]+"
   commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "feature/$matchingPrefix/prefixed-branch" "$commitMessage"
 
   run get_commit_message_of_last_commit "$(testEnvDir)/$(default_repositories_dir)/$repository"
@@ -112,28 +81,12 @@ teardown() {
 }
 
 @test "if team json does not contain jiraPrefixRegex 'commiting' does not check for jira issue ids" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
-
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "not-prefixed-branch" "not-prefixed-message"
 
   refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
 }
 
 @test "if team json does not contain jiraPrefixRegex while 'commiting' a merge commit, it does not check for jira issue ids" {
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
-
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "not-prefixed-branch" "not-prefixed-message"
 
   refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
@@ -149,14 +102,7 @@ teardown() {
 
 test_merge_commit_messages_are_not_blocked() {
   commit_message=$1
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"jiraPrefixRegex\": \"Asdf-[0-9]+\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  writeJiraPrefix "$(testEnvDir)" "Asdf-[0-9]+"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commit_message"
 
@@ -166,13 +112,6 @@ test_merge_commit_messages_are_not_blocked() {
 
 test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
   commit_message=$1
-  repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commit_message"
 
