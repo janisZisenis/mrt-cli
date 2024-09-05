@@ -1,6 +1,6 @@
 #!/bin/bash
 
-load 'test_helper/writeTeamFile'
+load 'helpers/writeTeamFile'
 
 setupRepositories() {
   testEnvDir=$1

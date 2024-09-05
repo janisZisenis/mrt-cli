@@ -3,13 +3,13 @@ testEnvDir() {
 }
 
 setup() {
-  load 'test_helper/writeTeamFile'
-  load 'test_helper/ssh-authenticate'
-  load 'test_helper/common'
-  load 'test_helper/commits'
-  load 'test_helper/pushChanges'
-  load 'test_helper/defaults'
-  load 'test_helper/setupRepositories'
+  load 'helpers/writeTeamFile'
+  load 'helpers/ssh-authenticate'
+  load 'helpers/common'
+  load 'helpers/commits'
+  load 'helpers/pushChanges'
+  load 'helpers/defaults'
+  load 'helpers/setupRepositories'
 
   _common_setup "$(testEnvDir)"
   authenticate

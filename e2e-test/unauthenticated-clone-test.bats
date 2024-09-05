@@ -1,8 +1,8 @@
 setup() {
-  load 'test_helper/writeTeamFile'
-  load 'test_helper/ssh-authenticate'
-  load 'test_helper/common'
-  load 'test_helper/setupRepositories'
+  load 'helpers/writeTeamFile'
+  load 'helpers/ssh-authenticate'
+  load 'helpers/common'
+  load 'helpers/setupRepositories'
 
   _common_setup "$(testEnvDir)"
 }

@@ -5,14 +5,14 @@ testEnvDir() {
 repository=1_TestRepository
 
 setup() {
-  load 'test_helper/setupRepositories'
-  load 'test_helper/ssh-authenticate'
-  load 'test_helper/common'
-  load 'test_helper/defaults'
-  load 'test_helper/commits'
-  load 'test_helper/pushChanges'
-  load 'test_helper/assertFileExists'
-  load 'test_helper/writeSpyScript'
+  load 'helpers/setupRepositories'
+  load 'helpers/ssh-authenticate'
+  load 'helpers/common'
+  load 'helpers/defaults'
+  load 'helpers/commits'
+  load 'helpers/pushChanges'
+  load 'helpers/assertFileExists'
+  load 'helpers/writeSpyScript'
 
   _common_setup "$(testEnvDir)"
   authenticate

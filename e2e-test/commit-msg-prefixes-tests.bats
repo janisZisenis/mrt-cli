@@ -5,11 +5,11 @@ testEnvDir() {
 repository=1_TestRepository
 
 setup() {
-  load 'test_helper/setupRepositories'
-  load 'test_helper/ssh-authenticate'
-  load 'test_helper/common'
-  load 'test_helper/commits'
-  load 'test_helper/defaults'
+  load 'helpers/setupRepositories'
+  load 'helpers/ssh-authenticate'
+  load 'helpers/common'
+  load 'helpers/commits'
+  load 'helpers/defaults'
 
   _common_setup "$(testEnvDir)"
   authenticate
