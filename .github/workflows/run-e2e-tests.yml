@@ -3,7 +3,7 @@ name: Run E2E Tests
 on: push
 
 env:
-  binary-path: "build/mrt"
+  binary-path: "build"
   binary-name: "mrt"
 
 jobs:
@@ -35,11 +35,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'true'
-      - name: Download deployment-diff artifacts
+      - name: Download binaries
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.binary-name }}
           path: ${{ env.binary-path }}
+      - name: Make binaries executable
+        run: chmod +x ${{ env.binary-path}}/${{ env.binary-name}}
       - name: Setup git config
         run: |
           git config --global user.email "ci@multi-repository-tool.com"
@@ -52,9 +54,4 @@ jobs:
           sed "s*WORKSPACE_DIR*$GITHUB_WORKSPACE*g" .ssh/config > $HOME/.ssh/config
           cat $HOME/.ssh/config
       - name: Run E2E Tests
-        run: |
-          chmod +x ${{ env.binary-dir }}
-          ls -la ./build/mrt
-          cd ./build/mrt
-          ls -la
-#          ./build/mrt
+        run: ./do run-e2e-tests
