@@ -2,17 +2,10 @@ package setup
 
 import (
 	"app/core"
-	"fmt"
-	"os"
 	"strings"
 )
 
 func setupRepositories(teamInfo core.TeamInfo) {
-	if len(teamInfo.Repositories) == 0 {
-		fmt.Println("Your team file does not contain any repositories")
-		os.Exit(1)
-	}
-
 	for _, repositoryUrl := range teamInfo.Repositories {
 		repositoryDirectory := getRepositoryDir(teamInfo, repositoryUrl)
 
@@ -20,29 +13,20 @@ func setupRepositories(teamInfo core.TeamInfo) {
 	}
 }
 
-func setupGitHooks(teamInfo core.TeamInfo, shouldSkipHooks bool) {
-	if len(teamInfo.Repositories) == 0 {
-		fmt.Println("Your team file does not contain any repositories")
-		os.Exit(1)
-	}
-
+func setupGitHooks(teamInfo core.TeamInfo) {
 	for _, repositoryUrl := range teamInfo.Repositories {
 		repositoryDirectory := getRepositoryDir(teamInfo, repositoryUrl)
 
-		if !shouldSkipHooks {
-			writeGitHook(repositoryDirectory, core.PreCommit)
-			writeGitHook(repositoryDirectory, core.PrePush)
-			writeGitHook(repositoryDirectory, core.CommitMsg)
+		for _, hook := range core.GitHooks {
+			writeGitHook(repositoryDirectory, hook)
 		}
-
 	}
 }
 
 func getRepositoryDir(teamInfo core.TeamInfo, repositoryUrl string) string {
 	repositoryName := getRepositoryName(repositoryUrl)
 	folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
-	repositoryDirectory := getDirectory(teamInfo.RepositoriesPath, folderName)
-	return repositoryDirectory
+	return getDirectory(teamInfo.RepositoriesPath, folderName)
 }
 
 func getRepositoryName(repositoryUrl string) string {

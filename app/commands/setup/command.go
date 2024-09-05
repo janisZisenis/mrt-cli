@@ -2,7 +2,9 @@ package setup
 
 import (
 	"app/core"
+	"fmt"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var commandName = "setup"
@@ -25,6 +27,15 @@ func command(cmd *cobra.Command, args []string) {
 	shouldSkipHooks, _ := cmd.Flags().GetBool(skipHooksFlag)
 
 	teamInfo := core.LoadTeamConfiguration()
+
+	if len(teamInfo.Repositories) == 0 {
+		fmt.Println("Your team file does not contain any repositories")
+		os.Exit(1)
+	}
+
 	setupRepositories(teamInfo)
-	setupGitHooks(teamInfo, shouldSkipHooks)
+
+	if !shouldSkipHooks {
+		setupGitHooks(teamInfo)
+	}
 }
