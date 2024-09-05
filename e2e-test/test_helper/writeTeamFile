@@ -32,6 +32,16 @@ writeRepositories() {
   echo "$string" > "$testEnvDir/$(teamFileName)"
 }
 
+writeRepositoriesPath() {
+  testEnvDir=$1
+  repositoriesPath=$2
+
+  createTeamFileIfNotExisting "$testEnvDir"
+
+  string=$(jq --arg repositoriesPath "$repositoriesPath" '. += {"jiraPrefixRegex": ($repositoriesPath)}' "$testEnvDir/$(teamFileName)")
+  echo "$string" > "$testEnvDir/$(teamFileName)"
+}
+
 writeJiraPrefix() {
   testEnvDir=$1
   prefix=$2

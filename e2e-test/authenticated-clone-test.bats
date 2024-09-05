@@ -31,14 +31,9 @@ teardown() {
 @test "if team json contains repositoriesPath 'setup' clones the repositories into given repositoriesPath folder" {
   repositoriesPath=xyz
   repository=1_TestRepository
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPath\": \"$repositoriesPath\",
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
+  writeRepositoriesPath "$(testEnvDir)" "$repositoriesPath"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "$repository"
 
   assert_directory_exists "$(testEnvDir)/$repositoriesPath/$repository/.git"
 }
