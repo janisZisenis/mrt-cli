@@ -4,10 +4,6 @@ teamFileName() {
   echo "team.json"
 }
 
-writeTeamFile() {
-  echo "$2" > "$1/$(teamFileName)"
-}
-
 writeBlockedBranches() {
   testEnvDir=$1
   shift
@@ -56,13 +52,37 @@ writeRepositories() {
   echo "$string" > "$testEnvDir/$(teamFileName)"
 }
 
+writeRepositoriesPrefixes() {
+  testEnvDir=$1
+  shift
+  repositoriesPrefixes=($*)
+
+  createTeamFileIfNotExisting "$testEnvDir"
+
+  concatenation=""
+  for p in "${repositoriesPrefixes[@]}"
+  do
+    concatenation="$concatenation\"$p\","
+  done
+
+  if [[ ${#repositoriesPrefixes[*]} -gt 0 ]]
+  then
+    concatenation=${concatenation::-1}
+  fi
+
+  jsonArray="[$concatenation]"
+
+  string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositoriesPrefixes": ($jsonArray)}' "$testEnvDir/$(teamFileName)")
+  echo "$string" > "$testEnvDir/$(teamFileName)"
+}
+
 writeRepositoriesPath() {
   testEnvDir=$1
   repositoriesPath=$2
 
   createTeamFileIfNotExisting "$testEnvDir"
 
-  string=$(jq --arg repositoriesPath "$repositoriesPath" '. += {"jiraPrefixRegex": ($repositoriesPath)}' "$testEnvDir/$(teamFileName)")
+  string=$(jq --arg repositoriesPath "$repositoriesPath" '. += {"repositoriesPath": ($repositoriesPath)}' "$testEnvDir/$(teamFileName)")
   echo "$string" > "$testEnvDir/$(teamFileName)"
 }
 

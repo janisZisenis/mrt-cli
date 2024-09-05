@@ -72,48 +72,24 @@ teardown() {
 }
 
 @test "if team json contains repositories but running without 'setup' does not clone the repositories" {
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/1_TestRepository.git\"
-      ]
-  }"
-
-  run "$(testEnvDir)"/mrt
+  run setupRepositories "$(testEnvDir)" "1_TestRepository"
 
   assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_dir)"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup' should ignore the prefixes while cloning the repositories" {
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPrefixes\": [
-        \"Prefix1_\",
-        \"Prefix2_\"
-      ],
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/Prefix1_TestRepository1.git\",
-          \"git@github-testing:janisZisenisTesting/Prefix2_TestRepository2.git\"
-      ]
-  }"
+  writeRepositoriesPrefixes "$(testEnvDir)" "Prefix1_" "Prefix2_"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "Prefix1_TestRepository1" "Prefix2_TestRepository2"
 
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/TestRepository1/.git"
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/TestRepository2/.git"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup' should not ignore the prefixes when the prefixes are not in the beginning of the repository names" {
-  writeTeamFile "$(testEnvDir)" "{
-      \"repositoriesPrefixes\": [
-        \"TestRepository1\",
-        \"TestRepository2\"
-      ],
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/Prefix1_TestRepository1.git\",
-          \"git@github-testing:janisZisenisTesting/Prefix2_TestRepository2.git\"
-      ]
-  }"
+  writeRepositoriesPrefixes "$(testEnvDir)" "TestRepository1" "TestRepository2"
 
-  run "$(testEnvDir)"/mrt setup
+  run setupRepositories "$(testEnvDir)" "Prefix1_TestRepository1" "Prefix2_TestRepository2"
 
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/Prefix1_TestRepository1/.git"
   assert_directory_exists "$(testEnvDir)/$(default_repositories_dir)/Prefix2_TestRepository2/.git"
