@@ -9,6 +9,7 @@ setup() {
   load 'test_helper/commits'
   load 'test_helper/pushChanges'
   load 'test_helper/defaults'
+  load 'test_helper/setupRepositories'
 
   _common_setup "$(testEnvDir)"
   authenticate
@@ -22,15 +23,8 @@ teardown() {
 @test "If team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
   repository=1_TestRepository
   branchName="some-branch"
-  writeTeamFile "$(testEnvDir)" "{
-      \"blockedBranches\": [
-        \"$branchName\"
-      ],
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  setupRepositories "$(testEnvDir)" "$repository"
+  writeBlockedBranches "$(testEnvDir)" "$branchName"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
@@ -41,15 +35,8 @@ teardown() {
 @test "If team json contains blocked branch, 'commiting' on another blocked branches should allowed" {
   repository=1_TestRepository
   branchName="some-branch"
-  writeTeamFile "$(testEnvDir)" "{
-      \"blockedBranches\": [
-        \"another-branch\"
-      ],
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  setupRepositories "$(testEnvDir)" "$repository"
+  writeBlockedBranches "$(testEnvDir)" "another-branch"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
@@ -59,16 +46,8 @@ teardown() {
 @test "If team json contains 2 blocked branch, 'commiting' on second one should be blocked" {
   repository=1_TestRepository
   branchName="some-branch"
-  writeTeamFile "$(testEnvDir)" "{
-      \"blockedBranches\": [
-        \"another-branch\",
-        \"$branchName\"
-      ],
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  setupRepositories "$(testEnvDir)" "$repository"
+  writeBlockedBranches "$(testEnvDir)" "another-branch" "$branchName"
 
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
@@ -79,15 +58,8 @@ teardown() {
 @test "If team json contains blocked branch, 'pushing' on the blocked branches should be blocked" {
   repository=1_TestRepository
   branchName="some-branch"
-  writeTeamFile "$(testEnvDir)" "{
-      \"blockedBranches\": [
-        \"$branchName\"
-      ],
-      \"repositories\": [
-          \"git@github-testing:janisZisenisTesting/$repository.git\"
-      ]
-  }"
-  "$(testEnvDir)"/mrt setup
+  setupRepositories "$(testEnvDir)" "$repository"
+  writeBlockedBranches "$(testEnvDir)" "$branchName"
   commit_changes_bypassing_githooks "$(testEnvDir)/$(default_repositories_dir)/$repository" $branchName
 
   push_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "$branchName"

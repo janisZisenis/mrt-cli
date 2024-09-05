@@ -8,6 +8,30 @@ writeTeamFile() {
   echo "$2" > "$1/$(teamFileName)"
 }
 
+writeBlockedBranches() {
+  testEnvDir=$1
+  shift
+  blockedBranches=($*)
+
+  createTeamFileIfNotExisting "$testEnvDir"
+
+  concatenation=""
+  for b in "${blockedBranches[@]}"
+  do
+    concatenation="$concatenation\"$b\","
+  done
+
+  if [[ ${#blockedBranches[*]} -gt 0 ]]
+  then
+    concatenation=${concatenation::-1}
+  fi
+
+  jsonArray="[$concatenation]"
+
+  string=$(jq --argjson jsonArray "$jsonArray" '. += {"blockedBranches": ($jsonArray)}' "$testEnvDir/$(teamFileName)")
+  echo "$string" > "$testEnvDir/$(teamFileName)"
+}
+
 writeRepositories() {
   testEnvDir=$1
   shift
