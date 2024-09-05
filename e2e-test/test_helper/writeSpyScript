@@ -1,0 +1,21 @@
+#!/bin/bash
+
+spyFileSuffix() {
+  echo "Executed"
+}
+
+writeSpyScript() {
+  additionalScriptPath=$1
+
+  mkdir -p "$(dirname "$additionalScriptPath")"
+  scriptName="$(basename "$additionalScriptPath")"
+
+  echo "
+  #!/bin/bash
+  touch ${scriptName}$(spyFileSuffix)" > "$additionalScriptPath"
+  chmod +x "$additionalScriptPath"
+}
+
+assert_spy_file_exists() {
+  assert_file_exists "$1$(spyFileSuffix)"
+}
