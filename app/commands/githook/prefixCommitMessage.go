@@ -8,10 +8,14 @@ import (
 	"strings"
 )
 
-func commitMsgHook(teamInfo core.TeamInfo, branch string, args []string) {
+func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
 	commitFile := args[0]
 	data, _ := os.ReadFile(commitFile)
 	commitMessage := string(data)
+
+	if teamInfo.JiraPrefixRegex == "" {
+		return
+	}
 
 	regex := regexp.MustCompile(teamInfo.JiraPrefixRegex)
 

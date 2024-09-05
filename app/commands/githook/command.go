@@ -36,11 +36,11 @@ func command(cmd *cobra.Command, args []string) {
 
 	switch hookName {
 	case core.PreCommit:
-		preCommitHook(teamInfo, currentBranchName)
+		failIfBranchIsBlocked(teamInfo, currentBranchName, "commit")
 	case core.PrePush:
-		prePushHook(teamInfo, currentBranchName)
+		failIfBranchIsBlocked(teamInfo, currentBranchName, "push")
 	case core.CommitMsg:
-		commitMsgHook(teamInfo, currentBranchName, args)
+		prefixCommitMessage(teamInfo, currentBranchName, args)
 	default:
 		fmt.Println("The given git-hook \"" + hookName + "\" does not exist.")
 		os.Exit(1)

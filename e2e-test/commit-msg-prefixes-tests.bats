@@ -111,6 +111,42 @@ teardown() {
   assert_output "$matchingPrefix: $commitMessage"
 }
 
+@test "if team json does not contain jiraPrefixRegex 'commiting' does not check for jira issue ids" {
+  repository=1_TestRepository
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositories\": [
+          \"git@github-testing:janisZisenisTesting/$repository.git\"
+      ]
+  }"
+  "$(testEnvDir)"/mrt setup
+
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "not-prefixed-branch" "not-prefixed-message"
+
+  refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
+}
+
+@test "if team json does not contain jiraPrefixRegex while 'commiting' a merge commit, it does not check for jira issue ids" {
+  repository=1_TestRepository
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositories\": [
+          \"git@github-testing:janisZisenisTesting/$repository.git\"
+      ]
+  }"
+  "$(testEnvDir)"/mrt setup
+
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "not-prefixed-branch" "not-prefixed-message"
+
+  refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
+}
+
+@test "if team json does not contain jiraPrefixRegex 'commiting' with a message that starts with 'Merge branch' does not check for prefix" {
+  test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge branch"
+}
+
+@test "if team json does not contain jiraPrefixRegex 'commiting' with a message that starts with 'Merge remote-tracking branch' does not check for prefix" {
+  test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge remote-tracking branch"
+}
+
 test_merge_commit_messages_are_not_blocked() {
   commit_message=$1
   repository=1_TestRepository
@@ -125,5 +161,21 @@ test_merge_commit_messages_are_not_blocked() {
   run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commit_message"
 
   assert_line --index 1 "Merge commit detected, skipping commit-msg hook."
+  assert_success
+}
+
+test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
+  commit_message=$1
+  repository=1_TestRepository
+  writeTeamFile "$(testEnvDir)" "{
+      \"repositories\": [
+          \"git@github-testing:janisZisenisTesting/$repository.git\"
+      ]
+  }"
+  "$(testEnvDir)"/mrt setup
+
+  run commit_changes "$(testEnvDir)/$(default_repositories_dir)/$repository" "no-prefix-branch" "$commit_message"
+
+  refute_output --partial "Merge commit detected, skipping commit-msg hook."
   assert_success
 }
