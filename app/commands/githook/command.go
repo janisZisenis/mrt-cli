@@ -46,19 +46,27 @@ func command(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	executeAdditionalScripts(repositoryPath, hookName)
+	executeAdditionalScripts(repositoryPath, hookName, args)
 }
 
-func executeAdditionalScripts(repositoryPath string, hookName string) {
+func executeAdditionalScripts(repositoryPath string, hookName string, args []string) {
 	_ = filepath.Walk(repositoryPath+"/hook-scripts/"+hookName, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return nil
 		}
 
+		hookArgs := append([]string{path}, args...)
+
 		if !info.IsDir() {
-			cmd := exec.Command("/bin/bash", path)
-			_ = cmd.Run()
+			cmd := exec.Command("/bin/bash", hookArgs...)
+			output, runErr := cmd.Output()
+
+			fmt.Println(string(output))
+			if runErr != nil {
+				os.Exit(1)
+			}
 		}
+
 		return nil
 	})
 }

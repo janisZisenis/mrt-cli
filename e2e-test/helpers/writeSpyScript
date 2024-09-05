@@ -12,8 +12,33 @@ writeSpyScript() {
 
   echo "
   #!/bin/bash
-  touch ${scriptName}$(spyFileSuffix)" > "$additionalScriptPath"
+  echo \"\$@\" > ${scriptName}$(spyFileSuffix)" > "$additionalScriptPath"
   chmod +x "$additionalScriptPath"
+}
+
+writeStubScript() {
+  additionalScriptPath=$1
+  exitCode=$2
+  output=$3
+
+  mkdir -p "$(dirname "$additionalScriptPath")"
+  scriptName="$(basename "$additionalScriptPath")"
+
+  echo "
+  #!/bin/bash
+  echo \"$output\"
+  exit $exitCode
+  " > "$additionalScriptPath"
+  chmod +x "$additionalScriptPath"
+}
+
+assert_spy_file_has_content() {
+  spyFile=$1$(spyFileSuffix)
+  expectedContent=$2
+
+  actualContent="$(cat "$spyFile")"
+
+  assert_equal "$actualContent" "$expectedContent"
 }
 
 assert_spy_file_exists() {
