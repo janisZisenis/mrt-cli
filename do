@@ -37,10 +37,19 @@ build(){
 
 run-build(){
   build
-  "$SCRIPT_DIR"/build/mrt "$@"
+  $BINARY_PATH "$@"
 }
 
 run-e2e-tests() {
+  if [[ "$1" == "--clean" ]]
+  then
+    echo "Clean build for e2e-tests."
+    build
+    shift
+  else
+    echo "Using built binary to execute e2e-tests."
+  fi
+
   if [[ $# -eq 0 ]]
   then
     files=(e2e-test/*.bats)
@@ -51,8 +60,6 @@ run-e2e-tests() {
   echo "Test files to be executed:"
   printf "\t%s\n" "${files[@]}"
 
-  build
-  eval "$(ssh-agent)"
   ./e2e-test/3rdParty/bats/bin/bats ${files[*]} --jobs 10
 }
 
