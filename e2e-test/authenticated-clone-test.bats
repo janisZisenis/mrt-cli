@@ -72,7 +72,9 @@ teardown() {
 }
 
 @test "if team json contains repositories but running without 'setup' does not clone the repositories" {
-  run setupRepositories "$(testEnvDir)" "1_TestRepository"
+  writeRepositories "$(testEnvDir)" "1_TestRepository"
+
+  run "$(testEnvDir)"/mrt
 
   assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_dir)"
 }
