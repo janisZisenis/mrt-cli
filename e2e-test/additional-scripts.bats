@@ -7,6 +7,7 @@ load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/assertFileExists'
 load 'helpers/writeSpyScript'
+load 'helpers/branches'
 
 testEnvDir=$(_testEnvDir)
 repository=1_TestRepository
@@ -67,7 +68,7 @@ teardown() {
 @test "if pre-push hook gets executed, it gets passed the git parameters" {
   additionalScriptPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/pre-push/script"
   writeSpyScript "$additionalScriptPath"
-  branchName="$(uuidgen)"
+  branchName="$(unique_branch_name)"
   commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName" "some-message"
 
   push_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName"

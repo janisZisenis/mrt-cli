@@ -4,6 +4,7 @@ load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/defaults'
 load 'helpers/setupRepositories'
+load 'helpers/branches'
 
 testEnvDir=$(_testEnvDir)
 
@@ -54,7 +55,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'pushing' on the blocked branches should be blocked" {
   repository=1_TestRepository
-  branchName="$(uuidgen)"
+  branchName="$(unique_branch_name)"
   setupRepositories "$testEnvDir" "$repository"
   writeBlockedBranches "$testEnvDir" "$branchName"
   commit_changes_bypassing_githooks "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName"

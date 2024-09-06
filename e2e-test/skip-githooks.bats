@@ -4,6 +4,7 @@ load 'helpers/common'
 load 'helpers/defaults'
 load 'helpers/commits'
 load 'helpers/pushChanges'
+load 'helpers/branches'
 
 testEnvDir=$(_testEnvDir)
 repository=1_TestRepository
@@ -32,7 +33,7 @@ teardown() {
 }
 
 @test "After setup with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
-  branchName="$(uuidgen)"
+  branchName="$(unique_branch_name)"
   writeBlockedBranches "$testEnvDir" "$branchName"
   commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName" "some-message"
 
