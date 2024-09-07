@@ -1,7 +1,7 @@
 package core
 
 import (
-	"fmt"
+	"app/log"
 	"github.com/spf13/viper"
 	"os"
 )
@@ -25,7 +25,7 @@ func LoadTeamConfiguration() TeamInfo {
 	unmarshalErr := viper.Unmarshal(&teamInfo)
 
 	if readErr != nil || unmarshalErr != nil {
-		fmt.Println("Could not read team file. Please make sure a \"team.json\" file exists next " +
+		log.Error("Could not read team file. Please make sure a \"team.json\" file exists next " +
 			"to the executable and that it follows proper JSON syntax")
 		os.Exit(1)
 	}

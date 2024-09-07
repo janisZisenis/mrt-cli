@@ -2,7 +2,7 @@ package githook
 
 import (
 	"app/core"
-	"fmt"
+	"app/log"
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 	"os"
@@ -41,7 +41,7 @@ func command(cmd *cobra.Command, args []string) {
 	case core.CommitMsg:
 		prefixCommitMessage(teamInfo, currentBranchName, args)
 	default:
-		fmt.Println("The given git-hook \"" + hookName + "\" does not exist.")
+		log.Error("The given git-hook \"" + hookName + "\" does not exist.")
 		os.Exit(1)
 	}
 
@@ -63,7 +63,7 @@ func getCurrentBranchName(repositoryPath string) string {
 	repository, openError := git.PlainOpen(repositoryPath)
 
 	if openError != nil {
-		fmt.Println("The given path \"" + repositoryPath + "\" does not contain a repository.")
+		log.Error("The given path \"" + repositoryPath + "\" does not contain a repository.")
 		os.Exit(1)
 	}
 

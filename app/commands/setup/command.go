@@ -2,7 +2,7 @@ package setup
 
 import (
 	"app/core"
-	"fmt"
+	"app/log"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -31,7 +31,7 @@ func command(cmd *cobra.Command, args []string) {
 	teamInfo := core.LoadTeamConfiguration()
 
 	if len(teamInfo.Repositories) == 0 {
-		fmt.Println("Your team file does not contain any repositories")
+		log.Warning("Your team file does not contain any repositories")
 		os.Exit(1)
 	}
 
@@ -50,17 +50,17 @@ func executeAdditionalSetupScripts() {
 		segments := strings.Split(file, "/")
 		commandName = segments[len(segments)-2]
 
-		fmt.Println("Execute additional setup-script: " + commandName)
+		log.Info("Execute additional setup-script: " + commandName)
 
 		args := []string{core.GetExecutablePath()}
 		err := core.ExecuteScript(file, args)
 
 		if err != nil {
-			fmt.Println(commandName + " failed with: " + err.Error())
+			log.Error(commandName + " failed with: " + err.Error())
 		} else {
-			fmt.Println(commandName + " executed successfully")
+			log.Success(commandName + " executed successfully")
 		}
 
-		fmt.Println()
+		log.Info("")
 	}
 }

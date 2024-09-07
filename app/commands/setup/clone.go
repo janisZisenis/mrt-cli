@@ -1,8 +1,8 @@
 package setup
 
 import (
+	"app/log"
 	"errors"
-	"fmt"
 	"github.com/go-git/go-git/v5"
 )
 
@@ -17,15 +17,15 @@ func clone(repository string, directory string) {
 
 	if cloneError != nil {
 		if errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
-			fmt.Println("Repository " + repository + " already exists. Skipping it")
+			log.Error("Repository " + repository + " already exists. Skipping it")
 		}
 
 		if cloneError.Error() == repositoryNotFoundError {
-			fmt.Println("Repository " + repository + " was not found. Skipping it")
+			log.Error("Repository " + repository + " was not found. Skipping it")
 		}
 
 		if cloneError.Error() == notAuthenticatedError {
-			fmt.Println("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
+			log.Error("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
 		}
 	}
 }
