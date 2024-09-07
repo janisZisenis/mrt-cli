@@ -49,8 +49,7 @@ func command(cmd *cobra.Command, args []string) {
 		fmt.Println("Execute additional setup-script: " + commandName)
 
 		args = []string{core.GetExecutablePath()}
-		output, err := core.ExecuteBash(file, args)
-		fmt.Print(output)
+		err := core.ExecuteBash(file, args)
 
 		if err != nil {
 			fmt.Println(commandName + " failed with: " + err.Error())
