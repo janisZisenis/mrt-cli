@@ -6,7 +6,6 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 	"os"
-	"os/exec"
 	"path/filepath"
 )
 
@@ -52,10 +51,9 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalScripts(repositoryPath string, hookName string, args []string) {
 	files, _ := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
 	for _, file := range files {
-		hookArgs := append([]string{file}, args...)
-		script := exec.Command("/bin/bash", hookArgs...)
-		output, err := script.Output()
-		fmt.Println(string(output))
+		output, err := core.ExecuteBash(file, args)
+
+		fmt.Println(output)
 
 		if err != nil {
 			os.Exit(1)

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"os/exec"
 	"path/filepath"
 )
 
@@ -43,8 +42,8 @@ func command(cmd *cobra.Command, args []string) {
 
 	files, _ := filepath.Glob(core.GetExecutablePath() + "/setup/*/command")
 	for _, file := range files {
-		additionalSetupCmd := exec.Command("/bin/bash", file, core.GetExecutablePath())
-		output, _ := additionalSetupCmd.Output()
-		fmt.Println(string(output))
+		args = []string{core.GetExecutablePath()}
+		output, _ := core.ExecuteBash(file, args)
+		fmt.Println(output)
 	}
 }
