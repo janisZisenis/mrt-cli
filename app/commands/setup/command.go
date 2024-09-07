@@ -41,6 +41,10 @@ func command(cmd *cobra.Command, args []string) {
 		setupGitHooks(teamInfo)
 	}
 
+	executeAdditionalSetupScripts()
+}
+
+func executeAdditionalSetupScripts() {
 	files, _ := filepath.Glob(core.GetExecutablePath() + "/setup/*/command")
 	for _, file := range files {
 		segments := strings.Split(file, "/")
@@ -48,8 +52,8 @@ func command(cmd *cobra.Command, args []string) {
 
 		fmt.Println("Execute additional setup-script: " + commandName)
 
-		args = []string{core.GetExecutablePath()}
-		err := core.ExecuteBash(file, args)
+		args := []string{core.GetExecutablePath()}
+		err := core.ExecuteScript(file, args)
 
 		if err != nil {
 			fmt.Println(commandName + " failed with: " + err.Error())
