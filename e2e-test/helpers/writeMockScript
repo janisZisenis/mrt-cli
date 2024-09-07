@@ -12,7 +12,8 @@ writeSpyScript() {
 
   echo "
   #!/bin/bash
-  echo \"\$@\" > ${scriptName}$(spyFileSuffix)" > "$additionalScriptPath"
+  SCRIPT_DIR=\"\$( cd \"\$( dirname \"\${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\"
+  echo \"\$@\" > \"\$SCRIPT_DIR/$scriptName$(spyFileSuffix)\"" > "$additionalScriptPath"
   chmod +x "$additionalScriptPath"
 }
 

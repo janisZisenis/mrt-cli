@@ -8,6 +8,6 @@ push_changes() {
 
   if [[ $(git -C "$repository_path" ls-remote --heads origin "$branch_name") ]]
   then
-    git -C "$repository_path" push origin --delete "$branch_name"
+    git -C "$repository_path" push origin --delete "$branch_name" --no-verify
   fi
 }

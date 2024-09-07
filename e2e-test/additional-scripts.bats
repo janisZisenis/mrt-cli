@@ -6,11 +6,12 @@ load 'helpers/defaults'
 load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/assertFileExists'
-load 'helpers/writeSpyScript'
+load 'helpers/writeMockScript'
 load 'helpers/branches'
 
 testEnvDir=$(_testEnvDir)
 repository=1_TestRepository
+repositoryDir="$testEnvDir/$(default_repositories_dir)/$repository"
 
 setup() {
   _common_setup "$testEnvDir"
@@ -25,65 +26,66 @@ teardown() {
 }
 
 @test "if additional pre-commit scripts exist 'committing' will execute them" {
-  additionalScriptsPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/pre-commit"
-  firstScriptName="script1"
-  secondScriptName="script2"
-  writeSpyScript "$additionalScriptsPath/$firstScriptName"
-  writeSpyScript "$additionalScriptsPath/$secondScriptName"
+  additionalScriptsPath="$repositoryDir/hook-scripts/pre-commit"
+  firstScriptName="$additionalScriptsPath/script1"
+  secondScriptName="$additionalScriptsPath/script2"
+  writeSpyScript "$firstScriptName"
+  writeSpyScript "$secondScriptName"
 
-  commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "some-branch" "some-message"
 
-  assert_spy_file_exists "$testEnvDir/$(default_repositories_dir)/$repository/$firstScriptName"
-  assert_spy_file_exists "$testEnvDir/$(default_repositories_dir)/$repository/$secondScriptName"
+  commit_changes "$repositoryDir" "some-branch" "some-message"
+
+  assert_spy_file_exists "$firstScriptName"
+  assert_spy_file_exists "$secondScriptName"
 }
 
 @test "if additional commit-msg scripts exits with failure 'commiting' will also fail" {
-  additionalScriptPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/commit-msg/script"
+  additionalScriptPath="$repositoryDir/hook-scripts/commit-msg/script"
   writeStubScript "$additionalScriptPath" "1" "some-output"
 
-  run commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "some-branch" "some-message"
+  run commit_changes "$repositoryDir" "some-branch" "some-message"
 
   assert_failure
 }
 
 @test "if additional commit-msg scripts has output 'commiting' will contain the same output" {
   scriptOutput="some-output"
-  additionalScriptPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/commit-msg/script"
+  additionalScriptPath="$repositoryDir/hook-scripts/commit-msg/script"
   writeStubScript "$additionalScriptPath" "0" "$scriptOutput"
 
-  run commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "some-branch" "some-message"
+  run commit_changes "$repositoryDir" "some-branch" "some-message"
 
   assert_output --partial "$scriptOutput"
 }
 
 @test "if pre-commit hook gets executed, it gets passed the git parameters" {
-  additionalScriptPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/pre-commit/script"
+  additionalScriptPath="$repositoryDir/hook-scripts/pre-commit/script"
   writeSpyScript "$additionalScriptPath"
 
-  commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "some-branch" "some-message"
+  commit_changes "$repositoryDir" "some-branch" "some-message"
 
-  assert_spy_file_has_content "$testEnvDir/$(default_repositories_dir)/$repository/script" ""
+  assert_spy_file_has_content "$additionalScriptPath" ""
 }
 
 @test "if pre-push hook gets executed, it gets passed the git parameters" {
-  additionalScriptPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/pre-push/script"
+  additionalScriptPath="$repositoryDir/hook-scripts/pre-push/script"
   writeSpyScript "$additionalScriptPath"
   branchName="$(unique_branch_name)"
-  commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName" "some-message"
+  commit_changes "$repositoryDir" "$branchName" "some-message"
 
-  push_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName"
+  push_changes "$repositoryDir" "$branchName"
 
-  originUrl=$(git -C "$testEnvDir/$(default_repositories_dir)/$repository" config --get remote.origin.url)
+  originUrl=$(git -C "$repositoryDir" config --get remote.origin.url)
   remoteName=$(git remote)
-  assert_spy_file_has_content "$testEnvDir/$(default_repositories_dir)/$repository/script" "$remoteName $originUrl"
+  assert_spy_file_has_content "$additionalScriptPath" "$remoteName $originUrl"
 }
 
 @test "if commit-msg hook gets executed, it gets passed the git parameters" {
-  additionalScriptPath="$testEnvDir/$(default_repositories_dir)/$repository/hook-scripts/commit-msg/script"
+  additionalScriptPath="$repositoryDir/hook-scripts/commit-msg/script"
   writeSpyScript "$additionalScriptPath"
 
-  commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "some-branch" "some-message"
+  commit_changes "$repositoryDir" "some-branch" "some-message"
 
-  assert_spy_file_has_content "$testEnvDir/$(default_repositories_dir)/$repository/script" ".git/COMMIT_EDITMSG"
+  assert_spy_file_has_content "$additionalScriptPath" ".git/COMMIT_EDITMSG"
 }
 
