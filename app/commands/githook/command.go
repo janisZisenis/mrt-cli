@@ -50,25 +50,17 @@ func command(cmd *cobra.Command, args []string) {
 }
 
 func executeAdditionalScripts(repositoryPath string, hookName string, args []string) {
-	_ = filepath.Walk(repositoryPath+"/hook-scripts/"+hookName, func(path string, info os.FileInfo, err error) error {
+	files, _ := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
+	for _, file := range files {
+		hookArgs := append([]string{file}, args...)
+		script := exec.Command("/bin/bash", hookArgs...)
+		output, err := script.Output()
+		fmt.Println(string(output))
+
 		if err != nil {
-			return nil
+			os.Exit(1)
 		}
-
-		hookArgs := append([]string{path}, args...)
-
-		if !info.IsDir() {
-			cmd := exec.Command("/bin/bash", hookArgs...)
-			output, runErr := cmd.Output()
-
-			fmt.Println(string(output))
-			if runErr != nil {
-				os.Exit(1)
-			}
-		}
-
-		return nil
-	})
+	}
 }
 
 func getCurrentBranchName(repositoryPath string) string {
