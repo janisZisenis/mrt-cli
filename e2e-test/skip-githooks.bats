@@ -6,8 +6,11 @@ load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/branches'
 
-testEnvDir=$(_testEnvDir)
-repository=1_TestRepository
+testEnvDir="$(_testEnvDir)"
+repository="1_TestRepository"
+repositoryDir="$testEnvDir/$(default_repositories_dir)/$repository"
+branchName="$(unique_branch_name)"
+
 
 setup() {
   _common_setup "$testEnvDir"
@@ -23,31 +26,27 @@ teardown() {
 }
 
 @test "After setup with 'skip-git-hooks' committing on a blocked branch is not rejected" {
-  branchName="some-branch"
-
   writeBlockedBranches "$testEnvDir" "$branchName"
 
-  run commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName" "some-message"
+  run commit_changes "$repositoryDir" "$branchName" "some-message"
 
   assert_success
 }
 
 @test "After setup with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
-  branchName="$(unique_branch_name)"
   writeBlockedBranches "$testEnvDir" "$branchName"
-  commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName" "some-message"
+  commit_changes "$repositoryDir" "$branchName" "some-message"
 
-  run push_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName"
+  run push_changes "$repositoryDir" "$branchName"
 
   assert_success
 }
 
 @test "After setup with 'skip-git-hooks' commiting with missing prefix in commit messages is not rejected" {
-  branchName="some-branch"
   writeBlockedBranches "$testEnvDir" "$branchName"
   writeCommitPrefixRegex "$testEnvDir" "Some-Prefix"
 
-  run commit_changes "$testEnvDir/$(default_repositories_dir)/$repository" "$branchName" "some-message"
+  run commit_changes "$repositoryDir" "$branchName" "some-message"
 
   assert_success
 }
