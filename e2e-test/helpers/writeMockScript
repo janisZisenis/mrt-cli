@@ -12,10 +12,10 @@ writeSpyScript() {
   mkdir -p "$(dirname "$additionalScriptPath")"
   scriptName="$(basename "$additionalScriptPath")"
 
-  echo "
-  #!/bin/bash
-  SCRIPT_DIR=\"\$( cd \"\$( dirname \"\${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\"
-  echo \"\$@\" > \"\$SCRIPT_DIR/$scriptName$(spyFileSuffix)\"" > "$additionalScriptPath"
+  echo "#!/bin/bash
+
+SCRIPT_DIR=\"\$( cd \"\$( dirname \"\${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\"
+echo \"\$@\" > \"\$SCRIPT_DIR/$scriptName$(spyFileSuffix)\"" > "$additionalScriptPath"
   chmod +x "$additionalScriptPath"
 }
 
@@ -27,10 +27,10 @@ writeStubScript() {
   mkdir -p "$(dirname "$additionalScriptPath")"
   scriptName="$(basename "$additionalScriptPath")"
 
-  echo "
-  #!/bin/bash
-  echo \"$output\"
-  exit $exitCode
+  echo "#!/bin/bash
+
+echo \"$output\"
+exit $exitCode
   " > "$additionalScriptPath"
   chmod +x "$additionalScriptPath"
 }
