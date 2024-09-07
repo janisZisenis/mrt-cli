@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var commandName = "setup"
@@ -42,8 +43,21 @@ func command(cmd *cobra.Command, args []string) {
 
 	files, _ := filepath.Glob(core.GetExecutablePath() + "/setup/*/command")
 	for _, file := range files {
+		segments := strings.Split(file, "/")
+		commandName = segments[len(segments)-2]
+
+		fmt.Println("Execute additional setup-script: " + commandName)
+
 		args = []string{core.GetExecutablePath()}
-		output, _ := core.ExecuteBash(file, args)
-		fmt.Println(output)
+		output, err := core.ExecuteBash(file, args)
+		fmt.Print(output)
+
+		if err != nil {
+			fmt.Println(commandName + " failed with: " + err.Error())
+		} else {
+			fmt.Println(commandName + " executed successfully")
+		}
+
+		fmt.Println()
 	}
 }

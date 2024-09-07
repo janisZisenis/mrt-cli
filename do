@@ -30,9 +30,12 @@ help(){
 }
 
 build(){
-  cd app
+  currentDir=$PWD
+
+  cd "$SCRIPT_DIR"/app
   go build -v -o "$BINARY_PATH"
-  cd ..
+
+  cd "$currentDir"
 }
 
 run-build(){
