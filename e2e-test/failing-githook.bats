@@ -1,14 +1,14 @@
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
-load 'helpers/defaults'
+load 'helpers/repositoriesPath'
 load 'helpers/setupRepositories'
 load 'helpers/runMrtInTestEnvironment'
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 
-repositoriesDir(){
-  echo "$testEnvironmentDir/$(default_repositories_dir)/$repository"
+repositoryDir(){
+  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
 }
 
 setup() {
@@ -25,7 +25,7 @@ teardown() {
 @test "if subcommand 'git-hook' gets called with an unknown git hook it fails" {
   hookName="unknown-hook"
 
-  run mrt git-hook --hook-name "$hookName" --repository-path "$(repositoriesDir)"
+  run mrt git-hook --hook-name "$hookName" --repository-path "$(repositoryDir)"
 
   assert_output --partial "The given git-hook \"$hookName\" does not exist."
   assert_failure

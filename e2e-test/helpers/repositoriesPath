@@ -1,5 +1,5 @@
 #!/bin/bash
 
-default_repositories_dir() {
+default_repositories_path() {
   echo "repositories"
 }

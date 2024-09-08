@@ -2,13 +2,13 @@ load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/commits'
 load 'helpers/pushChanges'
-load 'helpers/defaults'
+load 'helpers/repositoriesPath'
 load 'helpers/setupRepositories'
 load 'helpers/branches'
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
-repositoriesPath=$(default_repositories_dir)
+repositoriesPath=$(default_repositories_path)
 
 repositoryDir() {
   echo "$testEnvironmentDir/$repositoriesPath/$repository"

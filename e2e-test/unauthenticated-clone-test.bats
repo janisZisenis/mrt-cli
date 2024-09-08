@@ -1,7 +1,7 @@
 load 'helpers/common'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
-load 'helpers/defaults'
+load 'helpers/repositoriesPath'
 load 'helpers/setupRepositories'
 load 'helpers/writeTeamFile'
 load 'helpers/runMrtInTestEnvironment'
@@ -48,7 +48,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 
   run setupRepositories "$repositoryUrl"
 
-  assert_line --index 1 "Cloning $repositoryUrl into $(default_repositories_dir)/$repository"
+  assert_line --index 1 "Cloning $repositoryUrl into $(default_repositories_path)/$repository"
   assert_line --index 2 "You have no access to $repositoryUrl. Please make sure you have a valid ssh key in place."
 }
 

@@ -1,9 +1,0 @@
-#!/bin/bash
-
-teamFileName() {
-  echo "team.json"
-}
-
-writeTeamFile() {
-  echo "$2" > "$1/$(teamFileName)"
-}

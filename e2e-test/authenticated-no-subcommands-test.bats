@@ -2,13 +2,9 @@ load 'helpers/assertDirectoryExists'
 load 'helpers/assertDirectoryDoesNotExist'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
-load 'helpers/defaults'
+load 'helpers/repositoriesPath'
 load 'helpers/setupRepositories'
 load 'helpers/runMrtInTestEnvironment'
-
-repositoriesDir() {
-  echo "$testEnvironmentDir/$(default_repositories_dir)"
-}
 
 setup() {
   _common_setup
@@ -25,5 +21,5 @@ teardown() {
 
   run mrt
 
-  assert_directory_does_not_exist "$(repositoriesDir)"
+  assert_directory_does_not_exist "$testEnvironmentDir/$(default_repositories_path)"
 }

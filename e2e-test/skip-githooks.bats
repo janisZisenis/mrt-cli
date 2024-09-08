@@ -1,7 +1,7 @@
 load 'helpers/setupRepositories'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
-load 'helpers/defaults'
+load 'helpers/repositoriesPath'
 load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/branches'
@@ -12,7 +12,7 @@ repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 branchName="$(unique_branch_name)"
 
 repositoryDir() {
-  echo "$testEnvironmentDir/$(default_repositories_dir)/$repository"
+  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
 }
 
 setup() {

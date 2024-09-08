@@ -2,10 +2,10 @@ load 'helpers/assertDirectoryExists'
 load 'helpers/assertDirectoryDoesNotExist'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
-load 'helpers/defaults'
+load 'helpers/repositoriesPath'
 load 'helpers/setupRepositories'
 
-repositoriesPath=$(default_repositories_dir)
+repositoriesPath=$(default_repositories_path)
 
 repositoriesDir() {
   echo "$testEnvironmentDir/$repositoriesPath"
@@ -80,7 +80,7 @@ teardown() {
 
   run setupRepositories "${repositoriesUrls[@]}"
 
-  assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $(default_repositories_dir)/${repositories[0]}"
+  assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $(default_repositories_path)/${repositories[0]}"
   assert_line --index 2 "Repository ${repositoriesUrls[0]} was not found. Skipping it"
 }
 
