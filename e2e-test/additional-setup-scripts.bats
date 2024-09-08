@@ -46,10 +46,10 @@ test_if_additional_setup_script_succeeds_setup_should_print_success_and_output()
 
   run "$testEnvDir"/mrt setup
 
-  assert_line --index 1 "Execute additional setup-script: $commandName"
-  assert_line --index 2 "$someOutput"
-  assert_line --index 3 "$commandName executed successfully"
-  assert_line --index 4 ""
+  assert_line --index 4 "Execute additional setup-script: $commandName"
+  assert_line --index 5 "$someOutput"
+  assert_line --index 6 "$commandName executed successfully"
+  assert_line --index 7 ""
 }
 
 @test "if some additional setup script fails with output 'setup' will print the script's output and the failure" {
@@ -70,10 +70,10 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
 
   run "$testEnvDir"/mrt setup
 
-  assert_line --index 1 "Execute additional setup-script: $commandName"
-  assert_line --index 2 "$someOutput"
-  assert_line --index 3 "$commandName failed with: exit status $exitCode"
-  assert_line --index 4 ""
+  assert_line --index 4 "Execute additional setup-script: $commandName"
+  assert_line --index 5 "$someOutput"
+  assert_line --index 6 "$commandName failed with: exit status $exitCode"
+  assert_line --index 7 ""
 }
 
 @test "if two additional setup scripts exist 'setup' will execute both" {

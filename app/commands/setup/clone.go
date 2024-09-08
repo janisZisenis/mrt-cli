@@ -14,10 +14,9 @@ func clone(repository string, directory string) {
 		URL:               repository,
 		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 	})
-
 	if cloneError != nil {
 		if errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {
-			log.Error("Repository " + repository + " already exists. Skipping it")
+			log.Warning("Repository " + repository + " already exists. Skipping it")
 		}
 
 		if cloneError.Error() == repositoryNotFoundError {
@@ -27,5 +26,7 @@ func clone(repository string, directory string) {
 		if cloneError.Error() == notAuthenticatedError {
 			log.Error("You have no access to " + repository + ". Please make sure you have a valid ssh key in place.")
 		}
+	} else {
+		log.Success("Successfully cloned " + repository)
 	}
 }

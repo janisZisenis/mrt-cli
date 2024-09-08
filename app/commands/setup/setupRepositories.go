@@ -2,15 +2,21 @@ package setup
 
 import (
 	"app/core"
+	"app/log"
 	"strings"
 )
 
 func setupRepositories(teamInfo core.TeamInfo) {
+	log.Info("Start cloning repositories into \"" + teamInfo.RepositoriesPath + "\"")
 	for _, repositoryUrl := range teamInfo.Repositories {
-		repositoryDirectory := getRepositoryDir(teamInfo, repositoryUrl)
+		repositoryName := getRepositoryName(repositoryUrl)
+		folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
+		repositoryDirectory := getDirectory(teamInfo.RepositoriesPath, folderName)
 
+		log.Info("Cloning " + repositoryUrl + " into " + "repositories" + "/" + folderName)
 		clone(repositoryUrl, repositoryDirectory)
 	}
+	log.Info("Cloning repositories done")
 }
 
 func setupGitHooks(teamInfo core.TeamInfo) {
@@ -30,7 +36,7 @@ func getRepositoryDir(teamInfo core.TeamInfo, repositoryUrl string) string {
 }
 
 func getRepositoryName(repositoryUrl string) string {
-	return strings.Trim(repositoryUrl[strings.LastIndex(repositoryUrl, "/")+1:], ".git")
+	return strings.TrimSuffix(repositoryUrl[strings.LastIndex(repositoryUrl, "/")+1:], ".git")
 }
 
 func getFolderName(repositoryName string, prefixes []string) string {

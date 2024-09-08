@@ -25,6 +25,15 @@ teardown() {
   assert_directory_exists "$testEnvDir/$(default_repositories_dir)/$repository/.git"
 }
 
+@test "if team json contains an existing repository 'setup' should print a messages about successful cloning" {
+  repository=1_TestRepository
+
+  run setupRepositories "$testEnvDir" "$repository"
+
+  assert_line --index 1 "Cloning git@github-testing:janisZisenisTesting/$repository.git into $(default_repositories_dir)/$repository"
+  assert_line --index 2 "Successfully cloned git@github-testing:janisZisenisTesting/$repository.git"
+}
+
 @test "if team json contains repositoriesPath 'setup' clones the repositories into given repositoriesPath folder" {
   repositoriesPath=xyz
   repository=1_TestRepository
@@ -52,12 +61,13 @@ teardown() {
   assert_directory_does_not_exist "$testEnvDir/$(default_repositories_dir)"
 }
 
-@test "if team json contains non-existing repository, 'setup' should print out a message" {
+@test "if team json contains non-existing repository, 'setup' should print out a failure message" {
   nonExistingRepository="not-existing"
 
   run setupRepositories "$testEnvDir" "$nonExistingRepository"
 
-  assert_output "Repository git@github-testing:janisZisenisTesting/$nonExistingRepository.git was not found. Skipping it"
+  assert_line --index 1 "Cloning git@github-testing:janisZisenisTesting/$nonExistingRepository.git into $(default_repositories_dir)/$nonExistingRepository"
+  assert_line --index 2 "Repository git@github-testing:janisZisenisTesting/$nonExistingRepository.git was not found. Skipping it"
 }
 
 @test "if team json contains non-existing and existing repository, 'setup' should clone the existing one" {
