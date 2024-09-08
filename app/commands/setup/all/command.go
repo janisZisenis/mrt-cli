@@ -1,22 +1,21 @@
 package all
 
 import (
+	"app/commands/setup/additionalScript"
 	"app/commands/setup/cloneRepositories"
 	"app/commands/setup/installGitHooks"
 	"app/core"
 	"app/log"
 	"github.com/spf13/cobra"
 	"os"
-	"path/filepath"
-	"strings"
 )
 
 var skipHooksFlag = "skip-git-hooks"
-var commandName = "all"
+var scriptName = "all"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   commandName,
+		Use:   scriptName,
 		Short: "Executes all setup commands",
 		Run:   command,
 	}
@@ -43,26 +42,7 @@ func command(cmd *cobra.Command, args []string) {
 		installGitHooks.MakeCommand().Run(cmd, args)
 	}
 
-	executeAdditionalSetupScripts()
-}
-
-func executeAdditionalSetupScripts() {
-	files, _ := filepath.Glob(core.GetExecutablePath() + "/setup/*/command")
-	for _, file := range files {
-		segments := strings.Split(file, "/")
-		commandName = segments[len(segments)-2]
-
-		log.Info("Execute additional setup-script: " + commandName)
-
-		args := []string{core.GetExecutablePath()}
-		err := core.ExecuteScript(file, args)
-
-		if err != nil {
-			log.Error(commandName + " failed with: " + err.Error())
-		} else {
-			log.Success(commandName + " executed successfully")
-		}
-
-		log.Info("")
-	}
+	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(scriptPath string) {
+		additionalScript.MakeCommand(scriptPath).Run(cmd, args)
+	})
 }
