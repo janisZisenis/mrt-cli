@@ -8,7 +8,11 @@ load 'helpers/branches'
 
 testEnvDir="$(_testEnvDir)"
 repository="1_TestRepository"
-repositoryDir="$testEnvDir/$(default_repositories_dir)/$repository"
+repositoriesPath=$(default_repositories_dir)
+
+repositoryDir() {
+  echo "$testEnvDir/$repositoriesPath/$repository"
+}
 
 setup() {
   _common_setup "$testEnvDir"
@@ -25,7 +29,20 @@ teardown() {
   setupRepositories "$testEnvDir" "$repository"
   writeBlockedBranches "$testEnvDir" "$branchName"
 
-  run commit_changes "$repositoryDir" $branchName
+  run commit_changes "$(repositoryDir)" $branchName
+
+  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
+  assert_failure
+}
+
+@test "If repositories are cloned to specific repositories path and team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
+  branchName="some-branch"
+  repositoriesPath="some-path"
+  writeRepositoriesPath "$testEnvDir" "$repositoriesPath"
+  setupRepositories "$testEnvDir" "$repository"
+  writeBlockedBranches "$testEnvDir" "$branchName"
+
+  run commit_changes "$(repositoryDir)" $branchName
 
   assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
@@ -36,7 +53,7 @@ teardown() {
   setupRepositories "$testEnvDir" "$repository"
   writeBlockedBranches "$testEnvDir" "another-branch"
 
-  run commit_changes "$repositoryDir" $branchName
+  run commit_changes "$(repositoryDir)" $branchName
 
   assert_success
 }
@@ -46,7 +63,7 @@ teardown() {
   setupRepositories "$testEnvDir" "$repository"
   writeBlockedBranches "$testEnvDir" "another-branch" "$branchName"
 
-  run commit_changes "$repositoryDir" $branchName
+  run commit_changes "$(repositoryDir)" $branchName
 
   assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
@@ -56,9 +73,9 @@ teardown() {
   branchName="$(unique_branch_name)"
   setupRepositories "$testEnvDir" "$repository"
   writeBlockedBranches "$testEnvDir" "$branchName"
-  commit_changes_bypassing_githooks "$repositoryDir" "$branchName"
+  commit_changes_bypassing_githooks "$(repositoryDir)" "$branchName"
 
-  push_changes "$repositoryDir" "$branchName"
+  push_changes "$(repositoryDir)" "$branchName"
 
   assert_output --partial "Action \"push\" not allowed on branch \"$branchName\""
   assert_failure
