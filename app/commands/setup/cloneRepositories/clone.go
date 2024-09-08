@@ -1,4 +1,4 @@
-package all
+package cloneRepositories
 
 import (
 	"app/log"

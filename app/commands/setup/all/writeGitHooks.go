@@ -1,4 +1,4 @@
-package setup
+package all
 
 import (
 	"app/commands/githook"

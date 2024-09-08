@@ -1,4 +1,4 @@
-package all
+package cloneRepositories
 
 import (
 	"app/core"
@@ -6,33 +6,17 @@ import (
 	"strings"
 )
 
-func setupRepositories(teamInfo core.TeamInfo) {
+func SetupRepositories(teamInfo core.TeamInfo) {
 	log.Info("Start cloning repositories into \"" + teamInfo.RepositoriesPath + "\"")
 	for _, repositoryUrl := range teamInfo.Repositories {
 		repositoryName := getRepositoryName(repositoryUrl)
 		folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
-		repositoryDirectory := getDirectory(teamInfo.RepositoriesPath, folderName)
+		repositoryDirectory := getRepositoryPath(teamInfo.RepositoriesPath, folderName)
 
 		log.Info("Cloning " + repositoryUrl + " into " + "repositories" + "/" + folderName)
 		clone(repositoryUrl, repositoryDirectory)
 	}
 	log.Info("Cloning repositories done")
-}
-
-func setupGitHooks(teamInfo core.TeamInfo) {
-	for _, repositoryUrl := range teamInfo.Repositories {
-		repositoryDirectory := getRepositoryDir(teamInfo, repositoryUrl)
-
-		for _, hook := range core.GitHooks {
-			writeGitHook(repositoryDirectory, hook)
-		}
-	}
-}
-
-func getRepositoryDir(teamInfo core.TeamInfo, repositoryUrl string) string {
-	repositoryName := getRepositoryName(repositoryUrl)
-	folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
-	return getDirectory(teamInfo.RepositoriesPath, folderName)
 }
 
 func getRepositoryName(repositoryUrl string) string {
@@ -49,6 +33,6 @@ func getFolderName(repositoryName string, prefixes []string) string {
 	return folderName
 }
 
-func getDirectory(repositoriesPath string, folderName string) string {
+func getRepositoryPath(repositoriesPath string, folderName string) string {
 	return core.GetExecutablePath() + "/" + repositoriesPath + "/" + folderName
 }
