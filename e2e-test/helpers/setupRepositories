@@ -7,5 +7,5 @@ setupRepositories() {
   shift
 
   writeRepositories "$testEnvDir" $*
-  "$testEnvDir"/mrt setup
+  "$testEnvDir"/mrt setup all
 }

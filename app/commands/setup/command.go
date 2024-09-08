@@ -11,15 +11,27 @@ import (
 
 var commandName = "setup"
 var skipHooksFlag = "skip-git-hooks"
+var allSubcommand = "all"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   commandName,
 		Short: "Sets up you machine for development",
+	}
+
+	command.AddCommand(makeAllCommand())
+
+	return command
+}
+
+func makeAllCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   allSubcommand,
+		Short: "Executes all setup commands",
 		Run:   command,
 	}
 
-	command.Flags().Bool(skipHooksFlag, false, "The name of the git-hook to be executed")
+	command.Flags().Bool(skipHooksFlag, false, "Skips setting the git-hooks")
 	command.Flags().Lookup(skipHooksFlag).NoOptDefVal = "true"
 
 	return command

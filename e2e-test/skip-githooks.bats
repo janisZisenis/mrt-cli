@@ -17,7 +17,7 @@ setup() {
   authenticate
 
   writeRepositories "$testEnvDir" "$repository"
-  "$testEnvDir"/mrt setup --skip-git-hooks
+  "$testEnvDir"/mrt setup all --skip-git-hooks
 }
 
 teardown() {
