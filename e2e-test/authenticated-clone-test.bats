@@ -6,6 +6,11 @@ load 'helpers/defaults'
 load 'helpers/setupRepositories'
 
 testEnvDir=$(_testEnvDir)
+repositoriesPath=$(default_repositories_dir)
+
+repositoriesDir() {
+  echo "$testEnvDir/$repositoriesPath"
+}
 
 setup() {
   _common_setup "$testEnvDir"
@@ -18,40 +23,28 @@ teardown() {
 }
 
 @test "if team json does not contain repositoriesPath 'setup all' clones repository into 'repositories' folder" {
-  repositories=(
-    "1_TestRepository"
-  )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-  )
+  repositories=("1_TestRepository")
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git"
+  assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
 
 @test "if team json contains an existing repository 'setup all' should print a messages about successful cloning" {
-  repositories=(
-    "1_TestRepository"
-  )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-  )
+  repositories=( "1_TestRepository")
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $(default_repositories_dir)/${repositories[0]}"
+  assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $repositoriesPath/${repositories[0]}"
   assert_line --index 2 "Successfully cloned ${repositoriesUrls[0]}"
 }
 
 @test "if team json contains repositoriesPath 'setup all' clones the repositories into given repositoriesPath folder" {
   repositoriesPath=xyz
-  repositories=(
-    "1_TestRepository"
-  )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-  )
+  repositories=("1_TestRepository")
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
   writeRepositoriesPath "$testEnvDir" "$repositoriesPath"
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
@@ -64,17 +57,14 @@ teardown() {
     "1_TestRepository"
     "2_TestRepository"
   )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-    "$(getTestingRepositoryUrl "${repositories[1]}")"
-  )
-  git clone "${repositoriesUrls[0]}" "$testEnvDir/$(default_repositories_dir)/${repositories[0]}"
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
+  git clone "${repositoriesUrls[0]}" "$(repositoriesDir)/${repositories[0]}"
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
   assert_directories_exists \
-    "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git" \
-    "$testEnvDir/$(default_repositories_dir)/${repositories[1]}/.git"
+    "$(repositoriesDir)/${repositories[0]}/.git" \
+    "$(repositoriesDir)/${repositories[1]}/.git"
 }
 
 @test "if team json does not contains any repository, 'setup all' does not clone any repository" {
@@ -82,16 +72,12 @@ teardown() {
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_directory_does_not_exist "$testEnvDir/$(default_repositories_dir)"
+  assert_directory_does_not_exist "$(repositoriesDir)"
 }
 
 @test "if team json contains non-existing repository, 'setup all' should print out a failure message" {
-  repositories=(
-    "not-existing"
-  )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-  )
+  repositories=("not-existing")
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
@@ -100,18 +86,12 @@ teardown() {
 }
 
 @test "if team json contains non-existing and existing repository, 'setup all' should clone the existing one" {
-  repositories=(
-    "1_TestRepository"
-    "non-existing"
-  )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-    "$(getTestingRepositoryUrl "${repositories[1]}")"
-  )
+  repositories=("1_TestRepository" "non-existing")
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git"
+  assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup all' should ignore the prefixes while cloning the repositories" {
@@ -119,17 +99,14 @@ teardown() {
     "Prefix1_TestRepository1"
     "Prefix2_TestRepository2"
   )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-    "$(getTestingRepositoryUrl "${repositories[1]}")"
-  )
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
   writeRepositoriesPrefixes "$testEnvDir" "Prefix1_" "Prefix2_"
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
   assert_directories_exists \
-   "$testEnvDir/$(default_repositories_dir)/TestRepository1/.git" \
-    "$testEnvDir/$(default_repositories_dir)/TestRepository2/.git"
+   "$(repositoriesDir)/TestRepository1/.git" \
+    "$(repositoriesDir)/TestRepository2/.git"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup all' should not ignore the prefixes when the prefixes are not in the beginning of the repository names" {
@@ -137,15 +114,12 @@ teardown() {
     "Prefix1_TestRepository1"
     "Prefix2_TestRepository2"
   )
-  repositoriesUrls=(
-    "$(getTestingRepositoryUrl "${repositories[0]}")"
-    "$(getTestingRepositoryUrl "${repositories[1]}")"
-  )
+  readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
   writeRepositoriesPrefixes "$testEnvDir" "TestRepository1" "TestRepository2"
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
   assert_directories_exists \
-   "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git" \
-   "$testEnvDir/$(default_repositories_dir)/${repositories[1]}/.git"
+   "$(repositoriesDir)/${repositories[0]}/.git" \
+   "$(repositoriesDir)/${repositories[1]}/.git"
 }

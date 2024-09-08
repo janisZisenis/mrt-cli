@@ -10,6 +10,15 @@ getTestingRepositoryUrl() {
   echo "git@github-testing:janisZisenisTesting/$repositoryName.git"
 }
 
+getRepositoryUrls() {
+  repositoryNames=($*)
+
+  for r in "${repositoryNames[@]}"
+  do
+    getTestingRepositoryUrl "$r"
+  done
+}
+
 writeBlockedBranches() {
   testEnvDir=$1
   shift
