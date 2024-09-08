@@ -72,8 +72,9 @@ teardown() {
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git"
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/${repositories[1]}/.git"
+  assert_directories_exists \
+    "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git" \
+    "$testEnvDir/$(default_repositories_dir)/${repositories[1]}/.git"
 }
 
 @test "if team json does not contains any repository, 'setup all' does not clone any repository" {
@@ -126,8 +127,9 @@ teardown() {
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/TestRepository1/.git"
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/TestRepository2/.git"
+  assert_directories_exists \
+   "$testEnvDir/$(default_repositories_dir)/TestRepository1/.git" \
+    "$testEnvDir/$(default_repositories_dir)/TestRepository2/.git"
 }
 
 @test "if team json contains repositoriesPrefixes 'setup all' should not ignore the prefixes when the prefixes are not in the beginning of the repository names" {
@@ -143,6 +145,7 @@ teardown() {
 
   run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
 
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git"
-  assert_directory_exists "$testEnvDir/$(default_repositories_dir)/${repositories[1]}/.git"
+  assert_directories_exists \
+   "$testEnvDir/$(default_repositories_dir)/${repositories[0]}/.git" \
+   "$testEnvDir/$(default_repositories_dir)/${repositories[1]}/.git"
 }

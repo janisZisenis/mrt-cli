@@ -9,3 +9,13 @@ assert_directory_exists() {
     exit 1
   fi
 }
+
+assert_directories_exists() {
+  directories=($*)
+
+  for dir in "${directories[@]}"
+  do
+
+    assert_directory_exists "$dir"
+  done
+}
