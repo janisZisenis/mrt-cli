@@ -4,6 +4,12 @@ teamFileName() {
   echo "team.json"
 }
 
+getTestingRepositoryUrl() {
+  repositoryName=$1
+
+  echo "git@github-testing:janisZisenisTesting/$repositoryName.git"
+}
+
 writeBlockedBranches() {
   testEnvDir=$1
   shift
@@ -38,7 +44,7 @@ writeRepositories() {
   repositoryUrls=""
   for r in "${repositories[@]}"
   do
-    repositoryUrls="$repositoryUrls\"git@github-testing:janisZisenisTesting/$r.git\","
+  repositoryUrls="$repositoryUrls\"$r\","
   done
 
   if [[ ${#repositories[*]} -gt 0 ]]

@@ -8,6 +8,7 @@ load 'helpers/branches'
 
 testEnvDir="$(_testEnvDir)"
 repository="1_TestRepository"
+repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 repositoryDir="$testEnvDir/$(default_repositories_dir)/$repository"
 branchName="$(unique_branch_name)"
 
@@ -16,7 +17,7 @@ setup() {
   _common_setup "$testEnvDir"
   authenticate
 
-  writeRepositories "$testEnvDir" "$repository"
+  writeRepositories "$testEnvDir" "$repositoryUrl"
   "$testEnvDir"/mrt setup all --skip-git-hooks
 }
 

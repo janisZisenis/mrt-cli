@@ -5,11 +5,12 @@ load 'helpers/setupRepositories'
 
 testEnvDir=$(_testEnvDir)
 repository="1_TestRepository"
+repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 
 setup() {
   _common_setup "$testEnvDir"
   authenticate
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
 }
 
 teardown() {

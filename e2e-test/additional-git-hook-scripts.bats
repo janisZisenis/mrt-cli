@@ -11,13 +11,14 @@ load 'helpers/branches'
 
 testEnvDir=$(_testEnvDir)
 repository=1_TestRepository
+repositoryUrl=$(getTestingRepositoryUrl $repository)
 repositoryDir="$testEnvDir/$(default_repositories_dir)/$repository"
 
 setup() {
   _common_setup "$testEnvDir"
   authenticate
 
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
 }
 
 teardown() {

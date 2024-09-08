@@ -8,6 +8,7 @@ load 'helpers/branches'
 
 testEnvDir="$(_testEnvDir)"
 repository="1_TestRepository"
+repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 repositoriesPath=$(default_repositories_dir)
 
 repositoryDir() {
@@ -26,7 +27,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
   branchName="some-branch"
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
   writeBlockedBranches "$testEnvDir" "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -39,7 +40,7 @@ teardown() {
   branchName="some-branch"
   repositoriesPath="some-path"
   writeRepositoriesPath "$testEnvDir" "$repositoriesPath"
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
   writeBlockedBranches "$testEnvDir" "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -50,7 +51,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'commiting' on another blocked branches should allowed" {
   branchName="some-branch"
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
   writeBlockedBranches "$testEnvDir" "another-branch"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -60,7 +61,7 @@ teardown() {
 
 @test "If team json contains 2 blocked branch, 'commiting' on second one should be blocked" {
   branchName="some-branch"
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
   writeBlockedBranches "$testEnvDir" "another-branch" "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -71,7 +72,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'pushing' on the blocked branches should be blocked" {
   branchName="$(unique_branch_name)"
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
   writeBlockedBranches "$testEnvDir" "$branchName"
   commit_changes_bypassing_githooks "$(repositoryDir)" "$branchName"
 

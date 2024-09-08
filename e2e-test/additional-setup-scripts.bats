@@ -5,13 +5,13 @@ load 'helpers/setupRepositories'
 load 'helpers/absolutePath'
 
 testEnvDir="$(_testEnvDir)"
-repository="1_TestRepository"
+repositoryUrl=$(getTestingRepositoryUrl "1_TestRepository")
 
 setup() {
   _common_setup "$testEnvDir"
   authenticate
 
-  setupRepositories "$testEnvDir" "$repository"
+  setupRepositories "$testEnvDir" "$repositoryUrl"
 }
 
 teardown() {
