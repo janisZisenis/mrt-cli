@@ -3,6 +3,7 @@ load 'helpers/ssh-authenticate'
 load 'helpers/writeMockScript'
 load 'helpers/setupRepositories'
 load 'helpers/absolutePath'
+load 'helpers/runMrtInTestEnvironment'
 
 repositoryUrl=$(getTestingRepositoryUrl "1_TestRepository")
 
@@ -23,7 +24,7 @@ teardown() {
   setupScript="$additionalScriptsDir/setup-command/command"
   writeSpyScript "$setupScript"
 
-  "$testEnvironmentDir"/mrt setup all
+  mrt setup all
 
   assert_spy_file_has_content "$setupScript" "$(absolutePath "$testEnvironmentDir")"
 }
@@ -43,7 +44,7 @@ test_if_additional_setup_script_succeeds_setup_should_print_success_and_output()
   someOutput="some-output"
   writeStubScript "$setupScript" "0" "$someOutput"
 
-  run "$testEnvironmentDir"/mrt setup all
+  run mrt setup all
 
   assert_line --index 4 "Execute additional setup-script: $commandName"
   assert_line --index 5 "$someOutput"
@@ -67,7 +68,7 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
   exitCode=15
   writeStubScript "$setupScript" "$exitCode" "$someOutput"
 
-  run "$testEnvironmentDir"/mrt setup all
+  run mrt setup all
 
   assert_line --index 4 "Execute additional setup-script: $commandName"
   assert_line --index 5 "$someOutput"
@@ -82,7 +83,7 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
   writeSpyScript "$firstSetupScript"
   writeSpyScript "$secondSetupScript"
 
-  "$testEnvironmentDir"/mrt setup all
+  mrt setup all
 
   assert_spy_file_has_content "$firstSetupScript" "$(absolutePath "$testEnvironmentDir")"
   assert_spy_file_has_content "$secondSetupScript" "$(absolutePath "$testEnvironmentDir")"

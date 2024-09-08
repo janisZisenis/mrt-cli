@@ -5,6 +5,7 @@ load 'helpers/defaults'
 load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/branches'
+load 'helpers/runMrtInTestEnvironment'
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
@@ -12,18 +13,18 @@ branchName="$(unique_branch_name)"
 
 repositoryDir() {
   echo "$testEnvironmentDir/$(default_repositories_dir)/$repository"
-  }
+}
 
 setup() {
   _common_setup
   authenticate
 
   writeRepositories "$repositoryUrl"
-  "$testEnvironmentDir"/mrt setup all --skip-git-hooks
+  mrt setup all --skip-git-hooks
 }
 
 teardown() {
-  _common_teardown "$testEnvironmentDir"
+  _common_teardown
   revoke-authentication
 }
 

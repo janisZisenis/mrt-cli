@@ -4,6 +4,7 @@ load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/defaults'
 load 'helpers/setupRepositories'
+load 'helpers/runMrtInTestEnvironment'
 
 setup() {
   _common_setup
@@ -18,7 +19,7 @@ teardown() {
 @test "if team json contains repositories but running without 'setup all' does not clone the repositories" {
   writeRepositories "$(getTestingRepositoryUrl "1_TestRepository")"
 
-  run "$testEnvironmentDir"/mrt
+  run mrt
 
   assert_directory_does_not_exist "$testEnvironmentDir/$(default_repositories_dir)"
 }

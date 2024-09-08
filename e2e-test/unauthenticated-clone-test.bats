@@ -4,6 +4,7 @@ load 'helpers/common'
 load 'helpers/defaults'
 load 'helpers/setupRepositories'
 load 'helpers/writeTeamFile'
+load 'helpers/runMrtInTestEnvironment'
 
 setup() {
   _common_setup
@@ -59,7 +60,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "if team json does not exist, 'setup all' exits with error" {
-  run "$testEnvironmentDir"/mrt setup all
+  run mrt setup all
 
   assert_failure
   assert_output 'Could not read team file. Please make sure a "team.json" file exists next to the executable and that it follows proper JSON syntax'
