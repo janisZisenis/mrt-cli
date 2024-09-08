@@ -6,6 +6,10 @@ load 'helpers/defaults'
 load 'helpers/setupRepositories'
 load 'helpers/runMrtInTestEnvironment'
 
+repositoriesDir() {
+  echo "$testEnvironmentDir/$(default_repositories_dir)"
+}
+
 setup() {
   _common_setup
   authenticate
@@ -21,5 +25,5 @@ teardown() {
 
   run mrt
 
-  assert_directory_does_not_exist "$testEnvironmentDir/$(default_repositories_dir)"
+  assert_directory_does_not_exist "$(repositoriesDir)"
 }
