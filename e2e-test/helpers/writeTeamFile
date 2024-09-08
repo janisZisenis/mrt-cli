@@ -41,23 +41,23 @@ writeBlockedBranches() {
   echo "$string" > "$testEnvironmentDir/$(teamFileName)"
 }
 
-writeRepositories() {
-  repositories=($*)
+writeRepositoriesUrls() {
+  repositoriesUrls=($*)
 
   createTeamFileIfNotExisting
 
-  repositoryUrls=""
-  for r in "${repositories[@]}"
+  string=""
+  for r in "${repositoriesUrls[@]}"
   do
-  repositoryUrls="$repositoryUrls\"$r\","
+  string="$string\"$r\","
   done
 
-  if [[ ${#repositories[*]} -gt 0 ]]
+  if [[ ${#repositoriesUrls[*]} -gt 0 ]]
   then
-    repositoryUrls=${repositoryUrls::-1}
+    string=${string::-1}
   fi
 
-  jsonArray="[$repositoryUrls]"
+  jsonArray="[$string]"
 
   string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositories": ($jsonArray)}' "$testEnvironmentDir/$(teamFileName)")
   echo "$string" > "$testEnvironmentDir/$(teamFileName)"

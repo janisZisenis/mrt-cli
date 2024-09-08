@@ -19,7 +19,7 @@ setup() {
   _common_setup
   authenticate
 
-  writeRepositories "$repositoryUrl"
+  writeRepositoriesUrls "$repositoryUrl"
   mrt setup all --skip-git-hooks
 }
 
@@ -28,7 +28,7 @@ teardown() {
   revoke-authentication
 }
 
-@test "After setup with 'skip-git-hooks' committing on a blocked branch is not rejected" {
+@test "After setup all with 'skip-git-hooks' committing on a blocked branch is not rejected" {
   writeBlockedBranches "$branchName"
 
   run commit_changes "$(repositoryDir)" "$branchName" "some-message"
@@ -36,7 +36,7 @@ teardown() {
   assert_success
 }
 
-@test "After setup with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
+@test "After setup all with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
   writeBlockedBranches "$branchName"
   commit_changes "$(repositoryDir)" "$branchName" "some-message"
 
@@ -45,7 +45,7 @@ teardown() {
   assert_success
 }
 
-@test "After setup with 'skip-git-hooks' commiting with missing prefix in commit messages is not rejected" {
+@test "After setup all with 'skip-git-hooks' commiting with missing prefix in commit messages is not rejected" {
   writeBlockedBranches "$branchName"
   writeCommitPrefixRegex "Some-Prefix"
 

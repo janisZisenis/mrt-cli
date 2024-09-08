@@ -16,8 +16,8 @@ teardown() {
   revoke-authentication
 }
 
-@test "if team json contains repositories but running without 'setup all' does not clone the repositories" {
-  writeRepositories "$(getTestingRepositoryUrl "1_TestRepository")"
+@test "if team json contains repositories but running 'mrt' without subcommand does not clone the repositories" {
+  writeRepositoriesUrls "$(getTestingRepositoryUrl "1_TestRepository")"
 
   run mrt
 

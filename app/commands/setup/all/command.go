@@ -4,10 +4,7 @@ import (
 	"app/commands/setup/additionalScript"
 	"app/commands/setup/cloneRepositories"
 	"app/commands/setup/installGitHooks"
-	"app/core"
-	"app/log"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var skipHooksFlag = "skip-git-hooks"
@@ -28,13 +25,6 @@ func MakeCommand() *cobra.Command {
 
 func command(cmd *cobra.Command, args []string) {
 	shouldSkipHooks, _ := cmd.Flags().GetBool(skipHooksFlag)
-
-	teamInfo := core.LoadTeamConfiguration()
-
-	if len(teamInfo.Repositories) == 0 {
-		log.Warning("Your team file does not contain any repositories")
-		os.Exit(1)
-	}
 
 	cloneRepositories.MakeCommand().Run(cmd, args)
 

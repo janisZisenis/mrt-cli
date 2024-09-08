@@ -1,9 +1,17 @@
 #!/bin/bash
 
 load 'helpers/writeTeamFile'
+load 'helpers/runMrtInTestEnvironment'
 
-setupRepositories() {
-  writeRepositories $*
+setupAll() {
+  writeRepositoriesUrls $*
 
-  "$testEnvironmentDir"/mrt setup all
+  mrt setup all
+}
+
+setupCloneRepositories() {
+  readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
+  writeRepositoriesUrls "${repositoriesUrls[@]}"
+
+  run mrt setup clone-repositories
 }
