@@ -8,7 +8,7 @@ _common_setup() {
   load '3rdParty/test_helper/bats-support/load'
   load '3rdParty/test_helper/bats-assert/load'
 
-  testEnvironmentDir=$1
+  testEnvironmentDir=$(_testEnvDir)
 
   PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
   BIN_PATH="$PROJECT_ROOT/build"
@@ -20,7 +20,5 @@ _common_setup() {
 }
 
 _common_teardown() {
-  testEnvironmentDir=$1
-
   rm -rf "$testEnvironmentDir"
 }

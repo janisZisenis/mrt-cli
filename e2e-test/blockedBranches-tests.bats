@@ -6,29 +6,28 @@ load 'helpers/defaults'
 load 'helpers/setupRepositories'
 load 'helpers/branches'
 
-testEnvDir="$(_testEnvDir)"
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 repositoriesPath=$(default_repositories_dir)
 
 repositoryDir() {
-  echo "$testEnvDir/$repositoriesPath/$repository"
+  echo "$testEnvironmentDir/$repositoriesPath/$repository"
 }
 
 setup() {
-  _common_setup "$testEnvDir"
+  _common_setup
   authenticate
 }
 
 teardown() {
-  _common_teardown "$testEnvDir"
+  _common_teardown
   revoke-authentication
 }
 
 @test "If team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
   branchName="some-branch"
-  setupRepositories "$testEnvDir" "$repositoryUrl"
-  writeBlockedBranches "$testEnvDir" "$branchName"
+  setupRepositories "$repositoryUrl"
+  writeBlockedBranches "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
 
@@ -39,9 +38,9 @@ teardown() {
 @test "If repositories are cloned to specific repositories path and team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
   branchName="some-branch"
   repositoriesPath="some-path"
-  writeRepositoriesPath "$testEnvDir" "$repositoriesPath"
-  setupRepositories "$testEnvDir" "$repositoryUrl"
-  writeBlockedBranches "$testEnvDir" "$branchName"
+  writeRepositoriesPath "$repositoriesPath"
+  setupRepositories "$repositoryUrl"
+  writeBlockedBranches "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
 
@@ -51,8 +50,8 @@ teardown() {
 
 @test "If team json contains blocked branch, 'commiting' on another blocked branches should allowed" {
   branchName="some-branch"
-  setupRepositories "$testEnvDir" "$repositoryUrl"
-  writeBlockedBranches "$testEnvDir" "another-branch"
+  setupRepositories "$repositoryUrl"
+  writeBlockedBranches "another-branch"
 
   run commit_changes "$(repositoryDir)" $branchName
 
@@ -61,8 +60,8 @@ teardown() {
 
 @test "If team json contains 2 blocked branch, 'commiting' on second one should be blocked" {
   branchName="some-branch"
-  setupRepositories "$testEnvDir" "$repositoryUrl"
-  writeBlockedBranches "$testEnvDir" "another-branch" "$branchName"
+  setupRepositories "$repositoryUrl"
+  writeBlockedBranches "another-branch" "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
 
@@ -72,8 +71,8 @@ teardown() {
 
 @test "If team json contains blocked branch, 'pushing' on the blocked branches should be blocked" {
   branchName="$(unique_branch_name)"
-  setupRepositories "$testEnvDir" "$repositoryUrl"
-  writeBlockedBranches "$testEnvDir" "$branchName"
+  setupRepositories "$repositoryUrl"
+  writeBlockedBranches "$branchName"
   commit_changes_bypassing_githooks "$(repositoryDir)" "$branchName"
 
   push_changes "$(repositoryDir)" "$branchName"

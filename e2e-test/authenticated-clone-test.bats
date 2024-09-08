@@ -5,20 +5,19 @@ load 'helpers/common'
 load 'helpers/defaults'
 load 'helpers/setupRepositories'
 
-testEnvDir=$(_testEnvDir)
 repositoriesPath=$(default_repositories_dir)
 
 repositoriesDir() {
-  echo "$testEnvDir/$repositoriesPath"
+  echo "$testEnvironmentDir/$repositoriesPath"
 }
 
 setup() {
-  _common_setup "$testEnvDir"
+  _common_setup
   authenticate
 }
 
 teardown() {
-  _common_teardown "$testEnvDir"
+  _common_teardown
   revoke-authentication
 }
 
@@ -26,7 +25,7 @@ teardown() {
   repositories=("1_TestRepository")
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -35,7 +34,7 @@ teardown() {
   repositories=( "1_TestRepository")
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $repositoriesPath/${repositories[0]}"
   assert_line --index 2 "Successfully cloned ${repositoriesUrls[0]}"
@@ -45,11 +44,11 @@ teardown() {
   repositoriesPath=xyz
   repositories=("1_TestRepository")
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
-  writeRepositoriesPath "$testEnvDir" "$repositoriesPath"
+  writeRepositoriesPath "$repositoriesPath"
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
-  assert_directory_exists "$testEnvDir/$repositoriesPath/${repositories[0]}/.git"
+  assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
 
 @test "if team json contains already existing repositories 'setup all' clones remaining repositories and skips existing ones" {
@@ -60,7 +59,7 @@ teardown() {
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
   git clone "${repositoriesUrls[0]}" "$(repositoriesDir)/${repositories[0]}"
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_directories_exists \
     "$(repositoriesDir)/${repositories[0]}/.git" \
@@ -70,7 +69,7 @@ teardown() {
 @test "if team json does not contains any repository, 'setup all' does not clone any repository" {
   repositoriesUrls=()
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_directory_does_not_exist "$(repositoriesDir)"
 }
@@ -79,7 +78,7 @@ teardown() {
   repositories=("not-existing")
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $(default_repositories_dir)/${repositories[0]}"
   assert_line --index 2 "Repository ${repositoriesUrls[0]} was not found. Skipping it"
@@ -89,7 +88,7 @@ teardown() {
   repositories=("1_TestRepository" "non-existing")
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -100,9 +99,9 @@ teardown() {
     "Prefix2_TestRepository2"
   )
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
-  writeRepositoriesPrefixes "$testEnvDir" "Prefix1_" "Prefix2_"
+  writeRepositoriesPrefixes "Prefix1_" "Prefix2_"
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_directories_exists \
    "$(repositoriesDir)/TestRepository1/.git" \
@@ -115,9 +114,9 @@ teardown() {
     "Prefix2_TestRepository2"
   )
   readarray -t repositoriesUrls < <(getRepositoryUrls "${repositories[@]}")
-  writeRepositoriesPrefixes "$testEnvDir" "TestRepository1" "TestRepository2"
+  writeRepositoriesPrefixes "TestRepository1" "TestRepository2"
 
-  run setupRepositories "$testEnvDir" "${repositoriesUrls[@]}"
+  run setupRepositories "${repositoriesUrls[@]}"
 
   assert_directories_exists \
    "$(repositoriesDir)/${repositories[0]}/.git" \

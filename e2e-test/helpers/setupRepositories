@@ -3,9 +3,7 @@
 load 'helpers/writeTeamFile'
 
 setupRepositories() {
-  testEnvDir=$1
-  shift
+  writeRepositories $*
 
-  writeRepositories "$testEnvDir" $*
-  "$testEnvDir"/mrt setup all
+  "$testEnvironmentDir"/mrt setup all
 }

@@ -5,22 +5,20 @@ load 'helpers/common'
 load 'helpers/defaults'
 load 'helpers/setupRepositories'
 
-testEnvDir=$(_testEnvDir)
-
 setup() {
-  _common_setup "$testEnvDir"
+  _common_setup
   authenticate
 }
 
 teardown() {
-  _common_teardown "$testEnvDir"
+  _common_teardown
   revoke-authentication
 }
 
 @test "if team json contains repositories but running without 'setup all' does not clone the repositories" {
-  writeRepositories "$testEnvDir" "$(getTestingRepositoryUrl "1_TestRepository")"
+  writeRepositories "$(getTestingRepositoryUrl "1_TestRepository")"
 
-  run "$testEnvDir"/mrt
+  run "$testEnvironmentDir"/mrt
 
-  assert_directory_does_not_exist "$testEnvDir/$(default_repositories_dir)"
+  assert_directory_does_not_exist "$testEnvironmentDir/$(default_repositories_dir)"
 }

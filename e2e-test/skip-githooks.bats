@@ -6,48 +6,49 @@ load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/branches'
 
-testEnvDir="$(_testEnvDir)"
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
-repositoryDir="$testEnvDir/$(default_repositories_dir)/$repository"
 branchName="$(unique_branch_name)"
 
+repositoryDir() {
+  echo "$testEnvironmentDir/$(default_repositories_dir)/$repository"
+  }
 
 setup() {
-  _common_setup "$testEnvDir"
+  _common_setup
   authenticate
 
-  writeRepositories "$testEnvDir" "$repositoryUrl"
-  "$testEnvDir"/mrt setup all --skip-git-hooks
+  writeRepositories "$repositoryUrl"
+  "$testEnvironmentDir"/mrt setup all --skip-git-hooks
 }
 
 teardown() {
-  _common_teardown "$testEnvDir"
+  _common_teardown "$testEnvironmentDir"
   revoke-authentication
 }
 
 @test "After setup with 'skip-git-hooks' committing on a blocked branch is not rejected" {
-  writeBlockedBranches "$testEnvDir" "$branchName"
+  writeBlockedBranches "$branchName"
 
-  run commit_changes "$repositoryDir" "$branchName" "some-message"
+  run commit_changes "$(repositoryDir)" "$branchName" "some-message"
 
   assert_success
 }
 
 @test "After setup with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
-  writeBlockedBranches "$testEnvDir" "$branchName"
-  commit_changes "$repositoryDir" "$branchName" "some-message"
+  writeBlockedBranches "$branchName"
+  commit_changes "$(repositoryDir)" "$branchName" "some-message"
 
-  run push_changes "$repositoryDir" "$branchName"
+  run push_changes "$(repositoryDir)" "$branchName"
 
   assert_success
 }
 
 @test "After setup with 'skip-git-hooks' commiting with missing prefix in commit messages is not rejected" {
-  writeBlockedBranches "$testEnvDir" "$branchName"
-  writeCommitPrefixRegex "$testEnvDir" "Some-Prefix"
+  writeBlockedBranches "$branchName"
+  writeCommitPrefixRegex "Some-Prefix"
 
-  run commit_changes "$repositoryDir" "$branchName" "some-message"
+  run commit_changes "$(repositoryDir)" "$branchName" "some-message"
 
   assert_success
 }

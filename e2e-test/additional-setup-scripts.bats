@@ -4,29 +4,28 @@ load 'helpers/writeMockScript'
 load 'helpers/setupRepositories'
 load 'helpers/absolutePath'
 
-testEnvDir="$(_testEnvDir)"
 repositoryUrl=$(getTestingRepositoryUrl "1_TestRepository")
 
 setup() {
-  _common_setup "$testEnvDir"
+  _common_setup
   authenticate
 
-  setupRepositories "$testEnvDir" "$repositoryUrl"
+  setupRepositories "$repositoryUrl"
 }
 
 teardown() {
-  _common_teardown "$testEnvDir"
+  _common_teardown
   revoke-authentication
 }
 
 @test "if additional setup script exists 'setup all' will execute it and pass the repository path as parameter" {
-  additionalScriptsDir="$testEnvDir/setup"
+  additionalScriptsDir="$testEnvironmentDir/setup"
   setupScript="$additionalScriptsDir/setup-command/command"
   writeSpyScript "$setupScript"
 
-  "$testEnvDir"/mrt setup all
+  "$testEnvironmentDir"/mrt setup all
 
-  assert_spy_file_has_content "$setupScript" "$(absolutePath "$testEnvDir")"
+  assert_spy_file_has_content "$setupScript" "$(absolutePath "$testEnvironmentDir")"
 }
 
 @test "if some additional setup script succeeds with output 'setup all' will print the script's output" {
@@ -39,12 +38,12 @@ teardown() {
 
 test_if_additional_setup_script_succeeds_setup_should_print_success_and_output() {
   commandName=$1
-  additionalScriptsDir="$testEnvDir/setup"
+  additionalScriptsDir="$testEnvironmentDir/setup"
   setupScript="$additionalScriptsDir/$commandName/command"
   someOutput="some-output"
   writeStubScript "$setupScript" "0" "$someOutput"
 
-  run "$testEnvDir"/mrt setup all
+  run "$testEnvironmentDir"/mrt setup all
 
   assert_line --index 4 "Execute additional setup-script: $commandName"
   assert_line --index 5 "$someOutput"
@@ -62,13 +61,13 @@ test_if_additional_setup_script_succeeds_setup_should_print_success_and_output()
 
 test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
   commandName=$1
-  additionalScriptsDir="$testEnvDir/setup"
+  additionalScriptsDir="$testEnvironmentDir/setup"
   setupScript="$additionalScriptsDir/$commandName/command"
   someOutput="some-output"
   exitCode=15
   writeStubScript "$setupScript" "$exitCode" "$someOutput"
 
-  run "$testEnvDir"/mrt setup all
+  run "$testEnvironmentDir"/mrt setup all
 
   assert_line --index 4 "Execute additional setup-script: $commandName"
   assert_line --index 5 "$someOutput"
@@ -77,14 +76,14 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
 }
 
 @test "if two additional setup scripts exist 'setup all' will execute both" {
-  additionalScriptsDir="$testEnvDir/setup"
+  additionalScriptsDir="$testEnvironmentDir/setup"
   firstSetupScript="$additionalScriptsDir/setup-command1/command"
   secondSetupScript="$additionalScriptsDir/setup-command2/command"
   writeSpyScript "$firstSetupScript"
   writeSpyScript "$secondSetupScript"
 
-  "$testEnvDir"/mrt setup all
+  "$testEnvironmentDir"/mrt setup all
 
-  assert_spy_file_has_content "$firstSetupScript" "$(absolutePath "$testEnvDir")"
-  assert_spy_file_has_content "$secondSetupScript" "$(absolutePath "$testEnvDir")"
+  assert_spy_file_has_content "$firstSetupScript" "$(absolutePath "$testEnvironmentDir")"
+  assert_spy_file_has_content "$secondSetupScript" "$(absolutePath "$testEnvironmentDir")"
 }
