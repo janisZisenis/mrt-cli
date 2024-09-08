@@ -36,7 +36,9 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "If team json contains 2 repositories 'setup all' should print out message clone done message after cloning second" {
-  run setupRepositories "$testEnvDir" "$(getTestingRepositoryUrl "1_TestRepository")" "$(getTestingRepositoryUrl "2_TestRepository")"
+  run setupRepositories "$testEnvDir" \
+    "$(getTestingRepositoryUrl "1_TestRepository")" \
+    "$(getTestingRepositoryUrl "2_TestRepository")"
 
   assert_line --index 5 "Cloning repositories done"
 }
