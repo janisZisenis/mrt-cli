@@ -9,6 +9,7 @@ import (
 var teamFileName = "team"
 var teamFileExtension = "json"
 var TeamFile = teamFileName + "." + teamFileExtension
+var RepositoriesPath = "repositoriesPath"
 
 type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`

@@ -2,6 +2,7 @@ package all
 
 import (
 	"app/commands/setup/cloneRepositories"
+	"app/commands/setup/installGitHooks"
 	"app/core"
 	"app/log"
 	"github.com/spf13/cobra"
@@ -39,8 +40,7 @@ func command(cmd *cobra.Command, args []string) {
 	cloneRepositories.MakeCommand().Run(cmd, args)
 
 	if !shouldSkipHooks {
-		teamInfo := core.LoadTeamConfiguration()
-		setupGitHooks(teamInfo)
+		installGitHooks.MakeCommand().Run(cmd, args)
 	}
 
 	executeAdditionalSetupScripts()

@@ -1,4 +1,4 @@
-package all
+package installGitHooks
 
 import (
 	"app/commands/githook"
