@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+var teamFileName = "team"
+var teamFileExtension = "json"
+var TeamFile = teamFileName + "." + teamFileExtension
+
 type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`
 	Repositories         []string `json:"repositories"`
@@ -18,14 +22,14 @@ func LoadTeamConfiguration() TeamInfo {
 	var teamInfo TeamInfo
 
 	viper.AddConfigPath(GetExecutablePath())
-	viper.SetConfigName("team")
-	viper.SetConfigType("json")
+	viper.SetConfigName(teamFileName)
+	viper.SetConfigType(teamFileExtension)
 
 	readErr := viper.ReadInConfig()
 	unmarshalErr := viper.Unmarshal(&teamInfo)
 
 	if readErr != nil || unmarshalErr != nil {
-		log.Error("Could not read team file. Please make sure a \"team.json\" file exists next " +
+		log.Error("Could not read team file. Please make sure a \"" + TeamFile + "\" file exists next " +
 			"to the executable and that it follows proper JSON syntax")
 		os.Exit(1)
 	}
