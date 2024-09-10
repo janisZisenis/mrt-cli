@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var commandName = "install-git-hooks"
+const commandName = "install-git-hooks"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{

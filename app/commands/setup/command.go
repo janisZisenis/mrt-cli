@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var commandName = "setup"
+const commandName = "setup"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{

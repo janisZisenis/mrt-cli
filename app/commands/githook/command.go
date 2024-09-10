@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 )
 
-var CommandName = "git-hook"
-var repositoryPath = "repository-path"
-var hookNameFlag = "hook-name"
+const CommandName = "git-hook"
+const repositoryPath = "repository-path"
+const hookNameFlag = "hook-name"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{

@@ -6,10 +6,10 @@ import (
 	"os"
 )
 
-var teamFileName = "team"
-var teamFileExtension = "json"
-var TeamFile = teamFileName + "." + teamFileExtension
-var RepositoriesPath = "repositoriesPath"
+const teamFileName = "team"
+const teamFileExtension = "json"
+const TeamFile = teamFileName + "." + teamFileExtension
+const RepositoriesPath = "repositoriesPath"
 
 type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`

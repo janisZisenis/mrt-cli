@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var commandName = "clone-repositories"
+const commandName = "clone-repositories"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{

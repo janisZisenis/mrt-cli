@@ -1,8 +1,8 @@
 package core
 
-var CommitMsg = "commit-msg"
-var PreCommit = "pre-commit"
-var PrePush = "pre-push"
+const CommitMsg = "commit-msg"
+const PreCommit = "pre-commit"
+const PrePush = "pre-push"
 
 var GitHooks = []string{
 	CommitMsg,

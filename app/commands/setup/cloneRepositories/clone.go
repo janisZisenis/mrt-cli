@@ -6,8 +6,8 @@ import (
 	"github.com/go-git/go-git/v5"
 )
 
-var repositoryNotFoundError = "repository not found"
-var notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain"
+const repositoryNotFoundError = "repository not found"
+const notAuthenticatedError = "ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain"
 
 func clone(repository string, directory string) {
 	_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{

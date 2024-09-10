@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var ScriptsPath = "/setup/*/command"
+const ScriptsPath = "/setup/*/command"
 
 func ForScriptInPathDo(scriptsPath string, do func(filePath string)) {
 	files, _ := filepath.Glob(core.GetExecutablePath() + scriptsPath)

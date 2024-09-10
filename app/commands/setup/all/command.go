@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var skipHooksFlag = "skip-git-hooks"
-var scriptName = "all"
+const skipHooksFlag = "skip-git-hooks"
+const scriptName = "all"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
