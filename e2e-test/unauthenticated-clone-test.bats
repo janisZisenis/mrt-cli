@@ -29,7 +29,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
   )
   writeRepositoriesPath "$repositoryPath"
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_line --index 0 "Start cloning repositories into \"$repositoryPath\""
   assert_line --index 3 "Cloning repositories done"
@@ -41,7 +41,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
     "2_TestRepository"
   )
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_line --index 5 "Cloning repositories done"
 }
@@ -58,7 +58,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "if team json does not contains any repository, 'setup clone-repositories' exits with error" {
-  setupCloneRepositories ""
+  run setupCloneRepositories ""
 
   assert_failure
   assert_output "Your team file does not contain any repositories"

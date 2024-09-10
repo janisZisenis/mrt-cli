@@ -25,7 +25,7 @@ teardown() {
 @test "if team json does not contain repositoriesPath 'setup clone-repositories' clones reposits not contain repositoriesPath 'setup clone-repositories' clones repository into 'repositories' folder" {
   repositories=("1_TestRepository")
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -46,7 +46,7 @@ teardown() {
   writeRepositoriesPath "$repositoriesPath"
   repositories=("1_TestRepository")
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -58,14 +58,14 @@ teardown() {
   )
   git clone "$(getTestingRepositoryUrl "${repositories[0]}")" "$(repositoriesDir)/${repositories[0]}"
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
   assert_directory_exists "$(repositoriesDir)/${repositories[1]}/.git"
 }
 
 @test "if team json does not contains any repository, 'setup clone-repositories' does not clone any repository" {
-  setupCloneRepositories ""
+  run setupCloneRepositories ""
 
   assert_directory_does_not_exist "$(repositoriesDir)"
 }
@@ -87,7 +87,7 @@ teardown() {
     "non-existing"
   )
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -99,7 +99,7 @@ teardown() {
   )
   writeRepositoriesPrefixes "Prefix1_" "Prefix2_"
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_directory_exists "$(repositoriesDir)/TestRepository1/.git"
   assert_directory_exists "$(repositoriesDir)/TestRepository2/.git"
@@ -112,7 +112,7 @@ teardown() {
   )
   writeRepositoriesPrefixes "TestRepository1" "TestRepository2"
 
-  setupCloneRepositories "${repositories[@]}"
+  run setupCloneRepositories "${repositories[@]}"
 
   assert_directory_exists "$(repositoriesDir)/${repositories[0]}/.git"
   assert_directory_exists "$(repositoriesDir)/${repositories[1]}/.git"

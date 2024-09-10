@@ -13,5 +13,5 @@ setupCloneRepositories() {
   readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
   writeRepositoriesUrls "${repositoriesUrls[@]}"
 
-  run mrt setup clone-repositories
+  mrt setup clone-repositories
 }
