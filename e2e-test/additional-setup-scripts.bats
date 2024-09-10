@@ -11,7 +11,7 @@ setup() {
   _common_setup
   authenticate
 
-  setupAll "$repositoryUrl"
+  setupAllUrl "$repositoryUrl"
 }
 
 teardown() {

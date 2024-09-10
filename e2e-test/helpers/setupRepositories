@@ -3,7 +3,7 @@
 load 'helpers/writeTeamFile'
 load 'helpers/runMrtInTestEnvironment'
 
-setupAll() {
+setupAllUrl() {
   writeRepositoriesUrls $*
 
   mrt setup all
