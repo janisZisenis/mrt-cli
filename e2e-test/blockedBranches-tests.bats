@@ -7,7 +7,6 @@ load 'helpers/setupRepositories'
 load 'helpers/branches'
 
 repository="1_TestRepository"
-repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 repositoriesPath=$(default_repositories_path)
 
 repositoryDir() {
@@ -26,7 +25,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'commiting' on the blocked branches should be blocked" {
   branchName="some-branch"
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl "$repository")"
   writeBlockedBranches "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -39,7 +38,7 @@ teardown() {
   branchName="some-branch"
   repositoriesPath="some-path"
   writeRepositoriesPath "$repositoriesPath"
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl "$repository")"
   writeBlockedBranches "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -50,7 +49,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'commiting' on another blocked branches should allowed" {
   branchName="some-branch"
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl "$repository")"
   writeBlockedBranches "another-branch"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -60,7 +59,7 @@ teardown() {
 
 @test "If team json contains 2 blocked branch, 'commiting' on second one should be blocked" {
   branchName="some-branch"
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl "$repository")"
   writeBlockedBranches "another-branch" "$branchName"
 
   run commit_changes "$(repositoryDir)" $branchName
@@ -71,7 +70,7 @@ teardown() {
 
 @test "If team json contains blocked branch, 'pushing' on the blocked branches should be blocked" {
   branchName="$(unique_branch_name)"
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl "$repository")"
   writeBlockedBranches "$branchName"
   commit_changes_bypassing_githooks "$(repositoryDir)" "$branchName"
 
