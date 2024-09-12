@@ -4,6 +4,7 @@ import (
 	"app/log"
 	"errors"
 	"github.com/go-git/go-git/v5"
+	"os"
 )
 
 const repositoryNotFoundError = "repository not found"
@@ -13,6 +14,7 @@ func clone(repository string, directory string) {
 	_, cloneError := git.PlainClone(directory, false, &git.CloneOptions{
 		URL:               repository,
 		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+		Progress:          os.Stdout,
 	})
 	if cloneError != nil {
 		if errors.Is(cloneError, git.ErrRepositoryAlreadyExists) {

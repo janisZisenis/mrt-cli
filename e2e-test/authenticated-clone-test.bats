@@ -37,8 +37,13 @@ teardown() {
 
   run mrt setup clone-repositories
 
+  x="[0-9]+"
   assert_line --index 1 "Cloning ${repositoriesUrls[0]} into $repositoriesPath/${repositories[0]}"
-  assert_line --index 2 "Successfully cloned ${repositoriesUrls[0]}"
+  assert_line --index 2 --regexp "Enumerating objects: $x, done."
+  assert_line --index 3 --regexp "Counting objects: $x% \($x\/$x\), done."
+  assert_line --index 4 --regexp "Compressing objects: $x% \($x\/$x\), done."
+  assert_line --index 5 --regexp "Total [0-9]+ \(delta $x\), reused $x \(delta $x\), pack-reused $x \(from $x\)"
+  assert_line --index 6 "Successfully cloned ${repositoriesUrls[0]}"
 }
 
 @test "if team json contains repositoriesPath 'setup clone-repositories' clones the repositories into given repositoriesPath folder" {
