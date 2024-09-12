@@ -86,3 +86,10 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
   assert_spy_file_has_content "$firstSetupScript" "$(absolutePath "$testEnvironmentDir")"
   assert_spy_file_has_content "$secondSetupScript" "$(absolutePath "$testEnvironmentDir")"
 }
+
+@test "if script is requesting input" {
+  additionalScriptsPath="$testEnvironmentDir/setup/input/command"
+  writeScriptRequestingInput "$additionalScriptsPath"
+
+  assert_failure
+}

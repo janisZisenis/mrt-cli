@@ -35,6 +35,21 @@ exit $exitCode
   chmod +x "$additionalScriptPath"
 }
 
+writeScriptRequestingInput() {
+  additionalScriptPath=$1
+
+  mkdir -p "$(dirname "$additionalScriptPath")"
+  scriptName="$(basename "$additionalScriptPath")"
+
+cat << EOF > "$additionalScriptPath"
+#!/bin/bash
+
+read -p "Do you want to use team Dijkstra's AWS configuration? [y/n]" -n 1 -r
+EOF
+
+  chmod +x "$additionalScriptPath"
+}
+
 assert_spy_file_has_content() {
   spyFile=$1$(spyFileSuffix)
   expectedContent=$2
