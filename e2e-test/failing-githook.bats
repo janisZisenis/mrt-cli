@@ -14,7 +14,7 @@ repositoryDir(){
 setup() {
   _common_setup
   authenticate
-  setupAllUrl "$repositoryUrl"
+  setupAll "$repositoryUrl"
 }
 
 teardown() {
