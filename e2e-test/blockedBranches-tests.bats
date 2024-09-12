@@ -3,7 +3,7 @@ load 'helpers/common'
 load 'helpers/commits'
 load 'helpers/pushChanges'
 load 'helpers/repositoriesPath'
-load 'helpers/setupRepositories'
+load 'helpers/runSetup'
 load 'helpers/branches'
 
 repository="1_TestRepository"

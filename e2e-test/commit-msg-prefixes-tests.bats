@@ -1,11 +1,10 @@
-load 'helpers/setupRepositories'
+load 'helpers/runSetup'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/commits'
 load 'helpers/repositoriesPath'
 
 repository="1_TestRepository"
-repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 
 repositoryDir() {
   echo "$testEnvironmentDir/$(default_repositories_path)/$repository"

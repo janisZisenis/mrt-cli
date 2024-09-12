@@ -1,11 +1,10 @@
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
-load 'helpers/setupRepositories'
+load 'helpers/runSetup'
 load 'helpers/runMrtInTestEnvironment'
 
 repository="1_TestRepository"
-repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 
 repositoryDir(){
   echo "$testEnvironmentDir/$(default_repositories_path)/$repository"

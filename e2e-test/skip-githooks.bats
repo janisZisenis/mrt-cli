@@ -1,4 +1,4 @@
-load 'helpers/setupRepositories'
+load 'helpers/runSetup'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'

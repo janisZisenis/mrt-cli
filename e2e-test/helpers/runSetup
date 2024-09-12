@@ -9,10 +9,3 @@ setupAll() {
 
   mrt setup all
 }
-
-setupCloneRepositories() {
-  readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
-  writeRepositoriesUrls "${repositoriesUrls[@]}"
-
-  mrt setup clone-repositories
-}
