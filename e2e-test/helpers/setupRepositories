@@ -4,7 +4,8 @@ load 'helpers/writeTeamFile'
 load 'helpers/runMrtInTestEnvironment'
 
 setupAll() {
-  writeRepositoriesUrls "$@"
+  readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
+  writeRepositoriesUrls "${repositoriesUrls[@]}"
 
   mrt setup all
 }

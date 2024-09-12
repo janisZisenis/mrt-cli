@@ -9,7 +9,7 @@ setup() {
   _common_setup
   authenticate
 
-  setupAll "$(getTestingRepositoryUrl "1_TestRepository")"
+  setupAll "1_TestRepository"
 }
 
 teardown() {
