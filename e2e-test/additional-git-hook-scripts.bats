@@ -10,7 +10,6 @@ load 'helpers/writeMockScript'
 load 'helpers/branches'
 
 repository=1_TestRepository
-repositoryUrl=$(getTestingRepositoryUrl $repository)
 
 repositoryDir() {
   echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
@@ -20,7 +19,7 @@ setup() {
   _common_setup
   authenticate
 
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl $repository)"
 }
 
 teardown() {
