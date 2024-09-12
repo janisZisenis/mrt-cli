@@ -5,13 +5,11 @@ load 'helpers/setupRepositories'
 load 'helpers/absolutePath'
 load 'helpers/runMrtInTestEnvironment'
 
-repositoryUrl=$(getTestingRepositoryUrl "1_TestRepository")
-
 setup() {
   _common_setup
   authenticate
 
-  setupAllUrl "$repositoryUrl"
+  setupAllUrl "$(getTestingRepositoryUrl "1_TestRepository")"
 }
 
 teardown() {
