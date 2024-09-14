@@ -22,7 +22,7 @@ teardown() {
   revoke-authentication
 }
 
-@test "if team json does not contain repositoriesPath 'setup all' clones reposits not contain repositoriesPath 'setup all' clones repository into 'repositories' folder" {
+@test "if team json does not contain repositoriesPath 'setup all' clones repository into 'repositories' folder" {
   repositories=("1_TestRepository")
 
   run setupAll "${repositories[@]}"
