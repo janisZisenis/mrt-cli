@@ -9,3 +9,9 @@ setupAll() {
 
   mrt setup all
 }
+
+setupAllUrls() {
+  writeRepositoriesUrls "$@"
+
+  mrt setup all
+}

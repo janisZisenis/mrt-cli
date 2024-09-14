@@ -1,7 +1,6 @@
 load 'helpers/common'
 load 'helpers/runSetup'
 load 'helpers/ssh-authenticate'
-load 'helpers/common'
 load 'helpers/repositoriesPath'
 load 'helpers/commits'
 load 'helpers/pushChanges'
