@@ -12,10 +12,14 @@ writeSpyScript() {
   mkdir -p "$(dirname "$additionalScriptPath")"
   scriptName="$(basename "$additionalScriptPath")"
 
-  echo "#!/bin/bash
+cat << EOF > "$additionalScriptPath"
+#!/bin/bash
 
-SCRIPT_DIR=\"\$( cd \"\$( dirname \"\${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\"
-echo \"\$@\" > \"\$SCRIPT_DIR/$scriptName$(spyFileSuffix)\"" > "$additionalScriptPath"
+SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
+
+EOF
+
   chmod +x "$additionalScriptPath"
 }
 
@@ -27,11 +31,13 @@ writeStubScript() {
   mkdir -p "$(dirname "$additionalScriptPath")"
   scriptName="$(basename "$additionalScriptPath")"
 
-  echo "#!/bin/bash
+cat << EOF > "$additionalScriptPath"
+#!/bin/bash
 
-echo \"$output\"
+echo "$output"
 exit $exitCode
-  " > "$additionalScriptPath"
+EOF
+
   chmod +x "$additionalScriptPath"
 }
 
@@ -44,7 +50,9 @@ writeScriptRequestingInput() {
 cat << EOF > "$additionalScriptPath"
 #!/bin/bash
 
-read -p "Do you want to use team Dijkstra's AWS configuration? [y/n]" -n 1 -r
+SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+read -r input
+touch "\$SCRIPT_DIR/\$input"
 EOF
 
   chmod +x "$additionalScriptPath"
