@@ -58,6 +58,22 @@ EOF
   chmod +x "$additionalScriptPath"
 }
 
+writeStdErrScript() {
+  additionalScriptPath=$1
+  errorMessage=$2
+
+  mkdir -p "$(dirname "$additionalScriptPath")"
+  scriptName="$(basename "$additionalScriptPath")"
+
+cat << EOF > "$additionalScriptPath"
+#!/bin/bash
+
+echo "$errorMessage" 1>&2
+EOF
+
+  chmod +x "$additionalScriptPath"
+}
+
 assert_spy_file_has_content() {
   spyFile=$1$(spyFileSuffix)
   expectedContent=$2

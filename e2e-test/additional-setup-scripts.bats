@@ -97,5 +97,14 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
   run mrt setup all <<< $input
 
   assert_file_exists "$additionalScriptsDir/$input"
-  assert_failure
+}
+
+@test "if setup script is writes to stderr 'setup all' outputs stderr" {
+  additionalScriptsPath="$testEnvironmentDir/setup/error/command"
+  error="some-error"
+  writeStdErrScript "$additionalScriptsPath" "$error"
+
+  run mrt setup all
+
+  assert_output --partial "$error"
 }

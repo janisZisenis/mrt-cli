@@ -89,3 +89,4 @@ teardown() {
 
   assert_spy_file_has_content "$additionalScriptPath" ".git/COMMIT_EDITMSG"
 }
+
