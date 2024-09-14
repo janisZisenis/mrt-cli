@@ -4,6 +4,7 @@ load 'helpers/writeMockScript'
 load 'helpers/runSetup'
 load 'helpers/absolutePath'
 load 'helpers/runMrtInTestEnvironment'
+load 'helpers/assertFileExists'
 
 setup() {
   _common_setup
@@ -87,9 +88,14 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
   assert_spy_file_has_content "$secondSetupScript" "$(absolutePath "$testEnvironmentDir")"
 }
 
-@test "if script is requesting input" {
-  additionalScriptsPath="$testEnvironmentDir/setup/input/command"
+@test "if setup script is requesting input 'setup all' should process the input" {
+  additionalScriptsDir="$testEnvironmentDir/setup/input"
+  additionalScriptsPath="$additionalScriptsDir/command"
   writeScriptRequestingInput "$additionalScriptsPath"
+  input="some-input"
 
+  run mrt setup all <<< $input
+
+  assert_file_exists "$additionalScriptsDir/$input"
   assert_failure
 }
