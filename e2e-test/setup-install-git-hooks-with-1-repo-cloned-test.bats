@@ -4,11 +4,17 @@ load 'helpers/commits'
 load 'helpers/setup'
 load 'helpers/clone'
 load 'helpers/repositoriesPath'
+load 'helpers/branch'
+load 'helpers/push'
 
+repository="1_TestRepository"
 
 setup() {
   _common_setup
   authenticate
+
+  cloneTestingRepositories "$(repositoriesDir)" "$repository"
+  setupGitHooks
 }
 
 teardown() {
@@ -21,11 +27,8 @@ repositoriesDir() {
 }
 
 @test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
-  repository="1_TestRepository"
   branchName="some-branch"
-  cloneTestingRepositories "$(repositoriesDir)" "$repository"
   writeBlockedBranches "$branchName"
-  setupGitHooks
 
   run commit_changes "$(repositoriesDir)/$repository" $branchName
 
@@ -34,10 +37,7 @@ repositoriesDir() {
 }
 
 @test "If team json contains blocked branch commiting on another blocked branch after setting up git-hooks should be allowed" {
-  repository="1_TestRepository"
-  cloneTestingRepositories "$(repositoriesDir)" "$repository"
   writeBlockedBranches "some-branch"
-  setupGitHooks
 
   run commit_changes "$(repositoriesDir)/$repository" "another-branch"
 
@@ -45,30 +45,22 @@ repositoriesDir() {
 }
 
 @test "If team json contains 2 blocked branch commiting on second one after setting up git-hooks should be blocked" {
-  repository="1_TestRepository"
   branchName="some-branch"
-  cloneTestingRepositories "$(repositoriesDir)" "$repository"
   writeBlockedBranches "another-branch" "$branchName"
-  setupGitHooks
 
-  run commit_changes "$(repositoryDir)" $branchName
+  run commit_changes "$(repositoriesDir)/$repository" $branchName
 
-  assert_output --partial "Action 1 \"commit\" not allowed on branch \"$branchName\""
+  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
   assert_failure
 }
 
-@test "If repositories path contains 2 repositories committing on a blocked branch in the second repository after setting up git-hooks should be blocked" {
-  repositories=(
-    "1_TestRepository"
-    "2_TestRepository"
-  )
-  branchName="some-branch"
-  cloneTestingRepositories "$(repositoriesDir)" "${repositories[@]}"
+@test "If team json contains blocked branch pushing on the blocked after setting up git-hooks branch should be blocked" {
+  branchName="$(unique_branch_name)"
+  commit_changes "$(repositoriesDir)/$repository" "$branchName"
   writeBlockedBranches "$branchName"
-  setupGitHooks
 
-  run commit_changes "$(repositoriesDir)/${repositories[1]}" $branchName
+  push_changes "$(repositoriesDir)/$repository" "$branchName"
 
-  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
+  assert_output --partial "Action \"push\" not allowed on branch \"$branchName\""
   assert_failure
 }

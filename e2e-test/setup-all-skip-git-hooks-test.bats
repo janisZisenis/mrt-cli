@@ -3,8 +3,8 @@ load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
 load 'helpers/commits'
-load 'helpers/pushChanges'
-load 'helpers/branches'
+load 'helpers/push'
+load 'helpers/branch'
 load 'helpers/runMrtInTestEnvironment'
 
 repository="1_TestRepository"

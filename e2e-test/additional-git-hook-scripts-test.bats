@@ -3,10 +3,10 @@ load 'helpers/setup'
 load 'helpers/ssh-authenticate'
 load 'helpers/repositoriesPath'
 load 'helpers/commits'
-load 'helpers/pushChanges'
+load 'helpers/push'
 load 'helpers/assertFileExists'
 load 'helpers/writeMockScript'
-load 'helpers/branches'
+load 'helpers/branch'
 
 repository=1_TestRepository
 
