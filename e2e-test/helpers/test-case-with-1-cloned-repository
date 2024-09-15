@@ -3,7 +3,7 @@
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/setup'
-load 'helpers/clone'
+load 'helpers/git'
 load 'helpers/repositoriesPath'
 
 repository="1_TestRepository"

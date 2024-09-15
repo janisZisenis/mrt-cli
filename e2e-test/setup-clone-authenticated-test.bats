@@ -5,7 +5,7 @@ load 'helpers/common'
 load 'helpers/repositoriesPath'
 load 'helpers/setup'
 load 'helpers/runMrtInTestEnvironment'
-load 'helpers/clone'
+load 'helpers/git'
 
 repositoriesPath=$(default_repositories_path)
 

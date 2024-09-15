@@ -1,5 +1,20 @@
 #!/bin/bash
 
+unique_branch_name() {
+  echo "branch-$(uuidgen)"
+}
+
+cloneTestingRepositories() {
+  repositoryDir=$1
+  shift
+  repositoriesToClone=("$@")
+
+  for repositoryToClone in "${repositoriesToClone[@]}"
+  do
+    git clone "$(getTestingRepositoryUrl "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
+  done
+}
+
 commit_changes() {
   repository_path=$1
   branch_name=$2
@@ -25,4 +40,16 @@ get_commit_message_of_last_commit() {
   repository_path=$1
 
   git -C "$repository_path" log -1 --pretty=%B
+}
+
+push_changes() {
+  repository_path=$1
+  branch_name=$2
+
+  run git -C "$repository_path" push --set-upstream origin "$branch_name"
+
+  if [[ $(git -C "$repository_path" ls-remote --heads origin "$branch_name") ]]
+  then
+    git -C "$repository_path" push origin --delete "$branch_name" --no-verify
+  fi
 }

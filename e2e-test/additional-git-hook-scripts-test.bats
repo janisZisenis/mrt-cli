@@ -2,11 +2,9 @@ load 'helpers/common'
 load 'helpers/setup'
 load 'helpers/ssh-authenticate'
 load 'helpers/repositoriesPath'
-load 'helpers/commits'
-load 'helpers/push'
+load 'helpers/git'
 load 'helpers/assertFileExists'
 load 'helpers/writeMockScript'
-load 'helpers/branch'
 
 repository="1_TestRepository"
 

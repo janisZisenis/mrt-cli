@@ -1,5 +1,0 @@
-#!/bin/bash
-
-unique_branch_name() {
-  echo "branch-$(uuidgen)"
-}

@@ -1,7 +1,4 @@
 load 'helpers/test-case-with-1-cloned-repository'
-load 'helpers/commits'
-load 'helpers/branch'
-load 'helpers/push'
 
 @test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
   branchName="some-branch"

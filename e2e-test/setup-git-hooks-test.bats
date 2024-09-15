@@ -1,11 +1,8 @@
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
-load 'helpers/commits'
+load 'helpers/git'
 load 'helpers/setup'
-load 'helpers/clone'
 load 'helpers/repositoriesPath'
-load 'helpers/branch'
-load 'helpers/push'
 load 'helpers/assertDirectoryDoesNotExist'
 
 

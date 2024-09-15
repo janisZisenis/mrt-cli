@@ -2,9 +2,7 @@ load 'helpers/setup'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
-load 'helpers/commits'
-load 'helpers/push'
-load 'helpers/branch'
+load 'helpers/git'
 load 'helpers/runMrtInTestEnvironment'
 
 repository="1_TestRepository"
