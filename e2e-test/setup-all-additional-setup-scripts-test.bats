@@ -18,93 +18,15 @@ teardown() {
   revoke-authentication
 }
 
-@test "if additional setup script exists it will execute it and pass the repository path as parameter" {
-  additionalScriptsDir="$testEnvironmentDir/setup"
-  setupScript="$additionalScriptsDir/setup-command/command"
-  writeSpyScript "$setupScript"
-
-  mrt setup all
-
-  assert_spy_file_has_content "$setupScript" "$(absolutePath "$testEnvironmentDir")"
-}
-
-@test "if some additional setup script succeeds with output it will print the script's output" {
-  test_if_additional_setup_script_succeeds_setup_should_print_success_and_output "some-command"
-}
-
-@test "if another additional setup script succeeds with output it will print the script's output" {
-  test_if_additional_setup_script_succeeds_setup_should_print_success_and_output "another-command"
-}
-
-test_if_additional_setup_script_succeeds_setup_should_print_success_and_output() {
-  commandName=$1
-  additionalScriptsDir="$testEnvironmentDir/setup"
-  setupScript="$additionalScriptsDir/$commandName/command"
-  someOutput="some-output"
-  writeStubScript "$setupScript" "0" "$someOutput"
-
-  run mrt setup all
-
-  assert_line --index 8 "Execute additional setup-script: $commandName"
-  assert_line --index 9 "$someOutput"
-  assert_line --index 10 "$commandName executed successfully"
-  assert_line --index 11 ""
-}
-
-@test "if some additional setup script fails with output it will print the script's output and the failure" {
-  test_if_additional_setup_script_fails_setup_should_print_failure_and_output "some-command"
-}
-
-@test "if another additional setup script fails with output it will print the script's output and the failure" {
-  test_if_additional_setup_script_fails_setup_should_print_failure_and_output "another-command"
-}
-
-test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
-  commandName=$1
-  additionalScriptsDir="$testEnvironmentDir/setup"
-  setupScript="$additionalScriptsDir/$commandName/command"
-  someOutput="some-output"
-  exitCode=15
-  writeStubScript "$setupScript" "$exitCode" "$someOutput"
-
-  run mrt setup all
-
-  assert_line --index 8 "Execute additional setup-script: $commandName"
-  assert_line --index 9 "$someOutput"
-  assert_line --index 10 "$commandName failed with: exit status $exitCode"
-  assert_line --index 11 ""
-}
-
 @test "if two additional setup scripts exist it will execute both" {
   additionalScriptsDir="$testEnvironmentDir/setup"
-  firstSetupScript="$additionalScriptsDir/setup-command1/command"
-  secondSetupScript="$additionalScriptsDir/setup-command2/command"
-  writeSpyScript "$firstSetupScript"
-  writeSpyScript "$secondSetupScript"
+  someSetupScript="$additionalScriptsDir/some-command/command"
+  anotherSetupScript="$additionalScriptsDir/another-command/command"
+  writeSpyScript "$someSetupScript"
+  writeSpyScript "$anotherSetupScript"
 
   mrt setup all
 
-  assert_spy_file_has_content "$firstSetupScript" "$(absolutePath "$testEnvironmentDir")"
-  assert_spy_file_has_content "$secondSetupScript" "$(absolutePath "$testEnvironmentDir")"
-}
-
-@test "if setup script is requesting input it should process the input" {
-  additionalScriptsDir="$testEnvironmentDir/setup/input"
-  additionalScriptsPath="$additionalScriptsDir/command"
-  writeScriptRequestingInput "$additionalScriptsPath"
-  input="some-input"
-
-  run mrt setup all <<< $input
-
-  assert_file_exists "$additionalScriptsDir/$input"
-}
-
-@test "if setup script is writes to stderr it outputs stderr" {
-  additionalScriptsPath="$testEnvironmentDir/setup/error/command"
-  error="some-error"
-  writeStdErrScript "$additionalScriptsPath" "$error"
-
-  run mrt setup all
-
-  assert_output --partial "$error"
+  assert_spy_file_has_content "$someSetupScript" "$(absolutePath "$testEnvironmentDir")"
+  assert_spy_file_has_content "$anotherSetupScript" "$(absolutePath "$testEnvironmentDir")"
 }

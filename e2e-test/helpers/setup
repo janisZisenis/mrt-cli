@@ -28,3 +28,7 @@ setupCloneUrls() {
 setupGitHooks() {
   mrt setup install-git-hooks
 }
+
+setupScript() {
+  mrt setup "$1"
+}

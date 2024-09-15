@@ -7,9 +7,11 @@ spyFileSuffix() {
 }
 
 writeSpyScript() {
+  local additionalScriptPath
   additionalScriptPath=$1
 
   mkdir -p "$(dirname "$additionalScriptPath")"
+  local scriptName
   scriptName="$(basename "$additionalScriptPath")"
 
 cat << EOF > "$additionalScriptPath"
@@ -24,11 +26,12 @@ EOF
 }
 
 writeStubScript() {
-  additionalScriptPath=$1
-  exitCode=$2
-  output=$3
+  local additionalScriptPath=$1
+  local exitCode=$2
+  local output=$3
 
   mkdir -p "$(dirname "$additionalScriptPath")"
+  local scriptName
   scriptName="$(basename "$additionalScriptPath")"
 
 cat << EOF > "$additionalScriptPath"
@@ -42,9 +45,10 @@ EOF
 }
 
 writeScriptRequestingInput() {
-  additionalScriptPath=$1
+  local additionalScriptPath=$1
 
   mkdir -p "$(dirname "$additionalScriptPath")"
+  local scriptName
   scriptName="$(basename "$additionalScriptPath")"
 
 cat << EOF > "$additionalScriptPath"
@@ -59,10 +63,11 @@ EOF
 }
 
 writeStdErrScript() {
-  additionalScriptPath=$1
-  errorMessage=$2
+  local additionalScriptPath=$1
+  local errorMessage=$2
 
   mkdir -p "$(dirname "$additionalScriptPath")"
+  local scriptName
   scriptName="$(basename "$additionalScriptPath")"
 
 cat << EOF > "$additionalScriptPath"

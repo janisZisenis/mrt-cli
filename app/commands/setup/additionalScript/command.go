@@ -43,6 +43,4 @@ func command(scriptName string, filePath string) {
 	} else {
 		log.Success(scriptName + " executed successfully")
 	}
-
-	log.Info("")
 }
