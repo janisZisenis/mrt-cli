@@ -8,7 +8,7 @@ load 'helpers/assertFileExists'
 load 'helpers/writeMockScript'
 load 'helpers/branch'
 
-repository=1_TestRepository
+repository="1_TestRepository"
 
 repositoryDir() {
   echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
