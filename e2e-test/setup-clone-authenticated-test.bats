@@ -3,7 +3,7 @@ load 'helpers/assertDirectoryDoesNotExist'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
-load 'helpers/runSetup'
+load 'helpers/setup'
 load 'helpers/runMrtInTestEnvironment'
 load 'helpers/clone'
 

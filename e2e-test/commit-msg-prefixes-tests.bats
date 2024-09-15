@@ -1,4 +1,4 @@
-load 'helpers/runSetup'
+load 'helpers/setup'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/commits'

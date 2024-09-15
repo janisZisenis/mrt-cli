@@ -1,7 +1,7 @@
 load 'helpers/common'
 load 'helpers/ssh-authenticate'
 load 'helpers/writeMockScript'
-load 'helpers/runSetup'
+load 'helpers/setup'
 load 'helpers/absolutePath'
 load 'helpers/runMrtInTestEnvironment'
 load 'helpers/assertFileExists'
