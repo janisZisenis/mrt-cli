@@ -6,13 +6,18 @@ import (
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {
-	for _, repositoryUrl := range teamInfo.Repositories {
-		repositoryDirectory := getRepositoryDir(teamInfo, repositoryUrl)
+	repositoryDirectory := getRepositoryDir(teamInfo, teamInfo.Repositories[0])
 
-		for _, hook := range core.GitHooks {
-			writeGitHook(repositoryDirectory, hook)
-		}
+	for _, hook := range core.GitHooks {
+		writeGitHook(repositoryDirectory, hook)
 	}
+	//for _, repositoryUrl := range teamInfo.Repositories {
+	//	repositoryDirectory := getRepositoryDir(teamInfo, repositoryUrl)
+	//
+	//	for _, hook := range core.GitHooks {
+	//		writeGitHook(repositoryDirectory, hook)
+	//	}
+	//}
 }
 
 func getRepositoryDir(teamInfo core.TeamInfo, repositoryUrl string) string {
