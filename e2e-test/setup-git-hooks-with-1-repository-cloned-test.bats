@@ -1,30 +1,7 @@
-load 'helpers/ssh-authenticate'
-load 'helpers/common'
+load 'helpers/test-case-with-1-cloned-repository'
 load 'helpers/commits'
-load 'helpers/setup'
-load 'helpers/clone'
-load 'helpers/repositoriesPath'
 load 'helpers/branch'
 load 'helpers/push'
-
-repository="1_TestRepository"
-
-setup() {
-  _common_setup
-  authenticate
-
-  cloneTestingRepositories "$testEnvironmentDir/$(default_repositories_path)" "$repository"
-  setupGitHooks
-}
-
-teardown() {
-  _common_teardown
-  revoke-authentication
-}
-
-repositoryDir() {
-  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
-}
 
 @test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
   branchName="some-branch"

@@ -1,0 +1,26 @@
+#!/bin/bash -e
+
+load 'helpers/ssh-authenticate'
+load 'helpers/common'
+load 'helpers/setup'
+load 'helpers/clone'
+load 'helpers/repositoriesPath'
+
+repository="1_TestRepository"
+
+setup() {
+  _common_setup
+  authenticate
+
+  cloneTestingRepositories "$testEnvironmentDir/$(default_repositories_path)" "$repository"
+  setupGitHooks
+}
+
+teardown() {
+  _common_teardown
+  revoke-authentication
+}
+
+repositoryDir() {
+  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
+}
