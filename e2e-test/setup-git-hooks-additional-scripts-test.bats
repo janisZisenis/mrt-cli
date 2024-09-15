@@ -1,28 +1,6 @@
-load 'helpers/common'
-load 'helpers/setup'
-load 'helpers/ssh-authenticate'
-load 'helpers/repositoriesPath'
-load 'helpers/git'
+load 'helpers/test-case-with-1-cloned-repository-and-set-up-git-hooks'
 load 'helpers/assertFileExists'
 load 'helpers/writeMockScript'
-
-repository="1_TestRepository"
-
-repositoryDir() {
-  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
-}
-
-setup() {
-  _common_setup
-  authenticate
-
-  setupAll "$repository"
-}
-
-teardown() {
-  _common_teardown
-  revoke-authentication
-}
 
 @test "if additional pre-commit scripts exist 'committing' will execute them" {
   additionalScriptsPath="$(repositoryDir)/hook-scripts/pre-commit"
