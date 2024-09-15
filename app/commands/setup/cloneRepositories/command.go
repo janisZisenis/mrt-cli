@@ -31,5 +31,5 @@ func command(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	SetupRepositories(teamInfo)
+	CloneRepositories(teamInfo)
 }

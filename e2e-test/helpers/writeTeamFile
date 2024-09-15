@@ -42,7 +42,7 @@ writeBlockedBranches() {
 }
 
 writeRepositoriesUrls() {
-  repositoriesUrls=($*)
+  repositoriesUrls=("$@")
 
   createTeamFileIfNotExisting
 
@@ -64,7 +64,7 @@ writeRepositoriesUrls() {
 }
 
 writeRepositoriesPrefixes() {
-  repositoriesPrefixes=($*)
+  repositoriesPrefixes=("$@")
 
   createTeamFileIfNotExisting
 

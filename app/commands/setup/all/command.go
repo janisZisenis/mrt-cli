@@ -4,6 +4,7 @@ import (
 	"app/commands/setup/additionalScript"
 	"app/commands/setup/cloneRepositories"
 	"app/commands/setup/installGitHooks"
+	"app/log"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +33,15 @@ func command(cmd *cobra.Command, args []string) {
 		installGitHooks.MakeCommand().Run(cmd, args)
 	}
 
+	executeAdditionalSetupScripts(cmd, args)
+}
+
+func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
+	log.Info("Executing additional setup-scripts.")
+
 	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(scriptPath string) {
 		additionalScript.MakeCommand(scriptPath).Run(cmd, args)
 	})
+
+	log.Success("Done executing additional setup-scripts.")
 }

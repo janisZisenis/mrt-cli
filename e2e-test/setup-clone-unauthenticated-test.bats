@@ -57,7 +57,8 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "if team json does not contain any repositories it prints out a message" {
-  writeRepositoriesUrls ""
+  repositoriesUrls=()
+  writeRepositoriesUrls "${repositoriesUrls[@]}"
 
   run mrt setup clone-repositories
 

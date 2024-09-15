@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func SetupRepositories(teamInfo core.TeamInfo) {
+func CloneRepositories(teamInfo core.TeamInfo) {
 	log.Info("Start cloning repositories into \"" + teamInfo.RepositoriesPath + "\"")
 	for _, repositoryUrl := range teamInfo.Repositories {
 		repositoryName := getRepositoryName(repositoryUrl)
