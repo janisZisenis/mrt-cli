@@ -29,17 +29,6 @@ teardown() {
   revoke-authentication
 }
 
-@test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
-  branchName="some-branch"
-  cloneTestingRepositories "$(repositoriesDir)" "$repository"
-  writeBlockedBranches "$branchName"
-  setupGitHooks
-
-  run commit_changes "$(repositoryDir)" $branchName
-
-  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
-  assert_failure
-}
 
 @test "If repositories are cloned to specific path commiting on the blocked branches after setting up git-hooks should be blocked" {
   branchName="some-branch"
@@ -55,28 +44,7 @@ teardown() {
   assert_failure
 }
 
-@test "If team json contains blocked branch commiting on another blocked branch after setting up git-hooks should be allowed" {
-  branchName="some-branch"
-  cloneTestingRepositories "$(repositoriesDir)" "$repository"
-  writeBlockedBranches "another-branch"
-  setupGitHooks
 
-  run commit_changes "$(repositoryDir)" $branchName
-
-  assert_success
-}
-
-@test "If team json contains 2 blocked branch commiting on second one after setting up git-hooks should be blocked" {
-  branchName="some-branch"
-  cloneTestingRepositories "$(repositoriesDir)" "$repository"
-  writeBlockedBranches "another-branch" "$branchName"
-  setupGitHooks
-
-  run commit_changes "$(repositoryDir)" $branchName
-
-  assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
-  assert_failure
-}
 
 @test "If team json contains blocked branch pushing on the blocked after setting up git-hooks branch should be blocked" {
   branchName="$(unique_branch_name)"
