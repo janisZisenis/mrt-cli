@@ -10,22 +10,23 @@ import (
 
 const ScriptsPath = "/setup/*/command"
 
-func ForScriptInPathDo(scriptsPath string, do func(filePath string)) {
-	files, _ := filepath.Glob(core.GetExecutablePath() + scriptsPath)
-	for _, file := range files {
-		do(file)
+func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
+	scripts, _ := filepath.Glob(core.GetExecutablePath() + path)
+
+	for _, script := range scripts {
+		segments := strings.Split(script, "/")
+		scriptName := segments[len(segments)-2]
+
+		do(script, scriptName)
 	}
 }
 
-func MakeCommand(filePath string) *cobra.Command {
-	segments := strings.Split(filePath, "/")
-	scriptName := segments[len(segments)-2]
-
+func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 	var command = &cobra.Command{
 		Use:   scriptName,
 		Short: "Executes additional setup script " + scriptName,
 		Run: func(cmd *cobra.Command, args []string) {
-			command(scriptName, filePath)
+			command(scriptName, scriptPath)
 		},
 	}
 

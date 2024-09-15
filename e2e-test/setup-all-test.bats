@@ -51,3 +51,18 @@ teardown() {
   assert_line --index 16  "$someScriptName executed successfully"
   assert_line --index 17  "Done executing additional setup-scripts."
 }
+
+@test "if setup is run without skipping git hooks it should not print skip message" {
+  run mrt setup all
+
+  refute_output --partial "Skipping install-git-hooks step."
+}
+
+@test "if additional setup script exists setup without skipping the script should not print skip message" {
+  scriptName="some-script"
+  writeSpyScript "$testEnvironmentDir/setup/$scriptName/command"
+
+  run mrt setup all
+
+  refute_output --partial "Skipping additional setup script: $scriptName"
+}

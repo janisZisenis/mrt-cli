@@ -5,11 +5,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const commandName = "install-git-hooks"
+const CommandName = "install-git-hooks"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   commandName,
+		Use:   CommandName,
 		Short: "Installs git hooks to all repositories found in the " + core.RepositoriesPath + " from " + core.TeamFile,
 		Run:   command,
 	}

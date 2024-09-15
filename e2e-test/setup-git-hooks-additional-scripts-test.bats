@@ -4,15 +4,15 @@ load 'helpers/writeMockScript'
 
 @test "if additional pre-commit scripts exist 'committing' will execute them" {
   additionalScriptsPath="$(repositoryDir)/hook-scripts/pre-commit"
-  firstScriptName="$additionalScriptsPath/script1"
-  secondScriptName="$additionalScriptsPath/script2"
-  writeSpyScript "$firstScriptName"
-  writeSpyScript "$secondScriptName"
+  firstScript="$additionalScriptsPath/script1"
+  secondScript="$additionalScriptsPath/script2"
+  writeSpyScript "$firstScript"
+  writeSpyScript "$secondScript"
 
   commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-  assert_spy_file_exists "$firstScriptName"
-  assert_spy_file_exists "$secondScriptName"
+  assert_spy_file_exists "$firstScript"
+  assert_spy_file_exists "$secondScript"
 }
 
 @test "if additional commit-msg scripts exits with failure 'commiting' will also fail" {

@@ -16,7 +16,7 @@ func CloneRepositories(teamInfo core.TeamInfo) {
 		log.Info("Cloning " + repositoryUrl + " into " + "repositories" + "/" + folderName)
 		clone(repositoryUrl, repositoryDirectory)
 	}
-	log.Info("Cloning repositories done")
+	log.Success("Cloning repositories done")
 }
 
 func getRepositoryName(repositoryUrl string) string {

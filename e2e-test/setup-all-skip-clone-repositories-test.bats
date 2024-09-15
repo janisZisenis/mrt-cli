@@ -20,7 +20,7 @@ teardown() {
   revoke-authentication
 }
 
-@test "--skip-clone-repositories" {
+@test "if setup is run with skipping the clone step it should not clone the repositories" {
   repository="1_TestRepository"
   repositoryUrl="$(getTestingRepositoryUrl "$repository")"
   writeRepositoriesUrls "$repositoryUrl"
@@ -28,5 +28,15 @@ teardown() {
   run mrt setup all --skip-clone-repositories
 
   assert_directory_does_not_exist "$testEnvironmentDir/$(default_repositories_path)/$repository"
+}
+
+@test "if setup is run with skipping the clone step it should print a skip message" {
+  repository="1_TestRepository"
+  repositoryUrl="$(getTestingRepositoryUrl "$repository")"
+  writeRepositoriesUrls "$repositoryUrl"
+
+  run mrt setup all --skip-clone-repositories
+
+  assert_line --index 0 "Skipping clone-repositories step."
 }
 

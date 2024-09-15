@@ -6,11 +6,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const commandName = "clone-repositories"
+const CommandName = "clone-repositories"
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   commandName,
+		Use:   CommandName,
 		Short: "Clones all repositories from " + core.TeamFile + " file",
 		Run:   command,
 	}

@@ -20,8 +20,8 @@ func MakeCommand() *cobra.Command {
 	command.AddCommand(cloneRepositories.MakeCommand())
 	command.AddCommand(installGitHooks.MakeCommand())
 
-	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(filePath string) {
-		command.AddCommand(additionalScript.MakeCommand(filePath))
+	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(scriptPath string, scriptName string) {
+		command.AddCommand(additionalScript.MakeCommand(scriptPath, scriptName))
 	})
 
 	return command

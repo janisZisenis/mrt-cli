@@ -18,7 +18,7 @@ setup() {
   authenticate
 
   writeRepositoriesUrls "$repositoryUrl"
-  mrt setup all --skip-git-hooks
+  run mrt setup all --skip-install-git-hooks
 }
 
 teardown() {
@@ -50,4 +50,8 @@ teardown() {
   run commit_changes "$(repositoryDir)" "$branchName" "some-message"
 
   assert_success
+}
+
+@test "If setup is run with skipping git hooks, it should print skip message" {
+  assert_line --partial "Skipping install-git-hooks step."
 }

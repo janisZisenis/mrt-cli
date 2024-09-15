@@ -8,9 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const skipCloneFlag = "skip-clone-repositories"
-const skipHooksFlag = "skip-git-hooks"
 const scriptName = "all"
+const skipFlagPrefix = "skip-"
+const skipCloneFlag = skipFlagPrefix + cloneRepositories.CommandName
+const skipHooksFlag = skipFlagPrefix + installGitHooks.CommandName
 
 func MakeCommand() *cobra.Command {
 	var command = &cobra.Command{
@@ -25,6 +26,12 @@ func MakeCommand() *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	command.Flags().Lookup(skipCloneFlag).NoOptDefVal = "true"
 
+	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(filePath string, scriptName string) {
+		var skipFlag = skipFlagPrefix + scriptName
+		command.Flags().Bool(skipFlag, false, "Skips setup script: "+scriptName)
+		command.Flags().Lookup(skipFlag).NoOptDefVal = "true"
+	})
+
 	return command
 }
 
@@ -34,10 +41,14 @@ func command(cmd *cobra.Command, args []string) {
 
 	if !shouldSkipClone {
 		cloneRepositories.MakeCommand().Run(cmd, args)
+	} else {
+		log.Info("Skipping clone-repositories step.")
 	}
 
 	if !shouldSkipHooks {
 		installGitHooks.MakeCommand().Run(cmd, args)
+	} else {
+		log.Info("Skipping install-git-hooks step.")
 	}
 
 	executeAdditionalSetupScripts(cmd, args)
@@ -46,8 +57,13 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Info("Executing additional setup-scripts.")
 
-	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(scriptPath string) {
-		additionalScript.MakeCommand(scriptPath).Run(cmd, args)
+	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(scriptPath string, scriptName string) {
+		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
+		if !skipFlag {
+			additionalScript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
+		} else {
+			log.Info("Skipping additional setup script: " + scriptName)
+		}
 	})
 
 	log.Success("Done executing additional setup-scripts.")

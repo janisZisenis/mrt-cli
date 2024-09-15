@@ -1,6 +1,6 @@
 #!/bin/bash
 
-load 'helpers/assertFileExists'
+load 'helpers/fileAssertions'
 
 spyFileSuffix() {
   echo "Executed"
@@ -90,4 +90,8 @@ assert_spy_file_has_content() {
 
 assert_spy_file_exists() {
   assert_file_exists "$1$(spyFileSuffix)"
+}
+
+assert_spy_file_does_not_exist() {
+  assert_file_does_not_exist "$1$(spyFileSuffix)"
 }
