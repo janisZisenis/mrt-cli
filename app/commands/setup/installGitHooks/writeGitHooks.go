@@ -3,7 +3,7 @@ package installGitHooks
 import (
 	"app/commands/githook"
 	"app/core"
-	"fmt"
+	"app/log"
 	"os"
 )
 
@@ -20,6 +20,6 @@ func writeGitHook(repositoryDirectory string, hookName string) {
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
 	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0755)
 	if err != nil {
-		fmt.Printf("unable to write file: %w", err)
+		log.Info("unable to write file: " + err.Error())
 	}
 }

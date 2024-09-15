@@ -45,10 +45,10 @@ test_if_additional_setup_script_succeeds_setup_should_print_success_and_output()
 
   run mrt setup all
 
-  assert_line --index 4 "Execute additional setup-script: $commandName"
-  assert_line --index 5 "$someOutput"
-  assert_line --index 6 "$commandName executed successfully"
-  assert_line --index 7 ""
+  assert_line --index 8 "Execute additional setup-script: $commandName"
+  assert_line --index 9 "$someOutput"
+  assert_line --index 10 "$commandName executed successfully"
+  assert_line --index 11 ""
 }
 
 @test "if some additional setup script fails with output it will print the script's output and the failure" {
@@ -69,10 +69,10 @@ test_if_additional_setup_script_fails_setup_should_print_failure_and_output() {
 
   run mrt setup all
 
-  assert_line --index 4 "Execute additional setup-script: $commandName"
-  assert_line --index 5 "$someOutput"
-  assert_line --index 6 "$commandName failed with: exit status $exitCode"
-  assert_line --index 7 ""
+  assert_line --index 8 "Execute additional setup-script: $commandName"
+  assert_line --index 9 "$someOutput"
+  assert_line --index 10 "$commandName failed with: exit status $exitCode"
+  assert_line --index 11 ""
 }
 
 @test "if two additional setup scripts exist it will execute both" {
