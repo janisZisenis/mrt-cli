@@ -1,5 +1,5 @@
-load 'helpers/assertDirectoryExists'
-load 'helpers/assertDirectoryDoesNotExist'
+load 'helpers/directoryAssertions'
+load 'helpers/directoryAssertions'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'

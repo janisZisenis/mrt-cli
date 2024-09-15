@@ -3,16 +3,6 @@
 load 'helpers/writeTeamFile'
 load 'helpers/runMrtInTestEnvironment'
 
-setupAll() {
-  readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
-  setupAllUrls "${repositoriesUrls[@]}"
-}
-
-setupAllUrls() {
-  writeRepositoriesUrls "$@"
-
-  mrt setup all
-}
 
 setupClone() {
   readarray -t repositoriesUrls < <(getRepositoryUrls "$@")

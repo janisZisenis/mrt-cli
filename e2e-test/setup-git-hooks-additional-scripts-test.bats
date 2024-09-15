@@ -1,5 +1,5 @@
 load 'helpers/test-case-with-1-cloned-repository-and-set-up-git-hooks'
-load 'helpers/assertFileExists'
+load 'helpers/fileAssertions'
 load 'helpers/writeMockScript'
 
 @test "if additional pre-commit scripts exist 'committing' will execute them" {
