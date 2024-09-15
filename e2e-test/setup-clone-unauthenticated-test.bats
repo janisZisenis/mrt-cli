@@ -56,16 +56,18 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
   assert_line --index 2 "You have no access to $repositoryUrl. Please make sure you have a valid ssh key in place."
 }
 
-@test "if team json does not contains any repository it exits with error" {
-  run setupClone ""
+@test "if team json does not contain any repositories it prints out a message" {
+  writeRepositoriesUrls ""
 
-  assert_failure
-  assert_output "Your team file does not contain any repositories"
-}
-
-@test "if team json does not exist it exits with error" {
   run mrt setup clone-repositories
 
-  assert_failure
-  assert_output 'Could not read team file. Please make sure a "team.json" file exists next to the executable and that it follows proper JSON syntax'
+  assert_success
+  assert_output 'The team file does not contain any repositories, no repositories to clone.'
+}
+
+@test "if team json does not exist it prints out a message" {
+  run mrt setup clone-repositories
+
+  assert_success
+  assert_output 'Could not read team file. To setup your repositories create a "team.json" file and add repositories to it.'
 }

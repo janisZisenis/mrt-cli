@@ -18,6 +18,6 @@ func MakeCommand() *cobra.Command {
 }
 
 func command(cmd *cobra.Command, args []string) {
-	teamInfo := core.LoadTeamConfiguration()
+	teamInfo, _ := core.LoadTeamConfiguration()
 	setupGitHooks(teamInfo)
 }

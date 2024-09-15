@@ -1,17 +1,25 @@
 package core
 
 import (
-	"app/log"
+	"errors"
 	"github.com/spf13/viper"
-	"os"
 )
 
 const teamFileName = "team"
 const teamFileExtension = "json"
+const defaultRepositoriesPath = "repositories"
 const TeamFile = teamFileName + "." + teamFileExtension
 const RepositoriesPath = "repositoriesPath"
 
 type TeamInfo struct {
+	RepositoriesPath     string
+	Repositories         []string
+	RepositoriesPrefixes []string
+	CommitPrefixRegex    string
+	BlockedBranches      []string
+}
+
+type TeamJson struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`
 	Repositories         []string `json:"repositories"`
 	RepositoriesPrefixes []string `json:"repositoriesPrefixes"`
@@ -19,25 +27,40 @@ type TeamInfo struct {
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 
-func LoadTeamConfiguration() TeamInfo {
-	var teamInfo TeamInfo
+var CouldNotReadTeamFile = errors.New("could not read team file")
+
+func LoadTeamConfiguration() (TeamInfo, error) {
+	var teamJson TeamJson
 
 	viper.AddConfigPath(GetExecutablePath())
 	viper.SetConfigName(teamFileName)
 	viper.SetConfigType(teamFileExtension)
 
 	readErr := viper.ReadInConfig()
-	unmarshalErr := viper.Unmarshal(&teamInfo)
+	unmarshalErr := viper.Unmarshal(&teamJson)
 
 	if readErr != nil || unmarshalErr != nil {
-		log.Error("Could not read team file. Please make sure a \"" + TeamFile + "\" file exists next " +
-			"to the executable and that it follows proper JSON syntax")
-		os.Exit(1)
+		return makeEmptyTeamInfo(), CouldNotReadTeamFile
 	}
 
+	var teamInfo = makeTeamInfo(teamJson)
 	if teamInfo.RepositoriesPath == "" {
-		teamInfo.RepositoriesPath = "repositories"
+		teamInfo.RepositoriesPath = defaultRepositoriesPath
 	}
 
-	return teamInfo
+	return teamInfo, nil
+}
+
+func makeEmptyTeamInfo() TeamInfo {
+	return TeamInfo{}
+}
+
+func makeTeamInfo(json TeamJson) TeamInfo {
+	return TeamInfo{
+		RepositoriesPath:     json.RepositoriesPath,
+		Repositories:         json.Repositories,
+		RepositoriesPrefixes: json.RepositoriesPrefixes,
+		CommitPrefixRegex:    json.CommitPrefixRegex,
+		BlockedBranches:      json.BlockedBranches,
+	}
 }

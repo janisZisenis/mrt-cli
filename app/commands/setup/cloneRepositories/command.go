@@ -4,7 +4,6 @@ import (
 	"app/core"
 	"app/log"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 const commandName = "clone-repositories"
@@ -20,11 +19,16 @@ func MakeCommand() *cobra.Command {
 }
 
 func command(cmd *cobra.Command, args []string) {
-	teamInfo := core.LoadTeamConfiguration()
+	teamInfo, err := core.LoadTeamConfiguration()
+
+	if err != nil {
+		log.Info("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" file and add repositories to it.")
+		return
+	}
 
 	if len(teamInfo.Repositories) == 0 {
-		log.Warning("Your team file does not contain any repositories")
-		os.Exit(1)
+		log.Info("The team file does not contain any repositories, no repositories to clone.")
+		return
 	}
 
 	SetupRepositories(teamInfo)

@@ -27,7 +27,7 @@ func MakeCommand() *cobra.Command {
 }
 
 func command(cmd *cobra.Command, args []string) {
-	var teamInfo = core.LoadTeamConfiguration()
+	var teamInfo, _ = core.LoadTeamConfiguration()
 	hookName, _ := cmd.Flags().GetString(hookNameFlag)
 	repositoryPath, _ := cmd.Flags().GetString(repositoryPath)
 
