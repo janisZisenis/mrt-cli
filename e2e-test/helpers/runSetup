@@ -5,13 +5,22 @@ load 'helpers/runMrtInTestEnvironment'
 
 setupAll() {
   readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
-  writeRepositoriesUrls "${repositoriesUrls[@]}"
-
-  mrt setup all
+  setupAllUrls "${repositoriesUrls[@]}"
 }
 
 setupAllUrls() {
   writeRepositoriesUrls "$@"
 
   mrt setup all
+}
+
+setupClone() {
+  readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
+  setupCloneUrls "${repositoriesUrls[@]}"
+}
+
+setupCloneUrls() {
+  writeRepositoriesUrls "$@"
+
+  mrt setup clone-repositories
 }

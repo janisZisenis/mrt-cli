@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cloneTestingRepository() {
+  git clone "$(getTestingRepositoryUrl "$1")" "$2/$1"
+}
