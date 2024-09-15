@@ -3,6 +3,7 @@ package setup
 import (
 	"app/commands/setup/all"
 	"app/commands/setup/cloneRepositories"
+	"app/commands/setup/installGitHooks"
 	"github.com/spf13/cobra"
 )
 
@@ -16,6 +17,7 @@ func MakeCommand() *cobra.Command {
 
 	command.AddCommand(all.MakeCommand())
 	command.AddCommand(cloneRepositories.MakeCommand())
+	command.AddCommand(installGitHooks.MakeCommand())
 
 	return command
 }

@@ -24,3 +24,7 @@ setupCloneUrls() {
 
   mrt setup clone-repositories
 }
+
+setupGitHooks() {
+  mrt setup install-git-hooks
+}

@@ -61,7 +61,7 @@ teardown() {
     "1_TestRepository"
     "2_TestRepository"
   )
-  cloneTestingRepository "${repositories[0]}" "$(repositoriesDir)"
+  cloneTestingRepositories "$(repositoriesDir)" "${repositories[0]}"
 
   run setupClone "${repositories[@]}"
 

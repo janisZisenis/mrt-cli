@@ -16,7 +16,7 @@ hook_name=$(basename "$0")
 }
 
 func writeGitHook(repositoryDirectory string, hookName string) {
-	hooksPath := repositoryDirectory + "/.git/hooks/"
+	hooksPath := repositoryDirectory + "/hooks/"
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
 	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0755)
 	if err != nil {

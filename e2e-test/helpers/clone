@@ -1,5 +1,12 @@
 #!/bin/bash
 
-cloneTestingRepository() {
-  git clone "$(getTestingRepositoryUrl "$1")" "$2/$1"
+cloneTestingRepositories() {
+  repositoryDir=$1
+  shift
+  repositoriesToClone=("$@")
+
+  for repositoryToClone in "${repositoriesToClone[@]}"
+  do
+    git clone "$(getTestingRepositoryUrl "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
+  done
 }
