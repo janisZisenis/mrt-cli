@@ -22,8 +22,8 @@ func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string
 
 type ExitCode = int
 
-func ExecuteScript(file string, args []string) ExitCode {
-	script := exec.Command(file, args...)
+func ExecuteScript(scriptPath string, args []string) ExitCode {
+	script := exec.Command(scriptPath, args...)
 	script.Stdout = os.Stdout
 	script.Stdin = os.Stdin
 	script.Stderr = os.Stderr

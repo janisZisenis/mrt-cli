@@ -13,15 +13,15 @@ func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 		Use:   scriptName,
 		Short: "Executes run script: " + scriptName,
 		Run: func(cmd *cobra.Command, args []string) {
-			command(scriptPath)
+			command(scriptPath, args)
 		},
 	}
 
 	return command
 }
 
-func command(scriptPath string) {
-	args := []string{core.GetExecutablePath()}
-	exitCode := core.ExecuteScript(scriptPath, args)
+func command(scriptPath string, args []string) {
+	scriptArgs := append([]string{core.GetExecutablePath()}, args...)
+	exitCode := core.ExecuteScript(scriptPath, scriptArgs)
 	os.Exit(exitCode)
 }

@@ -3,5 +3,5 @@
 load 'helpers/runMrtInTestEnvironment'
 
 runScript() {
-  mrt run "$1"
+  mrt run "$@"
 }

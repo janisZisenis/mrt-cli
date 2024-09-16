@@ -13,21 +13,23 @@ teardown() {
 }
 
 @test "if some-script is run it should execute it" {
-  test_if_run_is_executed_with_script_name_it_should_execute_the_specified_script "some-script"
+  test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_to_it "some-script" "some" "parameter"
 }
 
 @test "if another-script is run it should execute it" {
-  test_if_run_is_executed_with_script_name_it_should_execute_the_specified_script "another-script"
+  test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_to_it "another-script" "another" "parameter"
 }
 
-test_if_run_is_executed_with_script_name_it_should_execute_the_specified_script() {
+test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_to_it() {
   scriptName=$1
+  shift
+  parameters=("$@")
   scriptPath="$testEnvironmentDir/run/$scriptName/command"
   writeSpyScript "$scriptPath"
 
-  run runScript "$scriptName"
+  run runScript "$scriptName" "${parameters[@]}"
 
-  assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvironmentDir")"
+  assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvironmentDir ${parameters[*]}")"
 }
 
 @test "if script succeeds with output it will print the script's output" {
