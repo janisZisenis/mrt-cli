@@ -51,9 +51,9 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalScripts(repositoryPath string, hookName string, args []string) {
 	files, _ := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
 	for _, file := range files {
-		err := core.ExecuteScript(file, args)
+		exitCode := core.ExecuteScript(file, args)
 
-		if err != nil {
+		if exitCode != 0 {
 			os.Exit(1)
 		}
 	}

@@ -1,30 +1,18 @@
-package additionalScript
+package setupScript
 
 import (
 	"app/core"
 	"app/log"
 	"github.com/spf13/cobra"
-	"path/filepath"
-	"strings"
+	"strconv"
 )
 
 const ScriptsPath = "/setup/*/command"
 
-func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
-	scripts, _ := filepath.Glob(core.GetExecutablePath() + path)
-
-	for _, script := range scripts {
-		segments := strings.Split(script, "/")
-		scriptName := segments[len(segments)-2]
-
-		do(script, scriptName)
-	}
-}
-
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 	var command = &cobra.Command{
 		Use:   scriptName,
-		Short: "Executes additional setup script " + scriptName,
+		Short: "Executes setup script " + scriptName,
 		Run: func(cmd *cobra.Command, args []string) {
 			command(scriptName, scriptPath)
 		},
@@ -37,11 +25,11 @@ func command(scriptName string, filePath string) {
 	log.Info("Execute additional setup-script: " + scriptName)
 
 	args := []string{core.GetExecutablePath()}
-	err := core.ExecuteScript(filePath, args)
+	exitCode := core.ExecuteScript(filePath, args)
 
-	if err != nil {
-		log.Error(scriptName + " failed with: " + err.Error())
-	} else {
+	if exitCode == 0 {
 		log.Success(scriptName + " executed successfully")
+	} else {
+		log.Error(scriptName + " failed with: exit status " + strconv.Itoa(exitCode))
 	}
 }

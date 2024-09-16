@@ -1,9 +1,10 @@
 package all
 
 import (
-	"app/commands/setup/additionalScript"
 	"app/commands/setup/cloneRepositories"
 	"app/commands/setup/installGitHooks"
+	"app/commands/setup/setupScript"
+	"app/core"
 	"app/log"
 	"github.com/spf13/cobra"
 )
@@ -26,7 +27,7 @@ func MakeCommand() *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	command.Flags().Lookup(skipCloneFlag).NoOptDefVal = "true"
 
-	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(filePath string, scriptName string) {
+	core.ForScriptInPathDo(setupScript.ScriptsPath, func(filePath string, scriptName string) {
 		var skipFlag = skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup script: "+scriptName)
 		command.Flags().Lookup(skipFlag).NoOptDefVal = "true"
@@ -57,10 +58,10 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Info("Executing additional setup-scripts.")
 
-	additionalScript.ForScriptInPathDo(additionalScript.ScriptsPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(setupScript.ScriptsPath, func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 		if !skipFlag {
-			additionalScript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
+			setupScript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
 		} else {
 			log.Info("Skipping additional setup script: " + scriptName)
 		}
