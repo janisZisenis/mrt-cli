@@ -15,6 +15,7 @@ func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			command(scriptPath, args)
 		},
+		DisableFlagParsing: true,
 	}
 
 	return command

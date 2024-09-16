@@ -5,7 +5,7 @@ set -e
 rootDir=$1
 shift
 
-if [[ "$1" == "clean" ]]
+if [[ "$1" == "--clean" ]]
 then
   echo "Clean build for e2e-tests."
   "$rootDir"/mrt run build
@@ -18,7 +18,7 @@ if [[ $# -eq 0 ]]
 then
   files=("$rootDir"/e2e-test/*.bats)
 else
-  files=("@$")
+  files=("$@")
 fi
 
 echo "Test files to be executed:"

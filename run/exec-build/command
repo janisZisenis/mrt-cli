@@ -6,4 +6,4 @@ rootDir=$1
 shift
 
 "$rootDir"/mrt run build
-"$rootDir"/build/mrt run "$@"
+"$rootDir"/build/mrt "$@"

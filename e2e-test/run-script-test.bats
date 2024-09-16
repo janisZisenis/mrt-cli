@@ -13,7 +13,7 @@ teardown() {
 }
 
 @test "if some-script is run it should execute it" {
-  test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_to_it "some-script" "some" "parameter"
+  test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_to_it "some-script" "some" "--flag"
 }
 
 @test "if another-script is run it should execute it" {
