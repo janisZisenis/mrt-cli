@@ -22,7 +22,7 @@ func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 }
 
 func command(scriptName string, filePath string) {
-	log.Info("Execute additional setup-script: " + scriptName)
+	log.Info("Execute setup-script: " + scriptName)
 
 	args := []string{core.GetExecutablePath()}
 	exitCode := core.ExecuteScript(filePath, args)

@@ -16,16 +16,16 @@ teardown() {
   revoke-authentication
 }
 
-@test "if team file contains repository and two additional setup scripts exist it should clone the repository, install git-hooks and execute the scripts" {
+@test "if team file contains repository and two setup scripts exist it should clone the repository, install git-hooks and execute the scripts" {
   repository="1_TestRepository"
   repositoryUrl="$(getTestingRepositoryUrl "$repository")"
   writeRepositoriesUrls "$repositoryUrl"
   repositoryDir="$testEnvironmentDir/$(default_repositories_path)/$repository"
-  additionalScriptsDir="$testEnvironmentDir/setup"
+  scriptsDir="$testEnvironmentDir/setup"
   someScriptName="some-script"
   anotherScriptName="another-script"
-  someSetupScript="$additionalScriptsDir/$someScriptName/command"
-  anotherSetupScript="$additionalScriptsDir/$anotherScriptName/command"
+  someSetupScript="$scriptsDir/$someScriptName/command"
+  anotherSetupScript="$scriptsDir/$anotherScriptName/command"
   writeSpyScript "$someSetupScript"
   writeSpyScript "$anotherSetupScript"
 
@@ -44,12 +44,12 @@ teardown() {
   assert_line --index 9   "Installing git-hooks to \"$(absolutePath "$repositoryDir")/.git\""
   assert_line --index 10  "Done installing git-hooks to \"$(absolutePath "$repositoryDir")/.git\""
   assert_line --index 11  "Done installing git-hooks."
-  assert_line --index 12  "Executing additional setup-scripts."
-  assert_line --index 13  "Execute additional setup-script: $anotherScriptName"
+  assert_line --index 12  "Executing setup-scripts."
+  assert_line --index 13  "Execute setup-script: $anotherScriptName"
   assert_line --index 14  "$anotherScriptName executed successfully"
-  assert_line --index 15  "Execute additional setup-script: $someScriptName"
+  assert_line --index 15  "Execute setup-script: $someScriptName"
   assert_line --index 16  "$someScriptName executed successfully"
-  assert_line --index 17  "Done executing additional setup-scripts."
+  assert_line --index 17  "Done executing setup-scripts."
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {
@@ -58,11 +58,11 @@ teardown() {
   refute_output --partial "Skipping install-git-hooks step."
 }
 
-@test "if additional setup script exists setup without skipping the script should not print skip message" {
+@test "if setup script exists setup without skipping the script should not print skip message" {
   scriptName="some-script"
   writeSpyScript "$testEnvironmentDir/setup/$scriptName/command"
 
   run mrt setup all
 
-  refute_output --partial "Skipping additional setup script: $scriptName"
+  refute_output --partial "Skipping setup script: $scriptName"
 }

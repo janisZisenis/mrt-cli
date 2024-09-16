@@ -2,10 +2,10 @@ load 'helpers/test-case-with-1-cloned-repository-and-set-up-git-hooks'
 load 'helpers/fileAssertions'
 load 'helpers/writeMockScript'
 
-@test "if additional pre-commit scripts exist 'committing' will execute them" {
-  additionalScriptsPath="$(repositoryDir)/hook-scripts/pre-commit"
-  firstScript="$additionalScriptsPath/script1"
-  secondScript="$additionalScriptsPath/script2"
+@test "if pre-commit scripts exist 'committing' will execute them" {
+  scriptsPath="$(repositoryDir)/hook-scripts/pre-commit"
+  firstScript="$scriptsPath/script1"
+  secondScript="$scriptsPath/script2"
   writeSpyScript "$firstScript"
   writeSpyScript "$secondScript"
 
@@ -15,19 +15,19 @@ load 'helpers/writeMockScript'
   assert_spy_file_exists "$secondScript"
 }
 
-@test "if additional commit-msg scripts exits with failure 'commiting' will also fail" {
-  additionalScriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
-  writeStubScript "$additionalScriptPath" "1" "some-output"
+@test "if commit-msg scripts exits with failure 'commiting' will also fail" {
+  scriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
+  writeStubScript "$scriptPath" "1" "some-output"
 
   run commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
   assert_failure
 }
 
-@test "if additional commit-msg scripts has output 'commiting' will contain the same output" {
+@test "if commit-msg scripts has output 'commiting' will contain the same output" {
   scriptOutput="some-output"
-  additionalScriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
-  writeStubScript "$additionalScriptPath" "0" "$scriptOutput"
+  scriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
+  writeStubScript "$scriptPath" "0" "$scriptOutput"
 
   run commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
@@ -35,17 +35,17 @@ load 'helpers/writeMockScript'
 }
 
 @test "if pre-commit hook gets executed, it gets passed the git parameters" {
-  additionalScriptPath="$(repositoryDir)/hook-scripts/pre-commit/script"
-  writeSpyScript "$additionalScriptPath"
+  scriptPath="$(repositoryDir)/hook-scripts/pre-commit/script"
+  writeSpyScript "$scriptPath"
 
   commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-  assert_spy_file_has_content "$additionalScriptPath" ""
+  assert_spy_file_has_content "$scriptPath" ""
 }
 
 @test "if pre-push hook gets executed, it gets passed the git parameters" {
-  additionalScriptPath="$(repositoryDir)/hook-scripts/pre-push/script"
-  writeSpyScript "$additionalScriptPath"
+  scriptPath="$(repositoryDir)/hook-scripts/pre-push/script"
+  writeSpyScript "$scriptPath"
   branchName="$(unique_branch_name)"
   commit_changes "$(repositoryDir)" "$branchName" "some-message"
 
@@ -53,15 +53,15 @@ load 'helpers/writeMockScript'
 
   originUrl=$(git -C "$(repositoryDir)" config --get remote.origin.url)
   remoteName=$(git remote)
-  assert_spy_file_has_content "$additionalScriptPath" "$remoteName $originUrl"
+  assert_spy_file_has_content "$scriptPath" "$remoteName $originUrl"
 }
 
 @test "if commit-msg hook gets executed, it gets passed the git parameters" {
-  additionalScriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
-  writeSpyScript "$additionalScriptPath"
+  scriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
+  writeSpyScript "$scriptPath"
 
   commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-  assert_spy_file_has_content "$additionalScriptPath" ".git/COMMIT_EDITMSG"
+  assert_spy_file_has_content "$scriptPath" ".git/COMMIT_EDITMSG"
 }
 

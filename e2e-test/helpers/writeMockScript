@@ -7,14 +7,14 @@ spyFileSuffix() {
 }
 
 writeSpyScript() {
-  local additionalScriptPath
-  additionalScriptPath=$1
+  local scriptPath
+  scriptPath=$1
 
-  mkdir -p "$(dirname "$additionalScriptPath")"
+  mkdir -p "$(dirname "$scriptPath")"
   local scriptName
-  scriptName="$(basename "$additionalScriptPath")"
+  scriptName="$(basename "$scriptPath")"
 
-cat << EOF > "$additionalScriptPath"
+cat << EOF > "$scriptPath"
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -22,36 +22,36 @@ echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
 
 EOF
 
-  chmod +x "$additionalScriptPath"
+  chmod +x "$scriptPath"
 }
 
 writeStubScript() {
-  local additionalScriptPath=$1
+  local scriptPath=$1
   local exitCode=$2
   local output=$3
 
-  mkdir -p "$(dirname "$additionalScriptPath")"
+  mkdir -p "$(dirname "$scriptPath")"
   local scriptName
-  scriptName="$(basename "$additionalScriptPath")"
+  scriptName="$(basename "$scriptPath")"
 
-cat << EOF > "$additionalScriptPath"
+cat << EOF > "$scriptPath"
 #!/bin/bash
 
 echo "$output"
 exit $exitCode
 EOF
 
-  chmod +x "$additionalScriptPath"
+  chmod +x "$scriptPath"
 }
 
 writeScriptRequestingInput() {
-  local additionalScriptPath=$1
+  local scriptPath=$1
 
-  mkdir -p "$(dirname "$additionalScriptPath")"
+  mkdir -p "$(dirname "$scriptPath")"
   local scriptName
-  scriptName="$(basename "$additionalScriptPath")"
+  scriptName="$(basename "$scriptPath")"
 
-cat << EOF > "$additionalScriptPath"
+cat << EOF > "$scriptPath"
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -59,24 +59,24 @@ read -r input
 touch "\$SCRIPT_DIR/\$input"
 EOF
 
-  chmod +x "$additionalScriptPath"
+  chmod +x "$scriptPath"
 }
 
 writeStdErrScript() {
-  local additionalScriptPath=$1
+  local scriptPath=$1
   local errorMessage=$2
 
-  mkdir -p "$(dirname "$additionalScriptPath")"
+  mkdir -p "$(dirname "$scriptPath")"
   local scriptName
-  scriptName="$(basename "$additionalScriptPath")"
+  scriptName="$(basename "$scriptPath")"
 
-cat << EOF > "$additionalScriptPath"
+cat << EOF > "$scriptPath"
 #!/bin/bash
 
 echo "$errorMessage" 1>&2
 EOF
 
-  chmod +x "$additionalScriptPath"
+  chmod +x "$scriptPath"
 }
 
 assert_spy_file_has_content() {

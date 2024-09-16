@@ -56,16 +56,16 @@ func command(cmd *cobra.Command, args []string) {
 }
 
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
-	log.Info("Executing additional setup-scripts.")
+	log.Info("Executing setup-scripts.")
 
 	core.ForScriptInPathDo(setupScript.ScriptsPath, func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 		if !skipFlag {
 			setupScript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
 		} else {
-			log.Info("Skipping additional setup script: " + scriptName)
+			log.Info("Skipping setup script: " + scriptName)
 		}
 	})
 
-	log.Success("Done executing additional setup-scripts.")
+	log.Success("Done executing setup-scripts.")
 }

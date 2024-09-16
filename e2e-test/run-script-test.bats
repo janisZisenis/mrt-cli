@@ -42,14 +42,14 @@ test_if_run_is_executed_with_script_name_it_should_execute_the_specified_script(
 
 @test "if script is requesting input it should process the input" {
   scriptName="input"
-  additionalScriptsDir="$testEnvironmentDir/run/$scriptName"
-  additionalScriptsPath="$additionalScriptsDir/command"
-  writeScriptRequestingInput "$additionalScriptsPath"
+  scriptsDir="$testEnvironmentDir/run/$scriptName"
+  scriptsPath="$scriptsDir/command"
+  writeScriptRequestingInput "$scriptsPath"
   input="some-input"
 
   run runScript $scriptName <<< $input
 
-  assert_file_exists "$additionalScriptsDir/$input"
+  assert_file_exists "$scriptsDir/$input"
 }
 
 @test "if script writes to stderr it outputs stderr" {

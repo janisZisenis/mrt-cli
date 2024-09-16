@@ -16,12 +16,12 @@ teardown() {
   _common_teardown
 }
 
-@test "if two additional setup scripts exist setup all with skipping the first it should only run the second" {
+@test "if two setup scripts exist setup all with skipping the first it should only run the second" {
   someScriptName="some-script"
   anotherScriptName="another-script"
-  additionalScriptsDir="$testEnvironmentDir/setup"
-  someScript="$additionalScriptsDir/$someScriptName/command"
-  anotherScript="$additionalScriptsDir/$anotherScriptName/command"
+  scriptsDir="$testEnvironmentDir/setup"
+  someScript="$scriptsDir/$someScriptName/command"
+  anotherScript="$scriptsDir/$anotherScriptName/command"
   writeSpyScript "$someScript"
   writeSpyScript "$anotherScript"
 
@@ -31,12 +31,12 @@ teardown() {
   assert_spy_file_exists "$anotherScript"
 }
 
-@test "if two additional setup scripts exist setup all with skipping the second it should only run the first" {
+@test "if two setup scripts exist setup all with skipping the second it should only run the first" {
   someScriptName="some-script"
   anotherScriptName="another-script"
-  additionalScriptsDir="$testEnvironmentDir/setup"
-  someScript="$additionalScriptsDir/$someScriptName/command"
-  anotherScript="$additionalScriptsDir/$anotherScriptName/command"
+  scriptsDir="$testEnvironmentDir/setup"
+  someScript="$scriptsDir/$someScriptName/command"
+  anotherScript="$scriptsDir/$anotherScriptName/command"
   writeSpyScript "$someScript"
   writeSpyScript "$anotherScript"
 
@@ -46,12 +46,12 @@ teardown() {
   assert_spy_file_does_not_exist "$anotherScript"
 }
 
-@test "if one additional setup scripts exists setup all with skipping the script prints out skip message" {
+@test "if one setup scripts exists setup all with skipping the script prints out skip message" {
   scriptName="some-script"
   script="$testEnvironmentDir/setup/$scriptName/command"
   writeSpyScript "$script"
 
   run mrt setup all "--skip-$scriptName"
 
-  assert_output --partial "Skipping additional setup script: $scriptName"
+  assert_output --partial "Skipping setup script: $scriptName"
 }

@@ -14,18 +14,18 @@ teardown() {
   _common_teardown
 }
 
-@test "if additional setup script (some-script) exists executing it will pass the team folder path as parameter" {
-  test_if_additional_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter "some-script"
+@test "if setup script (some-script) exists executing it will pass the team folder path as parameter" {
+  test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter "some-script"
 }
 
-@test "if additional setup script (another-script) exists executing it will pass the team folder path as parameter" {
-  test_if_additional_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter "another-script"
+@test "if setup script (another-script) exists executing it will pass the team folder path as parameter" {
+  test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter "another-script"
 }
 
-test_if_additional_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter() {
+test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter() {
   scriptName=$1
-  additionalScriptsDir="$testEnvironmentDir/setup"
-  scriptPath="$additionalScriptsDir/$scriptName/command"
+  scriptsDir="$testEnvironmentDir/setup"
+  scriptPath="$scriptsDir/$scriptName/command"
   writeSpyScript "$scriptPath"
 
   mrt setup "$scriptName"
@@ -33,19 +33,19 @@ test_if_additional_setup_script_exists_executing_it_will_pass_the_team_folder_as
   assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvironmentDir")"
 }
 
-@test "if additional setup script succeeds with output it will print the script's output" {
+@test "if setup script succeeds with output it will print the script's output" {
   scriptName="some-script"
   someOutput="some-output"
   writeStubScript "$testEnvironmentDir/setup/$scriptName/command" "0" "$someOutput"
 
   run setupScript $scriptName
 
-  assert_line --index 0 "Execute additional setup-script: $scriptName"
+  assert_line --index 0 "Execute setup-script: $scriptName"
   assert_line --index 1 "$someOutput"
   assert_line --index 2 "$scriptName executed successfully"
 }
 
-@test "if additional setup script fails with output it will print the script's output and the failure" {
+@test "if setup script fails with output it will print the script's output and the failure" {
   scriptName="another-script"
   someOutput="another-output"
   exitCode=15
@@ -53,21 +53,21 @@ test_if_additional_setup_script_exists_executing_it_will_pass_the_team_folder_as
 
   run setupScript "$scriptName"
 
-  assert_line --index 0 "Execute additional setup-script: $scriptName"
+  assert_line --index 0 "Execute setup-script: $scriptName"
   assert_line --index 1 "$someOutput"
   assert_line --index 2 "$scriptName failed with: exit status $exitCode"
 }
 
 @test "if setup script is requesting input it should process the input" {
   scriptName="input"
-  additionalScriptsDir="$testEnvironmentDir/setup/$scriptName"
-  additionalScriptsPath="$additionalScriptsDir/command"
-  writeScriptRequestingInput "$additionalScriptsPath"
+  scriptsDir="$testEnvironmentDir/setup/$scriptName"
+  scriptsPath="$scriptsDir/command"
+  writeScriptRequestingInput "$scriptsPath"
   input="some-input"
 
   run setupScript $scriptName <<< $input
 
-  assert_file_exists "$additionalScriptsDir/$input"
+  assert_file_exists "$scriptsDir/$input"
 }
 
 @test "if setup script is writes to stderr it outputs stderr" {
