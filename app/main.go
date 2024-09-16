@@ -2,6 +2,7 @@ package main
 
 import (
 	"app/commands/githook"
+	"app/commands/run"
 	"app/commands/setup"
 	"github.com/spf13/cobra"
 	"os"
@@ -12,5 +13,6 @@ func main() {
 	var rootCmd = &cobra.Command{Use: filepath.Base(os.Args[0])}
 	rootCmd.AddCommand(setup.MakeCommand())
 	rootCmd.AddCommand(githook.MakeCommand())
-	rootCmd.Execute()
+	rootCmd.AddCommand(run.MakeCommand())
+	_ = rootCmd.Execute()
 }
