@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+shift
+
+if [[ "$1" == "clean" ]]
+then
+  echo "Clean build for e2e-tests."
+  "$rootDir"/mrt run build
+  shift
+else
+  echo "Using built binary to execute e2e-tests."
+fi
+
+if [[ $# -eq 0 ]]
+then
+  files=("$rootDir"/e2e-test/*.bats)
+else
+  files=("@$")
+fi
+
+echo "Test files to be executed:"
+printf "\t%s\n" "${files[@]}"
+
+"$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" --jobs 10

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+BINARY_PATH="$rootDir"/build/mrt
+
+currentDir=$PWD
+
+cd "$rootDir"/app
+go build -v -o "$BINARY_PATH"
+
+cd "$currentDir"
