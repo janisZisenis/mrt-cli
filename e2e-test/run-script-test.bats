@@ -61,3 +61,35 @@ test_if_run_is_executed_with_script_name_it_should_execute_the_specified_script(
 
   assert_output "$error"
 }
+
+@test "if script fails with code 1 it will fail with error code 1 as well" {
+  scriptName="some-script"
+  exitCode=1
+  writeStubScript "$testEnvironmentDir/run/$scriptName/command" "$exitCode" ""
+
+  run runScript "$scriptName"
+
+  assert_equal "$status" "$exitCode"
+  assert_failure
+}
+
+@test "if script fails with code 2 it will fail with error code 2 as well" {
+  scriptName="some-script"
+  exitCode=2
+  writeStubScript "$testEnvironmentDir/run/$scriptName/command" "$exitCode" ""
+
+  run runScript "$scriptName"
+
+  assert_equal "$status" "$exitCode"
+  assert_failure
+}
+
+@test "if script exits with code 0 it will succeed" {
+  scriptName="some-script"
+  exitCode=0
+  writeStubScript "$testEnvironmentDir/run/$scriptName/command" "$exitCode" ""
+
+  run runScript "$scriptName"
+
+  assert_success
+}

@@ -2,10 +2,12 @@ package additionalRunScript
 
 import (
 	"app/core"
+	"app/log"
 	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -40,5 +42,21 @@ func command(scriptPath string) {
 	script.Stdout = os.Stdout
 	script.Stdin = os.Stdin
 	script.Stderr = os.Stderr
-	_ = script.Run()
+	err := script.Run()
+
+	if err != nil {
+		os.Exit(extractExitCode(err, 1))
+	}
+}
+
+func extractExitCode(err error, defaultExitCode int) int {
+	var codeString = strings.TrimPrefix(err.Error(), "exit status ")
+	var code, conversionErr = strconv.Atoi(codeString)
+
+	if conversionErr != nil {
+		log.Error("Could not extract exit code from error: " + err.Error())
+		return defaultExitCode
+	}
+
+	return code
 }
