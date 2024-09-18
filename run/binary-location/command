@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+shift
+
+help(){
+  dir=$(dirname "$0")
+  commandName=${dir##*/}
+
+  printf 'Pass in a platform you want to get the binary location for.\n'
+  printf '\n'
+  printf '\tmrt run %s "darwin/arm64"\n' "$commandName"
+  printf '\n'
+  printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$("$rootDir"/mrt run detect-platform)"
+}
+
+platform=${1-$("$rootDir"/mrt run detect-platform)}
+
+os="${platform%/*}"
+arch="${platform#*/}"
+
+binaryLocation="$rootDir/build/bin/mrt-${os}-${arch}"
+
+if [ "$os" = "windows" ]; then
+  binaryLocation+='.exe'
+fi
+
+echo "$binaryLocation"

@@ -3,11 +3,52 @@
 set -e
 
 rootDir=$1
-BINARY_PATH="$rootDir"/build/mrt
+shift
 
-currentDir=$PWD
+help(){
+  dir=$(dirname "$0")
+  commandName=${dir##*/}
+
+  printf 'Pass in a list of platforms you want to build a binary for like shown below.\n'
+  printf '\n'
+  printf '\tmrt run %s "darwin/arm64" "linux/amd64"\n' "$commandName"
+  printf '\n'
+  printf "Without any parameters it will build for your machine's platform: %s.\n" "$("$rootDir"/mrt run detect-platform)"
+}
+
+build_binary() {
+  platform=$1
+  binaryLocation=$2
+
+  GOOS="${platform%/*}"
+  GOARCH="${platform#*/}"
+
+  echo "Building for $platform..."
+    if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build -o "$binaryLocation" .
+    then
+      echo "Error occurred while building for ${platform}"
+      exit 1
+    else
+      echo "Successfully build for ${platform}"
+    fi
+}
+
+case $1 in
+  --help|-h)
+    help;
+    exit 1
+    ;;
+esac
+
+if [ "$#" -eq 0 ]
+then
+  platforms=("$("$rootDir/mrt" run detect-platform)")
+else
+  platforms=("$@")
+fi
 
 cd "$rootDir"/app
-go build -v -o "$BINARY_PATH"
-
-cd "$currentDir"
+for platform in "${platforms[@]}"
+do
+    build_binary "$platform" "$("$rootDir/mrt" run binary-location "$platform")"
+done
