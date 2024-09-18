@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+shift
+
+supportedPlatforms=(
+  "linux/amd64"
+  "linux/386"
+  "linux/arm"
+  "linux/arm64"
+  "darwin/amd64"
+  "darwin/arm64"
+  "windows/amd64"
+  "windows/386"
+)
+
+"$rootDir/mrt" run build "${supportedPlatforms[@]}"
+
+binaryNames=()
+for p in "${supportedPlatforms[@]}"
+do
+  binaryNames+=("$(basename "$("$rootDir/mrt" run binary-location "$p")")")
+done
+
+echo "${binaryNames[@]}"
+
+cd "$rootDir/build/bin"
+
+tar -cvzf ../mrt-multiplatform.tar.gz "${binaryNames[@]}"
