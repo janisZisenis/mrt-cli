@@ -11,12 +11,18 @@ _common_setup() {
   testEnvironmentDir=$(_testEnvDir)
 
   PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
-  BIN_PATH="$PROJECT_ROOT/build"
-  BIN_NAME="mrt"
+  BUILD_PATH="$PROJECT_ROOT/build"
+  PACKAGE_NAME="mrt-multiplatform.tar.gz"
+  EXTRACTED_PATH="$testEnvironmentDir/extracted"
+
+  mkdir -p "$testEnvironmentDir"
+  mkdir -p "$EXTRACTED_PATH"
+
+  cp "$BUILD_PATH/$PACKAGE_NAME" "$testEnvironmentDir"/$PACKAGE_NAME
+  tar -xvzf "$testEnvironmentDir/$PACKAGE_NAME" -C "$EXTRACTED_PATH"
+  "$EXTRACTED_PATH/setup.sh"
 
   eval "$(ssh-agent)"
-  mkdir -p "$testEnvironmentDir"
-  cp "$BIN_PATH/$BIN_NAME" "$testEnvironmentDir"/$BIN_NAME
 }
 
 _common_teardown() {
