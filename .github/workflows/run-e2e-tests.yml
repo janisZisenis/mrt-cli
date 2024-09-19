@@ -38,11 +38,12 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v4
         with:
+          name: ${{ env.binaries-name }}
           path: ${{ env.binaries-path }}
       - name: Setup mrt
         run: ./mrt-multiplatform/setup.sh
       - name: Make binaries executable
-        run: chmod +x ${{ env.binaries-path}}/${{ env.binaries-name}}
+        run: chmod -R 750 ${{ env.binaries-path}}
       - name: Setup git config
         run: |
           git config --global user.email "ci@multi-repository-tool.com"
