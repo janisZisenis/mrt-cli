@@ -17,6 +17,7 @@ supportedPlatforms=(
 )
 
 "$rootDir/mrt" run build "${supportedPlatforms[@]}"
+cp -a "$rootDir"/packaged-scripts/* ./build/bin
 
 binaryNames=()
 for p in "${supportedPlatforms[@]}"
@@ -24,8 +25,7 @@ do
   binaryNames+=("$(basename "$("$rootDir/mrt" run binary-location "$p")")")
 done
 
-echo "${binaryNames[@]}"
+cd "$rootDir/$("$rootDir"/mrt run bin-path)"
+scripts=(*.sh)
 
-cd "$rootDir/build/bin"
-
-tar -cvzf ../mrt-multiplatform.tar.gz "${binaryNames[@]}"
+tar -cvzf ../mrt-multiplatform.tar.gz "${binaryNames[@]}" "${scripts[@]}"

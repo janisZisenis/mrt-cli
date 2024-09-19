@@ -2,6 +2,11 @@
 
 set -e
 
+rootDir=$1
+shift
+# shellcheck source=./../../packaged-scripts/detection-functions.sh
+. "$rootDir/packaged-scripts/detection-functions.sh"
+
 ARCH_FLAG="--arch"
 OS_FLAG="--os"
 
@@ -12,33 +17,6 @@ help(){
   printf -- '%s|%s\tPrints out os or arch. If none prints out platform (eg. %s)\n' "$OS_FLAG" "$ARCH_FLAG" "$(detect_os)/$(detect_arch)"
 }
 
-detect_os() {
-    unameOut="$(uname -s)"
-    case "${unameOut}" in
-        Linux*)     OS=linux;;
-        Darwin*)    OS=darwin;;
-        CYGWIN*)    OS=windows;;
-        MINGW*)     OS=windows;;
-        *)          OS="UNKNOWN:${unameOut}"
-    esac
-    echo "${OS}"
-}
-
-detect_arch() {
-    archOut="$(uname -m)"
-    case "${archOut}" in
-        x86_64)    ARCH=amd64;;
-        i686)      ARCH=386;;
-        i386)      ARCH=386;;
-        armv7l)    ARCH=arm;;
-        aarch64)   ARCH=arm64;;
-        arm64)     ARCH=arm64;;
-        *)         ARCH="UNKNOWN:${archOut}"
-    esac
-    echo "${ARCH}"
-}
-
-shift
 while [ "$#" -gt 0 ]; do
   case $1 in
     --help|-h)

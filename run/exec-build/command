@@ -9,4 +9,4 @@ currentOS="$("$rootDir/mrt" run detect-platform --os)"
 currentArch="$("$rootDir/mrt" run detect-platform --arch)"
 
 "$rootDir"/mrt run build "$currentOS/$currentArch"
-"$rootDir/build/bin/mrt-$currentOS-$currentArch" "$@"
+"$rootDir/$("$rootDir" mrt run bin-path)/mrt-$currentOS-$currentArch" "$@"

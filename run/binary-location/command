@@ -21,7 +21,7 @@ platform=${1-$("$rootDir"/mrt run detect-platform)}
 os="${platform%/*}"
 arch="${platform#*/}"
 
-binaryLocation="$rootDir/build/bin/mrt-${os}-${arch}"
+binaryLocation="$rootDir/$("$rootDir"/mrt run bin-path)/mrt-${os}-${arch}"
 
 if [ "$os" = "windows" ]; then
   binaryLocation+='.exe'
