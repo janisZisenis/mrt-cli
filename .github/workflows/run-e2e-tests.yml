@@ -3,8 +3,8 @@ name: Run E2E Tests
 on: push
 
 env:
-  binary-path: "build"
-  binary-name: "mrt"
+  binary-path: "build/bin"
+  binary-name: "binaries"
 
 jobs:
   build:
@@ -12,12 +12,12 @@ jobs:
     env:
       go-version: '1.23'
     steps:
+      - uses: actions/checkout@v4
       - name: Setup mrt
         run: |
           ./mrt-multiplatform/setup.sh
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'true'
+          ls -la
+          ./mrt --help
       - name: Setup Golang with cache
         uses: magnetikonline/action-golang-cache@v5
         with:
@@ -26,6 +26,10 @@ jobs:
       - name: Build binaries
         run: |
           ./mrt run build
+          ls
+          echo "cd build"
+          cd build
+          ls
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
