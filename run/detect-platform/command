@@ -4,11 +4,10 @@ set -e
 
 rootDir=$1
 shift
-# shellcheck source=./../../packaged-scripts/detection-functions.sh
-. "$rootDir/packaged-scripts/detection-functions.sh"
 
 ARCH_FLAG="--arch"
 OS_FLAG="--os"
+SUPPORTED_PLATFROMS_FLAG="--supported-platforms"
 
 help(){
   printf "Usage:"
@@ -17,11 +16,59 @@ help(){
   printf -- '%s|%s\tPrints out os or arch. If none prints out platform (eg. %s)\n' "$OS_FLAG" "$ARCH_FLAG" "$(detect_os)/$(detect_arch)"
 }
 
+supportedPlatforms=(
+  "linux/amd64"
+  "linux/386"
+  "linux/arm"
+  "linux/arm64"
+  "darwin/amd64"
+  "darwin/arm64"
+  "windows/amd64"
+  "windows/386"
+)
+
+detect_os() {
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Linux*)     OS=linux;;
+        Darwin*)    OS=darwin;;
+        CYGWIN*)    OS=windows;;
+        MINGW*)     OS=windows;;
+        *)          OS="UNKNOWN:${unameOut}"
+    esac
+    echo "${OS}"
+}
+
+detect_arch() {
+    archOut="$(uname -m)"
+    case "${archOut}" in
+        x86_64)    ARCH=amd64;;
+        i686)      ARCH=386;;
+        i386)      ARCH=386;;
+        armv7l)    ARCH=arm;;
+        aarch64)   ARCH=arm64;;
+        arm64)     ARCH=arm64;;
+        *)         ARCH="UNKNOWN:${archOut}"
+    esac
+    echo "${ARCH}"
+}
+
+print_supported_platforms() {
+  for platform in "${supportedPlatforms[@]}"
+  do
+    echo "$platform"
+  done
+}
+
 while [ "$#" -gt 0 ]; do
   case $1 in
     --help|-h)
       help;
       exit 1
+      ;;
+    "$SUPPORTED_PLATFROMS_FLAG")
+      print_supported_platforms
+      exit 0
       ;;
     "$ARCH_FLAG"|"$OS_FLAG")
       if [[ -z ${shortStrategy+x} ]]

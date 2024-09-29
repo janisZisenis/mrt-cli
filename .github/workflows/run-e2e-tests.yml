@@ -3,8 +3,8 @@ name: Run E2E Tests
 on: push
 
 env:
-  package-path: "build"
-  package-name: "mrt-multiplatform.tar.gz"
+  binary-path: "build"
+  binary-name: "mrt"
 
 jobs:
   build:
@@ -14,37 +14,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
-        run: ./mrt-multiplatform/setup.sh
+        run: |
+          ./mrt-multiplatform/setup.sh
       - name: Setup Golang with cache
         uses: magnetikonline/action-golang-cache@v5
         with:
           go-version: ${{ env.go-version }}
           go-version-file: app/go.mod
       - name: Build package
-        run: |
-          ./mrt-multiplatform/setup.sh
-          ./mrt run build-package
+        run: ./mrt run build
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.package-name }}
-          path: ${{ env.package-path }}
+          name: ${{ env.binary-name }}
+          path: ${{ env.binary-path }}
           retention-days: 7
   run-tests:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
         run: ./mrt-multiplatform/setup.sh
-      - name: Download package
+      - name: Download binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.package-name }}
-          path: ${{ env.package-path }}
+          name: ${{ env.binary-name }}
+          path: ${{ env.binary-path }}
+      - name: Make binary executable
+        run: chmod 755 $(./mrt run build-location)/mrt
       - name: Setup git config
         run: |
           git config --global user.email "ci@multi-repository-tool.com"

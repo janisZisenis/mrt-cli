@@ -5,8 +5,6 @@ set -e
 rootDir=$1
 shift
 
-currentOS="$("$rootDir/mrt" run detect-platform --os)"
-currentArch="$("$rootDir/mrt" run detect-platform --arch)"
+"$rootDir"/mrt run build "$("$rootDir/mrt" run detect-platform)"
 
-"$rootDir"/mrt run build "$currentOS/$currentArch"
-"$rootDir/$("$rootDir" mrt run bin-path)/mrt-$currentOS-$currentArch" "$@"
+$("$rootDir/mrt" run build-location)/mrt "$@"

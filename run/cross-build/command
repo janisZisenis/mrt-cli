@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+shift
+
+readarray -t supportedPlatforms < <($rootDir/mrt run detect-platform --supported-platforms)
+
+"$rootDir/mrt" run build "${supportedPlatforms[@]}"
