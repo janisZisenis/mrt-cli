@@ -6,11 +6,11 @@ import (
 )
 
 func GetExecutionPath() string {
-    pwd, _ := os.Getwd()
-    return pwd
+	pwd, _ := os.Getwd()
+	return pwd
 }
 
-func GetExecutable() string {
+func GetExecutableName() string {
 	executable, _ := os.Executable()
 	return filepath.Base(executable)
 }

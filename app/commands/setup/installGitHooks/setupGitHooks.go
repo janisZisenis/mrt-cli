@@ -7,9 +7,9 @@ import (
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {
-	log.Info("Installing git-hooks to repositories located in \"" + core.GetExecutablePath() + "/" + teamInfo.RepositoriesPath + "\"")
+	log.Info("Installing git-hooks to repositories located in \"" + core.GetExecutionPath() + "/" + teamInfo.RepositoriesPath + "\"")
 
-	repositories, _ := filepath.Glob(core.GetExecutablePath() + "/" + teamInfo.RepositoriesPath + "/*/.git")
+	repositories, _ := filepath.Glob(core.GetExecutionPath() + "/" + teamInfo.RepositoriesPath + "/*/.git")
 	if len(repositories) == 0 {
 		log.Info("Did not find any repositories. Skip installing git-hooks.")
 	}

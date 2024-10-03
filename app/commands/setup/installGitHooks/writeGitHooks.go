@@ -13,8 +13,8 @@ func getHookTemplate() string {
 
 hook_name=$(basename "$0")
 repositoryPath=$PWD
-cd ` + core.GetExecutablePath() + `
-` + core.GetExecutable() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $repositoryPath $@`
+cd ` + core.GetExecutionPath() + `
+` + core.GetExecutableName() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $repositoryPath $@`
 }
 
 func getCommitMsgHookTemplate() string {
@@ -24,17 +24,17 @@ func getCommitMsgHookTemplate() string {
 hook_name=$(basename "$0")
 repositoryPath=$PWD
 commitFile=$(realpath $1)
-cd ` + core.GetExecutablePath() + `
-` + core.GetExecutable() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $repositoryPath $commitFile`
+cd ` + core.GetExecutionPath() + `
+` + core.GetExecutableName() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $repositoryPath $commitFile`
 }
 
 func writeGitHook(repositoryDirectory string, hookName string) {
-    var template string
-    if hookName == "commit-msg" {
-        template = getCommitMsgHookTemplate()
-    } else {
-        template = getHookTemplate()
-    }
+	var template string
+	if hookName == "commit-msg" {
+		template = getCommitMsgHookTemplate()
+	} else {
+		template = getHookTemplate()
+	}
 
 	hooksPath := repositoryDirectory + "/hooks/"
 	_ = os.MkdirAll(hooksPath, os.ModePerm)

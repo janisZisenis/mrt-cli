@@ -34,5 +34,5 @@ func getFolderName(repositoryName string, prefixes []string) string {
 }
 
 func getRepositoryPath(repositoriesPath string, folderName string) string {
-	return core.GetExecutablePath() + "/" + repositoriesPath + "/" + folderName
+	return core.GetExecutionPath() + "/" + repositoriesPath + "/" + folderName
 }
