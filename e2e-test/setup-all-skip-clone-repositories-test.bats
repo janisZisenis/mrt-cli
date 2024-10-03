@@ -7,7 +7,7 @@ load 'helpers/directoryAssertions'
 
 
 repositoryDir() {
-  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
+  echo "$testEnvDir/$(default_repositories_path)/$repository"
 }
 
 setup() {
@@ -27,7 +27,7 @@ teardown() {
 
   run mrt setup all --skip-clone-repositories
 
-  assert_directory_does_not_exist "$testEnvironmentDir/$(default_repositories_path)/$repository"
+  assert_directory_does_not_exist "$testEnvDir/$(default_repositories_path)/$repository"
 }
 
 @test "if setup is run with skipping the clone step it should print a skip message" {

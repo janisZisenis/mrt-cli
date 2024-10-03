@@ -1,5 +1,13 @@
 #!/bin/bash
 
 mrt() {
-  "$testEnvironmentDir/mrt" "$@"
+  current=$PWD
+
+  cd "$testEnvDir"
+  "$exeName" "$@"
+  exitCode=$?
+
+  cd "$current"
+
+  return $exitCode
 }

@@ -19,7 +19,7 @@ teardown() {
 @test "if two setup scripts exist setup all with skipping the first it should only run the second" {
   someScriptName="some-script"
   anotherScriptName="another-script"
-  scriptsDir="$testEnvironmentDir/setup"
+  scriptsDir="$testEnvDir/setup"
   someScript="$scriptsDir/$someScriptName/command"
   anotherScript="$scriptsDir/$anotherScriptName/command"
   writeSpyScript "$someScript"
@@ -34,7 +34,7 @@ teardown() {
 @test "if two setup scripts exist setup all with skipping the second it should only run the first" {
   someScriptName="some-script"
   anotherScriptName="another-script"
-  scriptsDir="$testEnvironmentDir/setup"
+  scriptsDir="$testEnvDir/setup"
   someScript="$scriptsDir/$someScriptName/command"
   anotherScript="$scriptsDir/$anotherScriptName/command"
   writeSpyScript "$someScript"
@@ -48,7 +48,7 @@ teardown() {
 
 @test "if one setup scripts exists setup all with skipping the script prints out skip message" {
   scriptName="some-script"
-  script="$testEnvironmentDir/setup/$scriptName/command"
+  script="$testEnvDir/setup/$scriptName/command"
   writeSpyScript "$script"
 
   run mrt setup all "--skip-$scriptName"

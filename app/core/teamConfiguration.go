@@ -24,7 +24,7 @@ var CouldNotReadTeamFile = errors.New("could not read team file")
 func LoadTeamConfiguration() (TeamInfo, error) {
 	var teamInfo TeamInfo
 
-	viper.AddConfigPath(GetExecutablePath())
+	viper.AddConfigPath(GetExecutionPath())
 	viper.SetConfigName(teamFileName)
 	viper.SetConfigType(teamFileExtension)
 

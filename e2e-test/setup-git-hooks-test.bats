@@ -12,15 +12,15 @@ setup() {
   authenticate
 }
 
-teardown() {
-  revoke-authentication
-  _common_teardown
-}
+#teardown() {
+#  revoke-authentication
+#  _common_teardown
+#}
 
 repositoriesPath=$(default_repositories_path)
 
 repositoriesDir() {
-  echo "$testEnvironmentDir/$repositoriesPath"
+  echo "$testEnvDir/$repositoriesPath"
 }
 
 @test "If repositories are cloned to repositories path from team file commiting on the blocked branches after setting up git-hooks should be blocked" {
@@ -99,4 +99,3 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
   assert_line --index 4 "Done installing git-hooks to \"$(absolutePath "$(repositoriesDir)/${repositories[1]}/.git")\""
   assert_line --index 5 "Done installing git-hooks."
 }
-

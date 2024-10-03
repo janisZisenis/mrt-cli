@@ -11,9 +11,9 @@ load 'helpers/runMrtInTestEnvironment'
 }
 
 @test "if subcommand 'git-hook' gets called with a path that does not contain a repository it fails" {
-  run mrt git-hook --hook-name "pre-commit" --repository-path "$testEnvironmentDir"
+  run mrt git-hook --hook-name "pre-commit" --repository-path "$testEnvDir"
 
-  assert_output --partial "The given path \"$testEnvironmentDir\" does not contain a repository."
+  assert_output --partial "The given path \"$testEnvDir\" does not contain a repository."
   assert_failure
 }
 

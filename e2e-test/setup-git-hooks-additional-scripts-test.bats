@@ -62,6 +62,6 @@ load 'helpers/writeMockScript'
 
   commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-  assert_spy_file_has_content "$scriptPath" ".git/COMMIT_EDITMSG"
+  assert_spy_file_has_content "$scriptPath" "$(repositoryDir)/.git/COMMIT_EDITMSG"
 }
 

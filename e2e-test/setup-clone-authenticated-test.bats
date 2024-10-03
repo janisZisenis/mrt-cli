@@ -10,7 +10,7 @@ load 'helpers/git'
 repositoriesPath=$(default_repositories_path)
 
 repositoriesDir() {
-  echo "$testEnvironmentDir/$repositoriesPath"
+  echo "$testEnvDir/$repositoriesPath"
 }
 
 setup() {

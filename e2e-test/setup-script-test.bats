@@ -24,19 +24,19 @@ teardown() {
 
 test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter() {
   scriptName=$1
-  scriptsDir="$testEnvironmentDir/setup"
+  scriptsDir="$testEnvDir/setup"
   scriptPath="$scriptsDir/$scriptName/command"
   writeSpyScript "$scriptPath"
 
   mrt setup "$scriptName"
 
-  assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvironmentDir")"
+  assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvDir")"
 }
 
 @test "if setup script succeeds with output it will print the script's output" {
   scriptName="some-script"
   someOutput="some-output"
-  writeStubScript "$testEnvironmentDir/setup/$scriptName/command" "0" "$someOutput"
+  writeStubScript "$testEnvDir/setup/$scriptName/command" "0" "$someOutput"
 
   run setupScript $scriptName
 
@@ -49,7 +49,7 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
   scriptName="another-script"
   someOutput="another-output"
   exitCode=15
-  writeStubScript "$testEnvironmentDir/setup/$scriptName/command" "$exitCode" "$someOutput"
+  writeStubScript "$testEnvDir/setup/$scriptName/command" "$exitCode" "$someOutput"
 
   run setupScript "$scriptName"
 
@@ -60,7 +60,7 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
 
 @test "if setup script is requesting input it should process the input" {
   scriptName="input"
-  scriptsDir="$testEnvironmentDir/setup/$scriptName"
+  scriptsDir="$testEnvDir/setup/$scriptName"
   scriptsPath="$scriptsDir/command"
   writeScriptRequestingInput "$scriptsPath"
   input="some-input"
@@ -73,7 +73,7 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
 @test "if setup script is writes to stderr it outputs stderr" {
   scriptName="error"
   error="some-error"
-  writeStdErrScript "$testEnvironmentDir/setup/$scriptName/command" "$error"
+  writeStdErrScript "$testEnvDir/setup/$scriptName/command" "$error"
 
   run setupScript "$scriptName"
 

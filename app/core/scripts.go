@@ -10,7 +10,7 @@ import (
 )
 
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
-	scripts, _ := filepath.Glob(GetExecutablePath() + path)
+	scripts, _ := filepath.Glob(GetExecutionPath() + path)
 
 	for _, script := range scripts {
 		segments := strings.Split(script, "/")

@@ -12,15 +12,15 @@ setup() {
   _common_setup
   authenticate
 
-  cloneTestingRepositories "$testEnvironmentDir/$(default_repositories_path)" "$repository"
+  cloneTestingRepositories "$testEnvDir/$(default_repositories_path)" "$repository"
   setupGitHooks
 }
 
-teardown() {
-  revoke-authentication
-  _common_teardown
-}
+#teardown() {
+#  revoke-authentication
+#  _common_teardown
+#}
 
 repositoryDir() {
-  echo "$testEnvironmentDir/$(default_repositories_path)/$repository"
+  absolutePath "$testEnvDir/$(default_repositories_path)/$repository"
 }

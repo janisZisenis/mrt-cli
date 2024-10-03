@@ -2,14 +2,15 @@ package core
 
 import (
 	"os"
-	"path"
+	"path/filepath"
 )
 
-func GetExecutablePath() string {
-	return path.Dir(GetExecutable())
+func GetExecutionPath() string {
+    pwd, _ := os.Getwd()
+    return pwd
 }
 
 func GetExecutable() string {
 	executable, _ := os.Executable()
-	return executable
+	return filepath.Base(executable)
 }

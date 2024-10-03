@@ -1,26 +1,28 @@
 #!/bin/bash
 
-_testEnvDir() {
-  echo "./testEnv/$(uuidgen)"
-}
-
 _common_setup() {
   load '3rdParty/test_helper/bats-support/load'
   load '3rdParty/test_helper/bats-assert/load'
+  load 'helpers/absolutePath'
 
-  testEnvironmentDir=$(_testEnvDir)
+  local projectRoot
+  projectRoot="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
 
-  PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
-  BIN_PATH="$PROJECT_ROOT/build"
-  BIN_NAME="mrt"
+  testEnvDir="./testEnv/$(uuidgen)"
+  testEnvBinDir="$testEnvDir/bin"
+  exeName="mrt-bin"
 
-  mkdir -p "$testEnvironmentDir"
-  cp "$BIN_PATH/$BIN_NAME" "$testEnvironmentDir"/$BIN_NAME
+  mkdir -p "$testEnvBinDir"
+  local pathToBinary
+  pathToBinary="$("$projectRoot/mrt" run binary-location)"
+  cp "$pathToBinary" "$testEnvBinDir/$exeName"
+
+  PATH="$PATH:$(absolutePath "$testEnvBinDir")"
 
   eval "$(ssh-agent -s 3>&-)"
 }
 
 _common_teardown() {
-  rm -rf "$testEnvironmentDir"
+  rm -rf "$testEnvDir"
   eval "$(ssh-agent -k)"
 }
