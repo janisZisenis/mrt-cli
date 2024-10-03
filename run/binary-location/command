@@ -16,12 +16,12 @@ help(){
   printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$("$rootDir"/mrt run detect-platform)"
 }
 
-platform=${1-$("$rootDir"/mrt run detect-platform)}
+platform=${1-$(mrt run detect-platform)}
 
 os="${platform%/*}"
 arch="${platform#*/}"
 
-binPath="$("$rootDir/mrt" run build-location)/bin"
+binPath="$(mrt run build-location)/bin"
 binaryLocation="$binPath/mrt-${os}-${arch}"
 
 if [ "$os" = "windows" ]; then

@@ -5,6 +5,6 @@ set -e
 rootDir=$1
 shift
 
-"$rootDir"/mrt run build "$("$rootDir/mrt" run detect-platform)"
+mrt run build "$(mrt run detect-platform)"
 
-$("$rootDir/mrt" run build-location)/mrt "$@"
+$(mrt run build-location)/mrt "$@"

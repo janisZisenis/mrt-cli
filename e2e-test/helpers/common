@@ -14,7 +14,7 @@ _common_setup() {
 
   mkdir -p "$testEnvBinDir"
   local pathToBinary
-  pathToBinary="$("$projectRoot/mrt" run binary-location)"
+  pathToBinary="$projectRoot/build/mrt"
   cp "$pathToBinary" "$testEnvBinDir/$exeName"
 
   chmod +x "$testEnvBinDir/$exeName"
