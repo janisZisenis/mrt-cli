@@ -14,11 +14,13 @@ _common_setup() {
   BIN_PATH="$PROJECT_ROOT/build"
   BIN_NAME="mrt"
 
-  eval "$(ssh-agent)"
   mkdir -p "$testEnvironmentDir"
   cp "$BIN_PATH/$BIN_NAME" "$testEnvironmentDir"/$BIN_NAME
+
+  eval "$(ssh-agent -s 3>&-)"
 }
 
 _common_teardown() {
   rm -rf "$testEnvironmentDir"
+  eval "$(ssh-agent -k)"
 }

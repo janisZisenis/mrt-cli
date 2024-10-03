@@ -17,8 +17,8 @@ setup() {
 }
 
 teardown() {
-  _common_teardown
   revoke-authentication
+  _common_teardown
 }
 
 repositoryDir() {

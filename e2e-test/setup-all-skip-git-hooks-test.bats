@@ -22,8 +22,8 @@ setup() {
 }
 
 teardown() {
-  _common_teardown
   revoke-authentication
+  _common_teardown
 }
 
 @test "After setup all with 'skip-git-hooks' committing on a blocked branch is not rejected" {

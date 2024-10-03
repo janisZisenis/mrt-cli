@@ -19,8 +19,8 @@ setup() {
 }
 
 teardown() {
-  _common_teardown
   revoke-authentication
+  _common_teardown
 }
 
 @test "if team json does not contain repositoriesPath it clones repository into 'repositories' folder" {

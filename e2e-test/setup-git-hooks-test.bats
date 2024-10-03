@@ -13,8 +13,8 @@ setup() {
 }
 
 teardown() {
-  _common_teardown
   revoke-authentication
+  _common_teardown
 }
 
 repositoriesPath=$(default_repositories_path)

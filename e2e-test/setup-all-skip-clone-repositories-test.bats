@@ -16,8 +16,8 @@ setup() {
 }
 
 teardown() {
-  _common_teardown
   revoke-authentication
+  _common_teardown
 }
 
 @test "if setup is run with skipping the clone step it should not clone the repositories" {
