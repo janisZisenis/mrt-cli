@@ -2,9 +2,5 @@
 
 set -e
 
-rootDir=$1
-shift
-
 mrt run build "$(mrt run detect-platform)"
-
-$(mrt run build-location)/mrt "$@"
+"$(mrt run build-location)/mrt" -- "$@"

@@ -27,7 +27,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
   scriptPath="$testEnvDir/run/$scriptName/command"
   writeSpyScript "$scriptPath"
 
-  run runScript "$scriptName" "${parameters[@]}"
+  run runScript "$scriptName" -- "${parameters[@]}"
 
   assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvDir") ${parameters[*]}"
 }

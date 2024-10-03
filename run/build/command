@@ -19,7 +19,7 @@ help(){
 build_binary() {
   platform=$1
 
-  binaryLocation="$(mrt run binary-location "$platform")"
+  binaryLocation="$(mrt run binary-location -- "$platform")"
   GOOS="${platform%/*}"
   GOARCH="${platform#*/}"
 
@@ -39,7 +39,7 @@ build_binary() {
 }
 
 installToBuildFolder() {
-  binaryLocation=$(mrt run binary-location "$(mrt run detect-platform)")
+  binaryLocation=$(mrt run binary-location -- "$(mrt run detect-platform)")
   cp "$binaryLocation" "$(mrt run build-location)/mrt"
 }
 
