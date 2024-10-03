@@ -3,3 +3,4 @@
 /build
 testEnv
 mrt
+/.ssh/private-key.pub

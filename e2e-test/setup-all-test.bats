@@ -53,8 +53,7 @@ teardown() {
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {
-  #run mrt setup all
-  run echo "hello word"
+  run mrt setup all
 
   refute_output --partial "Skipping install-git-hooks step."
 }
