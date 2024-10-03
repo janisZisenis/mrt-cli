@@ -17,6 +17,8 @@ _common_setup() {
   pathToBinary="$("$projectRoot/mrt" run binary-location)"
   cp "$pathToBinary" "$testEnvBinDir/$exeName"
 
+  chmod +x "$testEnvBinDir/$exeName"
+
   PATH="$PATH:$(absolutePath "$testEnvBinDir")"
 
   eval "$(ssh-agent -s 3>&-)"

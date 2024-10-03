@@ -21,9 +21,9 @@ jobs:
         with:
           go-version: ${{ env.go-version }}
           go-version-file: app/go.mod
-      - name: Build package
+      - name: Build binary
         run: ./mrt run build
-      - name: Upload package
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.binary-name }}
