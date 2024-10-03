@@ -2,5 +2,4 @@
 /.ssh/private-key
 /build
 testEnv
-mrt
 /.ssh/private-key.pub
