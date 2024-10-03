@@ -18,10 +18,13 @@ help(){
 
 build_binary() {
   platform=$1
-  
+
   binaryLocation="$("$rootDir/mrt" run binary-location "$platform")"
   GOOS="${platform%/*}"
   GOARCH="${platform#*/}"
+
+  currentDir=$PWD
+  cd "$rootDir"/app
 
   echo "Building for $platform..."
   if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build -o "$binaryLocation" .
@@ -31,6 +34,8 @@ build_binary() {
   else
     echo "Successfully build for ${platform}"
   fi
+
+  cd $currentDir
 }
 
 installToBuildFolder() {
@@ -52,7 +57,6 @@ else
   platforms=("$@")
 fi
 
-cd "$rootDir"/app
 for platform in "${platforms[@]}"
 do
   build_binary "$platform"
