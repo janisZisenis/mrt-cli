@@ -13,13 +13,13 @@ help(){
   printf '\n'
   printf '\tmrt run %s "darwin/arm64" "linux/amd64"\n' "$commandName"
   printf '\n'
-  printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt run detect-platform)"
+  printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt --team-dir $rootDir run detect-platform)"
 }
 
 build_binary() {
   platform=$1
 
-  binaryLocation="$(mrt run binary-location -- "$platform")"
+  binaryLocation="$(mrt --team-dir $rootDir run binary-location -- "$platform")"
   GOOS="${platform%/*}"
   GOARCH="${platform#*/}"
 
@@ -39,8 +39,8 @@ build_binary() {
 }
 
 installToBuildFolder() {
-  binaryLocation=$(mrt run binary-location -- "$(mrt run detect-platform)")
-  cp "$binaryLocation" "$(mrt run build-location)/mrt"
+  binaryLocation=$(mrt --team-dir $rootDir run binary-location -- "$(mrt --team-dir $rootDir run detect-platform)")
+  cp "$binaryLocation" "$(mrt --team-dir $rootDir run build-location)/mrt"
 }
 
 case $1 in
@@ -52,7 +52,7 @@ esac
 
 if [ "$#" -eq 0 ]
 then
-  platforms=("$(mrt run detect-platform)")
+  platforms=("$(mrt --team-dir $rootDir run detect-platform)")
 else
   platforms=("$@")
 fi
@@ -62,7 +62,7 @@ do
   build_binary "$platform"
 done
 
-if [[ "${platforms[*]}" =~ $(mrt run detect-platform) ]]; then
+if [[ "${platforms[*]}" =~ $(mrt --team-dir $rootDir run detect-platform) ]]; then
     installToBuildFolder
 fi
 

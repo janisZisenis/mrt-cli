@@ -2,5 +2,9 @@
 
 set -e
 
-mrt run build "$(mrt run detect-platform)"
-"$(mrt run build-location)/mrt" -- "$@"
+rootDir=$1
+shift
+
+mrt --team-dir $rootDir run build
+buildLocation=$(mrt --team-dir $rootDir run build-location)
+"$buildLocation/mrt" --team-dir $buildLocation "$@"

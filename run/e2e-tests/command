@@ -8,7 +8,7 @@ shift
 if [[ "$1" == "--clean" ]]
 then
   echo "Clean build for e2e-tests."
-  mrt run build
+  mrt --team-dir $rootDir run build
   shift
 else
   echo "Using built binary to execute e2e-tests."

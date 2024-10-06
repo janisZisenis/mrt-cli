@@ -13,15 +13,15 @@ help(){
   printf '\n'
   printf '\tmrt run %s "darwin/arm64"\n' "$commandName"
   printf '\n'
-  printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$("$rootDir"/mrt run detect-platform)"
+  printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(mrt --team-dir $rootDir run detect-platform)"
 }
 
-platform=${1-$(mrt run detect-platform)}
+platform=${1-$(mrt --team-dir $rootDir run detect-platform)}
 
 os="${platform%/*}"
 arch="${platform#*/}"
 
-binPath="$(mrt run build-location)/bin"
+binPath="$(mrt --team-dir $rootDir run build-location)/bin"
 binaryLocation="$binPath/mrt-${os}-${arch}"
 
 if [ "$os" = "windows" ]; then

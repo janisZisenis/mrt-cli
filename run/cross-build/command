@@ -5,6 +5,6 @@ set -e
 rootDir=$1
 shift
 
-readarray -t supportedPlatforms < <(mrt run detect-platform -- --supported-platforms)
+readarray -t supportedPlatforms < <(mrt --team-dir $rootDir run detect-platform -- --supported-platforms)
 
-mrt run build -- "${supportedPlatforms[@]}"
+mrt --team-dir $rootDir run build -- "${supportedPlatforms[@]}"
