@@ -4,12 +4,19 @@ import (
 	"app/commands/githook"
 	"app/commands/run"
 	"app/commands/setup"
+	"app/commands/version"
 	"app/core"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
+)
+
+var (
+	semver = "v0.0.0"
+	commit = "000000"
+	date   = "1979-01-01"
 )
 
 func main() {
@@ -28,6 +35,7 @@ func main() {
 	rootCmd.AddCommand(setup.MakeCommand(core.TeamDirectory))
 	rootCmd.AddCommand(githook.MakeCommand())
 	rootCmd.AddCommand(run.MakeCommand(core.TeamDirectory))
+	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
 	rootCmd.PersistentFlags().StringVar(&core.TeamDirectory, "team-dir", "", "Specifies the path to the team directory.")
 	_ = rootCmd.Execute()
