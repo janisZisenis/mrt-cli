@@ -11,10 +11,10 @@ _common_setup() {
   testEnvDir="testEnv/$(uuidgen)"
   testEnvBinDir="$testEnvDir/bin"
   exeName="mrt-bin"
-
+  
   mkdir -p "$testEnvBinDir"
   local pathToBinary
-  pathToBinary="$projectRoot/build/mrt"
+  pathToBinary="$(mrt --team-dir "$projectRoot" run binary-location)"
   cp "$pathToBinary" "$testEnvBinDir/$exeName"
 
   chmod +x "$testEnvBinDir/$exeName"

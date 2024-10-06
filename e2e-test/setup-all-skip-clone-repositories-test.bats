@@ -2,7 +2,7 @@ load 'helpers/setup'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 load 'helpers/directoryAssertions'
 
 
@@ -25,7 +25,7 @@ teardown() {
   repositoryUrl="$(getTestingRepositoryUrl "$repository")"
   writeRepositoriesUrls "$repositoryUrl"
 
-  run mrt setup all --skip-clone-repositories
+  run execute setup all --skip-clone-repositories
 
   assert_directory_does_not_exist "$testEnvDir/$(default_repositories_path)/$repository"
 }
@@ -35,7 +35,7 @@ teardown() {
   repositoryUrl="$(getTestingRepositoryUrl "$repository")"
   writeRepositoriesUrls "$repositoryUrl"
 
-  run mrt setup all --skip-clone-repositories
+  run execute setup all --skip-clone-repositories
 
   assert_line --index 0 "Skipping clone-repositories step."
 }

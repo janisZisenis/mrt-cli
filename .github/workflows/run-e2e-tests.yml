@@ -3,8 +3,8 @@ name: Run E2E Tests
 on: push
 
 env:
-  binary-path: "build"
-  binary-name: "mrt"
+  binary-path: "build/bin"
+  binary-name: "mrt-linux-amd64"
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
           name: ${{ env.binary-name }}
           path: ${{ env.binary-path }}
       - name: Make binary executable
-        run: chmod 755 $(mrt run build-location)/mrt
+        run: chmod 755 $(mrt run binary-location)
       - name: Setup git config
         run: |
           git config --global user.email "ci@multi-repository-tool.com"

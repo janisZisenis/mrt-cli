@@ -3,7 +3,7 @@ load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
 load 'helpers/git'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
@@ -18,7 +18,7 @@ setup() {
   authenticate
 
   writeRepositoriesUrls "$repositoryUrl"
-  run mrt setup all --skip-install-git-hooks
+  run execute setup all --skip-install-git-hooks
 }
 
 teardown() {

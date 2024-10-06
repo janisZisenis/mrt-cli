@@ -2,7 +2,7 @@ load 'helpers/setup'
 load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 load 'helpers/directoryAssertions'
 load 'helpers/writeMockScript'
 load 'helpers/absolutePath'
@@ -25,7 +25,7 @@ teardown() {
   writeSpyScript "$someScript"
   writeSpyScript "$anotherScript"
 
-  run mrt setup all "--skip-$someScriptName"
+  run execute setup all "--skip-$someScriptName"
 
   assert_spy_file_does_not_exist "$someScript"
   assert_spy_file_exists "$anotherScript"
@@ -40,7 +40,7 @@ teardown() {
   writeSpyScript "$someScript"
   writeSpyScript "$anotherScript"
 
-  run mrt setup all "--skip-$anotherScriptName"
+  run execute setup all "--skip-$anotherScriptName"
 
   assert_spy_file_exists "$someScript"
   assert_spy_file_does_not_exist "$anotherScript"
@@ -51,7 +51,7 @@ teardown() {
   script="$testEnvDir/setup/$scriptName/command"
   writeSpyScript "$script"
 
-  run mrt setup all "--skip-$scriptName"
+  run execute setup all "--skip-$scriptName"
 
   assert_output --partial "Skipping setup script: $scriptName"
 }

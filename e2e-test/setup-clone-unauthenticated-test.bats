@@ -4,7 +4,7 @@ load 'helpers/common'
 load 'helpers/repositoriesPath'
 load 'helpers/setup'
 load 'helpers/writeTeamFile'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 
 setup() {
   _common_setup
@@ -60,14 +60,14 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
   repositoriesUrls=()
   writeRepositoriesUrls "${repositoriesUrls[@]}"
 
-  run mrt setup clone-repositories
+  run execute setup clone-repositories
 
   assert_success
   assert_output 'The team file does not contain any repositories, no repositories to clone.'
 }
 
 @test "if team json does not exist it prints out a message" {
-  run mrt setup clone-repositories
+  run execute setup clone-repositories
 
   assert_success
   assert_output 'Could not read team file. To setup your repositories create a "team.json" file and add repositories to it.'

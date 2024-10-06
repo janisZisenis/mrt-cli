@@ -1,7 +1,7 @@
 load 'helpers/common'
 load 'helpers/writeMockScript'
 load 'helpers/absolutePath'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 load 'helpers/git'
 load 'helpers/setup'
 
@@ -28,7 +28,7 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
   scriptPath="$scriptsDir/$scriptName/command"
   writeSpyScript "$scriptPath"
 
-  mrt setup "$scriptName"
+  execute setup "$scriptName"
 
   assert_spy_file_has_content "$scriptPath" "$(absolutePath $testEnvDir)"
 }

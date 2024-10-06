@@ -1,5 +1,5 @@
 #!/bin/bash
 
-mrt() {
+execute() {
   "$exeName" --team-dir "$testEnvDir" "$@"
 }

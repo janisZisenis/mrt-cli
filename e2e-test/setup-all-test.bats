@@ -1,7 +1,7 @@
 load 'helpers/common'
 load 'helpers/ssh-authenticate'
 load 'helpers/writeMockScript'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 load 'helpers/writeTeamFile'
 load 'helpers/repositoriesPath'
 
@@ -28,7 +28,7 @@ teardown() {
   writeSpyScript "$someSetupScript"
   writeSpyScript "$anotherSetupScript"
 
-  run mrt setup all
+  run execute setup all
 
   x="[0-9]+"
   assert_line --index 0   "Start cloning repositories into \"$(default_repositories_path)\""
@@ -52,7 +52,7 @@ teardown() {
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {
-  run mrt setup all
+  run execute setup all
 
   refute_output --partial "Skipping install-git-hooks step."
 }
@@ -61,7 +61,7 @@ teardown() {
   scriptName="some-script"
   writeSpyScript "$testEnvDir/setup/$scriptName/command"
 
-  run mrt setup all
+  run execute setup all
 
   refute_output --partial "Skipping setup script: $scriptName"
 }

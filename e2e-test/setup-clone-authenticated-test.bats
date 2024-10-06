@@ -4,7 +4,7 @@ load 'helpers/ssh-authenticate'
 load 'helpers/common'
 load 'helpers/repositoriesPath'
 load 'helpers/setup'
-load 'helpers/runMrtInTestEnvironment'
+load 'helpers/executeInTestEnvironment'
 load 'helpers/git'
 
 repositoriesPath=$(default_repositories_path)
