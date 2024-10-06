@@ -3,8 +3,9 @@ package setupScript
 import (
 	"app/core"
 	"app/log"
-	"github.com/spf13/cobra"
 	"strconv"
+
+	"github.com/spf13/cobra"
 )
 
 const ScriptsPath = "/setup/*/command"
