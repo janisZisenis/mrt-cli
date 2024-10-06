@@ -2,8 +2,9 @@ package runScript
 
 import (
 	"app/core"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 const ScriptsPath = "/run/*/command"
@@ -20,7 +21,7 @@ func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 }
 
 func command(scriptPath string, args []string) {
-	scriptArgs := append([]string{core.GetExecutionPath()}, args...)
+	scriptArgs := append([]string{core.GetAbsoluteExecutionPath()}, args...)
 	exitCode := core.ExecuteScript(scriptPath, scriptArgs)
 	os.Exit(exitCode)
 }

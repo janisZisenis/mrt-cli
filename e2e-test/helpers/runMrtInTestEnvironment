@@ -1,13 +1,5 @@
 #!/bin/bash
 
 mrt() {
-  current=$PWD
-
-  cd "$testEnvDir"
-  "$exeName" "$@"
-  exitCode=$?
-
-  cd "$current"
-
-  return $exitCode
+  "$exeName" --team-dir "$testEnvDir" "$@"
 }

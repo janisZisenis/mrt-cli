@@ -8,7 +8,7 @@ _common_setup() {
   local projectRoot
   projectRoot="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
 
-  testEnvDir="./testEnv/$(uuidgen)"
+  testEnvDir="testEnv/$(uuidgen)"
   testEnvBinDir="$testEnvDir/bin"
   exeName="mrt-bin"
 

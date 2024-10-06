@@ -22,5 +22,5 @@ teardown() {
 }
 
 repositoryDir() {
-  absolutePath "$testEnvDir/$(default_repositories_path)/$repository"
+  echo "$testEnvDir/$(default_repositories_path)/$repository"
 }

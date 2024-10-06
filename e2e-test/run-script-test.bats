@@ -29,7 +29,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 
   run runScript "$scriptName" -- "${parameters[@]}"
 
-  assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvDir") ${parameters[*]}"
+  assert_spy_file_has_content "$scriptPath" "$(absolutePath $testEnvDir) ${parameters[*]}"
 }
 
 @test "if script succeeds with output it will print the script's output" {
@@ -67,7 +67,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script fails with code 1 it will fail with error code 1 as well" {
   scriptName="some-script"
   exitCode=1
-  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" "hello world"
+  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" ""
 
   run runScript "$scriptName"
 
@@ -78,7 +78,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script fails with code 2 it will fail with error code 2 as well" {
   scriptName="some-script"
   exitCode=2
-  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" "hello world"
+  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" ""
 
   run runScript "$scriptName"
 

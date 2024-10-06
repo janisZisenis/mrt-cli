@@ -4,7 +4,6 @@ load 'helpers/git'
 load 'helpers/setup'
 load 'helpers/repositoriesPath'
 load 'helpers/directoryAssertions'
-load 'helpers/absolutePath'
 
 
 setup() {
@@ -78,7 +77,7 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 
   run setupGitHooks
 
-  assert_line --index 0 "Installing git-hooks to repositories located in \"$(absolutePath "$(repositoriesDir)")\""
+  assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositoriesDir)\""
   assert_line --index 1 "Did not find any repositories. Skip installing git-hooks."
   assert_line --index 2 "Done installing git-hooks."
 }
@@ -92,10 +91,10 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 
   run setupGitHooks
 
-  assert_line --index 0 "Installing git-hooks to repositories located in \"$(absolutePath "$(repositoriesDir)")\""
-  assert_line --index 1 "Installing git-hooks to \"$(absolutePath "$(repositoriesDir)/${repositories[0]}/.git")\""
-  assert_line --index 2 "Done installing git-hooks to \"$(absolutePath "$(repositoriesDir)/${repositories[0]}/.git")\""
-  assert_line --index 3 "Installing git-hooks to \"$(absolutePath "$(repositoriesDir)/${repositories[1]}/.git")\""
-  assert_line --index 4 "Done installing git-hooks to \"$(absolutePath "$(repositoriesDir)/${repositories[1]}/.git")\""
+  assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositoriesDir)\""
+  assert_line --index 1 "Installing git-hooks to \"$(repositoriesDir)/${repositories[0]}/.git\""
+  assert_line --index 2 "Done installing git-hooks to \"$(repositoriesDir)/${repositories[0]}/.git\""
+  assert_line --index 3 "Installing git-hooks to \"$(repositoriesDir)/${repositories[1]}/.git\""
+  assert_line --index 4 "Done installing git-hooks to \"$(repositoriesDir)/${repositories[1]}/.git\""
   assert_line --index 5 "Done installing git-hooks."
 }

@@ -16,6 +16,11 @@ func GetExecutionPath() string {
 	return pwd
 }
 
+func GetAbsoluteExecutionPath() string {
+	absolute, _ := filepath.Abs(GetExecutionPath())
+	return absolute
+}
+
 func GetExecutableName() string {
 	executable, _ := os.Executable()
 	return filepath.Base(executable)

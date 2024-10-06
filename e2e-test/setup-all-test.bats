@@ -4,7 +4,6 @@ load 'helpers/writeMockScript'
 load 'helpers/runMrtInTestEnvironment'
 load 'helpers/writeTeamFile'
 load 'helpers/repositoriesPath'
-load 'helpers/absolutePath'
 
 setup() {
   _common_setup
@@ -40,9 +39,9 @@ teardown() {
   assert_line --index 5 --regexp "Total [0-9]+ \(delta $x\), reused $x \(delta $x\), pack-reused $x \(from $x\)"
   assert_line --index 6   "Successfully cloned $repositoryUrl"
   assert_line --index 7   "Cloning repositories done"
-  assert_line --index 8   "Installing git-hooks to repositories located in \"$(absolutePath "$testEnvDir/$(default_repositories_path)")\""
-  assert_line --index 9   "Installing git-hooks to \"$(absolutePath "$repositoryDir")/.git\""
-  assert_line --index 10  "Done installing git-hooks to \"$(absolutePath "$repositoryDir")/.git\""
+  assert_line --index 8   "Installing git-hooks to repositories located in \"$testEnvDir/$(default_repositories_path)\""
+  assert_line --index 9   "Installing git-hooks to \"$repositoryDir/.git\""
+  assert_line --index 10  "Done installing git-hooks to \"$repositoryDir/.git\""
   assert_line --index 11  "Done installing git-hooks."
   assert_line --index 12  "Executing setup-scripts."
   assert_line --index 13  "Execute setup-script: $anotherScriptName"

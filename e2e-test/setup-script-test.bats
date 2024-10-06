@@ -30,7 +30,7 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
 
   mrt setup "$scriptName"
 
-  assert_spy_file_has_content "$scriptPath" "$(absolutePath "$testEnvDir")"
+  assert_spy_file_has_content "$scriptPath" "$(absolutePath $testEnvDir)"
 }
 
 @test "if setup script succeeds with output it will print the script's output" {
