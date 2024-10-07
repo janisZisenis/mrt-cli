@@ -1,6 +1,12 @@
 name: Run E2E Tests
 
-on: push
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  workflow_dispatch: 
 
 env:
   binary-path: "build/bin"
@@ -55,3 +61,30 @@ jobs:
           cat $HOME/.ssh/config
       - name: Run E2E Tests
         run: mrt run e2e-tests
+  create-release:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ""
+          draft: false
+          prerelease: false
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.binary-path }}
+          asset_name: ${{ env.binary-name }}
+          asset_content_type: application/octet-stream
+  
