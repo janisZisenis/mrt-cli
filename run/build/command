@@ -48,8 +48,8 @@ build_binary() {
   fi
 }
 
-semver=$(mrt --team-dir $rootDir run current-version)
-commit_sha=$(git rev-parse HEAD)
+semver="unkown"
+commit_sha="unkown"
 while [ "$#" -gt 0 ]; do
   case $1 in
     "--help"|"-h")
