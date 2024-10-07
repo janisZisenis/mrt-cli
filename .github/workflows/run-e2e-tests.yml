@@ -25,7 +25,14 @@ jobs:
           go-version-file: app/go.mod
       - name: Build binary
         run: |
-          mrt run build -- --commit-sha ${{ github.sha }}
+          command="mrt run build -- --commit-sha ${{ github.sha }}"
+
+          if [[ ${{ github.ref }} == 'refs/tags/' ]]
+          then
+            command+=" --tag ${{ github.ref_name }}"
+          fi
+
+          $command
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:

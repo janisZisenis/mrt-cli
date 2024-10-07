@@ -48,7 +48,7 @@ build_binary() {
   fi
 }
 
-semver="v0.0.0"
+semver=$(mrt --team-dir $rootDir run current-version)
 commit_sha=$(git rev-parse HEAD)
 while [ "$#" -gt 0 ]; do
   case $1 in
