@@ -15,8 +15,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      go-version: '1.23'
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
@@ -24,7 +22,6 @@ jobs:
       - name: Setup Golang with cache
         uses: magnetikonline/action-golang-cache@v5
         with:
-          go-version: ${{ env.go-version }}
           go-version-file: app/go.mod
       - name: Build binary
         run: |
