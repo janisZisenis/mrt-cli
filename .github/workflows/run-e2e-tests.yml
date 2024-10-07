@@ -59,12 +59,21 @@ jobs:
           cat $HOME/.ssh/config
       - name: Run E2E Tests
         run: mrt run e2e-tests
-  create-release:
+  release:
     runs-on: ubuntu-latest
     needs: run-tests
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     steps:
       - uses: actions/checkout@v4
+      - name: Setup mrt
+        run: echo "$(pwd)/bin/github" >> $GITHUB_PATH
+      - name: Download binary
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.binary-name }}
+          path: ${{ env.binary-path }}
+      - name: Make binary executable
+        run: chmod 755 $(mrt run binary-location)
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
