@@ -27,7 +27,8 @@ jobs:
           go-version: ${{ env.go-version }}
           go-version-file: app/go.mod
       - name: Build binary
-        run: mrt run build
+        run: |
+          mrt run build -- --commit-sha ${{ github.sha }}
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
@@ -74,7 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
           body: ""
           draft: false
           prerelease: false
