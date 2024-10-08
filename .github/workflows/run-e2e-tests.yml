@@ -8,10 +8,6 @@ on:
       - 'v*'
   workflow_dispatch: 
 
-env:
-  binary-path: "build/bin"
-  binary-name: "mrt-linux-amd64"
-
 jobs:
   platform-detection:
     runs-on: ubuntu-latest
@@ -30,8 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: platform-detection
     outputs:
-      binary_name: ${{ steps.run_script.outputs.binary_name }}
-      binary_path: ${{ steps.run_script.outputs.binary_path }}
+      binary-name: ${{ steps.run_script.outputs.binary-name }}
+      binary-path: ${{ steps.run_script.outputs.binary-path }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
@@ -41,8 +37,8 @@ jobs:
         run: |
           BINARY_PATH=$(dirname $(mrt run binary-location -- ${{ needs.platform-detection.outputs.platform }}))
           BINARY_NAME=$(basename $(mrt run binary-location -- ${{ needs.platform-detection.outputs.platform }}))
-          echo "binary_name=${BINARY_NAME}" >> $GITHUB_OUTPUT
-          echo "binary_path=${BINARY_PATH}" >> $GITHUB_OUTPUT
+          echo "binary-name=${BINARY_NAME}" >> $GITHUB_OUTPUT
+          echo "binary-path=${BINARY_PATH}" >> $GITHUB_OUTPUT
   build:
     runs-on: ubuntu-latest
     needs: setup-platform-variables
@@ -65,8 +61,8 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ needs.setup-platform-variables.outputs.binary_name }}
-          path: ${{ needs.setup-platform-variables.outputs.binary_path }}
+          name: ${{ needs.setup-platform-variables.outputs.binary-name }}
+          path: ${{ needs.setup-platform-variables.outputs.binary-path }}
           retention-days: 7
   run-tests:
     runs-on: ubuntu-latest
@@ -78,8 +74,8 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.setup-platform-variables.outputs.binary_name }}
-          path: ${{ needs.setup-platform-variables.outputs.binary_path }}
+          name: ${{ needs.setup-platform-variables.outputs.binary-name }}
+          path: ${{ needs.setup-platform-variables.outputs.binary-path }}
       - name: Make binary executable
         run: chmod 755 $(mrt run binary-location)
       - name: Setup git config
@@ -106,8 +102,8 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.setup-platform-variables.outputs.binary_name }}
-          path: ${{ needs.setup-platform-variables.outputs.binary_path }}
+          name: ${{ needs.setup-platform-variables.outputs.binary-name }}
+          path: ${{ needs.setup-platform-variables.outputs.binary-path }}
       - name: Make binary executable
         run: chmod 755 $(mrt run binary-location)
       - name: Create Release
@@ -127,7 +123,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.setup-platform-variables.outputs.binary_path }}/${{ needs.setup-platform-variables.outputs.binary_name }}
-          asset_name: ${{ needs.setup-platform-variables.outputs.binary_name }}
+          asset_path: ${{ needs.setup-platform-variables.outputs.binary-path }}/${{ needs.setup-platform-variables.outputs.binary-name }}
+          asset_name: ${{ needs.setup-platform-variables.outputs.binary-name }}
           asset_content_type: application/octet-stream
   
