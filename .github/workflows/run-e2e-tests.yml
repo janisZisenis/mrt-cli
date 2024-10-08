@@ -29,7 +29,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
-        run: echo "$(pwd)/bin/github" >> $GITHUB_PATH
+        run: | 
+          $(pwd)/bin/github/package/setup.sh
+          echo "$(pwd)/bin/github" >> $GITHUB_PATH
       - name: Setup Golang with cache
         uses: magnetikonline/action-golang-cache@v5
         with:
@@ -69,7 +71,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
-        run: echo "$(pwd)/bin/github" >> $GITHUB_PATH
+        run: |
+          $(pwd)/bin/github/package/setup.sh
+          echo "$(pwd)/bin/github" >> $GITHUB_PATH
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
@@ -112,7 +116,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
-        run: echo "$(pwd)/bin/github" >> $GITHUB_PATH
+        run: | 
+          $(pwd)/bin/github/package/setup.sh
+          echo "$(pwd)/bin/github" >> $GITHUB_PATH
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
