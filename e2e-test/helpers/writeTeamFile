@@ -52,7 +52,7 @@ writeRepositoriesUrls() {
   string="$string\"$r\","
   done
 
-  if [[ ${#repositoriesUrls[*]} -gt 0 ]]
+  if [[ ${#repositoriesUrls[@]} -gt 0 ]]
   then
     string=${string::-1}
   fi
