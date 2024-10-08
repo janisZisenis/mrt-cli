@@ -27,11 +27,6 @@ jobs:
           PLATFORM=$(mrt run detect-platform)
           echo "$PLATFORM"
           echo "::set-output name=platform::${PLATFORM}"
-      - name: Set Platform
-        id: set-platform
-        run: |
-          echo "${{ steps.run_script.outputs.platform }}"
-          echo "::set-output name=platform::${{ steps.run_script.outputs.platform }}"
   use-platform:
     runs-on: ubuntu-latest
     needs: platform-detection
