@@ -93,7 +93,9 @@ jobs:
           sed "s*WORKSPACE_DIR*$GITHUB_WORKSPACE*g" .ssh/config > $HOME/.ssh/config
           cat $HOME/.ssh/config
       - name: Run E2E Tests
-        run: mrt run e2e-tests
+        run: |
+          /usr/bin/env bash --version
+          mrt run e2e-tests
   release:
     runs-on: ubuntu-latest
     strategy:

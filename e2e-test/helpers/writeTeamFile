@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 teamFileName() {
   echo "team.json"
@@ -44,6 +44,8 @@ writeBlockedBranches() {
 writeRepositoriesUrls() {
   repositoriesUrls=("$@")
 
+  echo "repositories: ${repositoriesUrls[@]}"
+
   createTeamFileIfNotExisting
 
   string=""
@@ -52,8 +54,11 @@ writeRepositoriesUrls() {
   string="$string\"$r\","
   done
 
+  echo "number: ${#repositoriesUrls[@]}"
   if [[ ${#repositoriesUrls[@]} -gt 0 ]]
   then
+    echo "executed"
+    echo "string: $string"
     string=${string::-1}
   fi
 
