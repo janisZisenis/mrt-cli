@@ -16,7 +16,7 @@ jobs:
   platform-detection:
     runs-on: ubuntu-latest
     outputs:
-      platform: ${{ steps.set-platform.outputs.platform }}
+      platform: ${{ steps.run_script.outputs.platform }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
@@ -26,7 +26,8 @@ jobs:
         run: |
           PLATFORM=$(mrt run detect-platform)
           echo "$PLATFORM"
-          echo "::set-output name=platform::${PLATFORM}"
+          echo "platform=${PLATFORM}" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
   use-platform:
     runs-on: ubuntu-latest
     needs: platform-detection
