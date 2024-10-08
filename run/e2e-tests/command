@@ -24,4 +24,4 @@ fi
 echo "Test files to be executed:"
 printf "\t%s\n" "${files[@]}"
 
-"$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" #--jobs 10
+"$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
