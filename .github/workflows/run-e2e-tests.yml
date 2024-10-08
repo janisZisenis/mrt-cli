@@ -13,6 +13,25 @@ env:
   binary-name: "mrt-linux-amd64"
 
 jobs:
+  platform-detection:
+    runs-on: ubuntu-latest
+    outputs:
+      platform: ${{ steps.set-platform.outputs.platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup mrt
+        run: echo "$(pwd)/bin/github" >> $GITHUB_PATH
+      - name: Run detection script
+        id: run_script
+        run: |
+          PLATFORM=$(mrt run detect-platform)
+          echo "$PLATFORM"
+          echo "::set-output name=platform::${PLATFORM}"
+      - name: Set Platform
+        id: set-matrix
+        run: |
+          echo "${{ steps.run_script.outputs.platform }}"
+          echo "::set-output name=platform::${{ steps.run_script.outputs.platform }}"
   build:
     runs-on: ubuntu-latest
     steps:
