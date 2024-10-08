@@ -15,14 +15,16 @@ jobs:
       matrix:
         platform: 
           - {
-              name: linux/amd64,
-              binary-path: build/bin,
-              binary-name: mrt-linux-amd64
-            }
+            name: linux/amd64,
+            os: ubuntu-latest,
+            binary-path: build/bin,
+            binary-name: mrt-linux-amd64
+          }
           - {
-              name: linux/arm64,
+              name: darwin/amd64,
+              os: macos-latest,
               binary-path: build/bin,
-              binary-name: mrt-linux-arm64
+              binary-name: mrt-darwin-amd64
             }
     steps:
       - uses: actions/checkout@v4
@@ -47,20 +49,22 @@ jobs:
           path: ${{ matrix.platform.binary-path }}
           retention-days: 7
   run-tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.os }}
     needs: [build]
     strategy:
       matrix:
         platform: 
           - {
-              platform: linux/amd64,
+              name: linux/amd64,
+              os: ubuntu-latest,
               binary-path: build/bin,
               binary-name: mrt-linux-amd64
             }
           - {
-              platform: linux/arm64,
+              name: darwin/amd64,
+              os: macos-latest,
               binary-path: build/bin,
-              binary-name: mrt-linux-arm64
+              binary-name: mrt-darwin-amd64
             }
     steps:
       - uses: actions/checkout@v4
@@ -92,14 +96,16 @@ jobs:
       matrix:
         platform: 
           - {
-              platform: linux/amd64,
-              binary-path: build/bin,
-              binary-name: mrt-linux-amd64
-            }
+            name: linux/amd64,
+            os: ubuntu-latest,
+            binary-path: build/bin,
+            binary-name: mrt-linux-amd64
+          }
           - {
-              platform: linux/arm64,
+              name: darwin/amd64,
+              os: macos-latest,
               binary-path: build/bin,
-              binary-name: mrt-linux-arm64
+              binary-name: mrt-darwin-amd64
             }
     needs: [run-tests]
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
