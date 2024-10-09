@@ -1,0 +1,27 @@
+name: 'Upload binaries'
+description: 'Upload binaries to the specified url'
+inputs:
+  binary-name:
+    description: 'Name of the binary'
+    required: true
+  binary-path:
+    description: 'Path to binary'
+    required: true
+  upload-release:
+    description: 'Upload url to the release'
+    required: true
+runs:
+  - name: Download binary
+    uses: actions/download-artifact@v4
+    with:
+      name: ${{ inputs.binary-name }}
+      path: ${{ inputs.binary-path }}
+  - name: Upload binaries to release
+    uses: actions/upload-release-asset@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+    with:
+      upload_url: ${{ inputs.upload-url }}
+      asset_path: ${{ inputs.binary-path }}/${{ inputs.binary-name }}
+      asset_name: ${{ inputs.binary-name }}
+      asset_content_type: application/octet-stream
