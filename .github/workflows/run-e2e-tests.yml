@@ -83,3 +83,4 @@ jobs:
           upload-url: ${{ needs.create-release.outputs.upload-url }}
           binary-name: ${{ matrix.platform.binary-name }}
           binary-path: ${{ matrix.platform.binary-path }}
+          github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
