@@ -16,10 +16,7 @@ jobs:
       test-matrix: ${{ steps.set-matrix.outputs.test-matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup mrt
-        run: | 
-          $(pwd)/bin/github/package/setup.sh
-          echo "$(pwd)/bin/github" >> $GITHUB_PATH
+      - uses: ./.github/actions/setup-mrt
       - name: Generate matrix
         id: set-matrix
         run: |
@@ -33,28 +30,13 @@ jobs:
       matrix: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup mrt
-        run: | 
-          $(pwd)/bin/github/package/setup.sh
-          echo "$(pwd)/bin/github" >> $GITHUB_PATH
-      - name: Setup Golang with cache
-        uses: magnetikonline/action-golang-cache@v5
+      - uses: ./.github/actions/build
         with:
-          go-version-file: app/go.mod
-      - name: Build binary
-        run: |
-          command="mrt run build -- --commit-sha ${{ github.sha }} ${{ matrix.platform.name }}"
-          if [[ ${{ github.ref }} == 'refs/tags/' ]]
-          then
-            command+=" --semver ${{ github.ref_name }}"
-          fi
-          $command
-      - name: Upload binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.platform.binary-name }}
-          path: ${{ matrix.platform.binary-path }}
-          retention-days: 7        
+          platform: ${{ matrix.platform.name }}
+          binary-name: ${{ matrix.platform.binary-name }}
+          binary-path: ${{ matrix.platform.binary-path }}
+          commit-sha: ${{ github.sha }}
+          version: ${{ github.ref_name }}
   run-tests:
     name: Run tests for platform ${{ matrix.platform.name }}
     runs-on: ubuntu-latest

@@ -1,0 +1,43 @@
+name: 'Build'
+description: 'Build binary for specified platform'
+inputs:
+  platform:
+    description: 'The platform to build for'
+    required: true
+  binary-name:
+    description: 'Name of the binary'
+    required: true
+  binary-path:
+    description: 'Path to binary'
+    required: true
+  commit-sha:
+    description: 'The current commit sha'
+    required: true
+  version:
+    description: 'The build version'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - uses: ./.github/actions/setup-mrt
+    - name: Setuachp Golang with ce
+      uses: magnetikonline/action-golang-cache@v5
+      with:
+        go-version-file: app/go.mod
+    - name: Build binary
+      shell: bash
+      run: |
+        command="mrt run build -- --commit-sha ${{ inputs.commit-sha }} ${{ inputs.platform }}"
+
+        if [ -z "${{ inputs.version }}" ]
+        then
+          command+=" --semver ${{ inputs.version }}"
+        fi
+        
+        $command
+    - name: Upload binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.binary-name }}
+        path: ${{ inputs.binary-path }}
+        retention-days: 7        

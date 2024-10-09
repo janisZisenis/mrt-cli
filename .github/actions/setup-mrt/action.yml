@@ -1,0 +1,10 @@
+name: 'Setup mrt'
+description: 'Sets up mrt on the runner'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup mrt
+      shell: bash
+      run: | 
+        $(pwd)/bin/github/package/setup.sh
+        echo "$(pwd)/bin/github" >> $GITHUB_PATH
