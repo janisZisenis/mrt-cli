@@ -5,5 +5,8 @@ set -e
 rootDir=$1
 shift
 
-docker build -f linux -t linux-amd64 --platform=linux/amd64 .
-docker run linux-amd64
+platform=$1
+arch=${platform#*/}
+
+docker build -f "$platform" -t linux-$arch --platform=$platform $rootDir
+docker run linux-$arch

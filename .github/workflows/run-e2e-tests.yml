@@ -19,6 +19,11 @@ jobs:
             binary-path: build/bin,
             binary-name: mrt-linux-amd64
           }
+          - {
+              name: linux/arm64,
+              binary-path: build/bin,
+              binary-name: mrt-linux-arm64
+            }
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
@@ -50,18 +55,23 @@ jobs:
       matrix:
         platform: 
           - {
-              name: linux/amd64,
+            name: linux/amd64,
+            binary-path: build/bin,
+            binary-name: mrt-linux-amd64
+          }
+          - {
+              name: linux/arm64,
               binary-path: build/bin,
-              binary-name: mrt-linux-amd64
+              binary-name: mrt-linux-arm64
             }
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Setup mrt
         run: |
           $(pwd)/bin/github/package/setup.sh
@@ -87,7 +97,7 @@ jobs:
       - name: Run E2E Tests
         run: |
           /usr/bin/env bash --version
-          mrt run docker-tests
+          mrt run docker-tests ${{ matrix.platform.name }}
   release:
     runs-on: ubuntu-latest
     strategy:
@@ -95,10 +105,14 @@ jobs:
         platform: 
           - {
             name: linux/amd64,
-            os: ubuntu-latest,
             binary-path: build/bin,
             binary-name: mrt-linux-amd64
           }
+          - {
+              name: linux/arm64,
+              binary-path: build/bin,
+              binary-name: mrt-linux-arm64
+            }
     needs: [run-tests]
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     steps:
