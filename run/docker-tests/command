@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+shift
+
+docker build -f linux -t linux-amd64 --platform=linux/amd64 .
+docker run linux-amd64

@@ -20,4 +20,4 @@ RUN ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
 RUN git config --global user.email "testing@testing.com"
 RUN git config --global user.name "TestRunner"
 
-ENTRYPOINT ["bash", "-c", "mrt run e2e-tests"]
+ENTRYPOINT ["bash", "-c", "mrt run detect-platform; mrt run e2e-tests"]
