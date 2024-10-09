@@ -98,8 +98,27 @@ jobs:
         run: |
           /usr/bin/env bash --version
           mrt run docker-tests ${{ matrix.platform.name }}
-  release:
+  create-release:
     runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    outputs:
+      upload-url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
+          body: ""
+          draft: false
+          prerelease: false
+  upload-binaries:
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    needs: [create-release]
     strategy:
       matrix:
         platform: 
@@ -113,8 +132,6 @@ jobs:
               binary-path: build/bin,
               binary-name: mrt-linux-arm64
             }
-    needs: [run-tests]
-    if: ${{ startsWith(github.ref, 'refs/tags/') }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup mrt
@@ -128,23 +145,12 @@ jobs:
           path: ${{ matrix.platform.binary-path }}
       - name: Make binary executable
         run: chmod 755 ${{ matrix.platform.binary-path }}/${{ matrix.platform.binary-name }}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}
-          body: ""
-          draft: false
-          prerelease: false
-      - name: Upload release asset
+      - name: Upload binaries
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.create-release.outputs.upload-url }}
           asset_path: ${{ matrix.platform.binary-path }}/${{ matrix.platform.binary-name }}
           asset_name: ${{ matrix.platform.binary-name }}
           asset_content_type: application/octet-stream
