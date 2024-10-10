@@ -18,8 +18,6 @@ help(){
 
 supportedPlatforms=(
   "linux/amd64"
-  "linux/386"
-  "linux/arm"
   "linux/arm64"
   "darwin/amd64"
   "darwin/arm64"
@@ -44,8 +42,6 @@ detect_arch() {
     case "${archOut}" in
         x86_64)    ARCH=amd64;;
         i686)      ARCH=386;;
-        i386)      ARCH=386;;
-        armv7l)    ARCH=arm;;
         aarch64)   ARCH=arm64;;
         arm64)     ARCH=arm64;;
         *)         ARCH="UNKNOWN:${archOut}"
