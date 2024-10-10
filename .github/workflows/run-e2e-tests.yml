@@ -30,8 +30,6 @@ jobs:
       - uses: ./.github/actions/build
         with:
           platform: ${{ matrix.platform.name }}
-          binary-name: ${{ matrix.platform.binary-name }}
-          binary-path: ${{ matrix.platform.binary-path }}
           commit-sha: ${{ github.sha }}
           version: ${{ github.ref_name }}
   run-linux-tests:

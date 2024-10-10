@@ -4,12 +4,6 @@ inputs:
   platform:
     description: 'The platform to build for'
     required: true
-  binary-name:
-    description: 'Name of the binary'
-    required: true
-  binary-path:
-    description: 'Path to binary'
-    required: true
   commit-sha:
     description: 'The current commit sha'
     required: true
@@ -20,7 +14,7 @@ runs:
   using: 'composite'
   steps:
     - uses: ./.github/actions/setup-mrt
-    - name: Setuachp Golang with ce
+    - name: Setup Golang
       uses: magnetikonline/action-golang-cache@v5
       with:
         go-version-file: app/go.mod
@@ -35,9 +29,13 @@ runs:
         fi
         
         $command
+    - id: set-binary-variables
+      uses: ./.github/actions/set-binary-variables
+      with:
+        platform: ${{ inputs.platform }}
     - name: Upload binary
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.binary-name }}
-        path: ${{ inputs.binary-path }}
+        name: ${{ steps.set-binary-variables.outputs.binary-name }}
+        path: ${{ steps.set-binary-variables.outputs.binary-path }}
         retention-days: 7        

@@ -8,20 +8,7 @@ runs:
   using: 'composite'      
   steps:
     - uses: ./.github/actions/setup-mrt
-    - name: Set binary variables
-      id: binary-variables
-      shell: bash
-      run: |
-        echo "binary-path=$(mrt run binary-location -- --dir)" >> $GITHUB_OUTPUT
-        echo "binary-name=$(mrt run binary-location -- --exe-name)" >> $GITHUB_OUTPUT
-    - name: Download binary
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ steps.binary-variables.outputs.binary-name }}
-        path: ${{ steps.binary-variables.outputs.binary-path }}
-    - name: Make binary executable
-      shell: bash
-      run: chmod 755 $(mrt run binary-location)
+    - uses: ./.github/actions/download-binaries
     - name: Setup ssh
       shell: bash
       run: |
@@ -37,4 +24,6 @@ runs:
         git config --global user.name "TestRunner"
     - name: Run E2E Tests
       shell: bash
-      run: mrt run e2e-tests
+      run: |
+        mrt run detect-platform
+        mrt run e2e-tests

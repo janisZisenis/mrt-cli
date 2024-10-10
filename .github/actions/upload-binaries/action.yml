@@ -1,11 +1,8 @@
 name: 'Upload binaries'
 description: 'Upload binaries to the specified url'
 inputs:
-  binary-name:
-    description: 'Name of the binary'
-    required: true
-  binary-path:
-    description: 'Path to binary'
+  platform:
+    description: 'Platform'
     required: true
   upload-release:
     description: 'Upload url to the release'
@@ -16,11 +13,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Download binary
-      uses: actions/download-artifact@v4
+    - id: set-binary-variables
+      uses: ./.github/actions/download-binaries
       with:
-        name: ${{ inputs.binary-name }}
-        path: ${{ inputs.binary-path }}
+        platform: ${{ inputs.platform }}
     - name: Upload binaries to release
       uses: actions/upload-release-asset@v1
       env:

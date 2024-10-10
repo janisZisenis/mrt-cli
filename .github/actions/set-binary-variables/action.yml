@@ -1,0 +1,23 @@
+name: 'Binary Variables'
+description: 'Outputs binary path and name'
+inputs:
+  platform:
+    description: "Platform"
+    required: false
+outputs:
+  binary-path:
+    description: 'Binary path'
+    value: ${{ steps.set-binary-values.outputs.binary-path }}
+  binary-name:
+    description: 'Binary name'
+    value: ${{ steps.set-binary-values.outputs.binary-name }}
+runs:
+  using: 'composite'
+  steps:
+    - uses: ./.github/actions/setup-mrt
+    - name: Set Binary Values
+      id: set-binary-values
+      shell: bash
+      run: |
+        echo "binary-path=$(mrt run binary-location -- --dir ${{ inputs.platform }})" >> $GITHUB_OUTPUT
+        echo "binary-name=$(mrt run binary-location -- --exe-name ${{ inputs.platform }})" >> $GITHUB_OUTPUT

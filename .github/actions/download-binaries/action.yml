@@ -1,0 +1,21 @@
+name: 'Download binaries'
+description: 'Download binaries'
+inputs:
+  platform:
+    description: 'Platform'
+    required: false
+runs:
+  using: 'composite'      
+  steps:
+    - id: set-binary-variables
+      uses: ./.github/actions/set-binary-variables
+      with:
+        platform: ${{ inputs.platform }}
+    - name: Download binary
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ steps.set-binary-variables.outputs.binary-name }}
+        path: ${{ steps.set-binary-variables.outputs.binary-path }}
+    - name: Make binary executable
+      shell: bash
+      run: chmod 755 $(mrt run binary-location)
