@@ -45,8 +45,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-tests
         with:
-          binary-name: ${{ env.binary-name }}
-          binary-path: ${{ env.binary-path }}
           private-key: ${{ secrets.PRIVATE_KEY }}
   run-darwin-tests:
     name: Run tests on darwin
@@ -65,8 +63,6 @@ jobs:
         run: brew install bash
       - uses: ./.github/actions/run-tests
         with:
-          binary-name: ${{ env.binary-name }}
-          binary-path: ${{ env.binary-path }}
           private-key: ${{ secrets.PRIVATE_KEY }}
   create-release:
     runs-on: ubuntu-latest
