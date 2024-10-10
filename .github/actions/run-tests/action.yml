@@ -1,9 +1,6 @@
 name: 'Run E2E tests'
-description: 'Runs E2E tests on a specified platform'
+description: 'Runs E2E tests'
 inputs:
-  platform:
-    description: 'Platform to run the tests on'
-    required: true
   binary-name:
     description: 'Name of the binary'
     required: true
@@ -16,12 +13,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: ${{ inputs.platform }}
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
     - name: Download binary
       uses: actions/download-artifact@v4
       with:
@@ -35,7 +26,15 @@ runs:
       run: |
         echo "${{ inputs.private-key }}" > .ssh/private-key
         chmod 400 ./.ssh/private-key
+        mkdir -p $HOME/.ssh
+        sed "s*WORKSPACE_DIR*$GITHUB_WORKSPACE*g" .ssh/config > $HOME/.ssh/config
+        cat $HOME/.ssh/config
+    - name: setup git user
+      shell: bash
+      run: |
+        git config --global user.email "testing@testing.com"
+        git config --global user.name "TestRunner"
     - uses: ./.github/actions/setup-mrt
     - name: Run E2E Tests
       shell: bash
-      run: mrt run docker-tests ${{ inputs.platform }}
+      run: mrt run e2e-tests
