@@ -4,7 +4,7 @@ inputs:
   platform:
     description: 'Platform'
     required: true
-  upload-release:
+  upload-url:
     description: 'Upload url to the release'
     required: true
   github-token:
@@ -13,16 +13,21 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - id: set-binary-variables
+    - id: download-binaries-variables
       uses: ./.github/actions/download-binaries
       with:
         platform: ${{ inputs.platform }}
+    - name: Echo variables
+      shell: bash
+      run: |
+        echo "path: ${{ steps.download-binaries-variables.outputs.binary-path }}"
+        echo "name: ${{ steps.download-binaries-variables.outputs.binary-name }}"
     - name: Upload binaries to release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
       with:
         upload_url: ${{ inputs.upload-url }}
-        asset_path: ${{ inputs.binary-path }}/${{ inputs.binary-name }}
-        asset_name: ${{ inputs.binary-name }}
+        asset_path: ${{ steps.download-binaries-variables.outputs.binary-path }}/${{ steps.download-binaries-variables.outputs.binary-name }}
+        asset_name: ${{ steps.download-binaries-variables.outputs.binary-name }}
         asset_content_type: application/octet-stream

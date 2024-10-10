@@ -80,12 +80,13 @@ jobs:
           draft: false
           prerelease: false
   release-binaries:
-    name: Release binaries for ${{ matrix.platform.name }}
+    name: Release binaries for ${{ matrix.platform }}
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     needs: [create-release, build-matrix]
     strategy:
-      matrix: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
+      matrix:
+        platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/upload-binaries

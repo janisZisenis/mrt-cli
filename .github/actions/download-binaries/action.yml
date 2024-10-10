@@ -4,6 +4,13 @@ inputs:
   platform:
     description: 'Platform'
     required: false
+outputs:
+  binary-path:
+    description: 'Binary path'
+    value: ${{ steps.set-binary-variables.outputs.binary-path }}
+  binary-name:
+    description: 'Binary name'
+    value: ${{ steps.set-binary-variables.outputs.binary-name }}
 runs:
   using: 'composite'      
   steps:
