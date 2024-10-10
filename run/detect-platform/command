@@ -13,6 +13,7 @@ help(){
   printf "Usage:"
   printf 'options:\n'
   printf -- "-h, --help\tShow this help message\n"
+  printf -- '%s\tPrints out all supported platforms\n' "$SUPPORTED_PLATFROMS_FLAG"
   printf -- '%s|%s\tPrints out os or arch. If none prints out platform (eg. %s)\n' "$OS_FLAG" "$ARCH_FLAG" "$(detect_os)/$(detect_arch)"
 }
 
@@ -21,8 +22,6 @@ supportedPlatforms=(
   "linux/arm64"
   "darwin/amd64"
   "darwin/arm64"
-  "windows/amd64"
-  "windows/386"
 )
 
 detect_os() {
@@ -30,8 +29,6 @@ detect_os() {
     case "${unameOut}" in
         Linux*)     OS=linux;;
         Darwin*)    OS=darwin;;
-        CYGWIN*)    OS=windows;;
-        MINGW*)     OS=windows;;
         *)          OS="UNKNOWN:${unameOut}"
     esac
     echo "${OS}"
@@ -41,7 +38,6 @@ detect_arch() {
     archOut="$(uname -m)"
     case "${archOut}" in
         x86_64)    ARCH=amd64;;
-        i686)      ARCH=386;;
         aarch64)   ARCH=arm64;;
         arm64)     ARCH=arm64;;
         *)         ARCH="UNKNOWN:${archOut}"

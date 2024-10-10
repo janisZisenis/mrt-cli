@@ -5,14 +5,7 @@ set -e
 rootDir=$1
 shift
 
-supportedPlatforms=(
-  "linux/amd64"
-  "linux/arm64"
-  "darwin/amd64"
-  "darwin/arm64"
-  "windows/amd64"
-  "windows/386"
-)
+readarray -t supportedPlatforms < <(mrt --team-dir $rootDir run detect-platform -- --supported-platforms)
 
 json='{"platform": []}'
 
