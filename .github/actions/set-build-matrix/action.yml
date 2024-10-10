@@ -1,0 +1,14 @@
+name: 'Build matrix'
+description: 'Outputs build matrix'
+outputs:
+  build-matrix:
+    description: 'Buila matrix'
+    value: ${{ steps.set-build-matrix.outputs.build-matrix }}
+runs:
+  using: 'composite'
+  steps:
+    - uses: ./.github/actions/setup-mrt
+    - name: Set Build matrix
+      id: set-build-matrix
+      shell: bash
+      run: echo "build-matrix=$(mrt run build-matrix)" >> $GITHUB_OUTPUT

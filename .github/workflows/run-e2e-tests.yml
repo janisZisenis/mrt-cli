@@ -12,13 +12,11 @@ jobs:
   build-matrix:
     runs-on: ubuntu-latest
     outputs:
-      build-matrix: ${{ steps.set-matrix.outputs.build-matrix }}
+      build-matrix: ${{ steps.set-build-matrix.outputs.build-matrix }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-mrt
-      - name: Generate matrix
-        id: set-matrix
-        run: echo "build-matrix=$(mrt run build-matrix)" >> $GITHUB_OUTPUT
+      - id: set-build-matrix
+        uses: ./.github/actions/set-build-matrix
   build:
     name: Build for Platform ${{ matrix.platform }}
     runs-on: ubuntu-latest
