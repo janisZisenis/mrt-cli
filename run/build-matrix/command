@@ -6,16 +6,5 @@ rootDir=$1
 shift
 
 readarray -t supportedPlatforms < <(mrt --team-dir $rootDir run detect-platform -- --supported-platforms)
-
-json='{"platform": []}'
-
-for platform in "${supportedPlatforms[@]}"; do
-  platform_data=$(jq -n --arg name "$platform" \
-    --arg path "$(mrt --team-dir $rootDir run binary-location -- --dir $platform)" \
-    --arg binary_name "$(mrt --team-dir $rootDir run binary-location -- --exe-name $platform)" \
-    '{name: $name, "binary-path": $path, "binary-name": $binary_name}')
-    
-  json=$(echo "$json" | jq --argjson platform_data "$platform_data" '.platform += [$platform_data]')
-done
-
-echo "$json" | jq -c .
+json_array=$(jq -n --argjson arr "$(printf '%s\n' "${supportedPlatforms[@]}" | jq -R . | jq -s .)" '$arr')
+echo "$json_array" | jq -c .
