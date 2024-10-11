@@ -25,4 +25,4 @@ runs:
         path: ${{ steps.set-binary-variables.outputs.binary-path }}
     - name: Make binary executable
       shell: bash
-      run: chmod 755 $(mrt run binary-location)
+      run: chmod 755 $(mrt run binary-location -- ${{ inputs.platform }})
