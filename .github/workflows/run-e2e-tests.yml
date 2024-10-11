@@ -31,40 +31,40 @@ jobs:
           platform: ${{ matrix.platform }}
           commit-sha: ${{ github.sha }}
           version: ${{ github.ref_name }}
-  # run-linux-tests:
-  #   name: Run tests on linux
-  #   runs-on: ubuntu-latest
-  #   needs: [build]
-  #   env:
-  #     binary-path: build/bin
-  #     binary-name: mrt-linux-amd64
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: ./.github/actions/run-tests
-  #       with:
-  #         private-key: ${{ secrets.PRIVATE_KEY }}
-  # run-darwin-tests:
-  #   name: Run tests on darwin
-  #   runs-on: macos-15
-  #   needs: [build]
-  #   env:
-  #     binary-path: build/bin
-  #     binary-name: mrt-darwin-arm64
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Setup parallel
-  #       shell: bash
-  #       run: brew install parallel
-  #     - name: Setup bash
-  #       shell: bash
-  #       run: brew install bash
-  #     - uses: ./.github/actions/run-tests
-  #       with:
-  #         private-key: ${{ secrets.PRIVATE_KEY }}
+  run-linux-tests:
+    name: Run tests on linux
+    runs-on: ubuntu-latest
+    needs: [build]
+    env:
+      binary-path: build/bin
+      binary-name: mrt-linux-amd64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/run-tests
+        with:
+          private-key: ${{ secrets.PRIVATE_KEY }}
+  run-darwin-tests:
+    name: Run tests on darwin
+    runs-on: macos-15
+    needs: [build]
+    env:
+      binary-path: build/bin
+      binary-name: mrt-darwin-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup parallel
+        shell: bash
+        run: brew install parallel
+      - name: Setup bash
+        shell: bash
+        run: brew install bash
+      - uses: ./.github/actions/run-tests
+        with:
+          private-key: ${{ secrets.PRIVATE_KEY }}
   create-release:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [build] #[run-linux-tests, run-darwin-tests]
+    needs: [run-linux-tests, run-darwin-tests]
     outputs:
       upload-url: ${{ steps.create_release.outputs.upload_url }}
     steps:
