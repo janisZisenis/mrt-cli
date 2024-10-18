@@ -20,6 +20,7 @@ runs:
     - name: Configure git
       shell: bash
       run: |
+        git version
         git config --global core.compression 0
         git config --global user.email "testing@testing.com"
         git config --global user.name "TestRunner"
