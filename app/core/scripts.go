@@ -13,8 +13,8 @@ func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string
 	scripts, _ := filepath.Glob(path)
 
 	for _, script := range scripts {
-		segments := strings.Split(script, "/")
-		scriptName := segments[len(segments)-2]
+		dirPath := filepath.Dir(script)
+		scriptName := filepath.Base(dirPath)
 
 		do(script, scriptName)
 	}
