@@ -67,6 +67,18 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v4
+      - run: |
+          curl pi.dk/3/ > install.sh
+          sha1sum install.sh | grep 51621b7f1ee103c00783aae4ef9889f8
+          md5sum install.sh | grep 62eada78703b5500241b8e50baf62758
+          sha512sum install.sh | grep c0206a65dc86f2bb6bbdf1a2bc96bc6d067f8237c
+          ./install.sh
+          export PATH=$PATH:/usr/local/bin
+          parallel --version
+        shell: bash
+      - uses: ./.github/actions/run-tests
+        with:
+          private-key: ${{ secrets.PRIVATE_KEY }}
   create-release:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
