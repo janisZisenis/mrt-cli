@@ -61,10 +61,16 @@ jobs:
       - uses: ./.github/actions/run-tests
         with:
           private-key: ${{ secrets.PRIVATE_KEY }}
+  run-windows-tests:
+    name: Run tests on windows
+    runs-on: windows-2022
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
   create-release:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [run-linux-tests, run-darwin-tests]
+    needs: [run-linux-tests, run-darwin-tests, run-windows-tests]
     outputs:
       upload-url: ${{ steps.create_release.outputs.upload_url }}
     steps:
