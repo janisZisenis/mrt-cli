@@ -17,9 +17,10 @@ runs:
         mkdir -p $HOME/.ssh
         sed "s*WORKSPACE_DIR*$GITHUB_WORKSPACE*g" .ssh/config > $HOME/.ssh/config
         cat $HOME/.ssh/config
-    - name: setup git user
+    - name: Configure git
       shell: bash
       run: |
+        git config --global core.compression 0
         git config --global user.email "testing@testing.com"
         git config --global user.name "TestRunner"
     - name: Run E2E Tests
