@@ -4,6 +4,7 @@ load 'helpers/writeMockScript'
 load 'helpers/executeInTestEnvironment'
 load 'helpers/writeTeamFile'
 load 'helpers/repositoriesPath'
+load 'helpers/assertLineReversed'
 
 setup() {
   _common_setup
@@ -30,24 +31,21 @@ teardown() {
 
   run execute setup all
 
-  x="[0-9]+"
   assert_line --index 0   "Start cloning repositories into \"$(default_repositories_path)\""
   assert_line --index 1   "Cloning $repositoryUrl into $(default_repositories_path)/$repository"
-  assert_line --index 2 --regexp "Enumerating objects: $x, done."
-  assert_line --index 3 --regexp "Counting objects: $x% \($x\/$x\), done."
-  assert_line --index 4 --regexp "Total [0-9]+ \(delta $x\), reused $x \(delta $x\), pack-reused $x \(from $x\)"
-  assert_line --index 5   "Successfully cloned $repositoryUrl"
-  assert_line --index 6   "Cloning repositories done"
-  assert_line --index 7   "Installing git-hooks to repositories located in \"$testEnvDir/$(default_repositories_path)\""
-  assert_line --index 8   "Installing git-hooks to \"$repositoryDir/.git\""
-  assert_line --index 9   "Done installing git-hooks to \"$repositoryDir/.git\""
-  assert_line --index 10  "Done installing git-hooks."
-  assert_line --index 11  "Executing setup-scripts."
-  assert_line --index 12  "Execute setup-script: $anotherScriptName"
-  assert_line --index 13  "$anotherScriptName executed successfully"
-  assert_line --index 14  "Execute setup-script: $someScriptName"
-  assert_line --index 15  "$someScriptName executed successfully"
-  assert_line --index 16  "Done executing setup-scripts."
+  assert_line --index 2 --regexp "Enumerating objects: [0-9]+, done."
+  assert_line_reversed_output 11 "Successfully cloned $repositoryUrl"
+  assert_line_reversed_output 10 "Cloning repositories done"
+  assert_line_reversed_output 9  "Installing git-hooks to repositories located in \"$testEnvDir/$(default_repositories_path)\""
+  assert_line_reversed_output 8  "Installing git-hooks to \"$repositoryDir/.git\""
+  assert_line_reversed_output 7  "Done installing git-hooks to \"$repositoryDir/.git\""
+  assert_line_reversed_output 6  "Done installing git-hooks."
+  assert_line_reversed_output 5  "Executing setup-scripts."
+  assert_line_reversed_output 4  "Execute setup-script: $anotherScriptName"
+  assert_line_reversed_output 3  "$anotherScriptName executed successfully"
+  assert_line_reversed_output 2  "Execute setup-script: $someScriptName"
+  assert_line_reversed_output 1  "$someScriptName executed successfully"
+  assert_line_reversed_output 0  "Done executing setup-scripts."
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {

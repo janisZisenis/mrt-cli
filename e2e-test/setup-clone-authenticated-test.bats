@@ -6,6 +6,7 @@ load 'helpers/repositoriesPath'
 load 'helpers/setup'
 load 'helpers/executeInTestEnvironment'
 load 'helpers/git'
+load 'helpers/assertLineReversed'
 
 repositoriesPath=$(default_repositories_path)
 
@@ -37,14 +38,9 @@ teardown() {
 
   run setupCloneUrls "$repositoryUrl"
 
-  assert_output "test"
-
-  # x="[0-9]+"
-  # assert_line --index 1 "Cloning $repositoryUrl into $repositoriesPath/$repository"
-  # assert_line --index 2 --regexp "Enumerating objects: $x, done."
-  # assert_line --index 3 --regexp "Counting objects: $x% \($x\/$x\), done."
-  # assert_line --index 4 --regexp "Total [0-9]+ \(delta $x\), reused $x \(delta $x\), pack-reused $x \(from $x\)"
-  # assert_line --index 5 "Successfully cloned $repositoryUrl"
+  assert_line --index 1 "Cloning $repositoryUrl into $repositoriesPath/$repository"
+  assert_line --index 2 --regexp "Enumerating objects: [0-9]+, done."
+  assert_line_reversed_output 1 "Successfully cloned $repositoryUrl"
 }
 
 @test "if team json contains repositoriesPath it clones the repositories into given repositoriesPath folder" {
