@@ -9,106 +9,108 @@ on:
   workflow_dispatch: 
 
 jobs:
-  build-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      build-matrix: ${{ steps.set-build-matrix.outputs.build-matrix }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: set-build-matrix
-        uses: ./.github/actions/set-build-matrix
-  build:
-    name: Build for Platform ${{ matrix.platform }}
-    runs-on: ubuntu-latest
-    needs: build-matrix
-    strategy:
-      matrix: 
-        platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/build
-        with:
-          platform: ${{ matrix.platform }}
-          commit-sha: ${{ github.sha }}
-          version: ${{ github.ref_name }}
-  run-linux-tests:
-    name: Run tests on linux
-    runs-on: ubuntu-latest
-    needs: [build]
-    env:
-      binary-path: build/bin
-      binary-name: mrt-linux-amd64
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/run-tests
-        with:
-          private-key: ${{ secrets.PRIVATE_KEY }}
-  run-darwin-tests:
-    name: Run tests on darwin
-    runs-on: macos-15
-    needs: [build]
-    env:
-      binary-path: build/bin
-      binary-name: mrt-darwin-arm64
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup parallel
-        shell: bash
-        run: brew install parallel
-      - name: Setup bash
-        shell: bash
-        run: brew install bash
-      - uses: ./.github/actions/run-tests
-        with:
-          private-key: ${{ secrets.PRIVATE_KEY }}
+  # build-matrix:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     build-matrix: ${{ steps.set-build-matrix.outputs.build-matrix }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - id: set-build-matrix
+  #       uses: ./.github/actions/set-build-matrix
+  # build:
+  #   name: Build for Platform ${{ matrix.platform }}
+  #   runs-on: ubuntu-latest
+  #   needs: build-matrix
+  #   strategy:
+  #     matrix: 
+  #       platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/build
+  #       with:
+  #         platform: ${{ matrix.platform }}
+  #         commit-sha: ${{ github.sha }}
+  #         version: ${{ github.ref_name }}
+  # run-linux-tests:
+  #   name: Run tests on linux
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   env:
+  #     binary-path: build/bin
+  #     binary-name: mrt-linux-amd64
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/run-tests
+  #       with:
+  #         private-key: ${{ secrets.PRIVATE_KEY }}
+  # run-darwin-tests:
+  #   name: Run tests on darwin
+  #   runs-on: macos-15
+  #   needs: [build]
+  #   env:
+  #     binary-path: build/bin
+  #     binary-name: mrt-darwin-arm64
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Setup parallel
+  #       shell: bash
+  #       run: brew install parallel
+  #     - name: Setup bash
+  #       shell: bash
+  #       run: brew install bash
+  #     - uses: ./.github/actions/run-tests
+  #       with:
+  #         private-key: ${{ secrets.PRIVATE_KEY }}
   run-windows-tests:
     name: Run tests on windows
     runs-on: windows-2022
-    needs: [build]
+    # needs: [build]
     steps:
       - uses: actions/checkout@v4
+      # - run: |
+      #     curl pi.dk/3/ > install.sh
+      #     sha1sum install.sh | grep 51621b7f1ee103c00783aae4ef9889f8
+      #     md5sum install.sh | grep 62eada78703b5500241b8e50baf62758
+      #     sha512sum install.sh | grep c0206a65dc86f2bb6bbdf1a2bc96bc6d067f8237c
+      #     ./install.sh
+      #     export PATH=$PATH:/usr/local/bin
+      #     parallel --version
+      #   shell: bash
+      - uses: ./.github/actions/setup-mrt
       - run: |
-          curl pi.dk/3/ > install.sh
-          sha1sum install.sh | grep 51621b7f1ee103c00783aae4ef9889f8
-          md5sum install.sh | grep 62eada78703b5500241b8e50baf62758
-          sha512sum install.sh | grep c0206a65dc86f2bb6bbdf1a2bc96bc6d067f8237c
-          ./install.sh
-          export PATH=$PATH:/usr/local/bin
-          parallel --version
+          echo "$PATH"
+          mrt run binary-location -- -h
         shell: bash
-      - uses: ./.github/actions/run-tests
-        with:
-          private-key: ${{ secrets.PRIVATE_KEY }}
-  create-release:
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [run-linux-tests, run-darwin-tests, run-windows-tests]
-    outputs:
-      upload-url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}
-          body: ""
-          draft: false
-          prerelease: false
-  release-binaries:
-    name: Release binaries for ${{ matrix.platform }}
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [create-release, build-matrix]
-    strategy:
-      matrix:
-        platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/upload-binaries
-        with:
-          platform: ${{ matrix.platform }}
-          upload-url: ${{ needs.create-release.outputs.upload-url }}
-          github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+  # create-release:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ startsWith(github.ref, 'refs/tags/') }}
+  #   needs: [run-linux-tests, run-darwin-tests, run-windows-tests]
+  #   outputs:
+  #     upload-url: ${{ steps.create_release.outputs.upload_url }}
+  #   steps:
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: Release ${{ github.ref_name }}
+  #         body: ""
+  #         draft: false
+  #         prerelease: false
+  # release-binaries:
+  #   name: Release binaries for ${{ matrix.platform }}
+  #   runs-on: ubuntu-latest
+  #   if: ${{ startsWith(github.ref, 'refs/tags/') }}
+  #   needs: [create-release, build-matrix]
+  #   strategy:
+  #     matrix:
+  #       platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/upload-binaries
+  #       with:
+  #         platform: ${{ matrix.platform }}
+  #         upload-url: ${{ needs.create-release.outputs.upload-url }}
+  #         github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}

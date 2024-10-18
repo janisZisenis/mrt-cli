@@ -10,9 +10,13 @@ arch=$(detect_arch)
 
 echo "detected os: $os, detected arch: $arch"
 binaryLocation="$SCRIPT_DIR/mrt-$os-$arch"
-
+targetLocation="$SCRIPT_DIR/../mrt"
 if [ "$os" = "windows" ]; then
   binaryLocation+='.exe'
+  targetLocation+='.exe'
 fi
 
-cp $binaryLocation "$SCRIPT_DIR/../mrt"
+echo "binary location: $binaryLocation"
+echo "target location: $targetLocation"
+
+cp "$binaryLocation" "$targetLocation"
