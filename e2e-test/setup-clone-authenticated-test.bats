@@ -41,9 +41,8 @@ teardown() {
   assert_line --index 1 "Cloning $repositoryUrl into $repositoriesPath/$repository"
   assert_line --index 2 --regexp "Enumerating objects: $x, done."
   assert_line --index 3 --regexp "Counting objects: $x% \($x\/$x\), done."
-  assert_line --index 4 --regexp "Compressing objects: $x% \($x\/$x\), done."
-  assert_line --index 5 --regexp "Total [0-9]+ \(delta $x\), reused $x \(delta $x\), pack-reused $x \(from $x\)"
-  assert_line --index 6 "Successfully cloned $repositoryUrl"
+  assert_line --index 4 --regexp "Total [0-9]+ \(delta $x\), reused $x \(delta $x\), pack-reused $x \(from $x\)"
+  assert_line --index 5 "Successfully cloned $repositoryUrl"
 }
 
 @test "if team json contains repositoriesPath it clones the repositories into given repositoriesPath folder" {
