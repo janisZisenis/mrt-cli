@@ -78,7 +78,6 @@ jobs:
       #   shell: bash
       - uses: ./.github/actions/setup-mrt
       - run: |
-          echo "$PATH"
           mrt run binary-location -- -h
         shell: bash
   # create-release:

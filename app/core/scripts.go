@@ -23,6 +23,10 @@ func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string
 type ExitCode = int
 
 func ExecuteScript(scriptPath string, args []string) ExitCode {
+	if _, err := os.Stat(scriptPath); os.IsNotExist(err) {
+		log.Error("The script " + scriptPath + " does not exist.")
+	}
+
 	script := exec.Command(scriptPath, args...)
 	script.Stdout = os.Stdout
 	script.Stdin = os.Stdin
@@ -33,7 +37,6 @@ func ExecuteScript(scriptPath string, args []string) ExitCode {
 		return 0
 	}
 
-	log.Error("ScriptPath: " + scriptPath)
 	return extractExitCode(err, 1)
 }
 
@@ -42,7 +45,6 @@ func extractExitCode(err error, defaultExitCode int) int {
 	var extractedCode, conversionErr = strconv.Atoi(codeString)
 
 	if conversionErr != nil {
-		log.Error("Test")
 		log.Error("Could not extract exit code from error: " + err.Error())
 		return defaultExitCode
 	}
