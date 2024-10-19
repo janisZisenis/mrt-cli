@@ -27,7 +27,7 @@ func ExecuteScript(scriptPath string, args []string) ExitCode {
 		log.Error("The script " + scriptPath + " does not exist.")
 	}
 
-	script := exec.Command(scriptPath, args...)
+	script := exec.Command("C:/Program Files/Git/bin/bash.EXE", "./run/binary-location/command.sh")
 	script.Stdout = os.Stdout
 	script.Stdin = os.Stdin
 	script.Stderr = os.Stderr

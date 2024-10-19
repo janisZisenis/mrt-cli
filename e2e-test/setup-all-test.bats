@@ -24,8 +24,8 @@ teardown() {
   scriptsDir="$testEnvDir/setup"
   someScriptName="some-script"
   anotherScriptName="another-script"
-  someSetupScript="$scriptsDir/$someScriptName/command"
-  anotherSetupScript="$scriptsDir/$anotherScriptName/command"
+  someSetupScript="$scriptsDir/$someScriptName/command.sh"
+  anotherSetupScript="$scriptsDir/$anotherScriptName/command.sh"
   writeSpyScript "$someSetupScript"
   writeSpyScript "$anotherSetupScript"
 
@@ -56,7 +56,7 @@ teardown() {
 
 @test "if setup script exists setup without skipping the script should not print skip message" {
   scriptName="some-script"
-  writeSpyScript "$testEnvDir/setup/$scriptName/command"
+  writeSpyScript "$testEnvDir/setup/$scriptName/command.sh"
 
   run execute setup all
 

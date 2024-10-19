@@ -24,7 +24,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
   scriptName=$1
   shift
   parameters=("$@")
-  scriptPath="$testEnvDir/run/$scriptName/command"
+  scriptPath="$testEnvDir/run/$scriptName/command.sh"
   writeSpyScript "$scriptPath"
 
   run runScript "$scriptName" -- "${parameters[@]}"
@@ -35,7 +35,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script succeeds with output it will print the script's output" {
   scriptName="some-script"
   someOutput="some-output"
-  writeStubScript "$testEnvDir/run/$scriptName/command" "0" "$someOutput"
+  writeStubScript "$testEnvDir/run/$scriptName/command.sh" "0" "$someOutput"
 
   run runScript "$scriptName"
 
@@ -45,7 +45,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script is requesting input it should process the input" {
   scriptName="input"
   scriptsDir="$testEnvDir/run/$scriptName"
-  scriptsPath="$scriptsDir/command"
+  scriptsPath="$scriptsDir/command.sh"
   writeScriptRequestingInput "$scriptsPath"
   input="some-input"
 
@@ -57,7 +57,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script writes to stderr it outputs stderr" {
   scriptName="error"
   error="some-error"
-  writeStdErrScript "$testEnvDir/run/$scriptName/command" "$error"
+  writeStdErrScript "$testEnvDir/run/$scriptName/command.sh" "$error"
 
   run runScript "$scriptName"
 
@@ -67,7 +67,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script fails with code 1 it will fail with error code 1 as well" {
   scriptName="some-script"
   exitCode=1
-  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" ""
+  writeStubScript "$testEnvDir/run/$scriptName/command.sh" "$exitCode" ""
 
   run runScript "$scriptName"
 
@@ -78,7 +78,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script fails with code 2 it will fail with error code 2 as well" {
   scriptName="some-script"
   exitCode=2
-  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" ""
+  writeStubScript "$testEnvDir/run/$scriptName/command.sh" "$exitCode" ""
 
   run runScript "$scriptName"
 
@@ -89,7 +89,7 @@ test_if_run_is_executed_with_script_name_it_should_pass_root_dir_and_parameters_
 @test "if script exits with code 0 it will succeed" {
   scriptName="some-script"
   exitCode=0
-  writeStubScript "$testEnvDir/run/$scriptName/command" "$exitCode" ""
+  writeStubScript "$testEnvDir/run/$scriptName/command.sh" "$exitCode" ""
 
   run runScript "$scriptName"
 

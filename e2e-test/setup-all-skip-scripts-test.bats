@@ -20,8 +20,8 @@ teardown() {
   someScriptName="some-script"
   anotherScriptName="another-script"
   scriptsDir="$testEnvDir/setup"
-  someScript="$scriptsDir/$someScriptName/command"
-  anotherScript="$scriptsDir/$anotherScriptName/command"
+  someScript="$scriptsDir/$someScriptName/command.sh"
+  anotherScript="$scriptsDir/$anotherScriptName/command.sh"
   writeSpyScript "$someScript"
   writeSpyScript "$anotherScript"
 
@@ -35,8 +35,8 @@ teardown() {
   someScriptName="some-script"
   anotherScriptName="another-script"
   scriptsDir="$testEnvDir/setup"
-  someScript="$scriptsDir/$someScriptName/command"
-  anotherScript="$scriptsDir/$anotherScriptName/command"
+  someScript="$scriptsDir/$someScriptName/command.sh"
+  anotherScript="$scriptsDir/$anotherScriptName/command.sh"
   writeSpyScript "$someScript"
   writeSpyScript "$anotherScript"
 
@@ -48,7 +48,7 @@ teardown() {
 
 @test "if one setup scripts exists setup all with skipping the script prints out skip message" {
   scriptName="some-script"
-  script="$testEnvDir/setup/$scriptName/command"
+  script="$testEnvDir/setup/$scriptName/command.sh"
   writeSpyScript "$script"
 
   run execute setup all "--skip-$scriptName"
