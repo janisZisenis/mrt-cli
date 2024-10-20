@@ -188,25 +188,25 @@ With the folder structure above in place you can run the following code snippet 
 
 ## Let git hooks assist you
 
-The *Multi Repository Tool* let's you also manage the git-hooks of all your cloned repositories. By running the following command you can install git-hooks to all the repositories located in your `repositoriesPath` (by default *./repositories*):
+Once you installed the git-hooks using the setup flow, the *Multi Repository Tool* provides a convenient way to add tasks that run as part of a git-hook.
 
-```sh
-    mrt setup install-git-hooks
-```
+>Currently, the *Multi Repository Tool* only supports the following git-hooks:
+>- commit-msg
+>- pre-commit
+>- post-commit
 
-When you perform some actions in your repositories (e.g. committing/pushing) the respected git-hooks are called. These git-hooks execute the tool's `git-hook` subcommand passing their git-hook name (e.g. pre-commit/pre-push) and their repository's root path.
+When you perform some actions in your repositories (e.g. committing/pushing) the respective git-hooks are called. These git-hooks execute the tool's `git-hook` subcommand passing their git-hook name (e.g. pre-commit/pre-push) and their repository's root path.
 
-Currently, the *Multi Repository Tool* only supports the following git-hooks:
-- commit-msg
-- pre-commit
-- post-commit
+Delegating the execution of the git-hook to the *Multi Repository Tool* allows to add automated rules across all the repositories located in your `repositoriesPath` such as blocking branches and prefixing the commit messages. 
 
+> Because the git-hooks need a direct link to the team folder, you need to re-install the git-hooks when the team folder is relocated. To re-install the git-hooks run the following command.
+>```sh
+>mrt setup install-git-hooks
+>```
 
 ### Block your most important branches
 
-Delegating the execution of the git-hook to the *Multi Repository Tool* also enables it to add automated rules across all the repositories located in your `repositoriesPath`.
-
-Adding `blockedBranches` to your team configuration file as shown below will make commiting and pushing fail on the specified branches.
+To block committing and pushing on certain branches add a `blockedBranches` array to your team configuration file as shown below. With this array in place committing and pushing on the specified branches will fail.
 
 ```json
 {
@@ -238,7 +238,8 @@ To ensure your commit messages are prefixed correctly you can add a regular expr
 Whenever you try to commit with a message not having a prefix conforming to the regular expression followed by a colon and a space, the commit will fail.
 
 > **Example**:<br>
-> In this case a valid commit message would be "ABCD-99:&nbsp;Some Commit". An invalid message would be "Some commit".
+> Valid commit message: "ABCD-99:&nbsp;Some Commit". <br>
+> Invalid commit message: "Some commit".
 
 You can add the prefix manually to the commit message, or let the *Multi Repository Tool* take care of it. To use the tool's automation add the ticket number to the branch's name. Based on the given regular expression the tool will parse the first matching substring from the branch name and use it as prefix for your commit message.
 
@@ -249,7 +250,7 @@ In case you have the ticket number in your branch name and provide another one m
 
 ### Add custom hook scripts
 
-In each repository you might want to add some additional tasks if you perform a certain action in the repository (e.g. linting your code before committing). The *Multi Repository Tool* allows you to add executable scripts to the predefined path *hook-scripts/\<git-hook-name\>* within the respective repository's root folder.
+In each repository you might want to add some additional tasks if you perform a certain action in the repository (e.g. linting your code before committing). The *Multi Repository Tool* allows you to add executable scripts to the predefined path *./hook-scripts/\<git-hook-name\>* within the respective repository's root folder.
 
 Below you can see an example folder structure:
 
