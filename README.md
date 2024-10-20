@@ -11,33 +11,55 @@ The *Multi Repository Tool* is a command-line utility designed to streamline the
 
 Follow these steps to install the Multi-Repo Tool on your machine:
 
-### Step 1: Download the Binary
-
 1. Navigate to the [Releases](https://github.com/janisZisenis/multi-repo-tool/releases) section of the repository.
-2. Download the appropriate binary for your platform (macOS or Linux).
+2. Download the appropriate binary for your platform.
+3. Make it executable.
 
-### Step 2: Rename the Binary
-
-Rename the downloaded binary to `mrt` for easier usage.
-
-```sh
-mv path/to/downloaded-binary mrt
-```
-
-### Step 3: Add to PATH
-
-To use the `mrt` command from any location, you need to add it to your PATH.
-
-#### macOS/Linux
-
-1. Move the binary to a directory that's already in your PATH, or add its current directory to your PATH. For example, you can move the `mrt` binary to `/usr/local/bin`:
+You can achieve all of the steps above by running the script below:
 
 ```sh
-sudo mv mrt /usr/local/bin/
+#!/bin/bash
+
+detect_os() {
+    local OS
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Linux*)     OS=linux;;
+        Darwin*)    OS=darwin;;
+        *)          OS="UNKNOWN:${unameOut}"
+    esac
+    echo "${OS}"
+}
+
+detect_arch() {
+    local ARCH
+    archOut="$(uname -m)"
+    case "${archOut}" in
+        x86_64)    ARCH=amd64;;
+        aarch64)   ARCH=arm64;;
+        arm64)     ARCH=arm64;;
+        *)         ARCH="UNKNOWN:${archOut}"
+    esac
+    echo "${ARCH}"
+}
+
+OS=$(detect_os)
+ARCH=$(detect_arch)
+
+curl -L -o mrt https://github.com/janisZisenis/multi-repo-tool/releases/download/latest/mrt-$OS-$ARCH
+
+chmod +x mrt
 ```
 
-2. Verify that mrt is in your PATH by running:
+4. Add the binary's location to your PATH variable by running
+
+```sh
+    export PATH=$PATH:<path/to/binary>
+```
+
+5. Verify that mrt is in your PATH by running:
 
 ```sh
 mrt --version
-``
+
+```
