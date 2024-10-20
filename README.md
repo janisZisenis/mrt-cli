@@ -3,9 +3,9 @@
 The *Multi Repository Tool* is a command-line utility designed to streamline the management of multiple repositories within a team. It allows you to:
 
 - Automatically clone a predefined list of team repositories.
-- Execute setup scripts automatically after cloning the repositories.
+- Automatically execute custom setup scripts (aka *setup commands*).
 - Manage Git hooks and rules across multiple or individual repositories, such as enforcing JIRA-ID based prefixes for commit messages or restricting commits and pushes to specified branches.
-- Run automation scripts effortlessly on your local machine or within your CI/CD pipeline.
+- Effortlessly execute automation scripts (aka *run commands*) on your local machine or within your CI/CD pipeline.
 
 ## Installation
 
@@ -63,9 +63,56 @@ chmod +x mrt
 mrt --version
 ```
 
-## Clone your team's repositories
+## The Team Folder
 
-To clone your team's repositories, create a folder on your machine, navigate into it, and then create a `team.json` configuration file. The configuration file should contain a list of your repositories as shown below:
+The team folder is a crucial element for organizing and managing your team's repositories using the *Multi-Repo Tool*. It defines the execution path for the command-line tool and serves as the central location for the team configuration file (team.json).
+
+Whenever you execute the command line tool make sure you are in the team folder or you added the *--team-dir* flag as shown below. The passed argument to this flag also decides where the command line tool searches for the configuration file as well as the setup and run commands.
+
+```sh
+  mrt <subcommand> --team-dir <path-to-team-dir>
+```
+
+Since the team folder is home to the team configuration file as well as scripts, that define key automations, it should be version-controlled itself.
+
+## The Setup Flow
+
+The *Multi Repository Tool* provides a *setup flow* that assists you in setting up your developer machine. Part of this flow is
+  1. cloning the team's repositories,
+  2. installing git-hooks to the cloned repositories,
+  3. and executing custom setup commands.
+
+You can execute the setup flow by running the following command in your teams folder.
+
+```sh
+mrt setup all
+```
+
+#### Skipping setup steps
+
+You can also skip parts of the flow by adding the respective skip flag as shown below.
+
+```sh
+mrt setup all \
+  --skip-clone-repositories \
+  --skip-install-git-hooks
+```
+
+Also the custom setup command come with a skip flag. If you define a setup command named *install-tools* a respective skip flag *skip-install-tools* exists.
+
+#### Execute specific setup steps
+
+Additionally, it is also possible to execute single steps of the setup flow. To do so specify the name of the step instead of the *all* subcommand as in the following examples.
+
+```sh
+mrt setup clone-repositories
+mrt setup install-git-hooks
+mrt setup install-tools
+```
+
+### Clone your team's repositories
+
+To specify which repositories to clone during the setup flow, create a `team.json` configuration file. The configuration file should contain a list of your repositories as shown below:
 
 ```json
 {
@@ -77,15 +124,9 @@ To clone your team's repositories, create a folder on your machine, navigate int
 }
 ```
 
-Next, run the following command:
+With the repositories array in the team configuration file, the setup flow will automatically clone the specified repositories to a *repositories* folder next to your `team.json`.
 
-```sh
-mrt setup clone-repositories
-```
-
-This command will automatically clone the specified repositories to a *repositories* folder next to your `team.json`.
-
-If you want to change the location of the repositories, you can set the new repositories path in your team configuration file as follows:
+If you want to change the location of the repositories, you can set the new repositories path in your team configuration file as shown below. The specified path can be relative or absolute.
 
 ```json
 {
@@ -95,8 +136,6 @@ If you want to change the location of the repositories, you can set the new repo
   ]
 }
 ```
-
-The specified path can be relative of absolute.
 
 ### Remove your team prefixes
 
@@ -112,7 +151,42 @@ Sometimes, teams in a bigger organization add prefixes to their repository names
 }
 ```
 
-## Install git hooks
+### Add custom setup commands
+
+Commonly, before a new developer in the team can start to develop, they need to follow some setup steps – usually documented in a documentation tool such as Confluence. 
+
+> Examples:
+> - Installing tools
+> - downloading and installing VPN certificates
+> - setup AWS configuration file
+> - ...
+
+Unfortunately, this documentation gets out of date easily complicating the setup for the new team member.
+
+The *Multi Repository Tool* allows you to implement custom setup *commands*. Each command consists of a command file (an executable file named "command"), which is located in a the command folder. The name of the command is specified by the name of the command folder. Once you add the command folder to the predefined path *./setup* in the team folder the *Multi Repository Tool* can find and execute them as part of the setup flow.
+
+Below you can see an example folder structure:
+
+```
+/team-folder
+  |-- team.json
+  |-- repositories
+  |   |-- ...
+  |-- setup
+  |   |-- install-tools
+  |   |   |-- command
+  |   |-- setup-aws
+  |   |   |-- command
+```
+
+With the folder structure above in place you can run the following code snippet to execute the custom setup commands.
+
+```sh
+  mrt setup install-tools
+  mrt setup setup-aws
+```
+
+## Let git hooks assist you
 
 The *Multi Repository Tool* let's you also manage the git-hooks of all your cloned repositories. By running the following command you can install git-hooks to all the repositories located in your `repositoriesPath` (by default *./repositories*):
 
@@ -191,45 +265,3 @@ Below you can see an example folder structure:
   |   |   |-- prePushTask1
   |   |   |-- ...
 ```
-
-## Add custom setup commands
-
-Commonly, before a new developer in the team can start to develop, they need to follow some setup steps – usually documented in a documentation tool such as Confluence. 
-
-> Examples:
-> - Installing some tools
-> - downloading and installing VPN certificates
-> - setup AWS configuration file
-> - ...
-
-Unfortunately, this documentation gets out of date easily complicating the setup for the new team member.
-
-The *Multi Repository Tool* allows you to implement custom setup *commands*. Each command consists of a command file (an executable file named "command"), which is located in a the command folder. The name of the command is specified by the name of the command folder. Once you add the command folder to the predefined path *setup* in the team folder the *Multi Repository Tool* can find and execute them as part of the `mrt setup` subcommand.
-
-Below you can see an example folder structure:
-
-```
-/team-folder
-  |-- team.json
-  |-- repositories
-  |   |-- ...
-  |-- setup
-  |   |-- install-tools
-  |   |   |-- command
-  |   |-- setup-aws
-  |   |   |-- command
-```
-
-With the folder structure above you can run
-
-```sh
-  mrt setup install-tools
-```
-
-or
-
-```sh
-  mrt setup setup-aws
-```
-
-to execute the setup commands.
