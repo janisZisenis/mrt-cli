@@ -179,7 +179,7 @@ Below you can see an example folder structure:
   |   |   |-- command
 ```
 
-With the folder structure above in place you can run the following code snippet to execute the custom setup commands.
+With the folder structure above in place you can run the following code snippet to execute the custom setup commands. Here, every setup command gets passed the absolute path to the team folder as first argument.
 
 ```sh
   mrt setup install-tools
@@ -252,9 +252,11 @@ In case you have the ticket number in your branch name and provide another one m
 
 In each repository you might want to add some additional tasks if you perform a certain action in the repository (e.g. linting your code before committing). The *Multi Repository Tool* allows you to add executable scripts to the predefined path *./hook-scripts/\<git-hook-name\>* within the respective repository's root folder.
 
+Every additional hook script gets passed the same parameters as the corresponding git-hook itself.
+
 Below you can see an example folder structure:
 
-```l
+```
 /repository-root-folder
   |-- .git
   |-- <your-sources>
@@ -266,3 +268,34 @@ Below you can see an example folder structure:
   |   |   |-- prePushTask1
   |   |   |-- ...
 ```
+
+## Run key automations
+
+Similar to setup commands the *Multi Repository Tool* lets you define *run commands* – automation scripts, that you can run easily using the command line tool. These commands are not part of the setup flow. To add a run command, instead of placing the command folder containing the command file in the *./setup* path you can place it in the predefined *./run* path inside the team folder. The tool's *run* subcommand will find them and make them executable.
+
+Below you can see an example folder structure:
+
+```
+/team-folder
+  |-- team.json
+  |-- repositories
+  |   |-- ...
+  |-- run
+  |   |-- build-binary
+  |   |   |-- command
+  |   |-- release
+  |   |   |-- command
+```
+
+With the folder structure above in place you can run the following code snippet to execute the custom run commands. Here, every run command gets passed the absolute path to the team folder as first argument.
+
+```sh
+  mrt run build-binary
+  mrt run release
+```
+
+### Use your run commands in the pipeline
+
+You can use the *Multi Repository Tool* without the setup flow to just add key automations in the style of run commands to all your repositories. In that case you don't manage cloned repositories and also don't need a team configuration file. You can just add run commands in a *./run* folder to any of your repositories and execute the tools *run* subcommand in them (or use the *--team-dir* flag).
+
+After setting up mrt on your github runner you can use the exact same run commands within your CI/CD pipeline.
