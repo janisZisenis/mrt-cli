@@ -112,7 +112,7 @@ Sometimes, teams in a bigger organization add prefixes to their repository names
 }
 ```
 
-## Install commit hooks
+## Install git hooks
 
 The *Multi Repository Tool* let's you also manage the git-hooks of all your cloned repositories. By running the following command you can install git-hooks to all the repositories located in your `repositoriesPath` (by default *./repositories*):
 
@@ -121,6 +121,12 @@ The *Multi Repository Tool* let's you also manage the git-hooks of all your clon
 ```
 
 When you perform some actions in your repositories (e.g. committing/pushing) the respected git-hooks are called. These git-hooks execute the tool's `git-hook` subcommand passing their git-hook name (e.g. pre-commit/pre-push) and their repository's root path.
+
+Currently, the *Multi Repository Tool* only supports the following git-hooks:
+- commit-msg
+- pre-commit
+- post-commit
+
 
 ### Block your most important branches
 
@@ -167,4 +173,63 @@ In case you have the ticket number in your branch name and provide another one m
 > **Exception**: Merge commits<br>
 > The prefix rule does not apply to merge commits. Even with a `commitPrefixRegex` in the team configuration file merge commits are not validated and do not need to be prefixed. Merge commits are detected by commit messages starting with "Merge branch" or "Merge remote-tracking branch".
 
-### Hook scripts
+### Add custom hook scripts
+
+In each repository you might want to add some additional tasks if you perform a certain action in the repository (e.g. linting your code before committing). The *Multi Repository Tool* allows you to add executable scripts to the predefined path *hook-scripts/\<git-hook-name\>* within the respective repository's root folder.
+
+Below you can see an example folder structure:
+
+```l
+/repository-root-folder
+  |-- .git
+  |-- <your-sources>
+  |-- hook-scripts
+  |   |-- pre-commit
+  |   |   |-- preCommitTask1
+  |   |   |-- ...
+  |   |-- pre-push
+  |   |   |-- prePushTask1
+  |   |   |-- ...
+```
+
+## Add custom setup commands
+
+Commonly, before a new developer in the team can start to develop, they need to follow some setup steps – usually documented in a documentation tool such as Confluence. 
+
+> Examples:
+> - Installing some tools
+> - downloading and installing VPN certificates
+> - setup AWS configuration file
+> - ...
+
+Unfortunately, this documentation gets out of date easily complicating the setup for the new team member.
+
+The *Multi Repository Tool* allows you to implement custom setup *commands*. Each command consists of a command file (an executable file named "command"), which is located in a the command folder. The name of the command is specified by the name of the command folder. Once you add the command folder to the predefined path *setup* in the team folder the *Multi Repository Tool* can find and execute them as part of the `mrt setup` subcommand.
+
+Below you can see an example folder structure:
+
+```
+/team-folder
+  |-- team.json
+  |-- repositories
+  |   |-- ...
+  |-- setup
+  |   |-- install-tools
+  |   |   |-- command
+  |   |-- setup-aws
+  |   |   |-- command
+```
+
+With the folder structure above you can run
+
+```sh
+  mrt setup install-tools
+```
+
+or
+
+```sh
+  mrt setup setup-aws
+```
+
+to execute the setup commands.
