@@ -61,5 +61,53 @@ chmod +x mrt
 
 ```sh
 mrt --version
+```
 
+## Clone your team's repositories
+
+To clone your team's repositories, create a folder on your machine, navigate into it, and then create a `team.json` configuration file. The configuration file should contain a list of your repositories as shown below:
+
+```json
+{
+  "repositories": [
+    "git@github.com:repository1.git",
+    "git@github.com:repository2.git",
+    "...",
+  ]
+}
+```
+
+Next, run the following command:
+
+```sh
+mrt setup clone-repositories
+```
+
+This command will automatically clone the specified repositories to a *repositories* folder next to your `team.json`.
+
+If you want to change the location of the repositories, you can set the new repositories path in your team configuration file as follows:
+
+```json
+{
+  "repositoriesPath": "path/to/repository"
+  "repositories": [
+    "..."
+  ]
+}
+```
+
+The specified path can be relative of absolute.
+
+## Remove your team prefixes
+
+Sometimes, teams in a bigger organization add prefixes to their repository names. To keep a better overview of the cloned repositories on your machine, you can remove your team's prefix(es) from the repository names while cloning by specifying them in the team configuration file.
+
+```json
+{
+  "repositoriesPrefixes": [
+    "team_prefix1",
+    "team_prefix2",
+    "..."
+  ]
+}
 ```
