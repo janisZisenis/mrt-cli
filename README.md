@@ -60,7 +60,7 @@ chmod +x mrt
 5. Verify that mrt is in your PATH by running:
 
 ```sh
-mrt --version
+mrt version
 ```
 
 ## The Team Folder
