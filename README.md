@@ -9,7 +9,7 @@ The *Multi Repository Tool* is a command-line utility designed to streamline the
 
 ## Installation
 
-Follow these steps to install the Multi-Repo Tool on your machine:
+Follow these steps to install the *Multi Repository Tool* on your machine:
 
 1. Navigate to the [Releases](https://github.com/janisZisenis/mrt-cli/releases) section of the repository.
 2. Download the appropriate binary for your platform.
@@ -65,7 +65,7 @@ mrt version
 
 ## The Team Folder
 
-The team folder is a crucial element for organizing and managing your team's repositories using the *Multi-Repo Tool*. It defines the execution path for the command-line tool and serves as the central location for the team configuration file (team.json).
+The team folder is a crucial element for organizing and managing your team's repositories using the *Multi Repository Tool*. It defines the execution path for the command-line tool and serves as the central location for the team configuration file (team.json).
 
 Whenever you execute the command line tool make sure you are in the team folder or you added the *--team-dir* flag as shown below. The passed argument to this flag also decides where the command line tool searches for the configuration file as well as the setup and run commands.
 
