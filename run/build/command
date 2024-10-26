@@ -32,7 +32,7 @@ build_binary() {
   semver=$2
   commit_sha=$3
 
-  binaryLocation="$(mrt --team-dir $rootDir run binary-location -- "$platform")"
+  binaryLocation="$(mrt --team-dir "$rootDir" run binary-location -- "$platform")"
   GOOS="${platform%/*}"
   GOARCH="${platform#*/}"
 
@@ -78,7 +78,7 @@ done
 
 if [[ "${#platforms[@]}" -eq 0 ]]
 then
-  platforms=("$(mrt --team-dir $rootDir run detect-platform)")
+  platforms=("$(mrt --team-dir "$rootDir" run detect-platform)")
 fi
 
 cd "$rootDir"/app

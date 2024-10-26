@@ -5,6 +5,6 @@ set -e
 rootDir=$1
 shift
 
-readarray -t supportedPlatforms < <(mrt --team-dir $rootDir run detect-platform -- --supported-platforms)
+readarray -t supportedPlatforms < <(mrt --team-dir "$rootDir" run detect-platform -- --supported-platforms)
 json_array=$(jq -n --argjson arr "$(printf '%s\n' "${supportedPlatforms[@]}" | jq -R . | jq -s .)" '$arr')
 echo "$json_array" | jq -c .

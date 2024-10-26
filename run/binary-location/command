@@ -17,7 +17,7 @@ help(){
   printf '\n'
   printf '\tmrt run %s "darwin/arm64"\n' "$commandName"
   printf '\n'
-  printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(mrt --team-dir $rootDir run detect-platform)"
+  printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(mrt --team-dir "$rootDir" run detect-platform)"
   printf "Flags: \n"
   printf -- "-h, --help\t\tShow this help message\n"
   printf -- '%s|%s|%s\tOutputs the executable name or path (default: %s)\n' "$FULL_PATH_FLAG" "$EXE_NAME_FLAG" "$BIN_DIR_FLAG" "$FULL_PATH_FLAG"
@@ -44,12 +44,12 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-platform=${platform-$(mrt --team-dir $rootDir run detect-platform)}
+platform=${platform-$(mrt --team-dir "$rootDir" run detect-platform)}
 
 os="${platform%/*}"
 arch="${platform#*/}"
 
-binPath="$(mrt --team-dir $rootDir run build-location)/bin"
+binPath="$(mrt --team-dir "$rootDir" run build-location)/bin"
 binaryLocation="$binPath/mrt-${os}-${arch}"
 
 if [ "$os" = "windows" ]; then
@@ -58,10 +58,10 @@ fi
 
 case $strategy in
     "$EXE_NAME_FLAG")
-      basename $binaryLocation
+      basename "$binaryLocation"
       ;;
     "$BIN_DIR_FLAG")
-      dirname $binaryLocation
+      dirname "$binaryLocation"
       ;;
     "$FULL_PATH_FLAG")
       echo "$binaryLocation"
