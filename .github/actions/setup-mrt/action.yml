@@ -5,4 +5,4 @@ runs:
   steps:
     - uses: janisZisenis/setup-mrt@v1
       with:
-        version: 0.1.0
+        mrt-version: 0.1.0
