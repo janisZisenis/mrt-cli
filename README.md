@@ -299,3 +299,7 @@ With the folder structure above in place you can run the following code snippet 
 You can use the *Multi Repository Tool* without the setup flow to just add key automations in the style of run commands to all your repositories. In that case you don't manage cloned repositories and also don't need a team configuration file. You can just add run commands in a *./run* folder to any of your repositories and execute the tools *run* subcommand in them (or use the *--team-dir* flag).
 
 After setting up mrt on your github runner you can use the exact same run commands within your CI/CD pipeline.
+
+## License
+
+This project is licensed under the MIT License, which provides permissions for free use, modification, and distribution of the software under the terms specified in the LICENSE file. For more information, please refer to the [LICENSE](./LICENSE) and [NOTICE](./NOTICE.md) files included in this repository.
