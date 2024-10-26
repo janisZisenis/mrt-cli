@@ -1,4 +1,6 @@
+const cache = require('@actions/cache');
 const core = require('@actions/core');
+const exec = require('@actions/exec');
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
@@ -6,8 +8,22 @@ const os = require('os');
 
 async function run() {
     try {
-        const version = core.getInput('version');
+        const version = core.getInput('version') || 'v0.1.0';
         const platform = os.platform();
+        const cacheKey = `mrt-${version}-${platform}`;
+        const binDir = path.join(os.homedir(), 'bin');
+        const binPath = path.join(binDir, 'mrt');
+
+        // Restore cache
+        const cacheId = await cache.restoreCache([binDir], cacheKey);
+        if (cacheId) {
+            core.info(`Cache hit for key: ${cacheKey}`);
+            core.addPath(binDir);
+            await exec.exec('mrt', ['version']);
+            return;
+        }
+
+        core.info(`Cache miss for key: ${cacheKey}`);
         let url;
 
         if (platform === 'darwin') {
@@ -17,9 +33,6 @@ async function run() {
         } else {
             throw new Error(`Unsupported platform: ${platform}`);
         }
-
-        const binDir = path.join(os.homedir(), 'bin');
-        const binPath = path.join(binDir, 'mrt');
 
         if (!fs.existsSync(binDir)){
             fs.mkdirSync(binDir);
@@ -39,6 +52,9 @@ async function run() {
 
         fs.chmodSync(binPath, '0755');
         core.addPath(binDir);
+
+        // Save cache
+        await cache.saveCache([binDir], cacheKey);
 
         core.info(`MRT version ${version} installed successfully`);
     } catch (error) {
