@@ -37,6 +37,7 @@ detect_os() {
 detect_arch() {
     archOut="$(uname -m)"
     case "${archOut}" in
+        x64)       ARCH=amd64;;
         x86_64)    ARCH=amd64;;
         aarch64)   ARCH=arm64;;
         arm64)     ARCH=arm64;;

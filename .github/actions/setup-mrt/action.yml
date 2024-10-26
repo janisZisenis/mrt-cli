@@ -1,10 +1,10 @@
-name: 'Setup mrt'
-description: 'Sets up mrt on the runner'
+name: 'Setup MRT'
+description: 'Setup the MRT binary on the GitHub runner'
+inputs:
+  version:
+    description: 'Version of MRT to install'
+    required: false
+    default: 0.1.0
 runs:
-  using: 'composite'
-  steps:
-    - name: Setup mrt
-      shell: bash
-      run: | 
-        $(pwd)/bin/github/package/setup.sh
-        echo "$(pwd)/bin/github" >> $GITHUB_PATH
+  using: 'node20'
+  main: 'src/main.js'
