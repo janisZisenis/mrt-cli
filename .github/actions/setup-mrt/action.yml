@@ -1,10 +1,8 @@
-name: 'Setup MRT'
-description: 'Setup the MRT binary on the GitHub runner'
-inputs:
-  version:
-    description: 'Version of MRT to install'
-    required: false
-    default: 0.1.0
+name: 'Setup mrt'
+description: 'Sets up mrt'
 runs:
-  using: 'node20'
-  main: 'src/main.js'
+  using: 'composite'
+  steps:
+    - uses: janisZisenis/setup-mrt@v1
+      with:
+        version: 0.1.0

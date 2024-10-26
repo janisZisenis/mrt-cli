@@ -2,7 +2,7 @@ name: 'Build matrix'
 description: 'Outputs build matrix'
 outputs:
   build-matrix:
-    description: 'Buila matrix'
+    description: 'Build matrix'
     value: ${{ steps.set-build-matrix.outputs.build-matrix }}
 runs:
   using: 'composite'
