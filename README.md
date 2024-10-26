@@ -11,7 +11,7 @@ The *Multi Repository Tool* is a command-line utility designed to streamline the
 
 Follow these steps to install the Multi-Repo Tool on your machine:
 
-1. Navigate to the [Releases](https://github.com/janisZisenis/multi-repo-tool/releases) section of the repository.
+1. Navigate to the [Releases](https://github.com/janisZisenis/mrt-cli/releases) section of the repository.
 2. Download the appropriate binary for your platform.
 3. Make it executable.
 
@@ -46,7 +46,7 @@ detect_arch() {
 OS=$(detect_os)
 ARCH=$(detect_arch)
 
-curl -L -o mrt https://github.com/janisZisenis/multi-repo-tool/releases/download/latest/mrt-$OS-$ARCH
+curl -L -o mrt https://github.com/janisZisenis/mrt-cli/releases/download/latest/mrt-$OS-$ARCH
 
 chmod +x mrt
 ```
