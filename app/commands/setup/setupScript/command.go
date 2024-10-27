@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const ScriptsPath = "/setup/*/command"
+var ScriptsPath = "/setup/*/" + core.CommandFileName()
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 	var command = &cobra.Command{

@@ -5,9 +5,24 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 )
+
+func CommandFileName() string {
+	detectedOS := runtime.GOOS
+
+	switch detectedOS {
+	case "windows":
+		return "command"
+	case "darwin", "linux":
+		return "command"
+	default:
+		panic("The current OS (" + detectedOS + ") is not supported.")
+	}
+
+}
 
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
 	scripts, _ := filepath.Glob(path)

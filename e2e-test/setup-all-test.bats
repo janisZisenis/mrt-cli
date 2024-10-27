@@ -21,13 +21,11 @@ teardown() {
   repositoryUrl="$(getTestingRepositoryUrl "$repository")"
   writeRepositoriesUrls "$repositoryUrl"
   repositoryDir="$testEnvDir/$(default_repositories_path)/$repository"
-  scriptsDir="$testEnvDir/setup"
   someScriptName="some-script"
   anotherScriptName="another-script"
-  someSetupScript="$scriptsDir/$someScriptName/command"
-  anotherSetupScript="$scriptsDir/$anotherScriptName/command"
-  writeSpyScript "$someSetupScript"
-  writeSpyScript "$anotherSetupScript"
+  scriptLocation="$testEnvDir/setup"
+  writeSpyScriptToLocation "$scriptLocation" "$someScriptName"
+  writeSpyScriptToLocation "$scriptLocation" "$anotherScriptName"
 
   run execute setup all
 
@@ -56,7 +54,7 @@ teardown() {
 
 @test "if setup script exists setup without skipping the script should not print skip message" {
   scriptName="some-script"
-  writeSpyScript "$testEnvDir/setup/$scriptName/command"
+  writeSpyScriptToLocation "$testEnvDir/setup" "$scriptName"
 
   run execute setup all
 

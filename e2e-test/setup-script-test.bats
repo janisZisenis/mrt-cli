@@ -24,19 +24,18 @@ teardown() {
 
 test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter() {
   scriptName=$1
-  scriptsDir="$testEnvDir/setup"
-  scriptPath="$scriptsDir/$scriptName/command"
-  writeSpyScript "$scriptPath"
+  scriptsLocation="$testEnvDir/setup"
+  writeSpyScriptToLocation "$scriptsLocation" "$scriptName"
 
   execute setup "$scriptName"
 
-  assert_spy_file_has_content "$scriptPath" "$(absolutePath $testEnvDir)"
+  assert_spy_file_in_location_has_content "$scriptsLocation" "$scriptName" "$(absolutePath "$testEnvDir")"
 }
 
 @test "if setup script succeeds with output it will print the script's output" {
   scriptName="some-script"
   someOutput="some-output"
-  writeStubScript "$testEnvDir/setup/$scriptName/command" "0" "$someOutput"
+  writeStubScriptToLocation "$testEnvDir/setup" "$scriptName" "0" "$someOutput"
 
   run setupScript $scriptName
 
@@ -49,7 +48,7 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
   scriptName="another-script"
   someOutput="another-output"
   exitCode=15
-  writeStubScript "$testEnvDir/setup/$scriptName/command" "$exitCode" "$someOutput"
+  writeStubScriptToLocation "$testEnvDir/setup" "$scriptName" "$exitCode" "$someOutput"
 
   run setupScript "$scriptName"
 
@@ -60,20 +59,19 @@ test_if_setup_script_exists_executing_it_will_pass_the_team_folder_as_parameter(
 
 @test "if setup script is requesting input it should process the input" {
   scriptName="input"
-  scriptsDir="$testEnvDir/setup/$scriptName"
-  scriptsPath="$scriptsDir/command"
-  writeScriptRequestingInput "$scriptsPath"
+  scriptLocation="$testEnvDir/setup"
+  writeScriptRequestingInputToLocation "$scriptLocation" "$scriptName"
   input="some-input"
 
   run setupScript $scriptName <<< $input
 
-  assert_file_exists "$scriptsDir/$input"
+  assert_script_received_input "$scriptLocation" "$scriptName" "$input"
 }
 
 @test "if setup script is writes to stderr it outputs stderr" {
   scriptName="error"
   error="some-error"
-  writeStdErrScript "$testEnvDir/setup/$scriptName/command" "$error"
+  writeStdErrScriptToLocation "$testEnvDir/setup" "$scriptName" "$error"
 
   run setupScript "$scriptName"
 

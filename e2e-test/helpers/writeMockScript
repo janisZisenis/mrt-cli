@@ -6,6 +6,16 @@ spyFileSuffix() {
   echo "Executed"
 }
 
+writeSpyScriptToLocation() {
+  local scriptLocation
+  local scriptName
+  scriptLocation="$1"
+  scriptName="$2"
+
+  scriptPath="$scriptLocation/$scriptName/command"
+  writeSpyScript "$scriptPath"
+}
+
 writeSpyScript() {
   local scriptPath
   scriptPath=$1
@@ -23,6 +33,18 @@ echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
 EOF
 
   chmod +x "$scriptPath"
+}
+
+writeStubScriptToLocation() {
+  local scriptLocation
+  local scriptName
+  scriptLocation="$1"
+  scriptName="$2"
+  exitCode="$3"
+  output="$4"
+
+  scriptPath="$scriptLocation/$scriptName/command"
+  writeStubScript "$scriptPath" "$exitCode" "$output"
 }
 
 writeStubScript() {
@@ -62,6 +84,18 @@ EOF
   chmod +x "$scriptPath"
 }
 
+writeStdErrScriptToLocation() {
+  local scriptLocation
+  local scriptName
+  local error
+  scriptLocation="$1"
+  scriptName="$2"
+  error="$3"
+
+  writeStdErrScript "$scriptLocation/$scriptName/command" "$error"
+}
+
+
 writeStdErrScript() {
   local scriptPath=$1
   local errorMessage=$2
@@ -92,6 +126,55 @@ assert_spy_file_exists() {
   assert_file_exists "$1$(spyFileSuffix)"
 }
 
+assert_spy_file_in_location_has_content() {
+  local scriptLocation
+  local scriptName
+  local content
+  scriptLocation="$1"
+  scriptName="$2"
+  content="$3"
+
+  assert_spy_file_has_content "$scriptLocation/$scriptName/command" "$content"
+}
+
 assert_spy_file_does_not_exist() {
   assert_file_does_not_exist "$1$(spyFileSuffix)"
+}
+
+writeScriptRequestingInputToLocation() {
+  local scriptLocation
+  local scriptName
+  scriptLocation="$1"
+  scriptName="$2"
+
+  writeScriptRequestingInput "$scriptLocation/$scriptName/command"
+}
+
+assert_script_received_input() {
+  local scriptLocation
+  local scriptName
+  local input
+  scriptLocation="$1"
+  scriptName="$2"
+  input="$3"
+
+  assert_file_exists "$scriptLocation/$scriptName/$input"
+}
+
+assert_spy_file_in_location_exists() {
+   local scriptLocation
+   local scriptName
+   scriptLocation="$1"
+   scriptName="$2"
+
+   assert_spy_file_exists "$scriptLocation/$scriptName/command"
+}
+
+assert_spy_file_in_location_does_not_exist() {
+  local scriptLocation
+  local scriptName
+  scriptLocation="$1"
+  scriptName="$2"
+
+  assert_spy_file_does_not_exist "$scriptLocation/$scriptName/command"
 }

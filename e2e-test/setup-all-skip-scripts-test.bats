@@ -19,37 +19,33 @@ teardown() {
 @test "if two setup scripts exist setup all with skipping the first it should only run the second" {
   someScriptName="some-script"
   anotherScriptName="another-script"
-  scriptsDir="$testEnvDir/setup"
-  someScript="$scriptsDir/$someScriptName/command"
-  anotherScript="$scriptsDir/$anotherScriptName/command"
-  writeSpyScript "$someScript"
-  writeSpyScript "$anotherScript"
+  scriptLocation="$testEnvDir/setup"
+  writeSpyScriptToLocation "$scriptLocation" "$someScriptName"
+  writeSpyScriptToLocation "$scriptLocation" "$anotherScriptName"
 
   run execute setup all "--skip-$someScriptName"
 
-  assert_spy_file_does_not_exist "$someScript"
-  assert_spy_file_exists "$anotherScript"
+  assert_spy_file_in_location_does_not_exist "$scriptLocation" "$someScriptName"
+  assert_spy_file_in_location_exists "$scriptLocation" "$anotherScriptName"
 }
 
 @test "if two setup scripts exist setup all with skipping the second it should only run the first" {
   someScriptName="some-script"
   anotherScriptName="another-script"
-  scriptsDir="$testEnvDir/setup"
-  someScript="$scriptsDir/$someScriptName/command"
-  anotherScript="$scriptsDir/$anotherScriptName/command"
-  writeSpyScript "$someScript"
-  writeSpyScript "$anotherScript"
+  scriptLocation="$testEnvDir/setup"
+  writeSpyScriptToLocation "$scriptLocation" "$someScriptName"
+  writeSpyScriptToLocation "$scriptLocation" "$anotherScriptName"
 
   run execute setup all "--skip-$anotherScriptName"
 
-  assert_spy_file_exists "$someScript"
-  assert_spy_file_does_not_exist "$anotherScript"
+  assert_spy_file_in_location_exists "$scriptLocation" "$someScriptName"
+  assert_spy_file_in_location_does_not_exist "$scriptLocation" "$anotherScriptName"
 }
 
 @test "if one setup scripts exists setup all with skipping the script prints out skip message" {
   scriptName="some-script"
-  script="$testEnvDir/setup/$scriptName/command"
-  writeSpyScript "$script"
+  scriptLocation="$testEnvDir/setup"
+  writeSpyScriptToLocation "$scriptLocation" "$scriptName"
 
   run execute setup all "--skip-$scriptName"
 
