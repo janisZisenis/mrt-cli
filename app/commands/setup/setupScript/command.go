@@ -8,12 +8,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const ScriptsPath = "/setup/*/command"
+var ScriptsPath = "/setup/*/" + core.CommandFileName()
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 	var command = &cobra.Command{
 		Use:   scriptName,
-		Short: "Executes setup script " + scriptName,
+		Short: "Executes setup command " + scriptName,
 		Run: func(cmd *cobra.Command, args []string) {
 			command(scriptName, scriptPath)
 		},
@@ -23,7 +23,7 @@ func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 }
 
 func command(scriptName string, filePath string) {
-	log.Info("Execute setup-script: " + scriptName)
+	log.Info("Execute setup-command: " + scriptName)
 
 	args := []string{core.GetAbsoluteExecutionPath()}
 	exitCode := core.ExecuteScript(filePath, args)

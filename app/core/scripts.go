@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+func CommandFileName() string {
+	return "command"
+}
+
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
 	scripts, _ := filepath.Glob(path)
 

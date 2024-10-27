@@ -19,6 +19,6 @@ setupGitHooks() {
   execute setup install-git-hooks
 }
 
-setupScript() {
+setupCommand() {
   execute setup "$1"
 }
