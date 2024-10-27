@@ -2,6 +2,10 @@
 
 load 'helpers/fileAssertions'
 
+commandFileName() {
+  echo "command"
+}
+
 spyFileSuffix() {
   echo "Executed"
 }
@@ -12,7 +16,7 @@ writeSpyScriptToLocation() {
   scriptLocation="$1"
   scriptName="$2"
 
-  scriptPath="$scriptLocation/$scriptName/command"
+  scriptPath="$scriptLocation/$scriptName/$(commandFileName)"
   writeSpyScript "$scriptPath"
 }
 
@@ -43,7 +47,7 @@ writeStubScriptToLocation() {
   exitCode="$3"
   output="$4"
 
-  scriptPath="$scriptLocation/$scriptName/command"
+  scriptPath="$scriptLocation/$scriptName/$(commandFileName)"
   writeStubScript "$scriptPath" "$exitCode" "$output"
 }
 
@@ -92,7 +96,7 @@ writeStdErrScriptToLocation() {
   scriptName="$2"
   error="$3"
 
-  writeStdErrScript "$scriptLocation/$scriptName/command" "$error"
+  writeStdErrScript "$scriptLocation/$scriptName/$(commandFileName)" "$error"
 }
 
 
@@ -134,7 +138,7 @@ assert_spy_file_in_location_has_content() {
   scriptName="$2"
   content="$3"
 
-  assert_spy_file_has_content "$scriptLocation/$scriptName/command" "$content"
+  assert_spy_file_has_content "$scriptLocation/$scriptName/$(commandFileName)" "$content"
 }
 
 assert_spy_file_does_not_exist() {
@@ -147,7 +151,7 @@ writeScriptRequestingInputToLocation() {
   scriptLocation="$1"
   scriptName="$2"
 
-  writeScriptRequestingInput "$scriptLocation/$scriptName/command"
+  writeScriptRequestingInput "$scriptLocation/$scriptName/$(commandFileName)"
 }
 
 assert_script_received_input() {
@@ -167,7 +171,7 @@ assert_spy_file_in_location_exists() {
    scriptLocation="$1"
    scriptName="$2"
 
-   assert_spy_file_exists "$scriptLocation/$scriptName/command"
+   assert_spy_file_exists "$scriptLocation/$scriptName/$(commandFileName)"
 }
 
 assert_spy_file_in_location_does_not_exist() {
@@ -176,5 +180,5 @@ assert_spy_file_in_location_does_not_exist() {
   scriptLocation="$1"
   scriptName="$2"
 
-  assert_spy_file_does_not_exist "$scriptLocation/$scriptName/command"
+  assert_spy_file_does_not_exist "$scriptLocation/$scriptName/$(commandFileName)"
 }
