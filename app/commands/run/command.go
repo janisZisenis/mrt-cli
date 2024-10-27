@@ -12,7 +12,7 @@ const CommandName = "run"
 func MakeCommand(teamDirectory string) *cobra.Command {
 	var command = &cobra.Command{
 		Use:   CommandName,
-		Short: "Executes a specified run script",
+		Short: "Executes a specified run command",
 	}
 
 	core.ForScriptInPathDo(teamDirectory+runScript.ScriptsPath, func(scriptPath string, scriptName string) {

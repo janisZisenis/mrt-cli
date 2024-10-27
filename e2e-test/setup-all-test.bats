@@ -1,6 +1,6 @@
 load 'helpers/common'
 load 'helpers/ssh-authenticate'
-load 'helpers/writeMockScript'
+load 'helpers/writeMockCommand'
 load 'helpers/executeInTestEnvironment'
 load 'helpers/writeTeamFile'
 load 'helpers/repositoriesPath'
@@ -16,16 +16,16 @@ teardown() {
   _common_teardown
 }
 
-@test "if team file contains repository and two setup scripts exist it should clone the repository, install git-hooks and execute the scripts" {
+@test "if team file contains repository and two setup commands exist it should clone the repository, install git-hooks and execute the commands" {
   repository="1_TestRepository"
   repositoryUrl="$(getTestingRepositoryUrl "$repository")"
   writeRepositoriesUrls "$repositoryUrl"
   repositoryDir="$testEnvDir/$(default_repositories_path)/$repository"
-  someScriptName="some-script"
-  anotherScriptName="another-script"
-  scriptLocation="$testEnvDir/setup"
-  writeSpyScriptToLocation "$scriptLocation" "$someScriptName"
-  writeSpyScriptToLocation "$scriptLocation" "$anotherScriptName"
+  someCommandName="some-command"
+  anotherCommandName="another-command"
+  commandLocation="$testEnvDir/setup"
+  writeSpyCommand "$commandLocation" "$someCommandName"
+  writeSpyCommand "$commandLocation" "$anotherCommandName"
 
   run execute setup all
 
@@ -38,12 +38,12 @@ teardown() {
   assert_line_reversed_output 8  "Installing git-hooks to \"$repositoryDir/.git\""
   assert_line_reversed_output 7  "Done installing git-hooks to \"$repositoryDir/.git\""
   assert_line_reversed_output 6  "Done installing git-hooks."
-  assert_line_reversed_output 5  "Executing setup-scripts."
-  assert_line_reversed_output 4  "Execute setup-script: $anotherScriptName"
-  assert_line_reversed_output 3  "$anotherScriptName executed successfully"
-  assert_line_reversed_output 2  "Execute setup-script: $someScriptName"
-  assert_line_reversed_output 1  "$someScriptName executed successfully"
-  assert_line_reversed_output 0  "Done executing setup-scripts."
+  assert_line_reversed_output 5  "Executing setup-commands."
+  assert_line_reversed_output 4  "Execute setup-command: $anotherCommandName"
+  assert_line_reversed_output 3  "$anotherCommandName executed successfully"
+  assert_line_reversed_output 2  "Execute setup-command: $someCommandName"
+  assert_line_reversed_output 1  "$someCommandName executed successfully"
+  assert_line_reversed_output 0  "Done executing setup-commands."
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {
@@ -52,11 +52,11 @@ teardown() {
   refute_output --partial "Skipping install-git-hooks step."
 }
 
-@test "if setup script exists setup without skipping the script should not print skip message" {
-  scriptName="some-script"
-  writeSpyScriptToLocation "$testEnvDir/setup" "$scriptName"
+@test "if setup command exists setup without skipping the command should not print skip message" {
+  commandName="some-command"
+  writeSpyCommand "$testEnvDir/setup" "$commandName"
 
   run execute setup all
 
-  refute_output --partial "Skipping setup script: $scriptName"
+  refute_output --partial "Skipping setup command: $commandName"
 }

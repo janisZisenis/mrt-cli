@@ -30,7 +30,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 
 	core.ForScriptInPathDo(teamDirectory+setupScript.ScriptsPath, func(filePath string, scriptName string) {
 		var skipFlag = skipFlagPrefix + scriptName
-		command.Flags().Bool(skipFlag, false, "Skips setup script: "+scriptName)
+		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
 		command.Flags().Lookup(skipFlag).NoOptDefVal = "true"
 	})
 
@@ -57,16 +57,16 @@ func command(cmd *cobra.Command, args []string) {
 }
 
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
-	log.Info("Executing setup-scripts.")
+	log.Info("Executing setup-commands.")
 
 	core.ForScriptInPathDo(core.GetExecutionPath()+setupScript.ScriptsPath, func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 		if !skipFlag {
 			setupScript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
 		} else {
-			log.Info("Skipping setup script: " + scriptName)
+			log.Info("Skipping setup command: " + scriptName)
 		}
 	})
 
-	log.Success("Done executing setup-scripts.")
+	log.Success("Done executing setup-commands.")
 }

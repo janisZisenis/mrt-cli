@@ -2,82 +2,56 @@
 
 load 'helpers/fileAssertions'
 
-commandFileName() {
-  echo "command"
-}
-
 spyFileSuffix() {
   echo "Executed"
 }
 
-writeSpyScriptToLocation() {
-  local scriptLocation
-  local scriptName
-  scriptLocation="$1"
-  scriptName="$2"
-
-  scriptPath="$scriptLocation/$scriptName/$(commandFileName)"
-  writeSpyScript "$scriptPath"
-}
-
 writeSpyScript() {
-  local scriptPath
-  scriptPath=$1
+  local commandPath
+  commandPath=$1
 
-  mkdir -p "$(dirname "$scriptPath")"
-  local scriptName
-  scriptName="$(basename "$scriptPath")"
+  mkdir -p "$(dirname "$commandPath")"
+  local commandName
+  commandName="$(basename "$commandPath")"
 
-cat << EOF > "$scriptPath"
+cat << EOF > "$commandPath"
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
+echo "\$@" > "\$SCRIPT_DIR/$commandName$(spyFileSuffix)"
 
 EOF
 
-  chmod +x "$scriptPath"
-}
-
-writeStubScriptToLocation() {
-  local scriptLocation
-  local scriptName
-  scriptLocation="$1"
-  scriptName="$2"
-  exitCode="$3"
-  output="$4"
-
-  scriptPath="$scriptLocation/$scriptName/$(commandFileName)"
-  writeStubScript "$scriptPath" "$exitCode" "$output"
+  chmod +x "$commandPath"
 }
 
 writeStubScript() {
-  local scriptPath=$1
+  local commandPath=$1
   local exitCode=$2
   local output=$3
 
-  mkdir -p "$(dirname "$scriptPath")"
-  local scriptName
-  scriptName="$(basename "$scriptPath")"
+  mkdir -p "$(dirname "$commandPath")"
+  local commandName
+  commandName="$(basename "$commandPath")"
 
-cat << EOF > "$scriptPath"
+cat << EOF > "$commandPath"
 #!/bin/bash
 
 echo "$output"
 exit $exitCode
 EOF
 
-  chmod +x "$scriptPath"
+  chmod +x "$commandPath"
 }
 
 writeScriptRequestingInput() {
-  local scriptPath=$1
+  local commandPath=$1
 
-  mkdir -p "$(dirname "$scriptPath")"
-  local scriptName
-  scriptName="$(basename "$scriptPath")"
+  mkdir -p "$(dirname "$commandPath")"
+  local commandName
+  commandName="$(basename "$commandPath")"
 
-cat << EOF > "$scriptPath"
+cat << EOF > "$commandPath"
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -85,36 +59,24 @@ read -r input
 touch "\$SCRIPT_DIR/\$input"
 EOF
 
-  chmod +x "$scriptPath"
+  chmod +x "$commandPath"
 }
-
-writeStdErrScriptToLocation() {
-  local scriptLocation
-  local scriptName
-  local error
-  scriptLocation="$1"
-  scriptName="$2"
-  error="$3"
-
-  writeStdErrScript "$scriptLocation/$scriptName/$(commandFileName)" "$error"
-}
-
 
 writeStdErrScript() {
-  local scriptPath=$1
+  local commandPath=$1
   local errorMessage=$2
 
-  mkdir -p "$(dirname "$scriptPath")"
-  local scriptName
-  scriptName="$(basename "$scriptPath")"
+  mkdir -p "$(dirname "$commandPath")"
+  local commandName
+  commandName="$(basename "$commandPath")"
 
-cat << EOF > "$scriptPath"
+cat << EOF > "$commandPath"
 #!/bin/bash
 
 echo "$errorMessage" 1>&2
 EOF
 
-  chmod +x "$scriptPath"
+  chmod +x "$commandPath"
 }
 
 assert_spy_file_has_content() {
@@ -130,55 +92,6 @@ assert_spy_file_exists() {
   assert_file_exists "$1$(spyFileSuffix)"
 }
 
-assert_spy_file_in_location_has_content() {
-  local scriptLocation
-  local scriptName
-  local content
-  scriptLocation="$1"
-  scriptName="$2"
-  content="$3"
-
-  assert_spy_file_has_content "$scriptLocation/$scriptName/$(commandFileName)" "$content"
-}
-
 assert_spy_file_does_not_exist() {
   assert_file_does_not_exist "$1$(spyFileSuffix)"
-}
-
-writeScriptRequestingInputToLocation() {
-  local scriptLocation
-  local scriptName
-  scriptLocation="$1"
-  scriptName="$2"
-
-  writeScriptRequestingInput "$scriptLocation/$scriptName/$(commandFileName)"
-}
-
-assert_script_received_input() {
-  local scriptLocation
-  local scriptName
-  local input
-  scriptLocation="$1"
-  scriptName="$2"
-  input="$3"
-
-  assert_file_exists "$scriptLocation/$scriptName/$input"
-}
-
-assert_spy_file_in_location_exists() {
-   local scriptLocation
-   local scriptName
-   scriptLocation="$1"
-   scriptName="$2"
-
-   assert_spy_file_exists "$scriptLocation/$scriptName/$(commandFileName)"
-}
-
-assert_spy_file_in_location_does_not_exist() {
-  local scriptLocation
-  local scriptName
-  scriptLocation="$1"
-  scriptName="$2"
-
-  assert_spy_file_does_not_exist "$scriptLocation/$scriptName/$(commandFileName)"
 }
