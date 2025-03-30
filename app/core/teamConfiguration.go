@@ -5,11 +5,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-const teamFileName = "team"
-const teamFileExtension = "json"
-const defaultRepositoriesPath = "repositories"
-const TeamFile = teamFileName + "." + teamFileExtension
-const RepositoriesPath = "repositoriesPath"
+const (
+	teamFileName            = "team"
+	teamFileExtension       = "json"
+	defaultRepositoriesPath = "repositories"
+	TeamFile                = teamFileName + "." + teamFileExtension
+	RepositoriesPath        = "repositoriesPath"
+)
+
+var ErrCouldNotReadTeamFile = errors.New("could not read team file")
 
 type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`
@@ -19,8 +23,6 @@ type TeamInfo struct {
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 
-var CouldNotReadTeamFile = errors.New("could not read team file")
-
 func LoadTeamConfiguration() (TeamInfo, error) {
 	var teamInfo TeamInfo
 
@@ -29,15 +31,18 @@ func LoadTeamConfiguration() (TeamInfo, error) {
 	viper.SetConfigType(teamFileExtension)
 
 	readErr := viper.ReadInConfig()
+	if readErr != nil {
+		return teamInfo, ErrCouldNotReadTeamFile
+	}
+
 	unmarshalErr := viper.Unmarshal(&teamInfo)
+	if unmarshalErr != nil {
+		return teamInfo, ErrCouldNotReadTeamFile
+	}
 
 	if teamInfo.RepositoriesPath == "" {
 		teamInfo.RepositoriesPath = defaultRepositoriesPath
 	}
 
-	if readErr == nil && unmarshalErr == nil {
-		return teamInfo, nil
-	}
-
-	return teamInfo, CouldNotReadTeamFile
+	return teamInfo, nil
 }
