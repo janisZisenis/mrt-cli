@@ -20,6 +20,22 @@ var (
 )
 
 func main() {
+	parseTeamDirectory()
+	makeRootCommand()
+}
+
+func makeRootCommand() {
+	var rootCmd = &cobra.Command{Use: filepath.Base(os.Args[0])}
+	rootCmd.AddCommand(setup.MakeCommand(core.TeamDirectory))
+	rootCmd.AddCommand(githook.MakeCommand())
+	rootCmd.AddCommand(run.MakeCommand(core.TeamDirectory))
+	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
+
+	rootCmd.PersistentFlags().StringVar(&core.TeamDirectory, "team-dir", "", "Specifies the path to the team directory.")
+	_ = rootCmd.Execute()
+}
+
+func parseTeamDirectory() {
 	args := os.Args[1:]
 	for i, arg := range args {
 		core.TeamDirectory = core.GetExecutionPath()
@@ -29,14 +45,4 @@ func main() {
 			core.TeamDirectory = args[i+1]
 		}
 	}
-
-	var rootCmd = &cobra.Command{Use: filepath.Base(os.Args[0])}
-
-	rootCmd.AddCommand(setup.MakeCommand(core.TeamDirectory))
-	rootCmd.AddCommand(githook.MakeCommand())
-	rootCmd.AddCommand(run.MakeCommand(core.TeamDirectory))
-	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
-
-	rootCmd.PersistentFlags().StringVar(&core.TeamDirectory, "team-dir", "", "Specifies the path to the team directory.")
-	_ = rootCmd.Execute()
 }
