@@ -14,7 +14,11 @@ func CommandFileName() string {
 }
 
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
-	scripts, _ := filepath.Glob(path)
+	scripts, err := filepath.Glob(path)
+	if err != nil {
+		log.Error("Error finding scripts in path: " + err.Error())
+		return
+	}
 
 	for _, script := range scripts {
 		dirPath := filepath.Dir(script)
@@ -37,12 +41,12 @@ func ExecuteScript(scriptPath string, args []string) ExitCode {
 		return 0
 	}
 
-	return extractExitCode(err, 1)
+	return ExitCode(extractExitCode(err, 1))
 }
 
 func extractExitCode(err error, defaultExitCode int) int {
-	var codeString = strings.TrimPrefix(err.Error(), "exit status ")
-	var extractedCode, conversionErr = strconv.Atoi(codeString)
+	codeString := strings.TrimPrefix(err.Error(), "exit status ")
+	extractedCode, conversionErr := strconv.Atoi(codeString)
 
 	if conversionErr != nil {
 		log.Error("Could not extract exit code from error: " + err.Error())
