@@ -5,7 +5,9 @@ import (
 	"path/filepath"
 )
 
-var TeamDirectory string
+var (
+	TeamDirectory string
+)
 
 func GetExecutionPath() string {
 	if TeamDirectory != "" {
@@ -17,11 +19,11 @@ func GetExecutionPath() string {
 }
 
 func GetAbsoluteExecutionPath() string {
-	absolute, _ := filepath.Abs(GetExecutionPath())
-	return absolute
+	absolutePath, _ := filepath.Abs(GetExecutionPath())
+	return absolutePath
 }
 
 func GetExecutableName() string {
-	executable, _ := os.Executable()
-	return filepath.Base(executable)
+	executablePath, _ := os.Executable()
+	return filepath.Base(executablePath)
 }
