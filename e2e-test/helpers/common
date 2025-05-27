@@ -1,12 +1,14 @@
 #!/bin/bash
 
+HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 _common_setup() {
-  load '3rdParty/test_helper/bats-support/load'
-  load '3rdParty/test_helper/bats-assert/load'
-  load 'helpers/absolutePath'
+  load "$HELPER_DIR/../3rdParty/test_helper/bats-support/load"
+  load "$HELPER_DIR/../3rdParty/test_helper/bats-assert/load"
+  load "$HELPER_DIR/absolutePath"
 
   local projectRoot
-  projectRoot="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
+  projectRoot=$(pwd)
 
   testEnvDir="testEnv/$(uuidgen)"
   testEnvBinDir="$testEnvDir/bin"

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-load 'helpers/executeInTestEnvironment'
+HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+load "$HELPER_DIR/executeInTestEnvironment"
 
 runCommand() {
   execute run "$@"
