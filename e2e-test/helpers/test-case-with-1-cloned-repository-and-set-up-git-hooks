@@ -1,10 +1,12 @@
 #!/bin/bash -e
 
-load 'helpers/ssh-authenticate'
-load 'helpers/common'
-load 'helpers/setup'
-load 'helpers/git'
-load 'helpers/repositoriesPath'
+HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+load "$HELPER_DIR/ssh-authenticate"
+load "$HELPER_DIR/common"
+load "$HELPER_DIR/setup"
+load "$HELPER_DIR/git"
+load "$HELPER_DIR/repositoriesPath"
 
 repository="1_TestRepository"
 

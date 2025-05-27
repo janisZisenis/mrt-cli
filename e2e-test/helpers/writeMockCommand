@@ -1,7 +1,9 @@
 #!/bin/bash
 
-load 'helpers/fileAssertions'
-load 'helpers/writeMockScript'
+HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+load "$HELPER_DIR/fileAssertions"
+load "$HELPER_DIR/writeMockScript"
 
 commandFileName() {
   echo "command"

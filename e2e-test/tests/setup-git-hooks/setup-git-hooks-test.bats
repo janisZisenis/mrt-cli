@@ -1,9 +1,9 @@
-load 'helpers/ssh-authenticate'
-load 'helpers/common'
-load 'helpers/git'
-load 'helpers/setup'
-load 'helpers/repositoriesPath'
-load 'helpers/directoryAssertions'
+load '../../helpers/ssh-authenticate'
+load '../../helpers/common'
+load '../../helpers/git'
+load '../../helpers/setup'
+load '../../helpers/repositoriesPath'
+load '../../helpers/directoryAssertions'
 
 
 setup() {

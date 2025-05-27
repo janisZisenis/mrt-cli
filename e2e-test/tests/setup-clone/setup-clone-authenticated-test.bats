@@ -1,12 +1,12 @@
-load 'helpers/directoryAssertions'
-load 'helpers/directoryAssertions'
-load 'helpers/ssh-authenticate'
-load 'helpers/common'
-load 'helpers/repositoriesPath'
-load 'helpers/setup'
-load 'helpers/executeInTestEnvironment'
-load 'helpers/git'
-load 'helpers/assertLineReversed'
+load '../../helpers/directoryAssertions'
+load '../../helpers/directoryAssertions'
+load '../../helpers/ssh-authenticate'
+load '../../helpers/common'
+load '../../helpers/repositoriesPath'
+load '../../helpers/setup'
+load '../../helpers/executeInTestEnvironment'
+load '../../helpers/git'
+load '../../helpers/assertLineReversed'
 
 repositoriesPath=$(default_repositories_path)
 

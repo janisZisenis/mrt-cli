@@ -1,8 +1,7 @@
-load 'helpers/common'
-load 'helpers/writeMockCommand'
-load 'helpers/run'
-load 'helpers/absolutePath'
-
+load '../../helpers/common'
+load '../../helpers/writeMockCommand'
+load '../../helpers/run'
+load '../../helpers/absolutePath'
 
 setup() {
   _common_setup
