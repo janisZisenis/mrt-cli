@@ -1,9 +1,9 @@
-load 'helpers/common'
-load 'helpers/writeMockCommand'
-load 'helpers/absolutePath'
-load 'helpers/executeInTestEnvironment'
-load 'helpers/git'
-load 'helpers/setup'
+load '../../helpers/common'
+load '../../helpers/writeMockCommand'
+load '../../helpers/absolutePath'
+load '../../helpers/executeInTestEnvironment'
+load '../../helpers/git'
+load '../../helpers/setup'
 
 
 setup() {

@@ -1,11 +1,11 @@
-load 'helpers/setup'
-load 'helpers/ssh-authenticate'
-load 'helpers/common'
-load 'helpers/repositoriesPath'
-load 'helpers/executeInTestEnvironment'
-load 'helpers/directoryAssertions'
-load 'helpers/writeMockCommand'
-load 'helpers/absolutePath'
+load '../../helpers/setup'
+load '../../helpers/ssh-authenticate'
+load '../../helpers/common'
+load '../../helpers/repositoriesPath'
+load '../../helpers/executeInTestEnvironment'
+load '../../helpers/directoryAssertions'
+load '../../helpers/writeMockCommand'
+load '../../helpers/absolutePath'
 
 
 setup() {

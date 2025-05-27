@@ -1,9 +1,9 @@
-load 'helpers/setup'
-load 'helpers/ssh-authenticate'
-load 'helpers/common'
-load 'helpers/repositoriesPath'
-load 'helpers/git'
-load 'helpers/executeInTestEnvironment'
+load '../../helpers/setup'
+load '../../helpers/ssh-authenticate'
+load '../../helpers/common'
+load '../../helpers/repositoriesPath'
+load '../../helpers/git'
+load '../../helpers/executeInTestEnvironment'
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
