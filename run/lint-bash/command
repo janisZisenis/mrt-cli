@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
 
@@ -12,13 +11,9 @@ readarray -t bash_files < <(mrt --team-dir "$rootDir" run find-bash-files)
 
 function check_linting {
 	local file="$1"
-	echo -e "Linting file: $file"
-	if shellcheck "$file"; then
-		echo -e "${GREEN}✓ No linting issues in $file${RESET}"
-	else
+	if ! shellcheck "$file"; then
 		echo -e "${RED}✗ Linting issues found in $file${RESET}"
 	fi
-	echo
 }
 
 for file in "${bash_files[@]}"; do
@@ -26,7 +21,6 @@ for file in "${bash_files[@]}"; do
 		check_linting "$file"
 	else
 		echo -e "${RED}Skipping invalid file: $file${RESET}"
-		echo
 	fi
 done
 

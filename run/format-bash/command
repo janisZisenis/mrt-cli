@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
 
@@ -23,13 +22,9 @@ EOF
 
 function check_formatting {
 	local file="$1"
-	echo -e "${YELLOW}Checking formatting: $file${RESET}"
-	if shfmt "$check_flag" "$file"; then
-		echo -e "${GREEN}✓ Formatting is correct for $file${RESET}"
-	else
+	if ! shfmt "$check_flag" "$file"; then
 		echo -e "${RED}✗ Formatting issues found in $file${RESET}"
 	fi
-	echo
 }
 
 check_flag="-w"
@@ -58,7 +53,6 @@ for file in "${bash_files[@]}"; do
 		check_formatting "$file"
 	else
 		echo -e "${RED}Skipping invalid file: $file${RESET}"
-		echo
 	fi
 done
 
