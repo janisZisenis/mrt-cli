@@ -3,7 +3,6 @@
 HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 load "$HELPER_DIR/writeTeamFile"
-load "$HELPER_DIR/executeInTestEnvironment"
 
 setupClone() {
 	readarray -t repositoriesUrls < <(getRepositoryUrls "$@")

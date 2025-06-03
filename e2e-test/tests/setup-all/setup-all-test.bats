@@ -1,7 +1,6 @@
 load '../../helpers/common'
 load '../../helpers/ssh-authenticate'
 load '../../helpers/writeMockCommand'
-load '../../helpers/executeInTestEnvironment'
 load '../../helpers/writeTeamFile'
 load '../../helpers/repositoriesPath'
 load '../../helpers/assertLineReversed'

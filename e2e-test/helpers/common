@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+testEnvDir="testEnv/$(uuidgen)"
+exeName="mrt-bin"
 
 _common_setup() {
+  local HELPER_DIR
+  HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	load "$HELPER_DIR/../3rdParty/test_helper/bats-support/load"
 	load "$HELPER_DIR/../3rdParty/test_helper/bats-assert/load"
 	load "$HELPER_DIR/absolutePath"
@@ -10,9 +13,8 @@ _common_setup() {
 	local projectRoot
 	projectRoot=$(pwd)
 
-	testEnvDir="testEnv/$(uuidgen)"
+	local testEnvBinDir
 	testEnvBinDir="$testEnvDir/bin"
-	exeName="mrt-bin"
 
 	mkdir -p "$testEnvBinDir"
 	local pathToBinary
@@ -29,4 +31,12 @@ _common_setup() {
 _common_teardown() {
 	rm -rf "$testEnvDir"
 	eval "$(ssh-agent -k)"
+}
+
+execute() {
+	"$exeName" --team-dir "$testEnvDir" "$@"
+}
+
+runCommand() {
+	execute run "$@"
 }

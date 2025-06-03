@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-execute() {
-	"$exeName" --team-dir "$testEnvDir" "$@"
-}

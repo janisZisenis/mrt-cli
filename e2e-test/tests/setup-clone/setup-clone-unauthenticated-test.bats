@@ -4,7 +4,6 @@ load '../../helpers/common'
 load '../../helpers/repositoriesPath'
 load '../../helpers/setup'
 load '../../helpers/writeTeamFile'
-load '../../helpers/executeInTestEnvironment'
 
 setup() {
 	_common_setup
