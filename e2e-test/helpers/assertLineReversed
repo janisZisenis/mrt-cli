@@ -16,6 +16,8 @@ assert_line_reversed_output() {
 	index=$((index + 1))
 
 	local actual
+	# shellcheck disable=SC2154
+	# populated by bats
 	actual=$(echo "$output" | tail -n $index | head -n 1)
 	assert_equal "$actual" "$expected"
 }
