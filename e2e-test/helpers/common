@@ -3,30 +3,30 @@
 HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 _common_setup() {
-  load "$HELPER_DIR/../3rdParty/test_helper/bats-support/load"
-  load "$HELPER_DIR/../3rdParty/test_helper/bats-assert/load"
-  load "$HELPER_DIR/absolutePath"
+	load "$HELPER_DIR/../3rdParty/test_helper/bats-support/load"
+	load "$HELPER_DIR/../3rdParty/test_helper/bats-assert/load"
+	load "$HELPER_DIR/absolutePath"
 
-  local projectRoot
-  projectRoot=$(pwd)
+	local projectRoot
+	projectRoot=$(pwd)
 
-  testEnvDir="testEnv/$(uuidgen)"
-  testEnvBinDir="$testEnvDir/bin"
-  exeName="mrt-bin"
-  
-  mkdir -p "$testEnvBinDir"
-  local pathToBinary
-  pathToBinary="$(mrt --team-dir "$projectRoot" run binary-location)"
-  cp "$pathToBinary" "$testEnvBinDir/$exeName"
+	testEnvDir="testEnv/$(uuidgen)"
+	testEnvBinDir="$testEnvDir/bin"
+	exeName="mrt-bin"
 
-  chmod +x "$testEnvBinDir/$exeName"
+	mkdir -p "$testEnvBinDir"
+	local pathToBinary
+	pathToBinary="$(mrt --team-dir "$projectRoot" run binary-location)"
+	cp "$pathToBinary" "$testEnvBinDir/$exeName"
 
-  PATH="$PATH:$(absolutePath "$testEnvBinDir")"
+	chmod +x "$testEnvBinDir/$exeName"
 
-  eval "$(ssh-agent -s 3>&-)"
+	PATH="$PATH:$(absolutePath "$testEnvBinDir")"
+
+	eval "$(ssh-agent -s 3>&-)"
 }
 
 _common_teardown() {
-  rm -rf "$testEnvDir"
-  eval "$(ssh-agent -k)"
+	rm -rf "$testEnvDir"
+	eval "$(ssh-agent -k)"
 }

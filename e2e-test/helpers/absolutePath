@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 absolutePath() {
-  realpath "$1"
+	realpath "$1"
 }

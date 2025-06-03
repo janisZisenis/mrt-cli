@@ -5,22 +5,21 @@ HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 load "$HELPER_DIR/writeTeamFile"
 load "$HELPER_DIR/executeInTestEnvironment"
 
-
 setupClone() {
-  readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
-  setupCloneUrls "${repositoriesUrls[@]}"
+	readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
+	setupCloneUrls "${repositoriesUrls[@]}"
 }
 
 setupCloneUrls() {
-  writeRepositoriesUrls "$@"
+	writeRepositoriesUrls "$@"
 
-  execute setup clone-repositories
+	execute setup clone-repositories
 }
 
 setupGitHooks() {
-  execute setup install-git-hooks
+	execute setup install-git-hooks
 }
 
 setupCommand() {
-  execute setup "$1"
+	execute setup "$1"
 }

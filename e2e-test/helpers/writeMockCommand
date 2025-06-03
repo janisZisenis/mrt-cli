@@ -6,87 +6,87 @@ load "$HELPER_DIR/fileAssertions"
 load "$HELPER_DIR/writeMockScript"
 
 commandFileName() {
-  echo "command"
+	echo "command"
 }
 
 writeSpyCommand() {
-  local commandLocation
-  local commandName
-  commandLocation="$1"
-  commandName="$2"
+	local commandLocation
+	local commandName
+	commandLocation="$1"
+	commandName="$2"
 
-  commandPath="$commandLocation/$commandName/$(commandFileName)"
-  writeSpyScript "$commandPath"
+	commandPath="$commandLocation/$commandName/$(commandFileName)"
+	writeSpyScript "$commandPath"
 }
 
 writeStubCommand() {
-  local commandLocation
-  local commandName
-  commandLocation="$1"
-  commandName="$2"
-  exitCode="$3"
-  output="$4"
+	local commandLocation
+	local commandName
+	commandLocation="$1"
+	commandName="$2"
+	exitCode="$3"
+	output="$4"
 
-  commandPath="$commandLocation/$commandName/$(commandFileName)"
-  writeStubScript "$commandPath" "$exitCode" "$output"
+	commandPath="$commandLocation/$commandName/$(commandFileName)"
+	writeStubScript "$commandPath" "$exitCode" "$output"
 }
 
 writeStdErrCommand() {
-  local commandLocation
-  local commandName
-  local error
-  commandLocation="$1"
-  commandName="$2"
-  error="$3"
+	local commandLocation
+	local commandName
+	local error
+	commandLocation="$1"
+	commandName="$2"
+	error="$3"
 
-  writeStdErrScript "$commandLocation/$commandName/$(commandFileName)" "$error"
+	writeStdErrScript "$commandLocation/$commandName/$(commandFileName)" "$error"
 }
 
 writeCommandRequestingInput() {
-  local commandLocation
-  local commandName
-  commandLocation="$1"
-  commandName="$2"
+	local commandLocation
+	local commandName
+	commandLocation="$1"
+	commandName="$2"
 
-  writeScriptRequestingInput "$commandLocation/$commandName/$(commandFileName)"
+	writeScriptRequestingInput "$commandLocation/$commandName/$(commandFileName)"
 }
 
 assert_command_received_input() {
-  local commandLocation
-  local commandName
-  local input
-  commandLocation="$1"
-  commandName="$2"
-  input="$3"
+	local commandLocation
+	local commandName
+	local input
+	commandLocation="$1"
+	commandName="$2"
+	input="$3"
 
-  assert_file_exists "$commandLocation/$commandName/$input"
+	assert_file_exists "$commandLocation/$commandName/$input"
 }
 
 assert_command_spy_file_has_content() {
-  local commandLocation
-  local commandName
-  local content
-  commandLocation="$1"
-  commandName="$2"
-  content="$3"
+	local commandLocation
+	local commandName
+	local content
+	commandLocation="$1"
+	commandName="$2"
+	content="$3"
 
-  assert_spy_file_has_content "$commandLocation/$commandName/$(commandFileName)" "$content"
+	assert_spy_file_has_content "$commandLocation/$commandName/$(commandFileName)" "$content"
 }
 
 assert_command_spy_file_exists() {
-   local commandLocation
-   local commandName
-   commandLocation="$1"
-   commandName="$2"
+	local commandLocation
+	local commandName
+	commandLocation="$1"
+	commandName="$2"
 
-   assert_spy_file_exists "$commandLocation/$commandName/$(commandFileName)"
+	assert_spy_file_exists "$commandLocation/$commandName/$(commandFileName)"
 }
 
 assert_command_spy_file_does_not_exist() {
-  local commandLocation
-  local commandName
-  commandLocation="$1"
-  commandName="$2"
+	local commandLocation
+	local commandName
+	commandLocation="$1"
+	commandName="$2"
 
-  assert_spy_file_does_not_exist "$commandLocation/$commandName/$(commandFileName)"
+	assert_spy_file_does_not_exist "$commandLocation/$commandName/$(commandFileName)"
 }

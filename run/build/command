@@ -8,82 +8,81 @@ shift
 SEMVER_FLAG="--semver"
 COMMIT_SHA_FLAG="--commit-sha"
 
-help(){
-  dir=$(dirname "$0")
-  commandName=${dir##*/}
+help() {
+	dir=$(dirname "$0")
+	commandName=${dir##*/}
 
-  printf 'Pass in a list of platforms you want to build a binary for like shown below.\n'
-  printf '\n'
-  printf '\tmrt run %s "darwin/arm64" "linux/amd64"\n' "$commandName"
-  printf '\n'
-  printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt --team-dir $rootDir run detect-platform)"
-  printf '\n'
-  printf "Flags: \n"
-  printf -- "-h, --help\tShow this help message\n"
-  printf -- '%s\tThe semantical version used for the build\n' "$SEMVER_FLAG"
-  printf -- '%s\tThe commit-sha used for the build\n' "$COMMIT_SHA_FLAG"
+	printf 'Pass in a list of platforms you want to build a binary for like shown below.\n'
+	printf '\n'
+	printf '\tmrt run %s "darwin/arm64" "linux/amd64"\n' "$commandName"
+	printf '\n'
+	printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt --team-dir $rootDir run detect-platform)"
+	printf '\n'
+	printf "Flags: \n"
+	printf -- "-h, --help\tShow this help message\n"
+	printf -- '%s\tThe semantical version used for the build\n' "$SEMVER_FLAG"
+	printf -- '%s\tThe commit-sha used for the build\n' "$COMMIT_SHA_FLAG"
 }
 
 build_binary() {
-  local platform
-  local semver
-  local commit_sha
-  platform=$1
-  semver=$2
-  commit_sha=$3
+	local platform
+	local semver
+	local commit_sha
+	platform=$1
+	semver=$2
+	commit_sha=$3
 
-  binaryLocation="$(mrt --team-dir "$rootDir" run binary-location -- "$platform")"
-  GOOS="${platform%/*}"
-  GOARCH="${platform#*/}"
+	binaryLocation="$(mrt --team-dir "$rootDir" run binary-location -- "$platform")"
+	GOOS="${platform%/*}"
+	GOARCH="${platform#*/}"
 
-  echo "Building for $platform..."
-  if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build \
-    -ldflags "-X main.semver=$semver -X main.commit=$commit_sha -X main.date=$(date +'%Y-%m-%d')" \
-    -o "$binaryLocation"
-  then
-    echo "Error occurred while building for ${platform}"
-    exit 1
-  else
-    echo "Successfully build for ${platform}"
-  fi
+	echo "Building for $platform..."
+	if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build \
+		-ldflags "-X main.semver=$semver -X main.commit=$commit_sha -X main.date=$(date +'%Y-%m-%d')" \
+		-o "$binaryLocation"; then
+		echo "Error occurred while building for ${platform}"
+		exit 1
+	else
+		echo "Successfully build for ${platform}"
+	fi
 }
 
 semver="unkown"
 commit_sha="unkown"
 while [ "$#" -gt 0 ]; do
-  case $1 in
-    "--help"|"-h")
-      help;
-      exit 0
-      ;;
-    "$SEMVER_FLAG")
-      if [[ -z "$2" || "$2" == -* ]]; then
-        echo "You have to specify a semver." >&2
-        exit 1
-      fi
-      semver=$2
-      shift 2;;
-    "$COMMIT_SHA_FLAG")
-      if [[ -z "$2" || "$2" == -* ]]; then
-        echo "You have to specify a commit-sha." >&2
-        exit 1
-      fi
-      commit_sha=$2
-      shift 2;;
-    *)
-      platforms+=("$1")
-      shift;;
-  esac
+	case $1 in
+	"--help" | "-h")
+		help
+		exit 0
+		;;
+	"$SEMVER_FLAG")
+		if [[ -z "$2" || "$2" == -* ]]; then
+			echo "You have to specify a semver." >&2
+			exit 1
+		fi
+		semver=$2
+		shift 2
+		;;
+	"$COMMIT_SHA_FLAG")
+		if [[ -z "$2" || "$2" == -* ]]; then
+			echo "You have to specify a commit-sha." >&2
+			exit 1
+		fi
+		commit_sha=$2
+		shift 2
+		;;
+	*)
+		platforms+=("$1")
+		shift
+		;;
+	esac
 done
 
-if [[ "${#platforms[@]}" -eq 0 ]]
-then
-  platforms=("$(mrt --team-dir "$rootDir" run detect-platform)")
+if [[ "${#platforms[@]}" -eq 0 ]]; then
+	platforms=("$(mrt --team-dir "$rootDir" run detect-platform)")
 fi
 
 cd "$rootDir"/app
-for platform in "${platforms[@]}"
-do
-  build_binary "$platform" "$semver" "$commit_sha"
+for platform in "${platforms[@]}"; do
+	build_binary "$platform" "$semver" "$commit_sha"
 done
-

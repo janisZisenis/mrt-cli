@@ -2,24 +2,23 @@
 set -e
 
 private-key-file() {
-  echo ./.ssh/private-key
+	echo ./.ssh/private-key
 }
 
 check-if-private-key-file-exists() {
-  if [ ! -f "$(private-key-file)" ]
-  then
-    echo "Private key file not found."
-    echo "Please make sure you create a valid private key file at $(private-key-file)."
-    exit 1
-  fi
+	if [ ! -f "$(private-key-file)" ]; then
+		echo "Private key file not found."
+		echo "Please make sure you create a valid private key file at $(private-key-file)."
+		exit 1
+	fi
 }
 
 authenticate() {
-  check-if-private-key-file-exists
-  ssh-add "$(private-key-file)"
+	check-if-private-key-file-exists
+	ssh-add "$(private-key-file)"
 }
 
 revoke-authentication() {
-  check-if-private-key-file-exists
-  ssh-add -d "$(private-key-file)"
+	check-if-private-key-file-exists
+	ssh-add -d "$(private-key-file)"
 }

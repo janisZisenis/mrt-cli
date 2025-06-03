@@ -12,18 +12,18 @@ load "$HELPER_DIR/repositoriesPath"
 repository="1_TestRepository"
 
 setup() {
-  _common_setup
-  authenticate
+	_common_setup
+	authenticate
 
-  cloneTestingRepositories "$testEnvDir/$(default_repositories_path)" "$repository"
-  setupGitHooks
+	cloneTestingRepositories "$testEnvDir/$(default_repositories_path)" "$repository"
+	setupGitHooks
 }
 
 teardown() {
-  revoke-authentication
-  _common_teardown
+	revoke-authentication
+	_common_teardown
 }
 
 repositoryDir() {
-  echo "$testEnvDir/$(default_repositories_path)/$repository"
+	echo "$testEnvDir/$(default_repositories_path)/$repository"
 }

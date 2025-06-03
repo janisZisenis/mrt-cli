@@ -6,21 +6,20 @@ rootDir=$1
 shift
 
 if [[ "$1" == "--clean" ]]; then
-  echo "Clean build for e2e-tests."
-  mrt --team-dir "$rootDir" run build
-  shift
+	echo "Clean build for e2e-tests."
+	mrt --team-dir "$rootDir" run build
+	shift
 else
-  echo "Using built binary to execute e2e-tests."
+	echo "Using built binary to execute e2e-tests."
 fi
 
 if [[ $# -eq 0 ]]; then
-  mapfile -t files < <(find "$rootDir/e2e-test" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
+	mapfile -t files < <(find "$rootDir/e2e-test" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
 else
-  files=("$@")
+	files=("$@")
 fi
 
 echo "Test files to be executed:"
 printf "\t%s\n" "${files[@]}"
 
 "$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
-

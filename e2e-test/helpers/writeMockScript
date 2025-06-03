@@ -5,18 +5,18 @@ HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 load "$HELPER_DIR/fileAssertions"
 
 spyFileSuffix() {
-  echo "Executed"
+	echo "Executed"
 }
 
 writeSpyScript() {
-  local commandPath
-  commandPath=$1
+	local commandPath
+	commandPath=$1
 
-  mkdir -p "$(dirname "$commandPath")"
-  local commandName
-  commandName="$(basename "$commandPath")"
+	mkdir -p "$(dirname "$commandPath")"
+	local commandName
+	commandName="$(basename "$commandPath")"
 
-cat << EOF > "$commandPath"
+	cat <<EOF >"$commandPath"
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -24,36 +24,36 @@ echo "\$@" > "\$SCRIPT_DIR/$commandName$(spyFileSuffix)"
 
 EOF
 
-  chmod +x "$commandPath"
+	chmod +x "$commandPath"
 }
 
 writeStubScript() {
-  local commandPath=$1
-  local exitCode=$2
-  local output=$3
+	local commandPath=$1
+	local exitCode=$2
+	local output=$3
 
-  mkdir -p "$(dirname "$commandPath")"
-  local commandName
-  commandName="$(basename "$commandPath")"
+	mkdir -p "$(dirname "$commandPath")"
+	local commandName
+	commandName="$(basename "$commandPath")"
 
-cat << EOF > "$commandPath"
+	cat <<EOF >"$commandPath"
 #!/bin/bash
 
 echo "$output"
 exit $exitCode
 EOF
 
-  chmod +x "$commandPath"
+	chmod +x "$commandPath"
 }
 
 writeScriptRequestingInput() {
-  local commandPath=$1
+	local commandPath=$1
 
-  mkdir -p "$(dirname "$commandPath")"
-  local commandName
-  commandName="$(basename "$commandPath")"
+	mkdir -p "$(dirname "$commandPath")"
+	local commandName
+	commandName="$(basename "$commandPath")"
 
-cat << EOF > "$commandPath"
+	cat <<EOF >"$commandPath"
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -61,39 +61,39 @@ read -r input
 touch "\$SCRIPT_DIR/\$input"
 EOF
 
-  chmod +x "$commandPath"
+	chmod +x "$commandPath"
 }
 
 writeStdErrScript() {
-  local commandPath=$1
-  local errorMessage=$2
+	local commandPath=$1
+	local errorMessage=$2
 
-  mkdir -p "$(dirname "$commandPath")"
-  local commandName
-  commandName="$(basename "$commandPath")"
+	mkdir -p "$(dirname "$commandPath")"
+	local commandName
+	commandName="$(basename "$commandPath")"
 
-cat << EOF > "$commandPath"
+	cat <<EOF >"$commandPath"
 #!/bin/bash
 
 echo "$errorMessage" 1>&2
 EOF
 
-  chmod +x "$commandPath"
+	chmod +x "$commandPath"
 }
 
 assert_spy_file_has_content() {
-  spyFile=$1$(spyFileSuffix)
-  expectedContent=$2
+	spyFile=$1$(spyFileSuffix)
+	expectedContent=$2
 
-  actualContent="$(cat "$spyFile")"
+	actualContent="$(cat "$spyFile")"
 
-  assert_equal "$actualContent" "$expectedContent"
+	assert_equal "$actualContent" "$expectedContent"
 }
 
 assert_spy_file_exists() {
-  assert_file_exists "$1$(spyFileSuffix)"
+	assert_file_exists "$1$(spyFileSuffix)"
 }
 
 assert_spy_file_does_not_exist() {
-  assert_file_does_not_exist "$1$(spyFileSuffix)"
+	assert_file_does_not_exist "$1$(spyFileSuffix)"
 }
