@@ -6,34 +6,34 @@ load "$HELPER_DIR/absolutePath"
 
 _testEnvDir="testEnv/$(uuidgen)"
 testEnvDir() {
-  echo "$_testEnvDir"
+	echo "$_testEnvDir"
 }
 
 _testEnvBinDir() {
-  echo "$_testEnvDir/bin"
+	echo "$_testEnvDir/bin"
 }
 
 _exeName() {
-  echo "mrt-bin"
+	echo "mrt-bin"
 }
 
 _pathToBinary() {
-  mrt --team-dir "$(pwd)" run binary-location
+	mrt --team-dir "$(pwd)" run binary-location
 }
 
 _testEnvExePath() {
-  echo "$(_testEnvBinDir)/$(_exeName)"
+	echo "$(_testEnvBinDir)/$(_exeName)"
 }
 
 _setup_binary() {
-  mkdir -p "$(_testEnvBinDir)"
-  cp "$(_pathToBinary)" "$(_testEnvExePath)"
-  chmod +x "$(_testEnvExePath)"
-  PATH="$PATH:$(absolutePath "$(_testEnvBinDir)")"
+	mkdir -p "$(_testEnvBinDir)"
+	cp "$(_pathToBinary)" "$(_testEnvExePath)"
+	chmod +x "$(_testEnvExePath)"
+	PATH="$PATH:$(absolutePath "$(_testEnvBinDir)")"
 }
 
 common_setup() {
-  _setup_binary
+	_setup_binary
 
 	eval "$(ssh-agent -s 3>&-)"
 }
