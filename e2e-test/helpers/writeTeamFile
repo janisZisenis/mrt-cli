@@ -11,7 +11,7 @@ getTestingRepositoryUrl() {
 }
 
 getRepositoryUrls() {
-	repositoryNames=($*)
+	repositoryNames=("$@")
 
 	for r in "${repositoryNames[@]}"; do
 		getTestingRepositoryUrl "$r"
@@ -19,7 +19,7 @@ getRepositoryUrls() {
 }
 
 writeBlockedBranches() {
-	blockedBranches=($*)
+	blockedBranches=("$@")
 
 	createTeamFileIfNotExisting
 
