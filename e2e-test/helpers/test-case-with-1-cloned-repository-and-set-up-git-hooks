@@ -15,7 +15,7 @@ setup() {
 	_common_setup
 	authenticate
 
-	cloneTestingRepositories "$testEnvDir/$(default_repositories_path)" "$repository"
+	cloneTestingRepositories "$_testEnvDir/$(default_repositories_path)" "$repository"
 	setupGitHooks
 }
 
@@ -25,5 +25,5 @@ teardown() {
 }
 
 repositoryDir() {
-	echo "$testEnvDir/$(default_repositories_path)/$repository"
+	echo "$_testEnvDir/$(default_repositories_path)/$repository"
 }

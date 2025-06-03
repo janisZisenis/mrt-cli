@@ -10,8 +10,8 @@ load '../../helpers/test-case-with-1-cloned-repository-and-set-up-git-hooks'
 }
 
 @test "if subcommand 'git-hook' gets called with a path that does not contain a repository it fails" {
-	run execute git-hook --hook-name "pre-commit" --repository-path "$testEnvDir"
+	run execute git-hook --hook-name "pre-commit" --repository-path "$_testEnvDir"
 
-	assert_output --partial "The given path \"$testEnvDir\" does not contain a repository."
+	assert_output --partial "The given path \"$_testEnvDir\" does not contain a repository."
 	assert_failure
 }

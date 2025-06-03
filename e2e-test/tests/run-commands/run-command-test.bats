@@ -22,18 +22,18 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	commandName=$1
 	shift
 	parameters=("$@")
-	commandLocation="$testEnvDir/run"
-	writeSpyCommand "$testEnvDir/run" "$commandName"
+	commandLocation="$_testEnvDir/run"
+	writeSpyCommand "$_testEnvDir/run" "$commandName"
 
 	run runCommand "$commandName" -- "${parameters[@]}"
 
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(absolutePath "$testEnvDir") ${parameters[*]}"
+	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(absolutePath "$_testEnvDir") ${parameters[*]}"
 }
 
 @test "if command succeeds with output it will print the command's output" {
 	commandName="some-command"
 	someOutput="some-output"
-	commandLocation="$testEnvDir/run"
+	commandLocation="$_testEnvDir/run"
 	writeStubCommand "$commandLocation" "$commandName" "0" "$someOutput"
 
 	run runCommand "$commandName"
@@ -43,7 +43,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 
 @test "if command is requesting input it should process the input" {
 	commandName="input"
-	commandLocation="$testEnvDir/run"
+	commandLocation="$_testEnvDir/run"
 	writeCommandRequestingInput "$commandLocation" "$commandName"
 	input="some-input"
 
@@ -55,7 +55,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 @test "if command writes to stderr it outputs stderr" {
 	commandName="error"
 	error="some-error"
-	commandLocation="$testEnvDir/run"
+	commandLocation="$_testEnvDir/run"
 	writeStdErrCommand "$commandLocation" "$commandName" "$error"
 
 	run runCommand "$commandName"
@@ -66,7 +66,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 @test "if command fails with code 1 it will fail with error code 1 as well" {
 	commandName="some-command"
 	exitCode=1
-	writeStubCommand "$testEnvDir/run" "$commandName" "$exitCode" ""
+	writeStubCommand "$_testEnvDir/run" "$commandName" "$exitCode" ""
 
 	run runCommand "$commandName"
 
@@ -77,7 +77,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 @test "if command fails with code 2 it will fail with error code 2 as well" {
 	commandName="some-command"
 	exitCode=2
-	writeStubCommand "$testEnvDir/run" "$commandName" "$exitCode" ""
+	writeStubCommand "$_testEnvDir/run" "$commandName" "$exitCode" ""
 
 	run runCommand "$commandName"
 
@@ -88,7 +88,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 @test "if command exits with code 0 it will succeed" {
 	commandName="some-command"
 	exitCode=0
-	writeStubCommand "$testEnvDir/run" "$commandName" "$exitCode" ""
+	writeStubCommand "$_testEnvDir/run" "$commandName" "$exitCode" ""
 
 	run runCommand "$commandName"
 

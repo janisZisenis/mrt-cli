@@ -17,7 +17,7 @@ teardown() {
 @test "if two setup commands exist setup all with skipping the first it should only run the second" {
 	someCommandName="some-command"
 	anotherCommandName="another-command"
-	commandLocation="$testEnvDir/setup"
+	commandLocation="$_testEnvDir/setup"
 	writeSpyCommand "$commandLocation" "$someCommandName"
 	writeSpyCommand "$commandLocation" "$anotherCommandName"
 
@@ -30,7 +30,7 @@ teardown() {
 @test "if two setup commands exist setup all with skipping the second it should only run the first" {
 	someCommandName="some-command"
 	anotherCommandName="another-command"
-	commandLocation="$testEnvDir/setup"
+	commandLocation="$_testEnvDir/setup"
 	writeSpyCommand "$commandLocation" "$someCommandName"
 	writeSpyCommand "$commandLocation" "$anotherCommandName"
 
@@ -42,7 +42,7 @@ teardown() {
 
 @test "if one setup commands exists setup all with skipping the command prints out skip message" {
 	commandName="some-command"
-	commandLocation="$testEnvDir/setup"
+	commandLocation="$_testEnvDir/setup"
 	writeSpyCommand "$commandLocation" "$commandName"
 
 	run execute setup all "--skip-$commandName"

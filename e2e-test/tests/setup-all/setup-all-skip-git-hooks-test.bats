@@ -9,7 +9,7 @@ repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 branchName="$(unique_branch_name)"
 
 repositoryDir() {
-	echo "$testEnvDir/$(default_repositories_path)/$repository"
+	echo "$_testEnvDir/$(default_repositories_path)/$repository"
 }
 
 setup() {

@@ -18,7 +18,7 @@ teardown() {
 repositoriesPath=$(default_repositories_path)
 
 repositoriesDir() {
-	echo "$testEnvDir/$repositoriesPath"
+	echo "$_testEnvDir/$repositoriesPath"
 }
 
 @test "If repositories are cloned to repositories path from team file commiting on the blocked branches after setting up git-hooks should be blocked" {
