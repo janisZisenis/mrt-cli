@@ -6,13 +6,13 @@ load '../../helpers/repositoriesPath'
 load '../../helpers/directoryAssertions'
 
 setup() {
-	_common_setup
+	common_setup
 	authenticate
 }
 
 teardown() {
 	revoke-authentication
-	_common_teardown
+	common_teardown
 }
 
 repositoriesPath=$(default_repositories_path)

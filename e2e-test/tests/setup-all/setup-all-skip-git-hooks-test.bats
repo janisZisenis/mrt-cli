@@ -13,7 +13,7 @@ repositoryDir() {
 }
 
 setup() {
-	_common_setup
+	common_setup
 	authenticate
 
 	writeRepositoriesUrls "$repositoryUrl"
@@ -22,7 +22,7 @@ setup() {
 
 teardown() {
 	revoke-authentication
-	_common_teardown
+	common_teardown
 }
 
 @test "After setup all with 'skip-git-hooks' committing on a blocked branch is not rejected" {

@@ -9,13 +9,13 @@ repositoryDir() {
 }
 
 setup() {
-	_common_setup
+	common_setup
 	authenticate
 }
 
 teardown() {
 	revoke-authentication
-	_common_teardown
+	common_teardown
 }
 
 @test "if setup is run with skipping the clone step it should not clone the repositories" {

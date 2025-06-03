@@ -12,7 +12,7 @@ load "$HELPER_DIR/repositoriesPath"
 repository="1_TestRepository"
 
 setup() {
-	_common_setup
+	common_setup
 	authenticate
 
 	cloneTestingRepositories "$(testEnvDir)/$(default_repositories_path)" "$repository"
@@ -21,7 +21,7 @@ setup() {
 
 teardown() {
 	revoke-authentication
-	_common_teardown
+	common_teardown
 }
 
 repositoryDir() {

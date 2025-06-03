@@ -5,11 +5,11 @@ load '../../helpers/git'
 load '../../helpers/setup'
 
 setup() {
-	_common_setup
+	common_setup
 }
 
 teardown() {
-	_common_teardown
+	common_teardown
 }
 
 @test "if setup command (some-command) exists executing it will pass the team folder path as parameter" {

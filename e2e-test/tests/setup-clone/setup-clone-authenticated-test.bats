@@ -14,13 +14,13 @@ repositoriesDir() {
 }
 
 setup() {
-	_common_setup
+	common_setup
 	authenticate
 }
 
 teardown() {
 	revoke-authentication
-	_common_teardown
+	common_teardown
 }
 
 @test "if team json does not contain repositoriesPath it clones repository into 'repositories' folder" {

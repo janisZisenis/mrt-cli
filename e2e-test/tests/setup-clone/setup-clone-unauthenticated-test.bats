@@ -6,11 +6,11 @@ load '../../helpers/setup'
 load '../../helpers/writeTeamFile'
 
 setup() {
-	_common_setup
+	common_setup
 }
 
 teardown() {
-	_common_teardown
+	common_teardown
 }
 
 @test "If team json contains repository and some repository path it should print out message, that it clones the repositories" {

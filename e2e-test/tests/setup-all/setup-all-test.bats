@@ -6,13 +6,13 @@ load '../../helpers/repositoriesPath'
 load '../../helpers/assertLineReversed'
 
 setup() {
-	_common_setup
+	common_setup
 	authenticate
 }
 
 teardown() {
 	revoke-authentication
-	_common_teardown
+	common_teardown
 }
 
 @test "if team file contains repository and two setup commands exist it should clone the repository, install git-hooks and execute the commands" {

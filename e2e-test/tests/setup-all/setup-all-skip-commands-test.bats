@@ -7,11 +7,11 @@ load '../../helpers/writeMockCommand'
 load '../../helpers/absolutePath'
 
 setup() {
-	_common_setup
+	common_setup
 }
 
 teardown() {
-	_common_teardown
+	common_teardown
 }
 
 @test "if two setup commands exist setup all with skipping the first it should only run the second" {
