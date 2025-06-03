@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -e
+
+GREEN="\e[32m"
+RED="\e[31m"
+RESET="\e[0m"
+
+HELP_FLAG="-h"
+HELP_LONG_FLAG="--help"
+CHECK_ONLY_FLAG="--check-only"
+
+rootDir="$1"
+shift
+
+print_help() {
+	cat <<EOF
+Usage: mrt $(basename "$(dirname "$0")") [OPTIONS]
+Options:
+  $CHECK_ONLY_FLAG              Determines whether formatting is applied or only checked.
+  $HELP_FLAG, $HELP_LONG_FLAG   Show this help message and exit.
+EOF
+}
+
+function check_formatting {
+	local file="$1"
+	echo -e "${YELLOW}Checking formatting: $file${RESET}"
+	if shfmt "$check_flag" "$file"; then
+		echo -e "${GREEN}✓ Formatting is correct for $file${RESET}"
+	else
+		echo -e "${RED}✗ Formatting issues found in $file${RESET}"
+	fi
+	echo
+}
+
+check_flag="-w"
+while [[ "$#" -gt 0 ]]; do
+	case "$1" in
+	"$HELP_FLAG" | "$HELP_LONG_FLAG")
+		print_help
+		exit 0
+		;;
+	"$CHECK_ONLY_FLAG")
+		check_flag="-d"
+		shift
+		;;
+	*)
+		echo "Error: Invalid option '$1'" >&2
+		print_help
+		exit 1
+		;;
+	esac
+done
+
+readarray -t bash_files < <(mrt --team-dir "$rootDir" run find-bash-files)
+
+for file in "${bash_files[@]}"; do
+	if [[ -f "$file" && -s "$file" && -r "$file" ]]; then
+		check_formatting "$file"
+	else
+		echo -e "${RED}Skipping invalid file: $file${RESET}"
+		echo
+	fi
+done
+
+echo -e "All files processed."

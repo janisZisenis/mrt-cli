@@ -107,7 +107,7 @@ Additionally, it is also possible to execute single steps of the setup flow. To 
 ```sh
 mrt setup clone-repositories
 mrt setup install-git-hooks
-mrt setup install-tools
+mrt setup upgrade-tools
 ```
 
 ### Clone your team's repositories
@@ -119,7 +119,7 @@ To specify which repositories to clone during the setup flow, create a `team.jso
   "repositories": [
     "git@github.com:repository1.git",
     "git@github.com:repository2.git",
-    "...",
+    "..."
   ]
 }
 ```
@@ -130,7 +130,7 @@ If you want to change the location of the repositories, you can set the new repo
 
 ```json
 {
-  "repositoriesPath": "path/to/repository"
+  "repositoriesPath": "path/to/repository",
   "repositories": [
     "..."
   ]
@@ -182,7 +182,7 @@ Below you can see an example folder structure:
 With the folder structure above in place you can run the following code snippet to execute the custom setup commands. Here, every setup command gets passed the absolute path to the team folder as first argument.
 
 ```sh
-  mrt setup install-tools
+  mrt setup upgrade-tools
   mrt setup setup-aws
 ```
 
