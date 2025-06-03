@@ -22,18 +22,18 @@ teardown() {
 
 test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter() {
 	commandName=$1
-	commandLocation="$_testEnvDir/setup"
+	commandLocation="$(testEnvDir)/setup"
 	writeSpyCommand "$commandLocation" "$commandName"
 
 	execute setup "$commandName"
 
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(absolutePath "$_testEnvDir")"
+	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(absolutePath "$(testEnvDir)")"
 }
 
 @test "if setup command succeeds with output it will print the command's output" {
 	commandName="some-command"
 	someOutput="some-output"
-	writeStubCommand "$_testEnvDir/setup" "$commandName" "0" "$someOutput"
+	writeStubCommand "$(testEnvDir)/setup" "$commandName" "0" "$someOutput"
 
 	run setupCommand $commandName
 
@@ -46,7 +46,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	commandName="another-command"
 	someOutput="another-output"
 	exitCode=15
-	writeStubCommand "$_testEnvDir/setup" "$commandName" "$exitCode" "$someOutput"
+	writeStubCommand "$(testEnvDir)/setup" "$commandName" "$exitCode" "$someOutput"
 
 	run setupCommand "$commandName"
 
@@ -57,7 +57,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 
 @test "if setup command is requesting input it should process the input" {
 	commandName="input"
-	commandLocation="$_testEnvDir/setup"
+	commandLocation="$(testEnvDir)/setup"
 	writeCommandRequestingInput "$commandLocation" "$commandName"
 	input="some-input"
 
@@ -69,7 +69,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 @test "if setup command is writes to stderr it outputs stderr" {
 	commandName="error"
 	error="some-error"
-	writeStdErrCommand "$_testEnvDir/setup" "$commandName" "$error"
+	writeStdErrCommand "$(testEnvDir)/setup" "$commandName" "$error"
 
 	run setupCommand "$commandName"
 

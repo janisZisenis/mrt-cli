@@ -5,7 +5,7 @@ load '../../helpers/repositoriesPath'
 load '../../helpers/directoryAssertions'
 
 repositoryDir() {
-	echo "$_testEnvDir/$(default_repositories_path)/$repository"
+	echo "$(testEnvDir)/$(default_repositories_path)/$repository"
 }
 
 setup() {
@@ -25,7 +25,7 @@ teardown() {
 
 	run execute setup all --skip-clone-repositories
 
-	assert_directory_does_not_exist "$_testEnvDir/$(default_repositories_path)/$repository"
+	assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_path)/$repository"
 }
 
 @test "if setup is run with skipping the clone step it should print a skip message" {

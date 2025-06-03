@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
 _testEnvDir="testEnv/$(uuidgen)"
-_exeName="mrt-bin"
+testEnvDir() {
+  echo "$_testEnvDir"
+}
+
+exeName() {
+  echo "mrt-bin"
+}
 
 _common_setup() {
   local HELPER_DIR
@@ -14,14 +20,14 @@ _common_setup() {
 	projectRoot=$(pwd)
 
 	local testEnvBinDir
-	testEnvBinDir="$_testEnvDir/bin"
+	testEnvBinDir="$(testEnvDir)/bin"
 
 	mkdir -p "$testEnvBinDir"
 	local pathToBinary
 	pathToBinary="$(mrt --team-dir "$projectRoot" run binary-location)"
-	cp "$pathToBinary" "$testEnvBinDir/$_exeName"
+	cp "$pathToBinary" "$testEnvBinDir/$(exeName)"
 
-	chmod +x "$testEnvBinDir/$_exeName"
+	chmod +x "$testEnvBinDir/$(exeName)"
 
 	PATH="$PATH:$(absolutePath "$testEnvBinDir")"
 
@@ -29,12 +35,12 @@ _common_setup() {
 }
 
 _common_teardown() {
-	rm -rf "$_testEnvDir"
+	rm -rf "$(testEnvDir)"
 	eval "$(ssh-agent -k)"
 }
 
 execute() {
-	"$_exeName" --team-dir "$_testEnvDir" "$@"
+	"$(exeName)" --team-dir "$(testEnvDir)" "$@"
 }
 
 runCommand() {

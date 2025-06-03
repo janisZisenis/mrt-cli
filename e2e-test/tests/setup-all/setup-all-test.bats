@@ -19,10 +19,10 @@ teardown() {
 	repository="1_TestRepository"
 	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 	writeRepositoriesUrls "$repositoryUrl"
-	repositoryDir="$_testEnvDir/$(default_repositories_path)/$repository"
+	repositoryDir="$(testEnvDir)/$(default_repositories_path)/$repository"
 	someCommandName="some-command"
 	anotherCommandName="another-command"
-	commandLocation="$_testEnvDir/setup"
+	commandLocation="$(testEnvDir)/setup"
 	writeSpyCommand "$commandLocation" "$someCommandName"
 	writeSpyCommand "$commandLocation" "$anotherCommandName"
 
@@ -33,7 +33,7 @@ teardown() {
 	assert_line --index 2 --regexp "Enumerating objects: [0-9]+, done."
 	assert_line_reversed_output 11 "Successfully cloned $repositoryUrl"
 	assert_line_reversed_output 10 "Cloning repositories done"
-	assert_line_reversed_output 9 "Installing git-hooks to repositories located in \"$_testEnvDir/$(default_repositories_path)\""
+	assert_line_reversed_output 9 "Installing git-hooks to repositories located in \"$(testEnvDir)/$(default_repositories_path)\""
 	assert_line_reversed_output 8 "Installing git-hooks to \"$repositoryDir/.git\""
 	assert_line_reversed_output 7 "Done installing git-hooks to \"$repositoryDir/.git\""
 	assert_line_reversed_output 6 "Done installing git-hooks."
@@ -53,7 +53,7 @@ teardown() {
 
 @test "if setup command exists setup without skipping the command should not print skip message" {
 	commandName="some-command"
-	writeSpyCommand "$_testEnvDir/setup" "$commandName"
+	writeSpyCommand "$(testEnvDir)/setup" "$commandName"
 
 	run execute setup all
 

@@ -10,7 +10,7 @@ load '../../helpers/assertLineReversed'
 repositoriesPath=$(default_repositories_path)
 
 repositoriesDir() {
-	echo "$_testEnvDir/$repositoriesPath"
+	echo "$(testEnvDir)/$repositoriesPath"
 }
 
 setup() {
