@@ -2,9 +2,6 @@
 
 set -e
 
-rootDir=$1
-shift
-
 ARCH_FLAG="--arch"
 OS_FLAG="--os"
 SUPPORTED_PLATFROMS_FLAG="--supported-platforms"
@@ -52,6 +49,7 @@ print_supported_platforms() {
 	done
 }
 
+shift #unused rootDir
 while [ "$#" -gt 0 ]; do
 	case $1 in
 	--help | -h)

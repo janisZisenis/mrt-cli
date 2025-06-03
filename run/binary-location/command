@@ -71,6 +71,5 @@ case $strategy in
 *)
 	echo "Invalid option"
 	exit 1
-	shift
 	;;
 esac

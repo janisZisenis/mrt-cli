@@ -5,7 +5,7 @@ set -e
 rootDir=$1
 shift
 
-mrt --team-dir $rootDir run build
+mrt --team-dir "$rootDir" run build
 binaryLocation=$(mrt --team-dir "$rootDir" run binary-location)
 buildLocation=$(mrt --team-dir "$rootDir" run build-location)
 

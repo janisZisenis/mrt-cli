@@ -16,11 +16,11 @@ help() {
 	printf '\n'
 	printf '\tmrt run %s "darwin/arm64" "linux/amd64"\n' "$commandName"
 	printf '\n'
-	printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt --team-dir $rootDir run detect-platform)"
+	printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt --team-dir "$rootDir" run detect-platform)"
 	printf '\n'
 	printf "Flags: \n"
 	printf -- "-h, --help\tShow this help message\n"
-	printf -- '%s\tThe semantical version used for the build\n' "$SEMVER_FLAG"
+	printf -- '%s\tThe semantic version used for the build\n' "$SEMVER_FLAG"
 	printf -- '%s\tThe commit-sha used for the build\n' "$COMMIT_SHA_FLAG"
 }
 
