@@ -8,7 +8,7 @@ testEnvDir() {
 }
 
 common_setup() {
-  PATH=$PATH:"$(mrt run binary-location -- --dir)"
+	PATH=$PATH:"$(mrt run binary-location -- --dir)"
 	eval "$(ssh-agent -s 3>&-)"
 }
 
@@ -17,7 +17,7 @@ common_teardown() {
 }
 
 execute() {
-  "$(mrt run binary-location -- --exe-name)" --team-dir "$(testEnvDir)" "$@"
+	"$(mrt run binary-location -- --exe-name)" --team-dir "$(testEnvDir)" "$@"
 }
 
 runCommand() {
