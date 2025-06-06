@@ -9,32 +9,14 @@ testEnvDir() {
 	echo "$_testEnvDir"
 }
 
-_testEnvBinDir() {
-	echo "$_testEnvDir/bin"
-}
-
-_exeName() {
-	echo "mrt-bin"
-}
-
-_pathToBinary() {
-	mrt --team-dir "$(pwd)" run binary-location
-}
-
-_testEnvExePath() {
-	echo "$(_testEnvBinDir)/$(_exeName)"
-}
-
-_setup_binary() {
-	mkdir -p "$(_testEnvBinDir)"
-	cp "$(_pathToBinary)" "$(_testEnvExePath)"
-	chmod +x "$(_testEnvExePath)"
-	PATH="$PATH:$(absolutePath "$(_testEnvBinDir)")"
+_setup_testEnv() {
+	mkdir -p "$(testEnvDir)"
 }
 
 common_setup() {
-	_setup_binary
+	_setup_testEnv
 
+  PATH=$PATH:"$(mrt run binary-location -- --dir)"
 	eval "$(ssh-agent -s 3>&-)"
 }
 
@@ -44,7 +26,7 @@ common_teardown() {
 }
 
 execute() {
-	"$(_exeName)" --team-dir "$(testEnvDir)" "$@"
+  "$(mrt run binary-location -- --exe-name)" --team-dir "$(testEnvDir)" "$@"
 }
 
 runCommand() {
