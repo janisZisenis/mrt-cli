@@ -1,6 +1,5 @@
 load '../../helpers/common'
 load '../../helpers/writeMockCommand'
-load '../../helpers/absolutePath'
 load '../../helpers/git'
 load '../../helpers/setup'
 
@@ -27,7 +26,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 
 	execute setup "$commandName"
 
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(absolutePath "$(testEnvDir)")"
+	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(testEnvDir)"
 }
 
 @test "if setup command succeeds with output it will print the command's output" {
@@ -42,7 +41,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	assert_line --index 2 "$commandName executed successfully"
 }
 
-@test "if setup command fails with output it will print the command's output and the failure" {
+ @test "if setup command fails with output it will print the command's output and the failure" {
 	commandName="another-command"
 	someOutput="another-output"
 	exitCode=15

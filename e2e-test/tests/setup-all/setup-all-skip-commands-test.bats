@@ -4,7 +4,6 @@ load '../../helpers/common'
 load '../../helpers/repositoriesPath'
 load '../../helpers/directoryAssertions'
 load '../../helpers/writeMockCommand'
-load '../../helpers/absolutePath'
 
 setup() {
 	common_setup

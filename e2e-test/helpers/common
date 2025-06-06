@@ -2,26 +2,17 @@
 HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 load "$HELPER_DIR/../3rdParty/test_helper/bats-support/load"
 load "$HELPER_DIR/../3rdParty/test_helper/bats-assert/load"
-load "$HELPER_DIR/absolutePath"
 
-_testEnvDir="testEnv/$(uuidgen)"
 testEnvDir() {
-	echo "$_testEnvDir"
-}
-
-_setup_testEnv() {
-	mkdir -p "$(testEnvDir)"
+	echo "$BATS_TEST_TMPDIR"
 }
 
 common_setup() {
-	_setup_testEnv
-
   PATH=$PATH:"$(mrt run binary-location -- --dir)"
 	eval "$(ssh-agent -s 3>&-)"
 }
 
 common_teardown() {
-	rm -rf "$(testEnvDir)"
 	eval "$(ssh-agent -k)"
 }
 

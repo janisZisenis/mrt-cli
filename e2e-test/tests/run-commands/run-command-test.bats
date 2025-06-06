@@ -1,6 +1,5 @@
 load '../../helpers/common'
 load '../../helpers/writeMockCommand'
-load '../../helpers/absolutePath'
 
 setup() {
 	common_setup
@@ -27,7 +26,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 
 	run runCommand "$commandName" -- "${parameters[@]}"
 
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(absolutePath "$(testEnvDir)") ${parameters[*]}"
+	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(testEnvDir) ${parameters[*]}"
 }
 
 @test "if command succeeds with output it will print the command's output" {
