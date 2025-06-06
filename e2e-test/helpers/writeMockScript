@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-load "$HELPER_DIR/fileAssertions"
+bats_load_library "fileAssertions"
 
 spyFileSuffix() {
 	echo "Executed"

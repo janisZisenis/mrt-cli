@@ -1,7 +1,7 @@
-load '../../helpers/common'
-load '../../helpers/writeMockCommand'
-load '../../helpers/git'
-load '../../helpers/setup'
+bats_load_library 'common'
+bats_load_library 'writeMockCommand'
+bats_load_library 'git'
+bats_load_library 'setup'
 
 setup() {
 	common_setup

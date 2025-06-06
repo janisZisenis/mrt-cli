@@ -1,9 +1,9 @@
-load '../../helpers/ssh-authenticate'
-load '../../helpers/common'
-load '../../helpers/git'
-load '../../helpers/setup'
-load '../../helpers/repositoriesPath'
-load '../../helpers/directoryAssertions'
+bats_load_library 'ssh-authenticate'
+bats_load_library 'common'
+bats_load_library 'git'
+bats_load_library 'setup'
+bats_load_library 'repositoriesPath'
+bats_load_library 'directoryAssertions'
 
 setup() {
 	common_setup

@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-load "$HELPER_DIR/fileAssertions"
-load "$HELPER_DIR/writeMockScript"
+bats_load_library "fileAssertions"
+bats_load_library "writeMockScript"
 
 commandFileName() {
 	echo "command"

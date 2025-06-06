@@ -1,9 +1,9 @@
-load '../../helpers/common'
-load '../../helpers/ssh-authenticate'
-load '../../helpers/common'
-load '../../helpers/repositoriesPath'
-load '../../helpers/setup'
-load '../../helpers/writeTeamFile'
+bats_load_library 'common'
+bats_load_library 'ssh-authenticate'
+bats_load_library 'common'
+bats_load_library 'repositoriesPath'
+bats_load_library 'setup'
+bats_load_library 'writeTeamFile'
 
 setup() {
 	common_setup

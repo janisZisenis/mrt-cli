@@ -1,6 +1,6 @@
-load '../../helpers/test-case-with-1-cloned-repository-and-set-up-git-hooks'
-load '../../helpers/fileAssertions'
-load '../../helpers/writeMockScript'
+bats_load_library 'test-case-with-1-cloned-repository-and-set-up-git-hooks'
+bats_load_library 'fileAssertions'
+bats_load_library 'writeMockScript'
 
 @test "if pre-commit scripts exist 'committing' will execute them" {
 	scriptsPath="$(repositoryDir)/hook-scripts/pre-commit"

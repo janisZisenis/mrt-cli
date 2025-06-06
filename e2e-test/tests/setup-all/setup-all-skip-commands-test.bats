@@ -1,9 +1,9 @@
-load '../../helpers/setup'
-load '../../helpers/ssh-authenticate'
-load '../../helpers/common'
-load '../../helpers/repositoriesPath'
-load '../../helpers/directoryAssertions'
-load '../../helpers/writeMockCommand'
+bats_load_library 'setup'
+bats_load_library 'ssh-authenticate'
+bats_load_library 'common'
+bats_load_library 'repositoriesPath'
+bats_load_library 'directoryAssertions'
+bats_load_library 'writeMockCommand'
 
 setup() {
 	common_setup

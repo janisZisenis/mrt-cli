@@ -1,11 +1,11 @@
-load '../../helpers/directoryAssertions'
-load '../../helpers/directoryAssertions'
-load '../../helpers/ssh-authenticate'
-load '../../helpers/common'
-load '../../helpers/repositoriesPath'
-load '../../helpers/setup'
-load '../../helpers/git'
-load '../../helpers/assertLineReversed'
+bats_load_library 'directoryAssertions'
+bats_load_library 'directoryAssertions'
+bats_load_library 'ssh-authenticate'
+bats_load_library 'common'
+bats_load_library 'repositoriesPath'
+bats_load_library 'setup'
+bats_load_library 'git'
+bats_load_library 'assertLineReversed'
 
 repositoriesPath=$(default_repositories_path)
 

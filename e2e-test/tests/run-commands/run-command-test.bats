@@ -1,5 +1,5 @@
-load '../../helpers/common'
-load '../../helpers/writeMockCommand'
+bats_load_library 'common'
+bats_load_library 'writeMockCommand'
 
 setup() {
 	common_setup

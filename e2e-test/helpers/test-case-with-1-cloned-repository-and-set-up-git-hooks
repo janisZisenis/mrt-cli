@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-load "$HELPER_DIR/ssh-authenticate"
-load "$HELPER_DIR/common"
-load "$HELPER_DIR/setup"
-load "$HELPER_DIR/git"
-load "$HELPER_DIR/repositoriesPath"
+bats_load_library "ssh-authenticate"
+bats_load_library "common"
+bats_load_library "setup"
+bats_load_library "git"
+bats_load_library "repositoriesPath"
 
 repository="1_TestRepository"
 
