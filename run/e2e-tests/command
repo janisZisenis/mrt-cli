@@ -22,4 +22,6 @@ fi
 echo "Test files to be executed:"
 printf "\t%s\n" "${files[@]}"
 
+export BATS_LIB_PATH="$rootDir/e2e-test/3rdParty/test_helper":"$rootDir/e2e-test/helpers"
+
 "$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
