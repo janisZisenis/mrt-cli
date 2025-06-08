@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+RED="\e[31m"
+RESET="\e[0m"
+
+rootDir="$1"
+shift
+
+GITLAB_DIR="$rootDir/local-gitlab"
+
+docker run --detach \
+    --hostname gitlab.local.com \
+    --publish 443:443 --publish 80:80 --publish 22:22 \
+    --name gitlab \
+    --restart always \
+    --volume $GITLAB_DIR/gitlab/config:/etc/gitlab \
+    --volume $GITLAB_DIR/gitlab/logs:/var/log/gitlab \
+    --volume $GITLAB_DIR/gitlab/data:/var/opt/gitlab \
+    gitlab/gitlab-ce:latest
