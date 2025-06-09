@@ -1,0 +1,25 @@
+2025-06-08_21:02:44.37018 {"time":"2025-06-08T21:02:44.367871972Z","level":"INFO","msg":"Running KAS","kas":"gitlab-kas/v18.0.1/v18.0.1"}
+2025-06-08_21:02:44.38920 {"time":"2025-06-08T21:02:44.389111722Z","level":"INFO","msg":"Using own private API multi URL","url":"grpc:/localhost/|8155"}
+2025-06-08_21:02:44.39930 {"time":"2025-06-08T21:02:44.399233222Z","level":"INFO","msg":"AutoFlow module is not enabled in config","mod_name":"autoflow"}
+2025-06-08_21:02:44.40010 {"time":"2025-06-08T21:02:44.39959618Z","level":"INFO","msg":"AutoFlow module is not enabled in config, not starting codec server","mod_name":"autoflow_codec_server"}
+2025-06-08_21:02:44.40197 {"time":"2025-06-08T21:02:44.401699513Z","level":"INFO","msg":"Starting","mod_name":"event_tracker"}
+2025-06-08_21:02:44.40205 {"time":"2025-06-08T21:02:44.401747888Z","level":"INFO","msg":"Starting","mod_name":"notifications"}
+2025-06-08_21:02:44.40216 {"time":"2025-06-08T21:02:44.40181268Z","level":"INFO","msg":"Starting","mod_name":"observability"}
+2025-06-08_21:02:44.40246 {"time":"2025-06-08T21:02:44.402433805Z","level":"INFO","msg":"Starting","mod_name":"usage_metrics"}
+2025-06-08_21:02:44.40461 {"time":"2025-06-08T21:02:44.404590347Z","level":"INFO","msg":"Starting","mod_name":"kubernetes_api"}
+2025-06-08_21:02:44.40652 {"time":"2025-06-08T21:02:44.406476597Z","level":"INFO","msg":"Starting","mod_name":"kas2agentk_tunnel"}
+2025-06-08_21:02:44.42969 {"time":"2025-06-08T21:02:44.429621055Z","level":"INFO","msg":"Observability endpoint is up","mod_name":"observability","net_network":"tcp","net_address":"127.0.0.1:8151"}
+2025-06-08_21:02:44.42976 {"time":"2025-06-08T21:02:44.429714638Z","level":"INFO","msg":"API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8153"}
+2025-06-08_21:02:44.42982 {"time":"2025-06-08T21:02:44.429778597Z","level":"INFO","msg":"Private API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8155"}
+2025-06-08_21:02:44.42988 {"time":"2025-06-08T21:02:44.429838847Z","level":"INFO","msg":"Kubernetes API endpoint is up","mod_name":"kubernetes_api","net_network":"tcp","net_address":"127.0.0.1:8154"}
+2025-06-08_21:02:44.43430 {"time":"2025-06-08T21:02:44.431932597Z","level":"INFO","msg":"Agentk API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8150","is_websocket":true}
+2025-06-08_21:02:45.95598 {"time":"2025-06-08T21:02:45.955686875Z","level":"ERROR","msg":"Failed to get receptive agents","mod_name":"kas2agentk_tunnel","error":"Get \"http://testing.gitlab.local/api/v4/internal/kubernetes/receptive_agents\": dial tcp 172.17.0.2:80: connect: connection refused"}
+2025-06-08_21:03:06.80036 {"time":"2025-06-08T21:03:06.800308718Z","level":"ERROR","msg":"Failed to get receptive agents","mod_name":"kas2agentk_tunnel","error":"Get \"http://testing.gitlab.local/api/v4/internal/kubernetes/receptive_agents\": dial tcp 172.17.0.2:80: connect: connection refused"}
+2025-06-08_21:03:33.18255 {"time":"2025-06-08T21:03:33.182472508Z","level":"ERROR","msg":"Failed to get receptive agents","mod_name":"kas2agentk_tunnel","error":"Get \"http://testing.gitlab.local/api/v4/internal/kubernetes/receptive_agents\": dial tcp 172.17.0.2:80: connect: connection refused"}
+2025-06-08_21:04:19.65017 {"time":"2025-06-08T21:04:19.650118377Z","level":"ERROR","msg":"Failed to get receptive agents","mod_name":"kas2agentk_tunnel","error":"HTTP status code: 502 for path /api/v4/internal/kubernetes/receptive_agents"}
+2025-06-08_21:06:09.58589 {"time":"2025-06-08T21:06:09.585754428Z","level":"INFO","msg":"Starting KAS shutdown"}
+2025-06-08_21:06:09.58616 {"time":"2025-06-08T21:06:09.585915053Z","level":"INFO","msg":"Stopping","mod_name":"kubernetes_api"}
+2025-06-08_21:06:14.59356 {"time":"2025-06-08T21:06:14.593457264Z","level":"INFO","msg":"Stopped","mod_name":"kubernetes_api"}
+2025-06-08_21:06:14.59384 {"time":"2025-06-08T21:06:14.593563597Z","level":"INFO","msg":"Stopping servers"}
+2025-06-08_21:06:14.59400 {"time":"2025-06-08T21:06:14.593674764Z","level":"INFO","msg":"Stopping","mod_name":"kas2agentk_tunnel"}
+2025-06-08_21:06:14.59606 {"time":"2025-06-08T21:06:14.595970847Z","level":"INFO","msg":"Stopped","mod_name":"kas2agentk_tunnel"}

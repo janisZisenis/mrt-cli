@@ -9,12 +9,14 @@ shift
 
 GITLAB_DIR="$rootDir/local-gitlab"
 
-docker run --detach \
-    --hostname gitlab.local.com \
+docker run --platform linux/amd64 \
+    --hostname testing.gitlab.local \
     --publish 443:443 --publish 80:80 --publish 22:22 \
     --name gitlab \
     --restart always \
-    --volume $GITLAB_DIR/gitlab/config:/etc/gitlab \
-    --volume $GITLAB_DIR/gitlab/logs:/var/log/gitlab \
-    --volume $GITLAB_DIR/gitlab/data:/var/opt/gitlab \
+    --volume $GITLAB_DIR/config:/etc/gitlab \
+    --volume $GITLAB_DIR/logs:/var/log/gitlab \
+    --volume $GITLAB_DIR/data:/var/opt/gitlab \
+    -e GITLAB_ROOT_EMAIL="admin@example.com" \
+    -e GITLAB_ROOT_PASSWORD="C2*Y_FH@" \
     gitlab/gitlab-ce:latest

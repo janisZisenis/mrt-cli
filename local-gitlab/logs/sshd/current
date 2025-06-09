@@ -1,0 +1,264 @@
+2025-06-08_21:08:11.83573 Server listening on 0.0.0.0 port 22.
+2025-06-08_21:08:11.83812 Server listening on :: port 22.
+2025-06-08_21:15:10.67015 Connection closed by authenticating user git 192.168.65.1 port 33989 [preauth]
+2025-06-08_21:16:05.32261 Accepted publickey for git from 192.168.65.1 port 53715 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:16:05.83230 Received disconnect from 192.168.65.1 port 53715:11: disconnected by user
+2025-06-08_21:16:05.83297 Disconnected from user git 192.168.65.1 port 53715
+2025-06-08_21:16:07.28925 Accepted publickey for git from 192.168.65.1 port 17847 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:16:07.69407 Received disconnect from 192.168.65.1 port 17847:11: disconnected by user
+2025-06-08_21:16:07.69473 Disconnected from user git 192.168.65.1 port 17847
+2025-06-08_21:16:08.18897 Accepted publickey for git from 192.168.65.1 port 60577 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:16:08.63389 Received disconnect from 192.168.65.1 port 60577:11: disconnected by user
+2025-06-08_21:16:08.63457 Disconnected from user git 192.168.65.1 port 60577
+2025-06-08_21:17:16.41867 Accepted publickey for git from 192.168.65.1 port 21244 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:17:16.82399 Received disconnect from 192.168.65.1 port 21244:11: disconnected by user
+2025-06-08_21:17:16.82464 Disconnected from user git 192.168.65.1 port 21244
+2025-06-08_21:17:18.25082 Accepted publickey for git from 192.168.65.1 port 65188 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:17:18.74959 Received disconnect from 192.168.65.1 port 65188:11: disconnected by user
+2025-06-08_21:17:18.75026 Disconnected from user git 192.168.65.1 port 65188
+2025-06-08_21:17:19.22749 Accepted publickey for git from 192.168.65.1 port 54908 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:17:19.65959 Received disconnect from 192.168.65.1 port 54908:11: disconnected by user
+2025-06-08_21:17:19.66026 Disconnected from user git 192.168.65.1 port 54908
+2025-06-08_21:17:51.24012 Accepted publickey for git from 192.168.65.1 port 40657 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:17:51.67673 Received disconnect from 192.168.65.1 port 40657:11: disconnected by user
+2025-06-08_21:17:51.67742 Disconnected from user git 192.168.65.1 port 40657
+2025-06-08_21:17:52.15984 Accepted publickey for git from 192.168.65.1 port 24727 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:17:52.55881 Received disconnect from 192.168.65.1 port 24727:11: disconnected by user
+2025-06-08_21:17:52.55952 Disconnected from user git 192.168.65.1 port 24727
+2025-06-08_21:18:13.62998 Accepted publickey for git from 192.168.65.1 port 40589 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:13.79177 Accepted publickey for git from 192.168.65.1 port 20203 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:14.25042 Received disconnect from 192.168.65.1 port 40589:11: disconnected by user
+2025-06-08_21:18:14.25135 Disconnected from user git 192.168.65.1 port 40589
+2025-06-08_21:18:14.68575 Received disconnect from 192.168.65.1 port 20203:11: disconnected by user
+2025-06-08_21:18:14.68710 Disconnected from user git 192.168.65.1 port 20203
+2025-06-08_21:18:19.74965 Accepted publickey for git from 192.168.65.1 port 38628 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:21.09745 Received disconnect from 192.168.65.1 port 38628:11: disconnected by user
+2025-06-08_21:18:21.09817 Disconnected from user git 192.168.65.1 port 38628
+2025-06-08_21:18:22.26010 Accepted publickey for git from 192.168.65.1 port 60255 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:23.58752 Accepted publickey for git from 192.168.65.1 port 33213 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:24.45133 Received disconnect from 192.168.65.1 port 60255:11: disconnected by user
+2025-06-08_21:18:24.45345 Disconnected from user git 192.168.65.1 port 60255
+2025-06-08_21:18:24.89723 Accepted publickey for git from 192.168.65.1 port 26384 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:24.97718 Accepted publickey for git from 192.168.65.1 port 23615 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:25.43804 Received disconnect from 192.168.65.1 port 33213:11: disconnected by user
+2025-06-08_21:18:25.43976 Disconnected from user git 192.168.65.1 port 33213
+2025-06-08_21:18:26.11215 Accepted publickey for git from 192.168.65.1 port 34381 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:26.22224 Accepted publickey for git from 192.168.65.1 port 60029 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:26.50523 Received disconnect from 192.168.65.1 port 23615:11: disconnected by user
+2025-06-08_21:18:26.51151 Disconnected from user git 192.168.65.1 port 23615
+2025-06-08_21:18:26.61808 Received disconnect from 192.168.65.1 port 26384:11: disconnected by user
+2025-06-08_21:18:26.61926 Disconnected from user git 192.168.65.1 port 26384
+2025-06-08_21:18:27.27238 Accepted publickey for git from 192.168.65.1 port 42396 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:27.57086 Received disconnect from 192.168.65.1 port 34381:11: disconnected by user
+2025-06-08_21:18:27.57170 Disconnected from user git 192.168.65.1 port 34381
+2025-06-08_21:18:27.65679 Received disconnect from 192.168.65.1 port 60029:11: disconnected by user
+2025-06-08_21:18:27.66072 Disconnected from user git 192.168.65.1 port 60029
+2025-06-08_21:18:28.76286 Accepted publickey for git from 192.168.65.1 port 40917 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:28.78295 Received disconnect from 192.168.65.1 port 42396:11: disconnected by user
+2025-06-08_21:18:28.78496 Disconnected from user git 192.168.65.1 port 42396
+2025-06-08_21:18:28.98122 Accepted publickey for git from 192.168.65.1 port 49461 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:30.06749 Received disconnect from 192.168.65.1 port 40917:11: disconnected by user
+2025-06-08_21:18:30.06935 Disconnected from user git 192.168.65.1 port 40917
+2025-06-08_21:18:30.32839 Received disconnect from 192.168.65.1 port 49461:11: disconnected by user
+2025-06-08_21:18:30.32897 Disconnected from user git 192.168.65.1 port 49461
+2025-06-08_21:18:31.49568 Accepted publickey for git from 192.168.65.1 port 33334 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:31.95584 Accepted publickey for git from 192.168.65.1 port 16752 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:32.25522 Accepted publickey for git from 192.168.65.1 port 51754 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:32.35701 Accepted publickey for git from 192.168.65.1 port 60721 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:32.53982 Accepted publickey for git from 192.168.65.1 port 65456 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:32.78231 Received disconnect from 192.168.65.1 port 33334:11: disconnected by user
+2025-06-08_21:18:32.78481 Disconnected from user git 192.168.65.1 port 33334
+2025-06-08_21:18:32.94552 Accepted publickey for git from 192.168.65.1 port 57528 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:33.04905 Received disconnect from 192.168.65.1 port 16752:11: disconnected by user
+2025-06-08_21:18:33.05102 Disconnected from user git 192.168.65.1 port 16752
+2025-06-08_21:18:33.39663 Received disconnect from 192.168.65.1 port 51754:11: disconnected by user
+2025-06-08_21:18:33.39782 Disconnected from user git 192.168.65.1 port 51754
+2025-06-08_21:18:33.40598 Accepted publickey for git from 192.168.65.1 port 44722 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:33.60028 Received disconnect from 192.168.65.1 port 60721:11: disconnected by user
+2025-06-08_21:18:33.60048 Disconnected from user git 192.168.65.1 port 60721
+2025-06-08_21:18:33.74304 Accepted publickey for git from 192.168.65.1 port 51584 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:33.87768 Received disconnect from 192.168.65.1 port 65456:11: disconnected by user
+2025-06-08_21:18:33.87924 Disconnected from user git 192.168.65.1 port 65456
+2025-06-08_21:18:34.18351 Accepted publickey for git from 192.168.65.1 port 21152 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:34.29055 Received disconnect from 192.168.65.1 port 57528:11: disconnected by user
+2025-06-08_21:18:34.29154 Disconnected from user git 192.168.65.1 port 57528
+2025-06-08_21:18:34.66766 Received disconnect from 192.168.65.1 port 44722:11: disconnected by user
+2025-06-08_21:18:34.66833 Disconnected from user git 192.168.65.1 port 44722
+2025-06-08_21:18:35.25639 Received disconnect from 192.168.65.1 port 51584:11: disconnected by user
+2025-06-08_21:18:35.25730 Disconnected from user git 192.168.65.1 port 51584
+2025-06-08_21:18:35.48646 Accepted publickey for git from 192.168.65.1 port 41984 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:35.55123 Received disconnect from 192.168.65.1 port 21152:11: disconnected by user
+2025-06-08_21:18:35.55612 Disconnected from user git 192.168.65.1 port 21152
+2025-06-08_21:18:37.10428 Accepted publickey for git from 192.168.65.1 port 19887 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:37.45749 Received disconnect from 192.168.65.1 port 41984:11: disconnected by user
+2025-06-08_21:18:37.46415 Disconnected from user git 192.168.65.1 port 41984
+2025-06-08_21:18:37.93915 Accepted publickey for git from 192.168.65.1 port 18825 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:38.75453 Received disconnect from 192.168.65.1 port 18825:11: disconnected by user
+2025-06-08_21:18:38.75995 Disconnected from user git 192.168.65.1 port 18825
+2025-06-08_21:18:41.27142 Received disconnect from 192.168.65.1 port 19887:11: disconnected by user
+2025-06-08_21:18:41.27210 Disconnected from user git 192.168.65.1 port 19887
+2025-06-08_21:18:41.52205 Accepted publickey for git from 192.168.65.1 port 50513 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:41.75302 Accepted publickey for git from 192.168.65.1 port 49697 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:42.21431 Accepted publickey for git from 192.168.65.1 port 18049 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:42.64646 Accepted publickey for git from 192.168.65.1 port 48666 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:42.89235 Received disconnect from 192.168.65.1 port 49697:11: disconnected by user
+2025-06-08_21:18:42.89331 Disconnected from user git 192.168.65.1 port 49697
+2025-06-08_21:18:43.21690 Accepted publickey for git from 192.168.65.1 port 49305 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:43.31885 Accepted publickey for git from 192.168.65.1 port 46119 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:43.41111 Accepted publickey for git from 192.168.65.1 port 51011 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:43.41444 Received disconnect from 192.168.65.1 port 50513:11: disconnected by user
+2025-06-08_21:18:43.41535 Disconnected from user git 192.168.65.1 port 50513
+2025-06-08_21:18:43.70453 Received disconnect from 192.168.65.1 port 18049:11: disconnected by user
+2025-06-08_21:18:43.70524 Disconnected from user git 192.168.65.1 port 18049
+2025-06-08_21:18:43.91971 Accepted publickey for git from 192.168.65.1 port 53795 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:44.05767 Received disconnect from 192.168.65.1 port 48666:11: disconnected by user
+2025-06-08_21:18:44.05814 Disconnected from user git 192.168.65.1 port 48666
+2025-06-08_21:18:44.19539 Accepted publickey for git from 192.168.65.1 port 19013 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:44.52666 Received disconnect from 192.168.65.1 port 49305:11: disconnected by user
+2025-06-08_21:18:44.52765 Disconnected from user git 192.168.65.1 port 49305
+2025-06-08_21:18:44.58192 Accepted publickey for git from 192.168.65.1 port 42670 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:44.75608 Received disconnect from 192.168.65.1 port 51011:11: disconnected by user
+2025-06-08_21:18:44.75648 Disconnected from user git 192.168.65.1 port 51011
+2025-06-08_21:18:44.79284 Accepted publickey for git from 192.168.65.1 port 52605 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:44.92413 Received disconnect from 192.168.65.1 port 53795:11: disconnected by user
+2025-06-08_21:18:44.92674 Disconnected from user git 192.168.65.1 port 53795
+2025-06-08_21:18:45.13671 Received disconnect from 192.168.65.1 port 19013:11: disconnected by user
+2025-06-08_21:18:45.13753 Disconnected from user git 192.168.65.1 port 19013
+2025-06-08_21:18:45.42797 Received disconnect from 192.168.65.1 port 42670:11: disconnected by user
+2025-06-08_21:18:45.42912 Disconnected from user git 192.168.65.1 port 42670
+2025-06-08_21:18:45.50845 Received disconnect from 192.168.65.1 port 52605:11: disconnected by user
+2025-06-08_21:18:45.51012 Disconnected from user git 192.168.65.1 port 52605
+2025-06-08_21:18:46.94225 Accepted publickey for git from 192.168.65.1 port 64482 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:47.01699 Received disconnect from 192.168.65.1 port 46119:11: disconnected by user
+2025-06-08_21:18:47.01769 Disconnected from user git 192.168.65.1 port 46119
+2025-06-08_21:18:47.38310 Received disconnect from 192.168.65.1 port 64482:11: disconnected by user
+2025-06-08_21:18:47.38381 Disconnected from user git 192.168.65.1 port 64482
+2025-06-08_21:18:58.00327 Accepted publickey for git from 192.168.65.1 port 53300 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:18:58.41231 Received disconnect from 192.168.65.1 port 53300:11: disconnected by user
+2025-06-08_21:18:58.41339 Disconnected from user git 192.168.65.1 port 53300
+2025-06-08_21:19:06.48282 Accepted publickey for git from 192.168.65.1 port 44858 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:06.83039 Accepted publickey for git from 192.168.65.1 port 33458 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:08.11120 Accepted publickey for git from 192.168.65.1 port 50011 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:08.45469 Received disconnect from 192.168.65.1 port 44858:11: disconnected by user
+2025-06-08_21:19:08.45623 Disconnected from user git 192.168.65.1 port 44858
+2025-06-08_21:19:08.61724 Received disconnect from 192.168.65.1 port 33458:11: disconnected by user
+2025-06-08_21:19:08.62166 Disconnected from user git 192.168.65.1 port 33458
+2025-06-08_21:19:09.87358 Accepted publickey for git from 192.168.65.1 port 34205 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:10.40012 Received disconnect from 192.168.65.1 port 50011:11: disconnected by user
+2025-06-08_21:19:10.40115 Disconnected from user git 192.168.65.1 port 50011
+2025-06-08_21:19:12.25420 Received disconnect from 192.168.65.1 port 34205:11: disconnected by user
+2025-06-08_21:19:12.25515 Disconnected from user git 192.168.65.1 port 34205
+2025-06-08_21:19:12.68050 Accepted publickey for git from 192.168.65.1 port 26066 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:13.05387 Accepted publickey for git from 192.168.65.1 port 60244 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:14.61128 Accepted publickey for git from 192.168.65.1 port 34796 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:14.83971 Received disconnect from 192.168.65.1 port 60244:11: disconnected by user
+2025-06-08_21:19:14.84127 Disconnected from user git 192.168.65.1 port 60244
+2025-06-08_21:19:14.85552 Received disconnect from 192.168.65.1 port 26066:11: disconnected by user
+2025-06-08_21:19:14.85872 Disconnected from user git 192.168.65.1 port 26066
+2025-06-08_21:19:15.08809 Accepted publickey for git from 192.168.65.1 port 44628 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:15.30732 Accepted publickey for git from 192.168.65.1 port 42207 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:15.76524 Accepted publickey for git from 192.168.65.1 port 27131 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:15.85652 Accepted publickey for git from 192.168.65.1 port 24284 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:16.22593 Received disconnect from 192.168.65.1 port 34796:11: disconnected by user
+2025-06-08_21:19:16.22846 Disconnected from user git 192.168.65.1 port 34796
+2025-06-08_21:19:16.27470 Received disconnect from 192.168.65.1 port 44628:11: disconnected by user
+2025-06-08_21:19:16.27599 Disconnected from user git 192.168.65.1 port 44628
+2025-06-08_21:19:16.49233 Received disconnect from 192.168.65.1 port 42207:11: disconnected by user
+2025-06-08_21:19:16.49405 Disconnected from user git 192.168.65.1 port 42207
+2025-06-08_21:19:16.66244 Accepted publickey for git from 192.168.65.1 port 61724 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:16.84003 Accepted publickey for git from 192.168.65.1 port 23637 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:17.00161 Received disconnect from 192.168.65.1 port 27131:11: disconnected by user
+2025-06-08_21:19:17.00206 Disconnected from user git 192.168.65.1 port 27131
+2025-06-08_21:19:17.40492 Received disconnect from 192.168.65.1 port 24284:11: disconnected by user
+2025-06-08_21:19:17.40661 Disconnected from user git 192.168.65.1 port 24284
+2025-06-08_21:19:18.23474 Received disconnect from 192.168.65.1 port 61724:11: disconnected by user
+2025-06-08_21:19:18.24381 Disconnected from user git 192.168.65.1 port 61724
+2025-06-08_21:19:18.48678 Received disconnect from 192.168.65.1 port 23637:11: disconnected by user
+2025-06-08_21:19:18.48896 Disconnected from user git 192.168.65.1 port 23637
+2025-06-08_21:19:18.86723 Accepted publickey for git from 192.168.65.1 port 16759 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:19.54926 Accepted publickey for git from 192.168.65.1 port 52852 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:20.71710 Received disconnect from 192.168.65.1 port 16759:11: disconnected by user
+2025-06-08_21:19:20.71738 Disconnected from user git 192.168.65.1 port 16759
+2025-06-08_21:19:21.25026 Received disconnect from 192.168.65.1 port 52852:11: disconnected by user
+2025-06-08_21:19:21.25098 Disconnected from user git 192.168.65.1 port 52852
+2025-06-08_21:19:23.75308 Accepted publickey for git from 192.168.65.1 port 50591 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:24.27726 Accepted publickey for git from 192.168.65.1 port 29612 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:25.33433 Received disconnect from 192.168.65.1 port 50591:11: disconnected by user
+2025-06-08_21:19:25.33545 Disconnected from user git 192.168.65.1 port 50591
+2025-06-08_21:19:25.69997 Accepted publickey for git from 192.168.65.1 port 24965 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:26.04574 Received disconnect from 192.168.65.1 port 29612:11: disconnected by user
+2025-06-08_21:19:26.04634 Disconnected from user git 192.168.65.1 port 29612
+2025-06-08_21:19:26.90640 Received disconnect from 192.168.65.1 port 24965:11: disconnected by user
+2025-06-08_21:19:26.90708 Disconnected from user git 192.168.65.1 port 24965
+2025-06-08_21:19:27.19886 Accepted publickey for git from 192.168.65.1 port 59950 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:27.45003 Accepted publickey for git from 192.168.65.1 port 31124 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:27.81078 Accepted publickey for git from 192.168.65.1 port 57709 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:28.18776 Accepted publickey for git from 192.168.65.1 port 53275 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:28.45121 Received disconnect from 192.168.65.1 port 59950:11: disconnected by user
+2025-06-08_21:19:28.45346 Disconnected from user git 192.168.65.1 port 59950
+2025-06-08_21:19:28.78855 Received disconnect from 192.168.65.1 port 31124:11: disconnected by user
+2025-06-08_21:19:28.78910 Disconnected from user git 192.168.65.1 port 31124
+2025-06-08_21:19:28.95417 Accepted publickey for git from 192.168.65.1 port 31942 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:29.11277 Accepted publickey for git from 192.168.65.1 port 29225 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:29.12274 Received disconnect from 192.168.65.1 port 57709:11: disconnected by user
+2025-06-08_21:19:29.12378 Disconnected from user git 192.168.65.1 port 57709
+2025-06-08_21:19:29.64447 Received disconnect from 192.168.65.1 port 53275:11: disconnected by user
+2025-06-08_21:19:29.64493 Disconnected from user git 192.168.65.1 port 53275
+2025-06-08_21:19:29.81401 Accepted publickey for git from 192.168.65.1 port 27391 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:30.03974 Accepted publickey for git from 192.168.65.1 port 42861 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:30.08082 Received disconnect from 192.168.65.1 port 31942:11: disconnected by user
+2025-06-08_21:19:30.08157 Disconnected from user git 192.168.65.1 port 31942
+2025-06-08_21:19:30.23135 Received disconnect from 192.168.65.1 port 29225:11: disconnected by user
+2025-06-08_21:19:30.23216 Disconnected from user git 192.168.65.1 port 29225
+2025-06-08_21:19:30.57655 Received disconnect from 192.168.65.1 port 27391:11: disconnected by user
+2025-06-08_21:19:30.57773 Disconnected from user git 192.168.65.1 port 27391
+2025-06-08_21:19:30.79574 Received disconnect from 192.168.65.1 port 42861:11: disconnected by user
+2025-06-08_21:19:30.79595 Disconnected from user git 192.168.65.1 port 42861
+2025-06-08_21:19:30.81003 Accepted publickey for git from 192.168.65.1 port 37406 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:31.42832 Received disconnect from 192.168.65.1 port 37406:11: disconnected by user
+2025-06-08_21:19:31.42906 Disconnected from user git 192.168.65.1 port 37406
+2025-06-08_21:19:32.05441 Accepted publickey for git from 192.168.65.1 port 51852 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:32.20245 Accepted publickey for git from 192.168.65.1 port 24164 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:32.68516 Accepted publickey for git from 192.168.65.1 port 41339 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:32.81525 Received disconnect from 192.168.65.1 port 24164:11: disconnected by user
+2025-06-08_21:19:32.82079 Disconnected from user git 192.168.65.1 port 24164
+2025-06-08_21:19:33.21593 Accepted publickey for git from 192.168.65.1 port 19991 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:33.56835 Received disconnect from 192.168.65.1 port 41339:11: disconnected by user
+2025-06-08_21:19:33.56897 Disconnected from user git 192.168.65.1 port 41339
+2025-06-08_21:19:33.61753 Accepted publickey for git from 192.168.65.1 port 32987 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:33.94260 Accepted publickey for git from 192.168.65.1 port 50689 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:34.30355 Accepted publickey for git from 192.168.65.1 port 20394 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:34.35332 Received disconnect from 192.168.65.1 port 19991:11: disconnected by user
+2025-06-08_21:19:34.35578 Disconnected from user git 192.168.65.1 port 19991
+2025-06-08_21:19:34.51720 Received disconnect from 192.168.65.1 port 32987:11: disconnected by user
+2025-06-08_21:19:34.51849 Disconnected from user git 192.168.65.1 port 32987
+2025-06-08_21:19:34.73704 Received disconnect from 192.168.65.1 port 50689:11: disconnected by user
+2025-06-08_21:19:34.73829 Disconnected from user git 192.168.65.1 port 50689
+2025-06-08_21:19:34.99870 Received disconnect from 192.168.65.1 port 20394:11: disconnected by user
+2025-06-08_21:19:34.99917 Disconnected from user git 192.168.65.1 port 20394
+2025-06-08_21:19:35.98526 Received disconnect from 192.168.65.1 port 51852:11: disconnected by user
+2025-06-08_21:19:35.98595 Disconnected from user git 192.168.65.1 port 51852
+2025-06-08_21:19:36.21605 Accepted publickey for git from 192.168.65.1 port 61374 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:36.56787 Received disconnect from 192.168.65.1 port 61374:11: disconnected by user
+2025-06-08_21:19:36.56854 Disconnected from user git 192.168.65.1 port 61374
+2025-06-08_21:19:36.80041 Accepted publickey for git from 192.168.65.1 port 47567 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:19:38.82510 Received disconnect from 192.168.65.1 port 47567:11: disconnected by user
+2025-06-08_21:19:38.82576 Disconnected from user git 192.168.65.1 port 47567
+2025-06-08_21:20:02.17342 Accepted publickey for git from 192.168.65.1 port 30137 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:20:02.68747 Received disconnect from 192.168.65.1 port 30137:11: disconnected by user
+2025-06-08_21:20:02.68815 Disconnected from user git 192.168.65.1 port 30137
+2025-06-08_21:20:03.16328 Accepted publickey for git from 192.168.65.1 port 51842 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:20:03.67684 Received disconnect from 192.168.65.1 port 51842:11: disconnected by user
+2025-06-08_21:20:03.67794 Disconnected from user git 192.168.65.1 port 51842
+2025-06-08_21:20:38.77799 Accepted publickey for git from 192.168.65.1 port 49127 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:20:39.18616 Received disconnect from 192.168.65.1 port 49127:11: disconnected by user
+2025-06-08_21:20:39.18686 Disconnected from user git 192.168.65.1 port 49127
+2025-06-08_21:23:57.60499 Accepted publickey for git from 192.168.65.1 port 37008 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-08_21:23:58.02727 Received disconnect from 192.168.65.1 port 37008:11: disconnected by user
+2025-06-08_21:23:58.02800 Disconnected from user git 192.168.65.1 port 37008
+2025-06-09_10:44:21.38175 Accepted publickey for git from 192.168.65.1 port 59409 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-09_10:44:21.93727 Received disconnect from 192.168.65.1 port 59409:11: disconnected by user
+2025-06-09_10:44:21.93790 Disconnected from user git 192.168.65.1 port 59409
+2025-06-09_10:55:09.64526 Accepted publickey for git from 192.168.65.1 port 38137 ssh2: ED25519 SHA256:5GLoDNqng88pkTGPZNfErlLLxU6WZyhPapqGv6a4XkU
+2025-06-09_10:55:10.14091 Received disconnect from 192.168.65.1 port 38137:11: disconnected by user
+2025-06-09_10:55:10.14158 Disconnected from user git 192.168.65.1 port 38137

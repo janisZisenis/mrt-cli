@@ -1,0 +1,4 @@
+2025-06-08_21:01:54.60673 Server listening on 0.0.0.0 port 22.
+2025-06-08_21:01:54.61012 Server listening on :: port 22.
+2025-06-08_21:04:41.89358 Connection closed by authenticating user git 192.168.65.1 port 23180 [preauth]
+2025-06-08_21:04:54.78946 Connection closed by authenticating user git 192.168.65.1 port 22741 [preauth]
