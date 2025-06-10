@@ -25,7 +25,7 @@ func executeGitCommand(repoDir string, args ...string) (string, string, error) {
 	return stdout.String(), stderr.String(), err
 }
 
-func GetCurrentBranch(repoDir string) (string, error) {
+func GetCurrentBranchShortName(repoDir string) (string, error) {
 	stdout, stderr, err := executeGitCommand(repoDir, "rev-parse", "--abbrev-ref", "HEAD")
 
 	if err != nil {
