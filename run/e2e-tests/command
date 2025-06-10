@@ -28,7 +28,7 @@ SSH_CONFIG_FILE="$rootDir/.ssh/config"
 PRIVATE_KEY_FILE="$rootDir/.ssh/private-key"
 
 cat <<EOF > $SSH_CONFIG_FILE
-Host testing
+Host github-testing
    HostName github.com
    IdentityFile $PRIVATE_KEY_FILE
    IdentitiesOnly yes
