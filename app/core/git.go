@@ -4,12 +4,11 @@ import (
 	"app/log"
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 )
-
-const notAuthenticatedError = "exit status 128"
 
 func GetCurrentBranchShortName(repoDir string) (string, error) {
 	cmd := exec.Command("git", "-C", repoDir, "rev-parse", "--abbrev-ref", "HEAD")
@@ -32,20 +31,35 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 	return branchName, nil
 }
 
-func CloneRepository(repositoryUrl string, destination string) {
-	cmd := exec.Command("git", "clone", "--progress", repositoryUrl, destination)
+const purple = "\033[35m"
+const reset = "\033[0m"
 
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
+func CloneRepository(repositoryUrl, destination string) error {
+	log.Info("Cloning " + repositoryUrl + " into " + destination)
 
-	cloneError := cmd.Run()
+	cmd := exec.Command("git", "clone", repositoryUrl, destination)
 
-	if cloneError != nil {
-		if cloneError.Error() == notAuthenticatedError {
-			log.Error("You have no access to " + repositoryUrl + ". Please make sure you have a valid ssh key in place.")
+	var stdoutBuf, stderrBuf bytes.Buffer
+	cmd.Stdout = &stdoutBuf
+	cmd.Stderr = &stderrBuf
+
+	if err := cmd.Run(); err != nil {
+		printColoredOutput(stderrBuf.String())
+		return fmt.Errorf("failed to clone repository: %v", err)
+	}
+
+	printColoredOutput(stdoutBuf.String())
+
+	fmt.Println("Cloning repositories done")
+
+	return nil
+}
+
+func printColoredOutput(output string) {
+	lines := strings.Split(output, "\n")
+	for _, line := range lines {
+		if line != "" {
+			fmt.Printf("%s\t%s%s\n", purple, line, reset)
 		}
-	} else {
-		log.Success("Successfully cloned " + repositoryUrl)
 	}
 }
