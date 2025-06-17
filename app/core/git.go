@@ -33,7 +33,7 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 	return branchName, nil
 }
 
-const purple = "\033[35m"
+const purple = "\033[35;1m"
 const reset = "\033[0m"
 
 func CloneRepository(repositoryUrl, destination string) {
@@ -43,18 +43,18 @@ func CloneRepository(repositoryUrl, destination string) {
 
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Printf("%s\tFailed to create stdout pipe: %v%s\n", purple, err, reset)
+		fmt.Printf("Failed to create stdout pipe: %v\n", err)
 		return
 	}
 
 	stderrPipe, err := cmd.StderrPipe()
 	if err != nil {
-		fmt.Printf("%s\tFailed to create stderr pipe: %v%s\n", purple, err, reset)
+		fmt.Printf("Failed to create stderr pipe: %v\n", err)
 		return
 	}
 
 	if err := cmd.Start(); err != nil {
-		fmt.Printf("%s\tFailed to start git clone command: %v%s\n", purple, err, reset)
+		fmt.Printf("Failed to start git clone command: %v\n", err)
 		return
 	}
 
@@ -62,11 +62,11 @@ func CloneRepository(repositoryUrl, destination string) {
 	go processStream(stderrPipe)
 
 	if err := cmd.Wait(); err != nil {
-		fmt.Printf("%s\tFailed to clone repository: %v%s\n", purple, err, reset)
+		fmt.Printf("%sFailed to clone repository: %v%s\n", reset, err, reset)
 		return
 	}
 
-	fmt.Printf("Successfully cloned %s\n", repositoryUrl)
+	fmt.Printf("%sSuccessfully cloned %s%s\n", purple, repositoryUrl, reset)
 }
 
 func processStream(stream io.ReadCloser) {
