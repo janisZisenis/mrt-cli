@@ -2,9 +2,11 @@ package core
 
 import (
 	"app/log"
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -37,27 +39,37 @@ const reset = "\033[0m"
 func CloneRepository(repositoryUrl, destination string) error {
 	log.Info("Cloning " + repositoryUrl + " into " + destination)
 
-	cmd := exec.Command("git", "clone", repositoryUrl, destination)
+	cmd := exec.Command("git", "clone", "--progress", repositoryUrl, destination)
 
-	var stdoutBuf, stderrBuf bytes.Buffer
-	cmd.Stdout = &stdoutBuf
-	cmd.Stderr = &stderrBuf
+	stdoutPipe, err := cmd.StdoutPipe()
+	if err != nil {
+		return fmt.Errorf("failed to create stdout pipe: %v", err)
+	}
 
-	if err := cmd.Run(); err != nil {
-		printColoredOutput(stderrBuf.String())
+	stderrPipe, err := cmd.StderrPipe()
+	if err != nil {
+		return fmt.Errorf("failed to create stderr pipe: %v", err)
+	}
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to start git clone command: %v", err)
+	}
+
+	go printColoredStream(stdoutPipe)
+	go printColoredStream(stderrPipe)
+
+	if err := cmd.Wait(); err != nil {
 		return fmt.Errorf("failed to clone repository: %v", err)
 	}
 
-	printColoredOutput(stdoutBuf.String())
-
 	fmt.Println("Cloning repositories done")
-
 	return nil
 }
 
-func printColoredOutput(output string) {
-	lines := strings.Split(output, "\n")
-	for _, line := range lines {
+func printColoredStream(stream io.ReadCloser) {
+	scanner := bufio.NewScanner(stream)
+	for scanner.Scan() {
+		line := scanner.Text()
 		if line != "" {
 			fmt.Printf("%s\t%s%s\n", purple, line, reset)
 		}
