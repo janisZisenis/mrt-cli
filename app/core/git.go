@@ -36,37 +36,40 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 const purple = "\033[35m"
 const reset = "\033[0m"
 
-func CloneRepository(repositoryUrl, destination string) error {
+func CloneRepository(repositoryUrl, destination string) {
 	log.Info("Cloning " + repositoryUrl + " into " + destination)
 
 	cmd := exec.Command("git", "clone", "--progress", repositoryUrl, destination)
 
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {
-		return fmt.Errorf("failed to create stdout pipe: %v", err)
+		fmt.Printf("%s\tFailed to create stdout pipe: %v%s\n", purple, err, reset)
+		return
 	}
 
 	stderrPipe, err := cmd.StderrPipe()
 	if err != nil {
-		return fmt.Errorf("failed to create stderr pipe: %v", err)
+		fmt.Printf("%s\tFailed to create stderr pipe: %v%s\n", purple, err, reset)
+		return
 	}
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to start git clone command: %v", err)
+		fmt.Printf("%s\tFailed to start git clone command: %v%s\n", purple, err, reset)
+		return
 	}
 
-	go printColoredStream(stdoutPipe)
-	go printColoredStream(stderrPipe)
+	go processStream(stdoutPipe)
+	go processStream(stderrPipe)
 
 	if err := cmd.Wait(); err != nil {
-		return fmt.Errorf("failed to clone repository: %v", err)
+		fmt.Printf("%s\tFailed to clone repository: %v%s\n", purple, err, reset)
+		return
 	}
 
-	fmt.Println("Cloning repositories done")
-	return nil
+	fmt.Printf("Successfully cloned %s\n", repositoryUrl)
 }
 
-func printColoredStream(stream io.ReadCloser) {
+func processStream(stream io.ReadCloser) {
 	scanner := bufio.NewScanner(stream)
 	for scanner.Scan() {
 		line := scanner.Text()
