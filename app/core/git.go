@@ -4,44 +4,27 @@ import (
 	"app/log"
 	"bytes"
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 )
 
-func executeGitCommand(repoDir string, args ...string) (string, string, error) {
-	cmd := exec.Command("git", args...)
+const notAuthenticatedError = "exit status 128"
 
-	if repoDir != "" {
-		cmd.Dir = repoDir
-	}
+func GetCurrentBranchShortName(repoDir string) (string, error) {
+	cmd := exec.Command("git", "-C", repoDir, "rev-parse", "--abbrev-ref", "HEAD")
 
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
+	var stdout bytes.Buffer
+	cmd.Stdout = &stdout
 
 	err := cmd.Run()
 
-	return stdout.String(), stderr.String(), err
-}
-
-func GetCurrentBranchShortName(repoDir string) (string, error) {
-	stdout, stderr, err := executeGitCommand(repoDir, "rev-parse", "--abbrev-ref", "HEAD")
-
 	if err != nil {
-		var errorMsg string
-
-		if strings.Contains(stderr, "not a git repository") {
-			errorMsg = "the specified directory is not a Git repository"
-		} else {
-			errorMsg = fmt.Sprintf("failed to retrieve the current branch: %s", stderr)
-		}
-		return "", errors.New(errorMsg)
+		log.Error("The given path \"" + repoDir + "\" does not contain a repository.")
+		os.Exit(1)
 	}
 
-	branchName := strings.TrimSpace(stdout)
+	branchName := strings.TrimSpace(stdout.String())
 	if branchName == "" {
 		return "", errors.New("could not determine the current branch: output was empty")
 	}
@@ -49,18 +32,20 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 	return branchName, nil
 }
 
-func CloneRepository(repoURL, destination string) {
-	_, stderr, err := executeGitCommand("", "clone", repoURL, destination)
+func CloneRepository(repositoryUrl string, destination string) {
+	cmd := exec.Command("git", "clone", "--progress", repositoryUrl, destination)
 
-	if err != nil {
-		if strings.Contains(stderr, "remote: Repository not found") {
-			log.Error("repository not found: verify the URL and your access permissions")
-		} else if strings.Contains(stderr, "fatal: destination path") && strings.Contains(stderr, "already exists") {
-			log.Error("destination path already exists: choose a different directory")
-		} else if strings.Contains(stderr, "not a valid URL") {
-			log.Error("the provided URL is not a valid Git repository URL")
-		} else {
-			log.Error("failed to clone the repository: " + stderr)
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+
+	cloneError := cmd.Run()
+
+	if cloneError != nil {
+		if cloneError.Error() == notAuthenticatedError {
+			log.Error("You have no access to " + repositoryUrl + ". Please make sure you have a valid ssh key in place.")
 		}
+	} else {
+		log.Success("Successfully cloned " + repositoryUrl)
 	}
 }

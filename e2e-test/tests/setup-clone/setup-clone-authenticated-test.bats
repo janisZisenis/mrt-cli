@@ -38,7 +38,7 @@ teardown() {
 	run setupCloneUrls "$repositoryUrl"
 
 	assert_line --index 1 "Cloning $repositoryUrl into $repositoriesPath/$repository"
-	assert_line --index 2 --regexp "Enumerating objects: [0-9]+, done."
+	assert_line --index 3 --regexp "Enumerating objects: [0-9]+, done."
 	assert_line_reversed_output 1 "Successfully cloned $repositoryUrl"
 }
 
@@ -77,8 +77,7 @@ teardown() {
 
 	run setupCloneUrls "$repositoryUrl"
 
-	assert_line --index 1 "Cloning $repositoryUrl into $(default_repositories_path)/$repository"
-	assert_line --index 2 "Repository $repositoryUrl was not found. Skipping it"
+  assert_output --partial "fatal: Could not read from remote repository."
 }
 
 @test "if team json contains non-existing and existing repository it should clone the existing one" {

@@ -1,5 +1,4 @@
 bats_load_library 'common'
-bats_load_library 'ssh-authenticate'
 bats_load_library 'common'
 bats_load_library 'repositoriesPath'
 bats_load_library 'setup'
@@ -31,7 +30,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 	run setupClone "${repositories[@]}"
 
 	assert_line --index 0 "Start cloning repositories into \"$repositoryPath\""
-	assert_line --index 3 "Cloning repositories done"
+	assert_line --index 8 "Cloning repositories done"
 }
 
 @test "If team json contains 2 repositories it should print out a done message after cloning second" {
@@ -42,7 +41,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 
 	run setupClone "${repositories[@]}"
 
-	assert_line --index 5 "Cloning repositories done"
+	assert_line --index 15 "Cloning repositories done"
 }
 
 @test "if team json contains existing repositories but authentication is missing it should print a failure message" {
@@ -52,7 +51,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 	run setupCloneUrls "$repositoryUrl"
 
 	assert_line --index 1 "Cloning $repositoryUrl into $(default_repositories_path)/$repository"
-	assert_line --index 2 "You have no access to $repositoryUrl. Please make sure you have a valid ssh key in place."
+	assert_line --index 7 "You have no access to $repositoryUrl. Please make sure you have a valid ssh key in place."
 }
 
 @test "if team json does not contain any repositories it prints out a message" {
