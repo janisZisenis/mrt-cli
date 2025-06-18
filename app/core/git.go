@@ -66,7 +66,7 @@ func CloneRepository(repositoryUrl, destination string) {
 		return
 	}
 
-	fmt.Printf("%sSuccessfully cloned %s%s\n", purple, repositoryUrl, reset)
+	log.Success("Successfully cloned" + repositoryUrl)
 }
 
 func processStream(stream io.ReadCloser) {
@@ -74,7 +74,13 @@ func processStream(stream io.ReadCloser) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if line != "" {
-			fmt.Printf("%s\t%s%s\n", purple, line, reset)
+			subLines := strings.Split(line, "\r")
+
+			for _, subLine := range subLines {
+				if strings.TrimSpace(subLine) != "" {
+					fmt.Printf("%s    %s%s\n", purple, strings.TrimSpace(subLine), reset)
+				}
+			}
 		}
 	}
 }
