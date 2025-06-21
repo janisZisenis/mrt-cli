@@ -2,7 +2,6 @@ package core
 
 import (
 	"app/log"
-	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -33,8 +32,10 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 	return branchName, nil
 }
 
-const purple = "\033[35;1m"
-const reset = "\033[0m"
+const (
+	purple = "\033[35;1m"
+	reset  = "\033[0m"
+)
 
 func CloneRepository(repositoryUrl, destination string) {
 	log.Info("Cloning " + repositoryUrl + " into " + destination)
@@ -43,23 +44,28 @@ func CloneRepository(repositoryUrl, destination string) {
 
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Printf("Failed to create stdout pipe: %v\n", err)
+		fmt.Printf("Error getting StdoutPipe: %v\n", err)
 		return
 	}
 
 	stderrPipe, err := cmd.StderrPipe()
 	if err != nil {
-		fmt.Printf("Failed to create stderr pipe: %v\n", err)
+		fmt.Printf("Error getting StderrPipe: %v\n", err)
 		return
 	}
 
 	if err := cmd.Start(); err != nil {
-		fmt.Printf("Failed to start git clone command: %v\n", err)
+		fmt.Printf("Error starting command: %v\n", err)
 		return
 	}
 
-	go processStream(stdoutPipe)
-	go processStream(stderrPipe)
+	go func() {
+		copyWithColor(os.Stdout, stdoutPipe, purple, reset)
+	}()
+
+	go func() {
+		copyWithColor(os.Stderr, stderrPipe, purple, reset)
+	}()
 
 	if err := cmd.Wait(); err != nil {
 		fmt.Printf("%sFailed to clone repository: %v%s\n", reset, err, reset)
@@ -69,12 +75,19 @@ func CloneRepository(repositoryUrl, destination string) {
 	log.Success("Successfully cloned " + repositoryUrl)
 }
 
-func processStream(stream io.ReadCloser) {
-	scanner := bufio.NewScanner(stream)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line != "" {
-			fmt.Printf("%s%s%s\n", purple, line, reset)
+func copyWithColor(dst io.Writer, src io.Reader, colorStart, colorReset string) {
+	buf := make([]byte, 1024)
+	for {
+		n, err := src.Read(buf)
+		if n > 0 {
+			fmt.Fprintf(dst, "%s%s%s", colorStart, buf[:n], colorReset)
+		}
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			fmt.Fprintf(os.Stderr, "Error reading from source: %v\n", err)
+			break
 		}
 	}
 }
