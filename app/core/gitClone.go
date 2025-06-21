@@ -45,11 +45,10 @@ func CloneRepository(repositoryUrl, destination string) {
 		copyWithColor(os.Stderr, stderrPipe)
 	}()
 
+	waitGroup.Wait()
 	if err := cmd.Wait(); err != nil {
 		log.Info("Failed to clone repository, skipping it.")
 	}
-
-	waitGroup.Wait()
 
 	log.Success("Successfully cloned " + repositoryUrl)
 }
