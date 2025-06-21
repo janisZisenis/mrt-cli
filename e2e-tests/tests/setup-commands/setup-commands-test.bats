@@ -36,7 +36,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 
 	run setupCommand $commandName
 
-	assert_line --index 0 "Execute setup-command: $commandName"
+	assert_line --index 0 "Execute setup command: $commandName"
 	assert_line --index 1 "$someOutput"
 	assert_line --index 2 "$commandName executed successfully"
 }
@@ -49,7 +49,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 
 	run setupCommand "$commandName"
 
-	assert_line --index 0 "Execute setup-command: $commandName"
+	assert_line --index 0 "Execute setup command: $commandName"
 	assert_line --index 1 "$someOutput"
 	assert_line --index 2 "$commandName failed with: exit status $exitCode"
 }

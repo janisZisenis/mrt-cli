@@ -37,12 +37,12 @@ teardown() {
 	assert_line_reversed_output 8 "Installing git-hooks to \"$repositoryDir/.git\""
 	assert_line_reversed_output 7 "Done installing git-hooks to \"$repositoryDir/.git\""
 	assert_line_reversed_output 6 "Done installing git-hooks."
-	assert_line_reversed_output 5 "Executing setup-commands."
-	assert_line_reversed_output 4 "Execute setup-command: $anotherCommandName"
+	assert_line_reversed_output 5 "Executing setup commands."
+	assert_line_reversed_output 4 "Execute setup command: $anotherCommandName"
 	assert_line_reversed_output 3 "$anotherCommandName executed successfully"
-	assert_line_reversed_output 2 "Execute setup-command: $someCommandName"
+	assert_line_reversed_output 2 "Execute setup command: $someCommandName"
 	assert_line_reversed_output 1 "$someCommandName executed successfully"
-	assert_line_reversed_output 0 "Done executing setup-commands."
+	assert_line_reversed_output 0 "Done executing setup commands."
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {

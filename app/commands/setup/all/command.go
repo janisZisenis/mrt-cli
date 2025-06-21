@@ -57,7 +57,7 @@ func command(cmd *cobra.Command, args []string) {
 }
 
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
-	log.Info("Executing setup-commands.")
+	log.Info("Executing setup commands.")
 
 	core.ForScriptInPathDo(core.GetExecutionPath()+setupScript.ScriptsPath, func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
@@ -68,5 +68,5 @@ func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 		}
 	})
 
-	log.Success("Done executing setup-commands.")
+	log.Success("Done executing setup commands.")
 }
