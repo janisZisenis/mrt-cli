@@ -1,3 +1,0 @@
-production:
-  url: unix:///var/opt/gitlab/redis/redis.socket
-  secret_file: /var/opt/gitlab/gitlab-rails/shared/encrypted_settings/redis.yml.enc
