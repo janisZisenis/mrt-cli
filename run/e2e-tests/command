@@ -28,35 +28,6 @@ FILES:
 EOF
 }
 
-function has_changes_in_application() {
-  local dir="$1"
-  if git rev-parse --is-inside-work-tree &> /dev/null; then
-    git diff --quiet "$dir" || return 0
-    git diff --cached --quiet "$dir" || return 0
-    git diff --quiet HEAD -- "$dir" || return 0
-  else
-    if find "$dir" -type f -newermt "$last_build_time" &>/dev/null; then
-      return 0
-    fi
-  fi
-  return 1
-}
-
-function perform_clean_build() {
-  echo "Performing a clean build for e2e-tests..."
-  mrt --team-dir "$rootDir" run build
-}
-
-function perform_clean_build_if_necessary() {
-  echo "Checking for changes in $rootDir/app to determine if a clean build is necessary..."
-  if has_changes_in_application "$rootDir/app"; then
-    echo "Changes detected in $rootDir/app."
-    perform_clean_build
-  else
-    echo "No changes detected in $rootDir/app. Proceeding without a clean build."
-  fi
-}
-
 rootDir="$1"; shift
 clean_build=false
 hostname="${HOSTNAME_MAP[$FLAG_REMOTE]}"
@@ -89,9 +60,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$clean_build" == true ]]; then
-  perform_clean_build
-else
-  perform_clean_build_if_necessary
+  echo "Performing a clean build for e2e-tests..."
+  mrt --team-dir "$rootDir" run build
 fi
 
 if [[ "${#files[@]}" -eq 0 ]]; then
