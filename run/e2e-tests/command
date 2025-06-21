@@ -88,4 +88,4 @@ echo "Running tests with BATS..."
 
 export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
 export BATS_LIB_PATH="$e2eTestDir/3rdParty/test_helper":"$e2eTestDir/helpers"
-"e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
+"$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
