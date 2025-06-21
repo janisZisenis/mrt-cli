@@ -5,18 +5,22 @@ import (
 	"github.com/fatih/color"
 )
 
-func Warning(message string) {
-	color.Yellow(message)
+func Warning(format string, args ...interface{}) {
+	color.Yellow(formatMessage(format, args))
 }
 
-func Error(message string) {
-	color.Red(message)
+func Error(format string, args ...interface{}) {
+	color.Red(formatMessage(format, args))
 }
 
-func Success(message string) {
-	color.Green(message)
+func Success(format string, args ...interface{}) {
+	color.Green(formatMessage(format, args))
 }
 
-func Info(message string) {
-	fmt.Println(message)
+func Info(format string, args ...interface{}) {
+	fmt.Println(formatMessage(format, args))
+}
+
+func formatMessage(format string, args []interface{}) string {
+	return fmt.Sprintf(format, args...)
 }
