@@ -47,7 +47,7 @@ func CloneRepository(repositoryUrl, destination string) {
 
 	waitGroup.Wait()
 	if err := cmd.Wait(); err != nil {
-		log.Info("Failed to clone repository, skipping it.")
+		log.Warning("Failed to clone repository, skipping it.")
 	}
 
 	log.Success("Successfully cloned " + repositoryUrl)
