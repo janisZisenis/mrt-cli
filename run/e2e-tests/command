@@ -36,15 +36,15 @@ declare -a files
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
-	$FLAG_LOCAL | $FLAG_REMOTE)
+	"$FLAG_LOCAL" | "$FLAG_REMOTE")
 		hostname="${HOSTNAME_MAP[$1]}"
 		shift
 		;;
-	$FLAG_CLEAN)
+	"$FLAG_CLEAN")
 		clean_build=true
 		shift
 		;;
-	$FLAG_HELP)
+	"$FLAG_HELP")
 		display_help
 		exit 0
 		;;
@@ -75,7 +75,6 @@ printf "\t%s\n" "${files[@]}"
 
 export BATS_LIB_PATH="$rootDir/e2e-test/3rdParty/test_helper":"$rootDir/e2e-test/helpers"
 SSH_CONFIG_FILE="$rootDir/.ssh/config"
-PRIVATE_KEY_FILE="$rootDir/.ssh/private-key"
 
 mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
 cat <<EOF >"$SSH_CONFIG_FILE"
