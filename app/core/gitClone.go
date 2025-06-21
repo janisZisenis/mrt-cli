@@ -3,6 +3,7 @@ package core
 import (
 	"app/log"
 	"fmt"
+	"github.com/fatih/color"
 	"io"
 	"os"
 	"os/exec"
@@ -45,7 +46,7 @@ func CloneRepository(repositoryUrl, destination string) {
 	}()
 
 	if err := cmd.Wait(); err != nil {
-		log.Warning("Failed to clone repository, skipping it.")
+		log.Info("Failed to clone repository, skipping it.")
 	}
 
 	waitGroup.Wait()
@@ -54,16 +55,14 @@ func CloneRepository(repositoryUrl, destination string) {
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {
-	const (
-		purple = "\033[35;1m"
-		reset  = "\033[0m"
-	)
+	purpleFatih := color.New(color.FgHiMagenta).SprintFunc()
 
 	buf := make([]byte, 1024)
 	for {
 		n, err := src.Read(buf)
 		if n > 0 {
-			_, err = fmt.Fprintf(dst, "%s%s%s", purple, buf[:n], reset)
+			text := string(buf[:n])
+			_, err = fmt.Fprintf(dst, "%s", purpleFatih(text))
 
 			if err != nil {
 				log.Error("Error writing to destination: %v\n", err)
