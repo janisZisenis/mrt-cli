@@ -37,7 +37,7 @@ teardown() {
 
 	run setupCloneUrls "$repositoryUrl"
 
-	assert_line --index 1 "Cloning $repositoryUrl into $repositoriesPath/$repository"
+	assert_line --index 1 "Cloning $repositoryUrl"
 	assert_line --index 3 --regexp "Enumerating objects: [0-9]+, done."
 	assert_line_reversed_output 1 "Successfully cloned $repositoryUrl"
 }
