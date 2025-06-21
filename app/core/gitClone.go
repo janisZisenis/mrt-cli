@@ -55,7 +55,7 @@ func CloneRepository(repositoryUrl, destination string) {
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {
-	purpleFatih := color.New(color.FgHiMagenta).SprintFunc()
+	purpleFatih := color.New(color.FgMagenta).SprintFunc()
 
 	buf := make([]byte, 1024)
 	for {
