@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+bats_load_library "writeTeamFile"
+
+setupClone() {
+	readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
+	setupCloneUrls "${repositoriesUrls[@]}"
+}
+
+setupCloneUrls() {
+	writeRepositoriesUrls "$@"
+
+	execute setup clone-repositories
+}
+
+setupGitHooks() {
+	execute setup install-git-hooks
+}
+
+setupCommand() {
+	execute setup "$1"
+}

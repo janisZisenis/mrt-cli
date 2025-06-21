@@ -11,7 +11,8 @@ var ScriptsPath = "/run/*/" + core.CommandFileName()
 
 func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 	var command = &cobra.Command{
-		Use: scriptName,
+		Use:   scriptName,
+		Short: "Executes run command " + scriptName,
 		Run: func(cmd *cobra.Command, args []string) {
 			command(scriptPath, args)
 		},

@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+teamFileName() {
+	echo "team.json"
+}
+
+getTestingRepositoryUrl() {
+	repositoryName=$1
+
+	echo "git@github-testing:janisZisenisTesting/$repositoryName.git"
+}
+
+getRepositoryUrls() {
+	repositoryNames=("$@")
+
+	for r in "${repositoryNames[@]}"; do
+		getTestingRepositoryUrl "$r"
+	done
+}
+
+writeBlockedBranches() {
+	blockedBranches=("$@")
+
+	createTeamFileIfNotExisting
+
+	concatenation=""
+	for b in "${blockedBranches[@]}"; do
+		concatenation="$concatenation\"$b\","
+	done
+
+	if [[ ${#blockedBranches[*]} -gt 0 ]]; then
+		concatenation=${concatenation::-1}
+	fi
+
+	jsonArray="[$concatenation]"
+
+	string=$(jq --argjson jsonArray "$jsonArray" '. += {"blockedBranches": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
+	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+}
+
+writeRepositoriesUrls() {
+	repositoriesUrls=("$@")
+
+	createTeamFileIfNotExisting
+
+	string=""
+	for r in "${repositoriesUrls[@]}"; do
+		string="$string\"$r\","
+	done
+
+	if [[ ${#repositoriesUrls[@]} -gt 0 ]]; then
+		string=${string::-1}
+	fi
+
+	jsonArray="[$string]"
+
+	string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositories": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
+	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+}
+
+writeRepositoriesPrefixes() {
+	repositoriesPrefixes=("$@")
+
+	createTeamFileIfNotExisting
+
+	concatenation=""
+	for p in "${repositoriesPrefixes[@]}"; do
+		concatenation="$concatenation\"$p\","
+	done
+
+	if [[ ${#repositoriesPrefixes[*]} -gt 0 ]]; then
+		concatenation=${concatenation::-1}
+	fi
+
+	jsonArray="[$concatenation]"
+
+	string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositoriesPrefixes": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
+	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+}
+
+writeRepositoriesPath() {
+	repositoriesPath=$1
+
+	createTeamFileIfNotExisting
+
+	string=$(jq --arg repositoriesPath "$repositoriesPath" '. += {"repositoriesPath": ($repositoriesPath)}' "$(testEnvDir)/$(teamFileName)")
+	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+}
+
+writeCommitPrefixRegex() {
+	prefix=$1
+
+	createTeamFileIfNotExisting
+
+	string=$(jq --arg prefix "$prefix" '. += {"commitPrefixRegex": ($prefix)}' "$(testEnvDir)/$(teamFileName)")
+	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+}
+
+createTeamFileIfNotExisting() {
+	if [[ ! -f "$(testEnvDir)/$(teamFileName)" ]]; then
+		echo "{}" >"$(testEnvDir)/$(teamFileName)"
+	fi
+}

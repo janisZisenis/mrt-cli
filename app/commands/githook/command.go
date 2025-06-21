@@ -3,7 +3,6 @@ package githook
 import (
 	"app/core"
 	"app/log"
-	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -60,14 +59,12 @@ func executeAdditionalScripts(repositoryPath string, hookName string, args []str
 }
 
 func getCurrentBranchName(repositoryPath string) string {
-	repository, openError := git.PlainOpen(repositoryPath)
+	shortBranchName, err := core.GetCurrentBranchShortName(repositoryPath)
 
-	if openError != nil {
+	if err != nil {
 		log.Error("The given path \"" + repositoryPath + "\" does not contain a repository.")
 		os.Exit(1)
 	}
 
-	currentBranch, _ := repository.Head()
-	currentBranchName := currentBranch.Name().Short()
-	return currentBranchName
+	return shortBranchName
 }

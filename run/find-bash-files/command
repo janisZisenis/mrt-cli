@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+rootDir=$1
+shift
+
+find "$rootDir"/e2e-tests -type d -name "3rdParty" -prune -o -type f -print
+find "$rootDir"/run -type d -name "3rdParty" -prune -o -type f -print

@@ -9,39 +9,41 @@ EXE_NAME_FLAG="--exe-name"
 BIN_DIR_FLAG="--dir"
 FULL_PATH_FLAG="--full"
 
-help(){
-  dir=$(dirname "$0")
-  commandName=${dir##*/}
+help() {
+	dir=$(dirname "$0")
+	commandName=${dir##*/}
 
-  printf 'Pass in a platform you want to get the binary location for.\n'
-  printf '\n'
-  printf '\tmrt run %s "darwin/arm64"\n' "$commandName"
-  printf '\n'
-  printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(mrt --team-dir "$rootDir" run detect-platform)"
-  printf "Flags: \n"
-  printf -- "-h, --help\t\tShow this help message\n"
-  printf -- '%s|%s|%s\tOutputs the executable name or path (default: %s)\n' "$FULL_PATH_FLAG" "$EXE_NAME_FLAG" "$BIN_DIR_FLAG" "$FULL_PATH_FLAG"
+	printf 'Pass in a platform you want to get the binary location for.\n'
+	printf '\n'
+	printf '\tmrt run %s "darwin/arm64"\n' "$commandName"
+	printf '\n'
+	printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(mrt --team-dir "$rootDir" run detect-platform)"
+	printf "Flags: \n"
+	printf -- "-h, --help\t\tShow this help message\n"
+	printf -- '%s|%s|%s\tOutputs the executable name or path (default: %s)\n' "$FULL_PATH_FLAG" "$EXE_NAME_FLAG" "$BIN_DIR_FLAG" "$FULL_PATH_FLAG"
 }
 
 strategy="$FULL_PATH_FLAG"
 while [ "$#" -gt 0 ]; do
-  case $1 in
-    "--help"|"-h")
-      help;
-      exit 0
-      ;;
-    "$FULL_PATH_FLAG"|"$EXE_NAME_FLAG"|"$BIN_DIR_FLAG")
-      strategy="$1"
-      shift 1;;
-    -*)
-      echo "Invalid flag option: $1"
-      help;
-      exit 1
-      ;;
-    *)
-      platform="$1"
-      shift;;
-  esac
+	case $1 in
+	"--help" | "-h")
+		help
+		exit 0
+		;;
+	"$FULL_PATH_FLAG" | "$EXE_NAME_FLAG" | "$BIN_DIR_FLAG")
+		strategy="$1"
+		shift 1
+		;;
+	-*)
+		echo "Invalid flag option: $1"
+		help
+		exit 1
+		;;
+	*)
+		platform="$1"
+		shift
+		;;
+	esac
 done
 
 platform=${platform-$(mrt --team-dir "$rootDir" run detect-platform)}
@@ -53,21 +55,21 @@ binPath="$(mrt --team-dir "$rootDir" run build-location)/bin"
 binaryLocation="$binPath/mrt-${os}-${arch}"
 
 if [ "$os" = "windows" ]; then
-  binaryLocation+='.exe'
+	binaryLocation+='.exe'
 fi
 
 case $strategy in
-    "$EXE_NAME_FLAG")
-      basename "$binaryLocation"
-      ;;
-    "$BIN_DIR_FLAG")
-      dirname "$binaryLocation"
-      ;;
-    "$FULL_PATH_FLAG")
-      echo "$binaryLocation"
-      ;;
-    *)
-      echo "Invalid option"
-      exit 1
-      shift;;
-  esac
+"$EXE_NAME_FLAG")
+	basename "$binaryLocation"
+	;;
+"$BIN_DIR_FLAG")
+	dirname "$binaryLocation"
+	;;
+"$FULL_PATH_FLAG")
+	echo "$binaryLocation"
+	;;
+*)
+	echo "Invalid option"
+	exit 1
+	;;
+esac

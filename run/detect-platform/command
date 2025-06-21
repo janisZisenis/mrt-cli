@@ -2,94 +2,89 @@
 
 set -e
 
-rootDir=$1
-shift
-
 ARCH_FLAG="--arch"
 OS_FLAG="--os"
 SUPPORTED_PLATFROMS_FLAG="--supported-platforms"
 
-help(){
-  printf "Usage:"
-  printf 'options:\n'
-  printf -- "-h, --help\tShow this help message\n"
-  printf -- '%s\tPrints out all supported platforms\n' "$SUPPORTED_PLATFROMS_FLAG"
-  printf -- '%s|%s\tPrints out os or arch. If none prints out platform (eg. %s)\n' "$OS_FLAG" "$ARCH_FLAG" "$(detect_os)/$(detect_arch)"
+help() {
+	printf "Usage:"
+	printf 'options:\n'
+	printf -- "-h, --help\tShow this help message\n"
+	printf -- '%s\tPrints out all supported platforms\n' "$SUPPORTED_PLATFROMS_FLAG"
+	printf -- '%s|%s\tPrints out os or arch. If none prints out platform (eg. %s)\n' "$OS_FLAG" "$ARCH_FLAG" "$(detect_os)/$(detect_arch)"
 }
 
 supportedPlatforms=(
-  "linux/amd64"
-  "linux/arm64"
-  "darwin/amd64"
-  "darwin/arm64"
+	"linux/amd64"
+	"linux/arm64"
+	"darwin/amd64"
+	"darwin/arm64"
 )
 
 detect_os() {
-    unameOut="$(uname -s)"
-    case "${unameOut}" in
-        Linux*)     OS=linux;;
-        Darwin*)    OS=darwin;;
-        *)          OS="UNKNOWN:${unameOut}"
-    esac
-    echo "${OS}"
+	unameOut="$(uname -s)"
+	case "${unameOut}" in
+	Linux*) OS=linux ;;
+	Darwin*) OS=darwin ;;
+	*) OS="UNKNOWN:${unameOut}" ;;
+	esac
+	echo "${OS}"
 }
 
 detect_arch() {
-    archOut="$(uname -m)"
-    case "${archOut}" in
-        x64)       ARCH=amd64;;
-        x86_64)    ARCH=amd64;;
-        aarch64)   ARCH=arm64;;
-        arm64)     ARCH=arm64;;
-        *)         ARCH="UNKNOWN:${archOut}"
-    esac
-    echo "${ARCH}"
+	archOut="$(uname -m)"
+	case "${archOut}" in
+	x64) ARCH=amd64 ;;
+	x86_64) ARCH=amd64 ;;
+	aarch64) ARCH=arm64 ;;
+	arm64) ARCH=arm64 ;;
+	*) ARCH="UNKNOWN:${archOut}" ;;
+	esac
+	echo "${ARCH}"
 }
 
 print_supported_platforms() {
-  for platform in "${supportedPlatforms[@]}"
-  do
-    echo "$platform"
-  done
+	for platform in "${supportedPlatforms[@]}"; do
+		echo "$platform"
+	done
 }
 
+shift #unused rootDir
 while [ "$#" -gt 0 ]; do
-  case $1 in
-    --help|-h)
-      help;
-      exit 1
-      ;;
-    "$SUPPORTED_PLATFROMS_FLAG")
-      print_supported_platforms
-      exit 0
-      ;;
-    "$ARCH_FLAG"|"$OS_FLAG")
-      if [[ -z ${shortStrategy+x} ]]
-        then
-          flag="$1"
-          shortStrategy=${flag//--/}
-        else
-          echo "Either specify $ARCH_FLAG or $OS_FLAG, not both"
-          exit 1
-      fi
-      shift;;
-    *)
-      echo "$1 is an invalid option";
-      exit 1
-      ;;
-  esac
+	case $1 in
+	--help | -h)
+		help
+		exit 1
+		;;
+	"$SUPPORTED_PLATFROMS_FLAG")
+		print_supported_platforms
+		exit 0
+		;;
+	"$ARCH_FLAG" | "$OS_FLAG")
+		if [[ -z ${shortStrategy+x} ]]; then
+			flag="$1"
+			shortStrategy=${flag//--/}
+		else
+			echo "Either specify $ARCH_FLAG or $OS_FLAG, not both"
+			exit 1
+		fi
+		shift
+		;;
+	*)
+		echo "$1 is an invalid option"
+		exit 1
+		;;
+	esac
 done
 
-if [[ $shortStrategy == "${ARCH_FLAG//--/}" ]]
-then
-  detect_arch
-  exit 0
+if [[ $shortStrategy == "${ARCH_FLAG//--/}" ]]; then
+	detect_arch
+	exit 0
 fi
 
-if [[ $shortStrategy == "${OS_FLAG//--/}" ]]
-then
-  detect_os
-  exit 0
+if [[ $shortStrategy == "${OS_FLAG//--/}" ]]; then
+	detect_os
+	exit 0
 fi
 
 echo "$(detect_os)/$(detect_arch)"

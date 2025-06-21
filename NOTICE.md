@@ -8,10 +8,6 @@ This project utilizes several third-party dependencies. Below is a list of these
   - License: MIT
   - URL: https://github.com/fatih/color
 
-- **github.com/go-git/go-git/v5 v5.12.0**
-  - License: Apache License 2.0
-  - URL: https://github.com/go-git/go-git
-
 - **github.com/spf13/cobra v1.8.1**
   - License: Apache License 2.0
   - URL: https://github.com/spf13/cobra
@@ -49,14 +45,6 @@ This project utilizes several third-party dependencies. Below is a list of these
 - **github.com/fsnotify/fsnotify v1.7.0**
   - License: BSD-3-Clause
   - URL: https://github.com/fsnotify/fsnotify
-
-- **github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376**
-  - License: BSD-3-Clause
-  - URL: https://github.com/go-git/gcfg
-
-- **github.com/go-git/go-billy/v5 v5.5.0**
-  - License: Apache License 2.0
-  - URL: https://github.com/go-git/go-billy
 
 - **github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da**
   - License: Apache License 2.0

@@ -2,15 +2,12 @@
 
 set -e
 
-rootDir=$1
-shift
-
 FIRST_VERSION="v0.1.0"
 SEMVER_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+$'
 latest_tag=$(git tag | grep -E "$SEMVER_REGEX" | sort -V | tail -n 1)
 
 if [ -z "$latest_tag" ]; then
-  latest_tag=$FIRST_VERSION
+	latest_tag=$FIRST_VERSION
 fi
 
 echo "$latest_tag"

@@ -1,26 +1,91 @@
 #!/usr/bin/env bash
-
 set -e
 
-rootDir=$1
-shift
+FLAG_LOCAL="--local"
+FLAG_REMOTE="--remote"
+FLAG_CLEAN="--clean"
+FLAG_HELP="-h|--help"
 
-if [[ "$1" == "--clean" ]]; then
-  echo "Clean build for e2e-tests."
-  mrt --team-dir "$rootDir" run build
-  shift
-else
-  echo "Using built binary to execute e2e-tests."
+declare -A HOSTNAME_MAP=(
+	["$FLAG_LOCAL"]="localhost"
+	["$FLAG_REMOTE"]="github.com"
+)
+
+function display_help() {
+	cat <<EOF
+Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS] [FILES...]
+
+Run end-to-end tests with various options.
+
+Options:
+  $FLAG_LOCAL|$FLAG_REMOTE   Use the local gitlab or github.com to run e2e-tests (default: remote).
+  $FLAG_CLEAN            Perform a clean build before running the tests.
+  $FLAG_HELP          Display this help message and exit.
+
+FILES:
+  List of specific .bats test files to be executed. If not provided,
+  the script will find all .bats files in the e2e-tests directory.
+EOF
+}
+
+rootDir="$1"
+shift
+clean_build=false
+hostname="${HOSTNAME_MAP[$FLAG_REMOTE]}"
+declare -a files
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+	"$FLAG_LOCAL" | "$FLAG_REMOTE")
+		hostname="${HOSTNAME_MAP[$1]}"
+		shift
+		;;
+	"$FLAG_CLEAN")
+		clean_build=true
+		shift
+		;;
+	"$FLAG_HELP")
+		display_help
+		exit 0
+		;;
+	--*)
+		echo "Error: Unknown option '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	*)
+		files+=("$@")
+		break
+		;;
+	esac
+done
+
+e2eTestDir="$rootDir/e2e-tests"
+
+if [[ "$clean_build" == true ]]; then
+	echo "Performing a clean build for e2e-tests..."
+	mrt --team-dir "$rootDir" run build
 fi
 
-if [[ $# -eq 0 ]]; then
-  mapfile -t files < <(find "$rootDir/e2e-test" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
-else
-  files=("$@")
+if [[ "${#files[@]}" -eq 0 ]]; then
+	echo "No specific test files provided. Auto-detecting *.bats files..."
+	mapfile -t files < <(find "$e2eTestDir" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
 fi
 
 echo "Test files to be executed:"
 printf "\t%s\n" "${files[@]}"
 
-"$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
+SSH_CONFIG_FILE="$rootDir/.ssh/config"
 
+mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
+cat <<EOF >"$SSH_CONFIG_FILE"
+Host github-testing
+   HostName $hostname
+EOF
+
+echo "Running tests with BATS..."
+
+export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
+export BATS_LIB_PATH="$e2eTestDir/3rdParty/test_helper":"$e2eTestDir/helpers"
+"$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10

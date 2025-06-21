@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+RED="\e[31m"
+RESET="\e[0m"
+
+rootDir="$1"
+shift
+
+readarray -t bash_files < <(mrt --team-dir "$rootDir" run find-bash-files)
+
+function check_linting {
+	local file="$1"
+	if ! shellcheck "$file"; then
+		echo -e "${RED}✗ Linting issues found in $file${RESET}"
+	fi
+}
+
+for file in "${bash_files[@]}"; do
+	if [[ -f "$file" && -s "$file" && -r "$file" ]]; then
+		check_linting "$file"
+	else
+		echo -e "${RED}Skipping invalid file: $file${RESET}"
+	fi
+done
+
+echo -e "All files processed."

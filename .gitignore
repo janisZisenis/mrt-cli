@@ -1,5 +1,5 @@
 .idea
 /.ssh/private-key
 /build
-testEnv
 /.ssh/private-key.pub
+config
