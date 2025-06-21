@@ -12,11 +12,9 @@ runs:
     - name: Setup ssh
       shell: bash
       run: |
+        mkdir -p .ssh
         echo "${{ inputs.private-key }}" > .ssh/private-key
         chmod 400 ./.ssh/private-key
-        mkdir -p $HOME/.ssh
-        sed "s*WORKSPACE_DIR*$GITHUB_WORKSPACE*g" .ssh/config > $HOME/.ssh/config
-        cat $HOME/.ssh/config
     - name: Configure git
       shell: bash
       run: |
