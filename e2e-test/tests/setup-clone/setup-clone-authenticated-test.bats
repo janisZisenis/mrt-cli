@@ -77,7 +77,7 @@ teardown() {
 
 	run setupCloneUrls "$repositoryUrl"
 
-  assert_output --partial "fatal: Could not read from remote repository."
+	assert_output --partial "fatal: Could not read from remote repository."
 }
 
 @test "if team json contains non-existing and existing repository it should clone the existing one" {

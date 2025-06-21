@@ -7,12 +7,12 @@ FLAG_CLEAN="--clean"
 FLAG_HELP="-h|--help"
 
 declare -A HOSTNAME_MAP=(
-  ["$FLAG_LOCAL"]="localhost"
-  ["$FLAG_REMOTE"]="github.com"
+	["$FLAG_LOCAL"]="localhost"
+	["$FLAG_REMOTE"]="github.com"
 )
 
 function display_help() {
-  cat <<EOF
+	cat <<EOF
 Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS] [FILES...]
 
 Run end-to-end tests with various options.
@@ -28,45 +28,46 @@ FILES:
 EOF
 }
 
-rootDir="$1"; shift
+rootDir="$1"
+shift
 clean_build=false
 hostname="${HOSTNAME_MAP[$FLAG_REMOTE]}"
 declare -a files
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
-    $FLAG_LOCAL|$FLAG_REMOTE)
-      hostname="${HOSTNAME_MAP[$1]}"
-      shift
-      ;;
-    $FLAG_CLEAN)
-      clean_build=true
-      shift
-      ;;
-    $FLAG_HELP)
-      display_help
-      exit 0
-      ;;
-    --*)
-      echo "Error: Unknown option '$1'."
-      echo
-      display_help
-      exit 1
-      ;;
-    *)
-      files+=("$1")
-      ;;
-  esac
+	case "$1" in
+	$FLAG_LOCAL | $FLAG_REMOTE)
+		hostname="${HOSTNAME_MAP[$1]}"
+		shift
+		;;
+	$FLAG_CLEAN)
+		clean_build=true
+		shift
+		;;
+	$FLAG_HELP)
+		display_help
+		exit 0
+		;;
+	--*)
+		echo "Error: Unknown option '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	*)
+		files+=("$1")
+		;;
+	esac
 done
 
 if [[ "$clean_build" == true ]]; then
-  echo "Performing a clean build for e2e-tests..."
-  mrt --team-dir "$rootDir" run build
+	echo "Performing a clean build for e2e-tests..."
+	mrt --team-dir "$rootDir" run build
 fi
 
 if [[ "${#files[@]}" -eq 0 ]]; then
-  echo "No specific test files provided. Auto-detecting *.bats files..."
-  mapfile -t files < <(find "$rootDir/e2e-test" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
+	echo "No specific test files provided. Auto-detecting *.bats files..."
+	mapfile -t files < <(find "$rootDir/e2e-test" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
 fi
 
 echo "Test files to be executed:"
@@ -77,7 +78,7 @@ SSH_CONFIG_FILE="$rootDir/.ssh/config"
 PRIVATE_KEY_FILE="$rootDir/.ssh/private-key"
 
 mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
-cat <<EOF > "$SSH_CONFIG_FILE"
+cat <<EOF >"$SSH_CONFIG_FILE"
 Host github-testing
    HostName $hostname
 EOF
