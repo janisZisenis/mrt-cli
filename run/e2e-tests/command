@@ -74,7 +74,6 @@ fi
 echo "Test files to be executed:"
 printf "\t%s\n" "${files[@]}"
 
-export BATS_LIB_PATH="$rootDir/e2e-test/3rdParty/test_helper":"$rootDir/e2e-test/helpers"
 SSH_CONFIG_FILE="$rootDir/.ssh/config"
 
 mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
@@ -82,7 +81,9 @@ cat <<EOF >"$SSH_CONFIG_FILE"
 Host github-testing
    HostName $hostname
 EOF
-export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
 
 echo "Running tests with BATS..."
+
+export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
+export BATS_LIB_PATH="$rootDir/e2e-test/3rdParty/test_helper":"$rootDir/e2e-test/helpers"
 "$rootDir"/e2e-test/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
