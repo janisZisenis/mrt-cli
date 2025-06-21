@@ -6,6 +6,11 @@ FLAG_REMOTE="--remote"
 FLAG_CLEAN="--clean"
 FLAG_HELP="-h|--help"
 
+declare -A HOSTNAME_MAP=(
+  ["$FLAG_LOCAL"]="localhost"
+  ["$FLAG_REMOTE"]="github.com"
+)
+
 function display_help() {
   cat <<EOF
 Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS] [FILES...]
@@ -53,14 +58,14 @@ function perform_clean_build_if_necessary() {
 }
 
 rootDir="$1"; shift
-run_mode="$FLAG_REMOTE"
 clean_build=false
+hostname="${HOSTNAME_MAP[$FLAG_REMOTE]}"
 declare -a files
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     $FLAG_LOCAL|$FLAG_REMOTE)
-      run_mode="$1"
+      hostname="${HOSTNAME_MAP[$1]}"
       shift
       ;;
     $FLAG_CLEAN)
@@ -79,7 +84,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     *)
       files+=("$1")
-      echo "files"
       ;;
   esac
 done
@@ -105,7 +109,7 @@ PRIVATE_KEY_FILE="$rootDir/.ssh/private-key"
 mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
 cat <<EOF > "$SSH_CONFIG_FILE"
 Host github-testing
-   HostName github.com
+   HostName $hostname
 EOF
 export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
 
