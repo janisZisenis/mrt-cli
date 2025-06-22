@@ -33,7 +33,8 @@ func CloneRepository(repositoryURL, destination string) {
 	}
 
 	var waitGroup sync.WaitGroup
-	waitGroup.Add(2)
+	numberOfPipesToWaitFor := 2
+	waitGroup.Add(numberOfPipesToWaitFor)
 
 	go func() {
 		defer waitGroup.Done()
@@ -56,7 +57,8 @@ func CloneRepository(repositoryURL, destination string) {
 func copyWithColor(dst io.Writer, src io.Reader) {
 	purpleFatih := color.New(color.FgMagenta).SprintFunc()
 
-	buf := make([]byte, 1024)
+	numberOfBytes := 1024
+	buf := make([]byte, numberOfBytes)
 	for {
 		n, err := src.Read(buf)
 		if n > 0 {
