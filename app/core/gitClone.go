@@ -10,10 +10,10 @@ import (
 	"sync"
 )
 
-func CloneRepository(repositoryUrl, destination string) {
-	log.Info("Cloning " + repositoryUrl)
+func CloneRepository(repositoryURL, destination string) {
+	log.Info("Cloning " + repositoryURL)
 
-	cmd := exec.Command("git", "clone", "--progress", repositoryUrl, destination)
+	cmd := exec.Command("git", "clone", "--progress", repositoryURL, destination)
 
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {
@@ -50,7 +50,7 @@ func CloneRepository(repositoryUrl, destination string) {
 		log.Warning("Failed to clone repository, skipping it.")
 	}
 
-	log.Success("Successfully cloned " + repositoryUrl)
+	log.Success("Successfully cloned " + repositoryURL)
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {

@@ -8,18 +8,18 @@ import (
 
 func CloneRepositories(teamInfo core.TeamInfo) {
 	log.Info("Start cloning repositories into \"" + teamInfo.RepositoriesPath + "\"")
-	for _, repositoryUrl := range teamInfo.Repositories {
-		repositoryName := getRepositoryName(repositoryUrl)
+	for _, repositoryURL := range teamInfo.Repositories {
+		repositoryName := getRepositoryName(repositoryURL)
 		folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
 		repositoryDirectory := getRepositoryPath(teamInfo.RepositoriesPath, folderName)
 
-		core.CloneRepository(repositoryUrl, repositoryDirectory)
+		core.CloneRepository(repositoryURL, repositoryDirectory)
 	}
 	log.Success("Cloning repositories done")
 }
 
-func getRepositoryName(repositoryUrl string) string {
-	return strings.TrimSuffix(repositoryUrl[strings.LastIndex(repositoryUrl, "/")+1:], ".git")
+func getRepositoryName(repositoryURL string) string {
+	return strings.TrimSuffix(repositoryURL[strings.LastIndex(repositoryURL, "/")+1:], ".git")
 }
 
 func getFolderName(repositoryName string, prefixes []string) string {
