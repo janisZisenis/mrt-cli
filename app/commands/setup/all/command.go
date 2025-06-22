@@ -23,18 +23,22 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	}
 
 	command.Flags().Bool(skipHooksFlag, false, "Skips setting the git-hooks")
-	command.Flags().Lookup(skipHooksFlag).NoOptDefVal = "true"
+	setDefaultValueToTrue(command, skipHooksFlag)
 
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
-	command.Flags().Lookup(skipCloneFlag).NoOptDefVal = "true"
+	setDefaultValueToTrue(command, skipCloneFlag)
 
 	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(_ string, scriptName string) {
 		var skipFlag = skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
-		command.Flags().Lookup(skipFlag).NoOptDefVal = "true"
+		setDefaultValueToTrue(command, skipFlag)
 	})
 
 	return command
+}
+
+func setDefaultValueToTrue(command *cobra.Command, flag string) {
+	command.Flags().Lookup(flag).NoOptDefVal = "true"
 }
 
 func command(cmd *cobra.Command, args []string) {
