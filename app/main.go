@@ -39,8 +39,10 @@ func main() {
 func readTeamDir() *string {
 	args := os.Args[1:]
 	for i, arg := range args {
-		if strings.HasPrefix(arg, "--team-dir=") {
-			return &strings.SplitN(arg, "=", 2)[1]
+		_, after, found := strings.Cut(arg, "--team-dir=")
+
+		if found {
+			return &after
 		} else if arg == "--team-dir" && i+1 < len(args) {
 			return &args[i+1]
 		}
