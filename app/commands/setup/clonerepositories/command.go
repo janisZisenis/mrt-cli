@@ -1,9 +1,10 @@
 package clonerepositories
 
 import (
+	"github.com/spf13/cobra"
+
 	"app/core"
 	"app/log"
-	"github.com/spf13/cobra"
 )
 
 const CommandName = "clone-repositories"
@@ -22,7 +23,8 @@ func command(_ *cobra.Command, _ []string) {
 	teamInfo, err := core.LoadTeamConfiguration()
 
 	if err != nil {
-		log.Infof("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" file and add repositories to it.")
+		log.Infof("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" " +
+			"file and add repositories to it.")
 		return
 	}
 

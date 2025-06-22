@@ -1,13 +1,13 @@
 package setup
 
 import (
+	"github.com/spf13/cobra"
+
 	"app/commands/setup/all"
 	"app/commands/setup/clonerepositories"
 	"app/commands/setup/installgithooks"
 	"app/commands/setup/setupsscript"
 	"app/core"
-
-	"github.com/spf13/cobra"
 )
 
 const commandName = "setup"

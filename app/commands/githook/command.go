@@ -1,11 +1,13 @@
 package githook
 
 import (
-	"app/core"
-	"app/log"
-	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/cobra"
+
+	"app/core"
+	"app/log"
 )
 
 const CommandName = "git-hook"

@@ -1,11 +1,12 @@
 package setupscript
 
 import (
-	"app/core"
-	"app/log"
 	"strconv"
 
 	"github.com/spf13/cobra"
+
+	"app/core"
+	"app/log"
 )
 
 var ScriptsPath = "/setup/*/" + core.CommandFileName()

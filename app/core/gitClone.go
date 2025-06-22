@@ -1,13 +1,15 @@
 package core
 
 import (
-	"app/log"
 	"fmt"
-	"github.com/fatih/color"
 	"io"
 	"os"
 	"os/exec"
 	"sync"
+
+	"github.com/fatih/color"
+
+	"app/log"
 )
 
 func CloneRepository(repositoryURL, destination string) {

@@ -34,11 +34,13 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
 	matchesFromBranch := regex.FindStringSubmatch(branch)
 	if len(matchesFromBranch) > 0 {
 		_ = os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0640)
-		log.Successf("Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, prepended to commit message.")
+		log.Successf("Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, " +
+			"prepended to commit message.")
 		return
 	}
 
-	log.Errorf("The commit message needs a commit prefix, that matches the following regex " + teamInfo.CommitPrefixRegex + ".")
+	log.Errorf("The commit message needs a commit prefix, that matches the following regex " +
+		teamInfo.CommitPrefixRegex + ".")
 	log.Errorf("Either add the commit prefix to you commit message, or include it in the branch name.")
 	log.Errorf("Use '--no-verify' to skip git-hooks.")
 	os.Exit(1)
