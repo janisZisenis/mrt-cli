@@ -28,7 +28,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	command.Flags().Lookup(skipCloneFlag).NoOptDefVal = "true"
 
-	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(filePath string, scriptName string) {
+	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(_ string, scriptName string) {
 		var skipFlag = skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
 		command.Flags().Lookup(skipFlag).NoOptDefVal = "true"
