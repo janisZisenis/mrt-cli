@@ -23,14 +23,14 @@ func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 }
 
 func command(scriptName string, filePath string) {
-	log.Info("Execute setup command: " + scriptName)
+	log.Infof("Execute setup command: " + scriptName)
 
 	args := []string{core.GetAbsoluteExecutionPath()}
 	exitCode := core.ExecuteScript(filePath, args)
 
 	if exitCode == 0 {
-		log.Success(scriptName + " executed successfully")
+		log.Successf(scriptName + " executed successfully")
 	} else {
-		log.Error(scriptName + " failed with: exit status " + strconv.Itoa(exitCode))
+		log.Errorf(scriptName + " failed with: exit status " + strconv.Itoa(exitCode))
 	}
 }

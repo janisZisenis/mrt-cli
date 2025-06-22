@@ -22,12 +22,12 @@ func command(_ *cobra.Command, _ []string) {
 	teamInfo, err := core.LoadTeamConfiguration()
 
 	if err != nil {
-		log.Info("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" file and add repositories to it.")
+		log.Infof("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" file and add repositories to it.")
 		return
 	}
 
 	if len(teamInfo.Repositories) == 0 {
-		log.Info("The team file does not contain any repositories, no repositories to clone.")
+		log.Infof("The team file does not contain any repositories, no repositories to clone.")
 		return
 	}
 

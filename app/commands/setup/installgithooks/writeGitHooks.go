@@ -20,6 +20,6 @@ func writeGitHook(repositoryDirectory string, hookName string) {
 	_ = os.MkdirAll(hooksPath, os.ModePerm)
 	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0755)
 	if err != nil {
-		log.Info("unable to write file: " + err.Error())
+		log.Infof("unable to write file: " + err.Error())
 	}
 }

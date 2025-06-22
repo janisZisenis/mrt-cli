@@ -21,25 +21,25 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
 
 	if strings.HasPrefix(commitMessage, "Merge branch") ||
 		strings.HasPrefix(commitMessage, "Merge remote-tracking branch") {
-		log.Info("Merge commit detected, skipping commit-msg hook.")
+		log.Infof("Merge commit detected, skipping commit-msg hook.")
 		return
 	}
 
 	matchesFromMessage := regex.FindStringSubmatch(commitMessage)
 	if len(matchesFromMessage) > 0 && strings.HasPrefix(commitMessage, matchesFromMessage[0]+": ") {
-		log.Success("The commit message contains an issue ID (" + matchesFromMessage[0] + "). Good job!")
+		log.Successf("The commit message contains an issue ID (" + matchesFromMessage[0] + "). Good job!")
 		return
 	}
 
 	matchesFromBranch := regex.FindStringSubmatch(branch)
 	if len(matchesFromBranch) > 0 {
 		_ = os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0640)
-		log.Success("Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, prepended to commit message.")
+		log.Successf("Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, prepended to commit message.")
 		return
 	}
 
-	log.Error("The commit message needs a commit prefix, that matches the following regex " + teamInfo.CommitPrefixRegex + ".")
-	log.Error("Either add the commit prefix to you commit message, or include it in the branch name.")
-	log.Error("Use '--no-verify' to skip git-hooks.")
+	log.Errorf("The commit message needs a commit prefix, that matches the following regex " + teamInfo.CommitPrefixRegex + ".")
+	log.Errorf("Either add the commit prefix to you commit message, or include it in the branch name.")
+	log.Errorf("Use '--no-verify' to skip git-hooks.")
 	os.Exit(1)
 }

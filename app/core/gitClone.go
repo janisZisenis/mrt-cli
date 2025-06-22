@@ -11,24 +11,24 @@ import (
 )
 
 func CloneRepository(repositoryURL, destination string) {
-	log.Info("Cloning " + repositoryURL)
+	log.Infof("Cloning " + repositoryURL)
 
 	cmd := exec.Command("git", "clone", "--progress", repositoryURL, destination)
 
 	stdoutPipe, stdoutPipeErr := cmd.StdoutPipe()
 	if stdoutPipeErr != nil {
-		log.Error("Error getting StdoutPipe: %v\n", stdoutPipeErr)
+		log.Errorf("Errorf getting StdoutPipe: %v\n", stdoutPipeErr)
 		return
 	}
 
 	stderrPipe, stdErrPipeErr := cmd.StderrPipe()
 	if stdErrPipeErr != nil {
-		log.Error("Error getting StderrPipe: %v\n", stdErrPipeErr)
+		log.Errorf("Errorf getting StderrPipe: %v\n", stdErrPipeErr)
 		return
 	}
 
 	if startErr := cmd.Start(); startErr != nil {
-		log.Error("Error starting command: %v\n", startErr)
+		log.Errorf("Errorf starting command: %v\n", startErr)
 		return
 	}
 
@@ -48,10 +48,10 @@ func CloneRepository(repositoryURL, destination string) {
 
 	waitGroup.Wait()
 	if err := cmd.Wait(); err != nil {
-		log.Warning("Failed to clone repository, skipping it.")
+		log.Warningf("Failed to clone repository, skipping it.")
 	}
 
-	log.Success("Successfully cloned " + repositoryURL)
+	log.Successf("Successfully cloned " + repositoryURL)
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {
@@ -66,14 +66,14 @@ func copyWithColor(dst io.Writer, src io.Reader) {
 			_, writeErr := fmt.Fprintf(dst, "%s", purpleFatih(text))
 
 			if writeErr != nil {
-				log.Error("Error writing to destination: %v\n", readErr)
+				log.Errorf("Errorf writing to destination: %v\n", readErr)
 			}
 		}
 		if readErr != nil {
 			if readErr == io.EOF {
 				break
 			}
-			log.Error("Error reading from source: %v\n", readErr)
+			log.Errorf("Errorf reading from source: %v\n", readErr)
 			break
 		}
 	}

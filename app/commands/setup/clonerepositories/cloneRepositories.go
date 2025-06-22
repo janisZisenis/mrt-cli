@@ -7,7 +7,7 @@ import (
 )
 
 func CloneRepositories(teamInfo core.TeamInfo) {
-	log.Info("Start cloning repositories into \"" + teamInfo.RepositoriesPath + "\"")
+	log.Infof("Start cloning repositories into \"" + teamInfo.RepositoriesPath + "\"")
 	for _, repositoryURL := range teamInfo.Repositories {
 		repositoryName := getRepositoryName(repositoryURL)
 		folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
@@ -15,7 +15,7 @@ func CloneRepositories(teamInfo core.TeamInfo) {
 
 		core.CloneRepository(repositoryURL, repositoryDirectory)
 	}
-	log.Success("Cloning repositories done")
+	log.Successf("Cloning repositories done")
 }
 
 func getRepositoryName(repositoryURL string) string {

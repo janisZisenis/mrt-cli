@@ -40,7 +40,7 @@ func command(cmd *cobra.Command, args []string) {
 	case core.CommitMsg:
 		prefixCommitMessage(teamInfo, currentBranchName, args)
 	default:
-		log.Error("The given git-hook \"" + hookName + "\" does not exist.")
+		log.Errorf("The given git-hook \"" + hookName + "\" does not exist.")
 		os.Exit(1)
 	}
 
@@ -62,7 +62,7 @@ func getCurrentBranchName(repositoryPath string) string {
 	shortBranchName, err := core.GetCurrentBranchShortName(repositoryPath)
 
 	if err != nil {
-		log.Error("The given path \"" + repositoryPath + "\" does not contain a repository.")
+		log.Errorf("The given path \"" + repositoryPath + "\" does not contain a repository.")
 		os.Exit(1)
 	}
 

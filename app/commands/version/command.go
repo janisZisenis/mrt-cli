@@ -20,5 +20,5 @@ func MakeCommand(semver string, commit string, date string) *cobra.Command {
 }
 
 func command(semver string, commit string, date string) {
-	log.Info("mrt - version " + semver + ", commit " + commit + ", built at " + date + " by " + builtBy + "\n")
+	log.Infof("mrt - version " + semver + ", commit " + commit + ", built at " + date + " by " + builtBy + "\n")
 }

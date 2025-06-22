@@ -44,29 +44,29 @@ func command(cmd *cobra.Command, args []string) {
 	if !shouldSkipClone {
 		clonerepositories.MakeCommand().Run(cmd, args)
 	} else {
-		log.Info("Skipping clone-repositories step.")
+		log.Infof("Skipping clone-repositories step.")
 	}
 
 	if !shouldSkipHooks {
 		installgithooks.MakeCommand().Run(cmd, args)
 	} else {
-		log.Info("Skipping install-git-hooks step.")
+		log.Infof("Skipping install-git-hooks step.")
 	}
 
 	executeAdditionalSetupScripts(cmd, args)
 }
 
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
-	log.Info("Executing setup commands.")
+	log.Infof("Executing setup commands.")
 
 	core.ForScriptInPathDo(core.GetExecutionPath()+setupscript.ScriptsPath, func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 		if !skipFlag {
 			setupscript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
 		} else {
-			log.Info("Skipping setup command: " + scriptName)
+			log.Infof("Skipping setup command: " + scriptName)
 		}
 	})
 
-	log.Success("Done executing setup commands.")
+	log.Successf("Done executing setup commands.")
 }

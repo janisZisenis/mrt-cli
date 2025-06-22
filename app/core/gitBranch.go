@@ -18,7 +18,7 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 	err := cmd.Run()
 
 	if err != nil {
-		log.Error("The given path \"" + repoDir + "\" does not contain a repository.")
+		log.Errorf("The given path \"" + repoDir + "\" does not contain a repository.")
 		os.Exit(1)
 	}
 
