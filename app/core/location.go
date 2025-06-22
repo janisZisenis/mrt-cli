@@ -5,13 +5,16 @@ import (
 	"path/filepath"
 )
 
-var TeamDirectory string
+var TeamDirectory *string
+
+func SetTeamDirectory(directory *string) {
+	TeamDirectory = directory
+}
 
 func GetExecutionPath() string {
-	if TeamDirectory != "" {
-		return TeamDirectory
+	if TeamDirectory != nil {
+		return *TeamDirectory
 	}
-
 	pwd, _ := os.Getwd()
 	return pwd
 }

@@ -20,23 +20,31 @@ var (
 )
 
 func main() {
-	args := os.Args[1:]
-	for i, arg := range args {
-		core.TeamDirectory = core.GetExecutionPath()
-		if strings.HasPrefix(arg, "--team-dir=") {
-			core.TeamDirectory = strings.SplitN(arg, "=", 2)[1]
-		} else if arg == "--team-dir" && i+1 < len(args) {
-			core.TeamDirectory = args[i+1]
-		}
-	}
+	teamDirFromFlag := readTeamDir()
+	core.SetTeamDirectory(teamDirFromFlag)
+
+	executionPath := core.GetExecutionPath()
 
 	var rootCmd = &cobra.Command{Use: filepath.Base(os.Args[0])}
 
-	rootCmd.AddCommand(setup.MakeCommand(core.TeamDirectory))
+	rootCmd.AddCommand(setup.MakeCommand(executionPath))
 	rootCmd.AddCommand(githook.MakeCommand())
-	rootCmd.AddCommand(run.MakeCommand(core.TeamDirectory))
+	rootCmd.AddCommand(run.MakeCommand(executionPath))
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
-	rootCmd.PersistentFlags().StringVar(&core.TeamDirectory, "team-dir", "", "Specifies the path to the team directory.")
+	rootCmd.PersistentFlags().StringVar(&executionPath, "team-dir", "", "Specifies the path to the team directory.")
 	_ = rootCmd.Execute()
+}
+
+func readTeamDir() *string {
+	args := os.Args[1:]
+	for i, arg := range args {
+		if strings.HasPrefix(arg, "--team-dir=") {
+			return &strings.SplitN(arg, "=", 2)[1]
+		} else if arg == "--team-dir" && i+1 < len(args) {
+			return &args[i+1]
+		}
+	}
+
+	return nil
 }
