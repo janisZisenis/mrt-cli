@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+rootDir="$1"
+shift
+
 cd app
-golangci-lint run
+golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m
