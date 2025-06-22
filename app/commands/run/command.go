@@ -1,7 +1,7 @@
 package run
 
 import (
-	"app/commands/run/runScript"
+	"app/commands/run/runscript"
 	"app/core"
 
 	"github.com/spf13/cobra"
@@ -15,8 +15,8 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 		Short: "Executes a specified run command",
 	}
 
-	core.ForScriptInPathDo(teamDirectory+runScript.ScriptsPath, func(scriptPath string, scriptName string) {
-		command.AddCommand(runScript.MakeCommand(scriptName, scriptPath))
+	core.ForScriptInPathDo(teamDirectory+runscript.ScriptsPath, func(scriptPath string, scriptName string) {
+		command.AddCommand(runscript.MakeCommand(scriptName, scriptPath))
 	})
 
 	return command

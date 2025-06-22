@@ -1,4 +1,4 @@
-package installGitHooks
+package installgithooks
 
 import (
 	"app/core"

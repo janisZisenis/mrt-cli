@@ -1,4 +1,4 @@
-package setupScript
+package setupscript
 
 import (
 	"app/core"

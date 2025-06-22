@@ -1,9 +1,9 @@
 package all
 
 import (
-	"app/commands/setup/cloneRepositories"
-	"app/commands/setup/installGitHooks"
-	"app/commands/setup/setupScript"
+	"app/commands/setup/clonerepositories"
+	"app/commands/setup/installgithooks"
+	"app/commands/setup/setupsscript"
 	"app/core"
 	"app/log"
 
@@ -12,8 +12,8 @@ import (
 
 const scriptName = "all"
 const skipFlagPrefix = "skip-"
-const skipCloneFlag = skipFlagPrefix + cloneRepositories.CommandName
-const skipHooksFlag = skipFlagPrefix + installGitHooks.CommandName
+const skipCloneFlag = skipFlagPrefix + clonerepositories.CommandName
+const skipHooksFlag = skipFlagPrefix + installgithooks.CommandName
 
 func MakeCommand(teamDirectory string) *cobra.Command {
 	var command = &cobra.Command{
@@ -28,7 +28,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	command.Flags().Lookup(skipCloneFlag).NoOptDefVal = "true"
 
-	core.ForScriptInPathDo(teamDirectory+setupScript.ScriptsPath, func(filePath string, scriptName string) {
+	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(filePath string, scriptName string) {
 		var skipFlag = skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
 		command.Flags().Lookup(skipFlag).NoOptDefVal = "true"
@@ -42,13 +42,13 @@ func command(cmd *cobra.Command, args []string) {
 	shouldSkipClone, _ := cmd.Flags().GetBool(skipCloneFlag)
 
 	if !shouldSkipClone {
-		cloneRepositories.MakeCommand().Run(cmd, args)
+		clonerepositories.MakeCommand().Run(cmd, args)
 	} else {
 		log.Info("Skipping clone-repositories step.")
 	}
 
 	if !shouldSkipHooks {
-		installGitHooks.MakeCommand().Run(cmd, args)
+		installgithooks.MakeCommand().Run(cmd, args)
 	} else {
 		log.Info("Skipping install-git-hooks step.")
 	}
@@ -59,10 +59,10 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Info("Executing setup commands.")
 
-	core.ForScriptInPathDo(core.GetExecutionPath()+setupScript.ScriptsPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(core.GetExecutionPath()+setupscript.ScriptsPath, func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 		if !skipFlag {
-			setupScript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
+			setupscript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
 		} else {
 			log.Info("Skipping setup command: " + scriptName)
 		}

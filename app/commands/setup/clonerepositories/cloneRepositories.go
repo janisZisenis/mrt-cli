@@ -1,4 +1,4 @@
-package cloneRepositories
+package clonerepositories
 
 import (
 	"app/core"

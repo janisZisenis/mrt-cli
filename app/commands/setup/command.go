@@ -2,9 +2,9 @@ package setup
 
 import (
 	"app/commands/setup/all"
-	"app/commands/setup/cloneRepositories"
-	"app/commands/setup/installGitHooks"
-	"app/commands/setup/setupScript"
+	"app/commands/setup/clonerepositories"
+	"app/commands/setup/installgithooks"
+	"app/commands/setup/setupsscript"
 	"app/core"
 
 	"github.com/spf13/cobra"
@@ -19,11 +19,11 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	}
 
 	command.AddCommand(all.MakeCommand(teamDirectory))
-	command.AddCommand(cloneRepositories.MakeCommand())
-	command.AddCommand(installGitHooks.MakeCommand())
+	command.AddCommand(clonerepositories.MakeCommand())
+	command.AddCommand(installgithooks.MakeCommand())
 
-	core.ForScriptInPathDo(teamDirectory+setupScript.ScriptsPath, func(scriptPath string, scriptName string) {
-		command.AddCommand(setupScript.MakeCommand(scriptPath, scriptName))
+	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(scriptPath string, scriptName string) {
+		command.AddCommand(setupscript.MakeCommand(scriptPath, scriptName))
 	})
 
 	return command

@@ -1,4 +1,4 @@
-package runScript
+package runscript
 
 import (
 	"app/core"
