@@ -19,7 +19,7 @@ type TeamInfo struct {
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 
-var CouldNotReadTeamFile = errors.New("could not read team file")
+var ErrCouldNotReadTeamFile = errors.New("could not read team file")
 
 func LoadTeamConfiguration() (TeamInfo, error) {
 	var teamInfo TeamInfo
@@ -39,5 +39,5 @@ func LoadTeamConfiguration() (TeamInfo, error) {
 		return teamInfo, nil
 	}
 
-	return teamInfo, CouldNotReadTeamFile
+	return teamInfo, ErrCouldNotReadTeamFile
 }
