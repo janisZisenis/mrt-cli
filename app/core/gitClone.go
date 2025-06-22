@@ -15,20 +15,20 @@ func CloneRepository(repositoryURL, destination string) {
 
 	cmd := exec.Command("git", "clone", "--progress", repositoryURL, destination)
 
-	stdoutPipe, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Error("Error getting StdoutPipe: %v\n", err)
+	stdoutPipe, stdoutPipeErr := cmd.StdoutPipe()
+	if stdoutPipeErr != nil {
+		log.Error("Error getting StdoutPipe: %v\n", stdoutPipeErr)
 		return
 	}
 
-	stderrPipe, err := cmd.StderrPipe()
-	if err != nil {
-		log.Error("Error getting StderrPipe: %v\n", err)
+	stderrPipe, stdErrPipeErr := cmd.StderrPipe()
+	if stdErrPipeErr != nil {
+		log.Error("Error getting StderrPipe: %v\n", stdErrPipeErr)
 		return
 	}
 
-	if err := cmd.Start(); err != nil {
-		log.Error("Error starting command: %v\n", err)
+	if startErr := cmd.Start(); startErr != nil {
+		log.Error("Error starting command: %v\n", startErr)
 		return
 	}
 
@@ -60,20 +60,20 @@ func copyWithColor(dst io.Writer, src io.Reader) {
 	numberOfBytes := 1024
 	buf := make([]byte, numberOfBytes)
 	for {
-		n, err := src.Read(buf)
+		n, readErr := src.Read(buf)
 		if n > 0 {
 			text := string(buf[:n])
-			_, err = fmt.Fprintf(dst, "%s", purpleFatih(text))
+			_, writeErr := fmt.Fprintf(dst, "%s", purpleFatih(text))
 
-			if err != nil {
-				log.Error("Error writing to destination: %v\n", err)
+			if writeErr != nil {
+				log.Error("Error writing to destination: %v\n", readErr)
 			}
 		}
-		if err != nil {
-			if err == io.EOF {
+		if readErr != nil {
+			if readErr == io.EOF {
 				break
 			}
-			log.Error("Error reading from source: %v\n", err)
+			log.Error("Error reading from source: %v\n", readErr)
 			break
 		}
 	}
