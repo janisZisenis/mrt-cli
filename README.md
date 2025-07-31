@@ -9,7 +9,23 @@ The *Multi Repository Tool* is a command-line utility designed to streamline the
 
 ## Installation
 
-Follow these steps to install the *Multi Repository Tool* on your machine:
+### Using Homebrew (Recommended)
+
+The easiest way to install the *Multi Repository Tool* is via Homebrew:
+
+```sh
+# Add the tap
+brew tap janisZisenis/mrt
+
+# Install MRT
+brew install janisZisenis/mrt/cli
+```
+
+For more information on the Homebrew installation, see the [homebrew-mrt README](../homebrew-mrt/README.md).
+
+### Manual Installation
+
+Alternatively, you can manually install the *Multi Repository Tool*:
 
 1. Navigate to the [Releases](https://github.com/janisZisenis/mrt-cli/releases) section of the repository.
 2. Download the appropriate binary for your platform.
@@ -54,7 +70,7 @@ chmod +x mrt
 4. Add the binary's location to your PATH variable by running
 
 ```sh
-    export PATH=$PATH:<path/to/binary>
+export PATH=$PATH:<path/to/binary>
 ```
 
 5. Verify that mrt is in your PATH by running:
