@@ -15,7 +15,7 @@ DOCKER_COMPOSE_CMD="docker-compose -f \"$SCRIPT_DIR/docker-compose.yml\""
 
 rootDir="$1"
 shift
-export TEST_REPO_DIR="$rootDir/test-repos"
+PUBLIC_SSH_KEY_FILE="$rootDir/.ssh/private-key.pub"
 
 function display_help() {
 	cat <<EOF
@@ -86,6 +86,28 @@ function import_repositories() {
   echo "Repository import completed."
 }
 
+function setup_ssh_key() {
+  echo "Running setup ssh key script in GitLab container..."
+
+  SSH_PUBLIC_KEY=$(cat "$PUBLIC_SSH_KEY_FILE")
+
+  docker exec "$CONTAINER_NAME" gitlab-rails runner "
+  ssh_key = \"$SSH_PUBLIC_KEY\".strip
+
+  user = User.find_by_username('root')
+  raise 'Root user not found!' unless user
+
+  puts 'Delete all existing SSH key(s) for the root user.'
+  user.keys.delete_all
+
+  puts 'Add SSH key for root user.'
+  user.keys.create!(title: 'Root User SSH Key', key: ssh_key)
+  puts '✅ SSH key added successfully for the root user!'
+  "
+
+  echo "SSH key setup completed."
+}
+
 action="$FLAG_START"
 should_dump_repositories=false
 
@@ -128,6 +150,7 @@ if [[ "$action" == "$FLAG_START" ]]; then
 
   if wait_for_gitlab_ready; then
     import_repositories
+    setup_ssh_key
   fi
 elif [[ "$action" == "$FLAG_STOP" ]]; then
   echo "Stopping GitLab container..."
