@@ -14,16 +14,15 @@ if ! gh auth status &> /dev/null; then
 fi
 
 REPOS=$(gh repo list $GITHUB_OWNER --limit 1000 --json nameWithOwner -q '.[] | .nameWithOwner')
-
 [ -z "$REPOS" ] && { echo "No repositories found."; exit 1; }
 
 rm -rf "$TEST_REPO_DIR"
 
 for REPO in $REPOS; do
     REPO=$(echo "$REPO" | tr -d '"')
-    TARGET_DIR="$TEST_REPO_DIR/$REPO"
-    mkdir -p "$TARGET_DIR"
-    gh repo clone "$REPO" "$TARGET_DIR"
+    TARGET_DIR="$TEST_REPO_DIR/$REPO.git"
+    mkdir -p "$(dirname "$TARGET_DIR")"
+    gh repo clone "$REPO" "$TARGET_DIR" -- --bare
 done
 
-echo "Cloning completed!"
+echo "Cloning completed! Repositories are stored as bare repositories in '$TEST_REPO_DIR'."

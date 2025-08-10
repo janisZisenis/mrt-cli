@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -e
+
+RED="\e[31m"
+RESET="\e[0m"
+
+rootDir="$1"
+shift
+
+if [[ -z "$rootDir" ]]; then
+    echo -e "${RED}Error: You must specify the root directory as the first argument.${RESET}"
+    exit 1
+fi
+
+GITLAB_DIR="$rootDir/gitlab-data"
+REPOS_DIR="$rootDir/test-repos"
+CONTAINER_NAME="gitlab-dump"
+
+if [[ ! -d "$REPOS_DIR" ]]; then
+    echo -e "${RED}Error: Repository directory '$REPOS_DIR' does not exist.${RESET}"
+    exit 1
+fi
+
+REPO_MOUNT_TARGET="/var/opt/gitlab/git-data/repositories"
+
+if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    echo "GitLab container exists. Starting the container..."
+    docker start "$CONTAINER_NAME"
+else
+    echo "Creating and starting GitLab container with repositories mounted..."
+    docker run --detach \
+        --platform linux/amd64 \
+        --hostname testing.gitlab.local \
+        --publish 443:443 --publish 80:80 --publish 22:22 \
+        --name $CONTAINER_NAME \
+        --restart always \
+        --volume "$GITLAB_DIR/config:/etc/gitlab" \
+        --volume "$GITLAB_DIR/logs:/var/log/gitlab" \
+        --volume "$GITLAB_DIR/data:/var/opt/gitlab" \
+        --volume "$REPOS_DIR:$REPO_MOUNT_TARGET:Z" \
+        -e GITLAB_ROOT_EMAIL="admin@example.com" \
+        -e GITLAB_ROOT_PASSWORD="C2*Y_FH@" \
+        gitlab/gitlab-ce:latest
+fi
+
+if [[ $(docker ps --filter "name=${CONTAINER_NAME}" --filter "status=running" --format '{{.Names}}') == "$CONTAINER_NAME" ]]; then
+    echo "Restarting the GitLab container to apply repository structure..."
+    docker restart "$CONTAINER_NAME"
+fi
+
+echo -e "${RED}Repositories are now directly mounted and available in GitLab!${RESET}"

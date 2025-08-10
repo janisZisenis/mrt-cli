@@ -3,7 +3,5 @@
 /build
 /.ssh/private-key.pub
 config
-/test-repos/janisZisenisTesting/1_TestRepository/
-/test-repos/janisZisenisTesting/2_TestRepository/
-/test-repos/janisZisenisTesting/Prefix1_TestRepository1/
-/test-repos/janisZisenisTesting/Prefix2_TestRepository2/
+test-repos
+gitlab-data

@@ -1,0 +1,19 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    platform: linux/arm64/v8
+    container_name: local-gitlab
+    hostname: localhost
+    ports:
+      - "80:80"
+      - "443:443"
+      - "22:22"
+    volumes:
+      - /Users/jazi/Documents/Development/mrt/repositories/mrt-cli/test-repos:/repos-on-host:ro \
+      - /Users/jazi/Documents/Development/mrt/repositories/mrt-cli/gitlab-data/config:/etc/gitlab
+      - /Users/jazi/Documents/Development/mrt/repositories/mrt-cli/gitlab-data/data:/var/opt/gitlab
+      - /Users/jazi/Documents/Development/mrt/repositories/mrt-cli/gitlab-data/logs:/var/log/gitlab
+    environment:
+      GITLAB_ROOT_EMAIL: "admin@example.com"
+      GITLAB_ROOT_PASSWORD: "C2*Y_FH@"
+      GITLAB_HOME: "/var/opt/gitlab"
