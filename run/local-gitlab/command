@@ -1,51 +1,61 @@
 #!/usr/bin/env bash
 set -e
 
-RED="\e[31m"
-RESET="\e[0m"
+FLAG_START="--start"
+FLAG_STOP="--stop"
+FLAG_HELP="-h|--help"
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 rootDir="$1"
 shift
+export TEST_REPO_DIR="$rootDir/test-repos"
 
-if [[ -z "$rootDir" ]]; then
-    echo -e "${RED}Error: You must specify the root directory as the first argument.${RESET}"
-    exit 1
+function display_help() {
+	cat <<EOF
+Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS]
+
+Manage local GitLab instance with Docker Compose.
+
+Options:
+  $FLAG_START|$FLAG_STOP    Start/Stop the local GitLab instance (default: $FLAG_START).
+  $FLAG_HELP                Display this help message and exit.
+EOF
+}
+
+
+action="$FLAG_START"
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+	"$FLAG_START"|"$FLAG_STOP")
+		action="$1"
+		shift
+		;;
+	"$FLAG_HELP")
+		display_help
+		exit 0
+		;;
+	--*)
+		echo "Error: Unknown option '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	*)
+		echo "Error: Unknown argument '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	esac
+done
+
+cmd="docker-compose -f "$SCRIPT_DIR/docker-compose.yml""
+
+if [[ "$action" == "$FLAG_START" ]]; then
+	cmd+=" up -d"
+elif [[ "$action" == "$FLAG_STOP" ]]; then
+  cmd+=" down -v"
 fi
 
-GITLAB_DIR="$rootDir/gitlab-data"
-REPOS_DIR="$rootDir/test-repos"
-CONTAINER_NAME="gitlab-dump"
-
-if [[ ! -d "$REPOS_DIR" ]]; then
-    echo -e "${RED}Error: Repository directory '$REPOS_DIR' does not exist.${RESET}"
-    exit 1
-fi
-
-REPO_MOUNT_TARGET="/var/opt/gitlab/git-data/repositories"
-
-if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo "GitLab container exists. Starting the container..."
-    docker start "$CONTAINER_NAME"
-else
-    echo "Creating and starting GitLab container with repositories mounted..."
-    docker run --detach \
-        --platform linux/amd64 \
-        --hostname testing.gitlab.local \
-        --publish 443:443 --publish 80:80 --publish 22:22 \
-        --name $CONTAINER_NAME \
-        --restart always \
-        --volume "$GITLAB_DIR/config:/etc/gitlab" \
-        --volume "$GITLAB_DIR/logs:/var/log/gitlab" \
-        --volume "$GITLAB_DIR/data:/var/opt/gitlab" \
-        --volume "$REPOS_DIR:$REPO_MOUNT_TARGET:Z" \
-        -e GITLAB_ROOT_EMAIL="admin@example.com" \
-        -e GITLAB_ROOT_PASSWORD="C2*Y_FH@" \
-        gitlab/gitlab-ce:latest
-fi
-
-if [[ $(docker ps --filter "name=${CONTAINER_NAME}" --filter "status=running" --format '{{.Names}}') == "$CONTAINER_NAME" ]]; then
-    echo "Restarting the GitLab container to apply repository structure..."
-    docker restart "$CONTAINER_NAME"
-fi
-
-echo -e "${RED}Repositories are now directly mounted and available in GitLab!${RESET}"
+eval "$cmd"

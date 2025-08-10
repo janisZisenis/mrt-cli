@@ -4,4 +4,4 @@
 /.ssh/private-key.pub
 config
 test-repos
-gitlab-data
+run/local-gitlab/gitlab-data
