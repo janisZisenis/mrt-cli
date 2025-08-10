@@ -9,6 +9,10 @@ FLAG_HELP_LONG="--help"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+export CONTAINER_NAME="local-gitlab"
+export IMPORT_SCRIPT_PATH="/import_dumped_repositories.rb"
+DOCKER_COMPOSE_CMD="docker-compose -f \"$SCRIPT_DIR/docker-compose.yml\""
+
 rootDir="$1"
 shift
 export TEST_REPO_DIR="$rootDir/test-repos"
@@ -53,6 +57,35 @@ function dump_repositories() {
   echo "Cloning completed! Repositories are stored as bare repositories in '$TEST_REPO_DIR'."
 }
 
+function wait_for_gitlab_ready() {
+  echo "Waiting for GitLab to be ready..."
+  local max_attempts=60
+  local attempt=1
+  local wait_seconds=10
+
+  while [ $attempt -le $max_attempts ]; do
+    echo "Attempt $attempt of $max_attempts: Checking GitLab readiness..."
+    
+    if curl -s http://localhost/-/readiness > /dev/null; then
+      echo "GitLab is ready!"
+      return 0
+    else
+      echo "GitLab is not ready yet. Waiting $wait_seconds seconds..."
+      sleep $wait_seconds
+      attempt=$((attempt + 1))
+    fi
+  done
+
+  echo "Error: GitLab did not become ready within the timeout period."
+  return 1
+}
+
+function import_repositories() {
+  echo "Running import script in GitLab container..."
+  docker exec "$CONTAINER_NAME" gitlab-rails runner "$IMPORT_SCRIPT_PATH"
+  echo "Repository import completed."
+}
+
 action="$FLAG_START"
 should_dump_repositories=false
 
@@ -61,7 +94,6 @@ while [[ $# -gt 0 ]]; do
 	"$FLAG_HELP_SHORT"|"$FLAG_HELP_LONG")
 	  display_help
 	  exit 0
-		shift
 		;;
 	"$FLAG_START"|"$FLAG_STOP")
 		action="$1"
@@ -86,15 +118,18 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-cmd="docker-compose -f \"$SCRIPT_DIR/docker-compose.yml\""
-
 if [[ "$action" == "$FLAG_START" ]]; then
   if [[ "$should_dump_repositories" == true ]]; then
     dump_repositories
   fi
-	cmd+=" up -d"
-elif [[ "$action" == "$FLAG_STOP" ]]; then
-  cmd+=" down -v"
-fi
+  
+  echo "Starting GitLab container..."
+  eval "$DOCKER_COMPOSE_CMD up -d"
 
-eval "$cmd"
+  if wait_for_gitlab_ready; then
+    import_repositories
+  fi
+elif [[ "$action" == "$FLAG_STOP" ]]; then
+  echo "Stopping GitLab container..."
+  eval "$DOCKER_COMPOSE_CMD down -v"
+fi

@@ -2,7 +2,7 @@ services:
   gitlab:
     image: gitlab/gitlab-ce:18.2.1-ce.0
     platform: linux/arm64/v8
-    container_name: local-gitlab
+    container_name: ${CONTAINER_NAME}
     hostname: localhost
     ports:
       - "80:80"
@@ -13,9 +13,10 @@ services:
       - ./gitlab-data/config:/etc/gitlab
       - ./gitlab-data/data:/var/opt/gitlab
       - ./gitlab-data/logs:/var/log/gitlab
+      - ./import_dumped_repositories.rb:${IMPORT_SCRIPT_PATH}
     environment:
       GITLAB_ROOT_EMAIL: "admin@example.com"
       GITLAB_ROOT_PASSWORD: "C2*Y_FH@"
       GITLAB_OMNIBUS_CONFIG: |
         gitlab_rails['monitoring_whitelist'] = ['0.0.0.0/0']
-      restart: always
+    restart: always
