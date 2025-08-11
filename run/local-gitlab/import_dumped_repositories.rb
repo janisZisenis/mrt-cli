@@ -40,7 +40,7 @@ Dir.entries(base_path).select { |entry|
     group = Group.new(
       name: group_name,
       path: group_name,
-      visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+      visibility_level: Gitlab::VisibilityLevel::INTERNAL,
       organization: organization
     )
     if group.save
@@ -73,6 +73,7 @@ Dir.entries(base_path).select { |entry|
       )
 
       project.save!
+      project.add_maintainer(root_user)
 
       repo_source_path = File.join(group_path, repo_dir)
       repo_destination_path = File.join(gitlab_repo_base_path, project.disk_path + '.git')
