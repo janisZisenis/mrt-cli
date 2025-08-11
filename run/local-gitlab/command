@@ -103,6 +103,7 @@ function setup_ssh_key() {
   puts 'Add SSH key for root user.'
   user.keys.create!(title: 'Root User SSH Key', key: ssh_key)
   puts '✅ SSH key added successfully for the root user!'
+  system('yes yes | gitlab-rake gitlab:shell:setup')
   "
 
   echo "SSH key setup completed."
