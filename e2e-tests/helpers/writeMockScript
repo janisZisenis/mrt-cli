@@ -6,19 +6,6 @@ spyFileSuffix() {
 	echo "Executed"
 }
 
-writeSpyScript() {
-	local commandPath
-	commandPath=$1
-
-  local commandName
-  local content
-
-  commandName="$(basename "$commandPath")"
-  content="$(makeSpyScript "$commandName")"
-
-	writeScript "$content" "$commandPath"
-}
-
 writeScript() {
   local content="$1"
   local scriptPath="$2"
@@ -27,6 +14,18 @@ writeScript() {
 
   echo "$content" > "$scriptPath"
   chmod +x "$scriptPath"
+}
+
+writeSpyScript() {
+	local scriptPath="$1"
+
+  local commandName
+  commandName="$(basename "$scriptPath")"
+
+  local content
+  content="$(makeSpyScript "$commandName")"
+
+	writeScript "$content" "$scriptPath"
 }
 
 makeSpyScript() {
@@ -41,12 +40,14 @@ EOF
 }
 
 writeStubScript() {
-	local commandPath=$1
-	local exitCode=$2
-	local output=$3
+	local scriptPath="$1"
+	local exitCode="$2"
+	local output="$3"
 
+  local content
   content="$(makeStubScript "$output" "$exitCode")"
-  writeScript "$content" "$commandPath"
+
+  writeScript "$content" "$scriptPath"
 }
 
 makeStubScript() {
@@ -64,7 +65,9 @@ EOF
 writeScriptRequestingInput() {
 	local scriptPath=$1
 
+  local content
   content="$(makeScriptRequestingInput)"
+
   writeScript "$content" "$scriptPath"
 }
 
@@ -79,20 +82,22 @@ EOF
 }
 
 writeStdErrScript() {
-	local commandPath=$1
+	local scriptPath=$1
 	local errorMessage=$2
 
-	mkdir -p "$(dirname "$commandPath")"
-	local commandName
-	commandName="$(basename "$commandPath")"
+	local content
+	content="$(makeStdErrScript "$errorMessage")"
 
-	cat <<EOF >"$commandPath"
+	writeScript "$content" "$scriptPath"
+}
+
+makeStdErrScript() {
+  local errorMessage="$1"
+cat <<EOF
 #!/bin/bash
 
 echo "$errorMessage" 1>&2
 EOF
-
-	chmod +x "$commandPath"
 }
 
 assert_spy_file_has_content() {
