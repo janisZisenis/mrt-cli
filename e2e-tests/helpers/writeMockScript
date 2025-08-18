@@ -45,18 +45,20 @@ writeStubScript() {
 	local exitCode=$2
 	local output=$3
 
-	mkdir -p "$(dirname "$commandPath")"
-	local commandName
-	commandName="$(basename "$commandPath")"
+  content="$(makeStubScript "$output" "$exitCode")"
+  writeScript "$content" "$commandPath"
+}
 
-	cat <<EOF >"$commandPath"
+makeStubScript() {
+  local output="$1"
+  local exitCode="$2"
+
+cat <<EOF
 #!/bin/bash
 
 echo "$output"
 exit $exitCode
 EOF
-
-	chmod +x "$commandPath"
 }
 
 writeScriptRequestingInput() {
