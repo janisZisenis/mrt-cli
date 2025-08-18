@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+writeScript() {
+  local content="$1"
+  local scriptPath="$2"
+
+	mkdir -p "$(dirname "$scriptPath")"
+
+  echo "$content" > "$scriptPath"
+  chmod +x "$scriptPath"
+}
+
+spyFileSuffix() {
+	echo "Executed"
+}
+
+makeSpyScript() {
+  local scriptName="$1"
+
+cat <<EOF
+#!/bin/bash
+
+SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
+EOF
+}
+
+makeStubScript() {
+  local output="$1"
+  local exitCode="$2"
+
+cat <<EOF
+#!/bin/bash
+
+echo "$output"
+exit $exitCode
+EOF
+}
+
+makeScriptRequestingInput() {
+cat <<EOF
+#!/bin/bash
+
+SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+read -r input
+touch "\$SCRIPT_DIR/\$input"
+EOF
+}
+
+makeStdErrScript() {
+  local errorMessage="$1"
+cat <<EOF
+#!/bin/bash
+
+echo "$errorMessage" 1>&2
+EOF
+}

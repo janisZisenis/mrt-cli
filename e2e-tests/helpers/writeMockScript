@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
 bats_load_library "fileAssertions"
-
-spyFileSuffix() {
-	echo "Executed"
-}
+bats_load_library "scriptFactory"
 
 writeScript() {
   local content="$1"
@@ -28,17 +25,6 @@ writeSpyScript() {
 	writeScript "$content" "$scriptPath"
 }
 
-makeSpyScript() {
-  local commandName="$1"
-
-cat <<EOF
-#!/bin/bash
-
-SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-echo "\$@" > "\$SCRIPT_DIR/$commandName$(spyFileSuffix)"
-EOF
-}
-
 writeStubScript() {
 	local scriptPath="$1"
 	local exitCode="$2"
@@ -50,18 +36,6 @@ writeStubScript() {
   writeScript "$content" "$scriptPath"
 }
 
-makeStubScript() {
-  local output="$1"
-  local exitCode="$2"
-
-cat <<EOF
-#!/bin/bash
-
-echo "$output"
-exit $exitCode
-EOF
-}
-
 writeScriptRequestingInput() {
 	local scriptPath=$1
 
@@ -69,16 +43,6 @@ writeScriptRequestingInput() {
   content="$(makeScriptRequestingInput)"
 
   writeScript "$content" "$scriptPath"
-}
-
-makeScriptRequestingInput() {
-cat <<EOF
-#!/bin/bash
-
-SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-read -r input
-touch "\$SCRIPT_DIR/\$input"
-EOF
 }
 
 writeStdErrScript() {
@@ -89,15 +53,6 @@ writeStdErrScript() {
 	content="$(makeStdErrScript "$errorMessage")"
 
 	writeScript "$content" "$scriptPath"
-}
-
-makeStdErrScript() {
-  local errorMessage="$1"
-cat <<EOF
-#!/bin/bash
-
-echo "$errorMessage" 1>&2
-EOF
 }
 
 assert_spy_file_has_content() {
