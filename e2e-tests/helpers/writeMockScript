@@ -10,19 +10,34 @@ writeSpyScript() {
 	local commandPath
 	commandPath=$1
 
-	mkdir -p "$(dirname "$commandPath")"
-	local commandName
-	commandName="$(basename "$commandPath")"
+  local commandName
+  local content
 
-	cat <<EOF >"$commandPath"
+  commandName="$(basename "$commandPath")"
+  content="$(makeSpyScript "$commandName")"
+
+	writeScript "$content" "$commandPath"
+}
+
+writeScript() {
+  local content="$1"
+  local scriptPath="$2"
+
+	mkdir -p "$(dirname "$scriptPath")"
+
+  echo "$content" > "$scriptPath"
+  chmod +x "$scriptPath"
+}
+
+makeSpyScript() {
+  local commandName="$1"
+
+cat <<EOF
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo "\$@" > "\$SCRIPT_DIR/$commandName$(spyFileSuffix)"
-
 EOF
-
-	chmod +x "$commandPath"
 }
 
 writeStubScript() {
