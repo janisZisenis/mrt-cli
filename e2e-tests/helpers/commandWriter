@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bats_load_library "fileAssertions"
-bats_load_library "writeMockScript"
+bats_load_library "scriptWriter"
 
 commandFileName() {
 	echo "command"

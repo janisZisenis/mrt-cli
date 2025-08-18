@@ -1,5 +1,5 @@
 bats_load_library 'common'
-bats_load_library 'writeMockCommand'
+bats_load_library 'commandWriter'
 bats_load_library 'git'
 bats_load_library 'setup'
 

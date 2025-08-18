@@ -1,5 +1,5 @@
 bats_load_library 'common'
-bats_load_library 'writeMockCommand'
+bats_load_library 'commandWriter'
 
 setup() {
 	common_setup
