@@ -62,21 +62,20 @@ EOF
 }
 
 writeScriptRequestingInput() {
-	local commandPath=$1
+	local scriptPath=$1
 
-	mkdir -p "$(dirname "$commandPath")"
-	local commandName
-	commandName="$(basename "$commandPath")"
+  content="$(makeScriptRequestingInput)"
+  writeScript "$content" "$scriptPath"
+}
 
-	cat <<EOF >"$commandPath"
+makeScriptRequestingInput() {
+cat <<EOF
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 read -r input
 touch "\$SCRIPT_DIR/\$input"
 EOF
-
-	chmod +x "$commandPath"
 }
 
 writeStdErrScript() {
