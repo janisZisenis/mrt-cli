@@ -28,3 +28,10 @@ writeStubRunCommand() {
 
   writeStubCommand "$(_runCommandLocation)" "$commandName" "$exitCode" "$output"
 }
+
+writeStdErrRunCommand() {
+	local commandName="$1"
+	local error="$2"
+
+	writeStdErrScript "$(_runCommandLocation)/$commandName/$(commandFileName)" "$error"
+}

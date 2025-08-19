@@ -53,8 +53,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 @test "if command writes to stderr it outputs stderr" {
 	commandName="error"
 	error="some-error"
-	commandLocation="$(testEnvDir)/run"
-	writeStdErrCommand "$commandLocation" "$commandName" "$error"
+	writeStdErrRunCommand "$commandName" "$error"
 
 	run runCommand "$commandName"
 
