@@ -56,13 +56,12 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 
 @test "if setup command is requesting input it should process the input" {
 	commandName="input"
-	commandLocation="$(testEnvDir)/setup"
-	writeCommandRequestingInput "$commandLocation" "$commandName"
+	writeSetupCommandRequestingInput "$commandName"
 	input="some-input"
 
 	run setupCommand $commandName <<<$input
 
-	assert_command_received_input "$commandLocation" "$commandName" "$input"
+	assert_setup_command_received_input "$commandName" "$input"
 }
 
 @test "if setup command writes to stderr it outputs stderr" {
