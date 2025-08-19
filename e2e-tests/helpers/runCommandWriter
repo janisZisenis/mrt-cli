@@ -20,3 +20,11 @@ assert_run_command_was_executed() {
 
 	assert_spy_file_has_content "$(_runCommandLocation)/$commandName/$(commandFileName)" "$content"
 }
+
+writeStubRunCommand() {
+	local commandName="$1"
+	local exitCode="$2"
+	local output="$3"
+
+  writeStubCommand "$(_runCommandLocation)" "$commandName" "$exitCode" "$output"
+}
