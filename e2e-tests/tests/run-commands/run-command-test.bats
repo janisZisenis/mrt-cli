@@ -41,13 +41,12 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 
 @test "if command is requesting input it should process the input" {
 	commandName="input"
-	commandLocation="$(testEnvDir)/run"
-	writeCommandRequestingInput "$commandLocation" "$commandName"
+	writeRunCommandRequestingInput "$commandName"
 	input="some-input"
 
 	run runCommand $commandName <<<$input
 
-	assert_command_received_input "$commandLocation" "$commandName" "$input"
+	assert_run_command_received_input "$commandName" "$input"
 }
 
 @test "if command writes to stderr it outputs stderr" {

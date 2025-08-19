@@ -35,3 +35,16 @@ writeStdErrRunCommand() {
 
 	writeStdErrScript "$(_runCommandLocation)/$commandName/$(commandFileName)" "$error"
 }
+
+writeRunCommandRequestingInput() {
+	local commandName="$1"
+
+	writeCommandRequestingInput "$(_runCommandLocation)" "$commandName"
+}
+
+assert_run_command_received_input() {
+	local commandName="$1"
+	local input="$2"
+
+	assert_command_received_input "$(_runCommandLocation)" "$commandName" "$input"
+}
