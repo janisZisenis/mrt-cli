@@ -68,7 +68,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 @test "if setup command writes to stderr it outputs stderr" {
 	commandName="error"
 	error="some-error"
-	writeStdErrCommand "$(testEnvDir)/setup" "$commandName" "$error"
+	writeStdErrSetupCommand "$commandName" "$error"
 
 	run setupCommand "$commandName"
 

@@ -34,3 +34,10 @@ writeStubSetupCommand() {
 
   writeStubCommand "$(_setupCommandLocation)" "$commandName" "$exitCode" "$output"
 }
+
+writeStdErrSetupCommand() {
+	local commandName="$1"
+	local error="$2"
+
+	writeStdErrCommand "$(_setupCommandLocation)" "$commandName" "$error"
+}
