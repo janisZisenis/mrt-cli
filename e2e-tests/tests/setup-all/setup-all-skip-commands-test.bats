@@ -4,6 +4,7 @@ bats_load_library 'common'
 bats_load_library 'repositoriesPath'
 bats_load_library 'directoryAssertions'
 bats_load_library 'commandWriter'
+bats_load_library 'setupCommandWriter'
 
 setup() {
 	common_setup
@@ -16,33 +17,30 @@ teardown() {
 @test "if two setup commands exist setup all with skipping the first it should only run the second" {
 	someCommandName="some-command"
 	anotherCommandName="another-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$someCommandName"
-	writeSpyCommand "$commandLocation" "$anotherCommandName"
+	writeSpySetupCommand "$someCommandName"
+	writeSpySetupCommand "$anotherCommandName"
 
 	run execute setup all "--skip-$someCommandName"
 
-	assert_command_spy_file_does_not_exist "$commandLocation" "$someCommandName"
-	assert_command_spy_file_exists "$commandLocation" "$anotherCommandName"
+	assert_setup_command_was_not_executed "$someCommandName"
+	assert_setup_command_was_executed "$anotherCommandName" "$(testEnvDir)"
 }
 
 @test "if two setup commands exist setup all with skipping the second it should only run the first" {
 	someCommandName="some-command"
 	anotherCommandName="another-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$someCommandName"
-	writeSpyCommand "$commandLocation" "$anotherCommandName"
+	writeSpySetupCommand "$someCommandName"
+	writeSpySetupCommand "$anotherCommandName"
 
 	run execute setup all "--skip-$anotherCommandName"
 
-	assert_command_spy_file_exists "$commandLocation" "$someCommandName"
-	assert_command_spy_file_does_not_exist "$commandLocation" "$anotherCommandName"
+	assert_setup_command_was_executed "$someCommandName" "$(testEnvDir)"
+	assert_setup_command_was_not_executed "$anotherCommandName"
 }
 
 @test "if one setup commands exists setup all with skipping the command prints out skip message" {
 	commandName="some-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$commandName"
+	writeSpySetupCommand "$commandName"
 
 	run execute setup all "--skip-$commandName"
 

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+bats_load_library "fileAssertions"
+bats_load_library "commandWriter"
+bats_load_library "common"
+
+_setupCommandLocation() {
+  echo "$(testEnvDir)/setup"
+}
+
+writeSpySetupCommand() {
+	local commandName="$1"
+
+  writeSpyCommand "$(_setupCommandLocation)" "$commandName"
+}
+
+assert_setup_command_was_executed() {
+	local commandName="$1"
+	local content="$2"
+
+	assert_spy_file_has_content "$(_setupCommandLocation)/$commandName/$(commandFileName)" "$content"
+}
+
+assert_setup_command_was_not_executed() {
+	local commandName="$1"
+
+	assert_spy_file_does_not_exist "$(_setupCommandLocation)/$commandName/$(commandFileName)"
+}

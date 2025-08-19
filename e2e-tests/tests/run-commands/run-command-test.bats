@@ -1,5 +1,6 @@
 bats_load_library 'common'
 bats_load_library 'commandWriter'
+bats_load_library 'runCommandWriter'
 
 setup() {
 	common_setup
@@ -21,12 +22,11 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	commandName=$1
 	shift
 	parameters=("$@")
-	commandLocation="$(testEnvDir)/run"
-	writeSpyCommand "$(testEnvDir)/run" "$commandName"
+	writeSpyRunCommand "$commandName"
 
 	run runCommand "$commandName" -- "${parameters[@]}"
 
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(testEnvDir) ${parameters[*]}"
+	assert_run_command_was_executed "$commandName" "$(testEnvDir) ${parameters[*]}"
 }
 
 @test "if command succeeds with output it will print the command's output" {

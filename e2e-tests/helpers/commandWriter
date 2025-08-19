@@ -8,12 +8,12 @@ commandFileName() {
 }
 
 writeSpyCommand() {
-	local commandLocation
-	local commandName
-	commandLocation="$1"
-	commandName="$2"
+	local commandLocation="$1"
+	local commandName="$2"
 
+	local commandPath
 	commandPath="$commandLocation/$commandName/$(commandFileName)"
+
 	writeSpyScript "$commandPath"
 }
 
