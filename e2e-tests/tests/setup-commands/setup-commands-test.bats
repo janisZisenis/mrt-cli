@@ -2,6 +2,7 @@ bats_load_library 'common'
 bats_load_library 'commandWriter'
 bats_load_library 'git'
 bats_load_library 'setup'
+bats_load_library 'setupCommandWriter'
 
 setup() {
 	common_setup
@@ -21,18 +22,17 @@ teardown() {
 
 test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter() {
 	commandName=$1
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$commandName"
+	writeSpySetupCommand "$commandName"
 
 	execute setup "$commandName"
 
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(testEnvDir)"
+	assert_setup_command_was_executed "$commandName" "$(testEnvDir)"
 }
 
 @test "if setup command succeeds with output it will print the command's output" {
 	commandName="some-command"
 	someOutput="some-output"
-	writeStubCommand "$(testEnvDir)/setup" "$commandName" "0" "$someOutput"
+	writeStubSetupCommand "$commandName" "0" "$someOutput"
 
 	run setupCommand $commandName
 
@@ -45,7 +45,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	commandName="another-command"
 	someOutput="another-output"
 	exitCode=15
-	writeStubCommand "$(testEnvDir)/setup" "$commandName" "$exitCode" "$someOutput"
+	writeStubSetupCommand "$commandName" "$exitCode" "$someOutput"
 
 	run setupCommand "$commandName"
 

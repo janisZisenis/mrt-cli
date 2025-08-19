@@ -26,3 +26,11 @@ assert_setup_command_was_not_executed() {
 
 	assert_spy_file_does_not_exist "$(_setupCommandLocation)/$commandName/$(commandFileName)"
 }
+
+writeStubSetupCommand() {
+	local commandName="$1"
+	local exitCode="$2"
+	local output="$3"
+
+  writeStubCommand "$(_setupCommandLocation)" "$commandName" "$exitCode" "$output"
+}
