@@ -5,9 +5,9 @@ unique_branch_name() {
 }
 
 cloneTestingRepositories() {
-	repositoryDir=$1
-	shift
-	repositoriesToClone=("$@")
+	local repositoryDir="$1"
+  shift
+  local repositoriesToClone=("$@")
 
 	for repositoryToClone in "${repositoriesToClone[@]}"; do
 		git clone "$(getTestingRepositoryUrl "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
@@ -15,9 +15,9 @@ cloneTestingRepositories() {
 }
 
 commit_changes() {
-	repository_path=$1
-	branch_name=$2
-	commit_message=${3:-"Some Commit"}
+	local repository_path="$1"
+	local branch_name="$2"
+	local commit_message=${3:-"Some Commit"}
 
 	git -C "$repository_path" checkout -b "$branch_name"
 	touch "$repository_path"/some_file
@@ -26,8 +26,8 @@ commit_changes() {
 }
 
 commit_changes_bypassing_githooks() {
-	repository_path=$1
-	branch_name=$2
+	local repository_path="$1"
+	local branch_name="$2"
 
 	git -C "$repository_path" checkout -b "$branch_name"
 	touch "$repository_path"/some_file
@@ -36,14 +36,14 @@ commit_changes_bypassing_githooks() {
 }
 
 get_commit_message_of_last_commit() {
-	repository_path=$1
+	local repository_path="$1"
 
 	git -C "$repository_path" log -1 --pretty=%B
 }
 
 push_changes() {
-	repository_path=$1
-	branch_name=$2
+	local repository_path="$1"
+	local branch_name="$2"
 
 	run git -C "$repository_path" push --set-upstream origin "$branch_name"
 
