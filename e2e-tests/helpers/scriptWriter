@@ -55,16 +55,17 @@ writeStdErrScript() {
 	writeScript "$content" "$scriptPath"
 }
 
-assert_spy_file_has_content() {
+assert_script_was_executed_with_parameters() {
 	spyFile=$1$(spyFileSuffix)
-	expectedContent=$2
+	expectedParameters=$2
+
+  assert_script_was_executed "$1"
 
 	actualContent="$(cat "$spyFile")"
-
-	assert_equal "$actualContent" "$expectedContent"
+	assert_equal "$actualContent" "$expectedParameters"
 }
 
-assert_spy_file_exists() {
+assert_script_was_executed() {
 	assert_file_exists "$1$(spyFileSuffix)"
 }
 

@@ -55,16 +55,16 @@ assert_command_received_input() {
 assert_command_spy_file_has_content() {
 	local commandLocation="$1"
 	local commandName="$2"
-	local content="$3"
+	local expectedParameters="$3"
 
-	assert_spy_file_has_content "$commandLocation/$commandName/$(commandFileName)" "$content"
+	assert_script_was_executed_with_parameters "$commandLocation/$commandName/$(commandFileName)" "$expectedParameters"
 }
 
 assert_command_spy_file_exists() {
 	local commandLocation="$1"
 	local commandName="$2"
 
-	assert_spy_file_exists "$commandLocation/$commandName/$(commandFileName)"
+	assert_script_was_executed "$commandLocation/$commandName/$(commandFileName)"
 }
 
 assert_command_spy_file_does_not_exist() {

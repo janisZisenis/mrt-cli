@@ -11,8 +11,8 @@ bats_load_library 'scriptWriter'
 
 	commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-	assert_spy_file_exists "$firstScript"
-	assert_spy_file_exists "$secondScript"
+	assert_script_was_executed "$firstScript"
+	assert_script_was_executed "$secondScript"
 }
 
 @test "if commit-msg scripts exits with failure 'commiting' will also fail" {
@@ -40,7 +40,7 @@ bats_load_library 'scriptWriter'
 
 	commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-	assert_spy_file_has_content "$scriptPath" ""
+	assert_script_was_executed_with_parameters "$scriptPath" ""
 }
 
 @test "if pre-push hook gets executed, it gets passed the git parameters" {
@@ -53,7 +53,7 @@ bats_load_library 'scriptWriter'
 
 	originUrl=$(git -C "$(repositoryDir)" config --get remote.origin.url)
 	remoteName=$(git remote)
-	assert_spy_file_has_content "$scriptPath" "$remoteName $originUrl"
+	assert_script_was_executed_with_parameters "$scriptPath" "$remoteName $originUrl"
 }
 
 @test "if commit-msg hook gets executed, it gets passed the git parameters" {
@@ -62,5 +62,5 @@ bats_load_library 'scriptWriter'
 
 	commit_changes "$(repositoryDir)" "some-branch" "some-message"
 
-	assert_spy_file_has_content "$scriptPath" ".git/COMMIT_EDITMSG"
+	assert_script_was_executed_with_parameters "$scriptPath" ".git/COMMIT_EDITMSG"
 }
