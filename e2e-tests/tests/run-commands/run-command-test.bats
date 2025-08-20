@@ -1,4 +1,4 @@
-bats_load_library 'common'
+bats_load_library 'common_fixture'
 bats_load_library 'commands/runCommandWriter'
 
 setup() {
