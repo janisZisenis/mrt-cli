@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-bats_load_library "fileAssertions"
 bats_load_library "commandWriter"
 bats_load_library "common"
 
@@ -18,13 +17,13 @@ assert_setup_command_was_executed() {
 	local commandName="$1"
 	local expectedParameters="$2"
 
-	assert_script_was_executed_with_parameters "$(_setupCommandLocation)/$commandName/$(commandFileName)" "$expectedParameters"
+	assert_command_was_executed_with_parameters "$(_setupCommandLocation)" "$commandName" "$expectedParameters"
 }
 
 assert_setup_command_was_not_executed() {
 	local commandName="$1"
 
-	assert_spy_file_does_not_exist "$(_setupCommandLocation)/$commandName/$(commandFileName)"
+	assert_command_was_not_executed "$(_setupCommandLocation)" "$commandName"
 }
 
 writeStubSetupCommand() {
@@ -50,7 +49,7 @@ writeSetupCommandRequestingInput() {
 
 assert_setup_command_received_input() {
 	local commandName="$1"
-	local input="$2"
+	local expectedInput="$2"
 
-	assert_command_received_input "$(_setupCommandLocation)" "$commandName" "$input"
+	assert_command_received_input "$(_setupCommandLocation)" "$commandName" "$expectedInput"
 }

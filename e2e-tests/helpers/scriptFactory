@@ -1,15 +1,5 @@
 #!/usr/bin/env bash
 
-writeScript() {
-  local content="$1"
-  local scriptPath="$2"
-
-	mkdir -p "$(dirname "$scriptPath")"
-
-  echo "$content" > "$scriptPath"
-  chmod +x "$scriptPath"
-}
-
 spyFileSuffix() {
 	echo "Executed"
 }

@@ -25,50 +25,47 @@ writeSpyScript() {
 	writeScript "$content" "$scriptPath"
 }
 
-writeStubScript() {
-	local scriptPath="$1"
-	local exitCode="$2"
-	local output="$3"
-
-  local content
-  content="$(makeStubScript "$output" "$exitCode")"
-
-  writeScript "$content" "$scriptPath"
-}
-
-writeScriptRequestingInput() {
-	local scriptPath=$1
-
-  local content
-  content="$(makeScriptRequestingInput)"
-
-  writeScript "$content" "$scriptPath"
-}
-
-writeStdErrScript() {
-	local scriptPath=$1
-	local errorMessage=$2
-
-	local content
-	content="$(makeStdErrScript "$errorMessage")"
-
-	writeScript "$content" "$scriptPath"
-}
-
 assert_script_was_executed_with_parameters() {
-	spyFile=$1$(spyFileSuffix)
-	expectedParameters=$2
+	local scriptPath="$1"
+	local expectedParameters="$2"
 
   assert_script_was_executed "$1"
 
-	actualContent="$(cat "$spyFile")"
-	assert_equal "$actualContent" "$expectedParameters"
+	assert_equal "$(cat "$scriptPath$(spyFileSuffix)")" "$expectedParameters"
 }
 
 assert_script_was_executed() {
 	assert_file_exists "$1$(spyFileSuffix)"
 }
 
-assert_spy_file_does_not_exist() {
+assert_script_was_not_executed() {
 	assert_file_does_not_exist "$1$(spyFileSuffix)"
+}
+
+writeStubScript() {
+	local scriptPath="$1"
+	local exitCode="$2"
+	local output="$3"
+
+  writeScript "$(makeStubScript "$output" "$exitCode")" "$scriptPath"
+}
+
+writeScriptRequestingInput() {
+	local scriptPath=$1
+
+  writeScript "$(makeScriptRequestingInput)" "$scriptPath"
+}
+
+assert_script_received_input() {
+  local scriptPath="$1"
+  local expectedInput="$2"
+
+	assert_file_exists "$(dirname "$scriptPath")/$expectedInput"
+}
+
+writeStdErrScript() {
+	local scriptPath=$1
+	local errorMessage=$2
+
+	writeScript "$(makeStdErrScript "$errorMessage")" "$scriptPath"
 }

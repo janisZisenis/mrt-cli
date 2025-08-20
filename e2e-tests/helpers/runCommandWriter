@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-bats_load_library "fileAssertions"
 bats_load_library "commandWriter"
 bats_load_library "common"
 
@@ -14,11 +13,11 @@ writeSpyRunCommand() {
   writeSpyCommand "$(_runCommandLocation)" "$commandName"
 }
 
-assert_run_command_was_executed() {
+assert_run_command_was_executed_with_parameters() {
 	local commandName="$1"
 	local expectedParameters="$2"
 
-	assert_script_was_executed_with_parameters "$(_runCommandLocation)/$commandName/$(commandFileName)" "$expectedParameters"
+	assert_command_was_executed_with_parameters "$(_runCommandLocation)" "$commandName" "$expectedParameters"
 }
 
 writeStubRunCommand() {
@@ -33,7 +32,7 @@ writeStdErrRunCommand() {
 	local commandName="$1"
 	local error="$2"
 
-	writeStdErrScript "$(_runCommandLocation)/$commandName/$(commandFileName)" "$error"
+	writeStdErrCommand "$(_runCommandLocation)" "$commandName" "$error"
 }
 
 writeRunCommandRequestingInput() {
@@ -44,7 +43,7 @@ writeRunCommandRequestingInput() {
 
 assert_run_command_received_input() {
 	local commandName="$1"
-	local input="$2"
+	local expectedInput="$2"
 
-	assert_command_received_input "$(_runCommandLocation)" "$commandName" "$input"
+	assert_command_received_input "$(_runCommandLocation)" "$commandName" "$expectedInput"
 }

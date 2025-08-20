@@ -26,7 +26,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 
 	run runCommand "$commandName" -- "${parameters[@]}"
 
-	assert_run_command_was_executed "$commandName" "$(testEnvDir) ${parameters[*]}"
+	assert_run_command_was_executed_with_parameters "$commandName" "$(testEnvDir) ${parameters[*]}"
 }
 
 @test "if command succeeds with output it will print the command's output" {

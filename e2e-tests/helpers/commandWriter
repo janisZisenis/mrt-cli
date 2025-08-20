@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-bats_load_library "fileAssertions"
 bats_load_library "scriptWriter"
 
 commandFileName() {
@@ -11,10 +10,22 @@ writeSpyCommand() {
 	local commandLocation="$1"
 	local commandName="$2"
 
-	local commandPath
-	commandPath="$commandLocation/$commandName/$(commandFileName)"
+	writeSpyScript "$commandLocation/$commandName/$(commandFileName)"
+}
 
-	writeSpyScript "$commandPath"
+assert_command_was_executed_with_parameters() {
+	local commandLocation="$1"
+	local commandName="$2"
+	local expectedParameters="$3"
+
+	assert_script_was_executed_with_parameters "$commandLocation/$commandName/$(commandFileName)" "$expectedParameters"
+}
+
+assert_command_was_not_executed() {
+	local commandLocation="$1"
+	local commandName="$2"
+
+	assert_script_was_not_executed "$commandLocation/$commandName/$(commandFileName)"
 }
 
 writeStubCommand() {
@@ -23,10 +34,7 @@ writeStubCommand() {
 	local exitCode="$3"
 	local output="$4"
 
-  local commandPath
-	commandPath="$commandLocation/$commandName/$(commandFileName)"
-
-	writeStubScript "$commandPath" "$exitCode" "$output"
+	writeStubScript "$commandLocation/$commandName/$(commandFileName)" "$exitCode" "$output"
 }
 
 writeStdErrCommand() {
@@ -47,29 +55,7 @@ writeCommandRequestingInput() {
 assert_command_received_input() {
 	local commandLocation="$1"
 	local commandName="$2"
-	local input="$3"
+	local expectedInput="$3"
 
-	assert_file_exists "$commandLocation/$commandName/$input"
-}
-
-assert_command_spy_file_has_content() {
-	local commandLocation="$1"
-	local commandName="$2"
-	local expectedParameters="$3"
-
-	assert_script_was_executed_with_parameters "$commandLocation/$commandName/$(commandFileName)" "$expectedParameters"
-}
-
-assert_command_spy_file_exists() {
-	local commandLocation="$1"
-	local commandName="$2"
-
-	assert_script_was_executed "$commandLocation/$commandName/$(commandFileName)"
-}
-
-assert_command_spy_file_does_not_exist() {
-	local commandLocation="$1"
-	local commandName="$2"
-
-	assert_spy_file_does_not_exist "$commandLocation/$commandName/$(commandFileName)"
+  assert_script_received_input "$commandLocation/$commandName/$(commandFileName)" "$expectedInput"
 }
