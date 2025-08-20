@@ -18,9 +18,8 @@ teardown() {
 }
 
 test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it() {
-	commandName=$1
-	shift
-	parameters=("$@")
+	local commandName=$1; shift
+	local parameters=("$@")
 	writeSpyRunCommand "$commandName"
 
 	run runCommand "$commandName" -- "${parameters[@]}"
@@ -58,26 +57,26 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	assert_output "$error"
 }
 
+# shellcheck disable=SC2030
 @test "if command fails with code 1 it will fail with error code 1 as well" {
-	commandName="some-command"
-	exitCode=1
-	writeStubRunCommand "$commandName" "$exitCode" ""
-
-	run runCommand "$commandName"
-
-	assert_equal "$status" "$exitCode"
-	assert_failure
+  test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 1
 }
 
+# shellcheck disable=SC2030
 @test "if command fails with code 2 it will fail with error code 2 as well" {
-	commandName="some-command"
-	exitCode=2
-	writeStubRunCommand "$commandName" "$exitCode" ""
+  test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 2
+}
 
-	run runCommand "$commandName"
+test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
+  local exitCode="$1"
+  local commandName="some-command"
+  writeStubRunCommand "$commandName" "$exitCode" ""
 
-	assert_equal "$status" "$exitCode"
-	assert_failure
+  run runCommand "$commandName"
+
+  # shellcheck disable=SC2031
+  assert_equal "$status" "$exitCode"
+  assert_failure
 }
 
 @test "if command exits with code 0 it will succeed" {
