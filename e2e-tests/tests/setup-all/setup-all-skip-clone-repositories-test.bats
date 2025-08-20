@@ -4,10 +4,6 @@ bats_load_library 'common'
 bats_load_library 'repositoriesPath'
 bats_load_library 'testRepositories'
 
-repositoryDir() {
-	echo "$(testEnvDir)/$(default_repositories_path)/$repository"
-}
-
 setup() {
 	common_setup
 	authenticate
