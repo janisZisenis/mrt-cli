@@ -4,6 +4,7 @@ bats_load_library 'writeTeamFile'
 bats_load_library 'repositoriesPath'
 bats_load_library 'assertLineReversed'
 bats_load_library 'commands/setupCommandWriter'
+bats_load_library 'testRepositories'
 
 setup() {
 	common_setup

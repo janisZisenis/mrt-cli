@@ -3,6 +3,7 @@ bats_load_library 'ssh-authenticate'
 bats_load_library 'common'
 bats_load_library 'repositoriesPath'
 bats_load_library 'git'
+bats_load_library 'testRepositories'
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"

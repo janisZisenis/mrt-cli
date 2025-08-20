@@ -1,108 +1,60 @@
 #!/usr/bin/env bash
 
-teamFileName() {
+_teamFileName() {
 	echo "team.json"
 }
 
-getTestingRepositoryUrl() {
-	local repositoryName="$1"
-
-	echo "git@github-testing:janisZisenisTesting/$repositoryName.git"
+_teamFilePath() {
+  echo "$(testEnvDir)/$(_teamFileName)"
 }
 
-getRepositoryUrls() {
-	local repositoryNames=("$@")
+_createTeamFileIfNotExisting() {
+	if [[ ! -f "$(_teamFilePath)" ]]; then
+		echo "{}" > "$(_teamFilePath)"
+	fi
+}
 
-	for r in "${repositoryNames[@]}"; do
-		getTestingRepositoryUrl "$r"
-	done
+_toJsonArray() {
+  local inputArray=("$@")
+
+  if [[ ${#inputArray[@]} -eq 0 ]]; then
+    echo "[]"
+    return
+  fi
+
+  jq -Rn --argjson args "$(printf '%s\n' "${inputArray[@]}" | jq -R . | jq -s .)" '$args'
+}
+
+_toJsonString() {
+  echo "\"$1\""
+}
+
+_updateJsonField() {
+  local fieldName="$1"
+  local jsonArray="$2"
+
+  _createTeamFileIfNotExisting
+
+  jq --argjson jsonArray "$jsonArray" ". += {\"$fieldName\": \$jsonArray}" "$(_teamFilePath)" > "$(_teamFilePath).tmp" \
+    && mv "$(_teamFilePath).tmp" "$(_teamFilePath)"
 }
 
 writeBlockedBranches() {
-	local blockedBranches=("$@")
-
-	createTeamFileIfNotExisting
-
-	local concatenation=""
-	for b in "${blockedBranches[@]}"; do
-		concatenation="$concatenation\"$b\","
-	done
-
-	if [[ ${#blockedBranches[*]} -gt 0 ]]; then
-		concatenation=${concatenation::-1}
-	fi
-
-	local jsonArray="[$concatenation]"
-
-	local string
-	string=$(jq --argjson jsonArray "$jsonArray" '. += {"blockedBranches": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
-	echo "$string" >"$(testEnvDir)/$(teamFileName)"
-}
-
-writeRepositoriesUrls() {
-	local repositoriesUrls=("$@")
-
-	createTeamFileIfNotExisting
-
-	local string=""
-	for r in "${repositoriesUrls[@]}"; do
-		string="$string\"$r\","
-	done
-
-	if [[ ${#repositoriesUrls[@]} -gt 0 ]]; then
-		string=${string::-1}
-	fi
-
-	local jsonArray="[$string]"
-
-	local string
-	string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositories": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
-	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+	_updateJsonField "blockedBranches" "$(_toJsonArray "$@")"
 }
 
 writeRepositoriesPrefixes() {
-	local repositoriesPrefixes=("$@")
+	_updateJsonField "repositoriesPrefixes" "$(_toJsonArray "$@")"
+}
 
-	createTeamFileIfNotExisting
-
-	local concatenation=""
-	for p in "${repositoriesPrefixes[@]}"; do
-		concatenation="$concatenation\"$p\","
-	done
-
-	if [[ ${#repositoriesPrefixes[*]} -gt 0 ]]; then
-		concatenation=${concatenation::-1}
-	fi
-
-	local jsonArray="[$concatenation]"
-
-	local string
-	string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositoriesPrefixes": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
-	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+writeRepositoriesUrls() {
+	_updateJsonField "repositories" "$(_toJsonArray "$@")"
 }
 
 writeRepositoriesPath() {
-	local repositoriesPath="$1"
-
-	createTeamFileIfNotExisting
-
-	local string
-	string=$(jq --arg repositoriesPath "$repositoriesPath" '. += {"repositoriesPath": ($repositoriesPath)}' "$(testEnvDir)/$(teamFileName)")
-	echo "$string" >"$(testEnvDir)/$(teamFileName)"
+  _updateJsonField "repositoriesPath" "$(_toJsonString "$1")"
 }
 
 writeCommitPrefixRegex() {
-	local prefix="$1"
-
-	createTeamFileIfNotExisting
-
-	local string
-	string=$(jq --arg prefix "$prefix" '. += {"commitPrefixRegex": ($prefix)}' "$(testEnvDir)/$(teamFileName)")
-	echo "$string" >"$(testEnvDir)/$(teamFileName)"
-}
-
-createTeamFileIfNotExisting() {
-	if [[ ! -f "$(testEnvDir)/$(teamFileName)" ]]; then
-		echo "{}" >"$(testEnvDir)/$(teamFileName)"
-	fi
+  _updateJsonField "commitPrefixRegex" "$(_toJsonString "$1")"
 }
