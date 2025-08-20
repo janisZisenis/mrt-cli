@@ -3,8 +3,7 @@ bats_load_library 'ssh-authenticate'
 bats_load_library 'common'
 bats_load_library 'repositoriesPath'
 bats_load_library 'directoryAssertions'
-bats_load_library 'commandWriter'
-bats_load_library 'setupCommandWriter'
+bats_load_library 'commands/setupCommandWriter'
 
 setup() {
 	common_setup

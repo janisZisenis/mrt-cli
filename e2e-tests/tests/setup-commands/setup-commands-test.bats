@@ -1,8 +1,7 @@
 bats_load_library 'common'
-bats_load_library 'commandWriter'
 bats_load_library 'git'
 bats_load_library 'setup'
-bats_load_library 'setupCommandWriter'
+bats_load_library 'commands/setupCommandWriter'
 
 setup() {
 	common_setup

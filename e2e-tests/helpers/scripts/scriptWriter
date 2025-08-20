@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bats_load_library "fileAssertions"
-bats_load_library "scriptFactory"
+bats_load_library "scripts/scriptFactory"
 
 writeScript() {
   local content="$1"

@@ -1,6 +1,5 @@
 bats_load_library 'common'
-bats_load_library 'commandWriter'
-bats_load_library 'runCommandWriter'
+bats_load_library 'commands/runCommandWriter'
 
 setup() {
 	common_setup

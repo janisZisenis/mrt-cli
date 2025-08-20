@@ -1,9 +1,9 @@
 bats_load_library 'common'
 bats_load_library 'ssh-authenticate'
-bats_load_library 'commandWriter'
 bats_load_library 'writeTeamFile'
 bats_load_library 'repositoriesPath'
 bats_load_library 'assertLineReversed'
+bats_load_library 'commands/setupCommandWriter'
 
 setup() {
 	common_setup
@@ -22,9 +22,8 @@ teardown() {
 	repositoryDir="$(testEnvDir)/$(default_repositories_path)/$repository"
 	someCommandName="some-command"
 	anotherCommandName="another-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$someCommandName"
-	writeSpyCommand "$commandLocation" "$anotherCommandName"
+	writeSpySetupCommand "$someCommandName"
+	writeSpySetupCommand "$anotherCommandName"
 
 	run execute setup all
 
