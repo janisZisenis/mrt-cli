@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-bats_load_library "fileAssertions"
 bats_load_library "scripts/scriptFactory"
 
 writeScript() {
@@ -35,11 +34,11 @@ assert_script_was_executed_with_parameters() {
 }
 
 assert_script_was_executed() {
-	assert_file_exists "$1$(spyFileSuffix)"
+	assert_file_exist "$1$(spyFileSuffix)"
 }
 
 assert_script_was_not_executed() {
-	assert_file_does_not_exist "$1$(spyFileSuffix)"
+	assert_file_not_exist "$1$(spyFileSuffix)"
 }
 
 writeStubScript() {
@@ -60,7 +59,7 @@ assert_script_received_input() {
   local scriptPath="$1"
   local expectedInput="$2"
 
-	assert_file_exists "$(dirname "$scriptPath")/$expectedInput"
+	assert_file_exist "$(dirname "$scriptPath")/$expectedInput"
 }
 
 writeStdErrScript() {

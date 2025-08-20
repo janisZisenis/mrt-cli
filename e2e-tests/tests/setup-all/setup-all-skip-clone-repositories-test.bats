@@ -2,7 +2,6 @@ bats_load_library 'setup'
 bats_load_library 'ssh-authenticate'
 bats_load_library 'common'
 bats_load_library 'repositoriesPath'
-bats_load_library 'directoryAssertions'
 
 repositoryDir() {
 	echo "$(testEnvDir)/$(default_repositories_path)/$repository"
@@ -25,7 +24,7 @@ teardown() {
 
 	run execute setup all --skip-clone-repositories
 
-	assert_directory_does_not_exist "$(testEnvDir)/$(default_repositories_path)/$repository"
+	assert_dir_not_exist "$(testEnvDir)/$(default_repositories_path)/$repository"
 }
 
 @test "if setup is run with skipping the clone step it should print a skip message" {

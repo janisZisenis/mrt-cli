@@ -3,7 +3,6 @@ bats_load_library 'common'
 bats_load_library 'git'
 bats_load_library 'setup'
 bats_load_library 'repositoriesPath'
-bats_load_library 'directoryAssertions'
 
 setup() {
 	common_setup
@@ -43,7 +42,7 @@ repositoriesDir() {
 
 	run setupGitHooks
 
-	assert_directory_does_not_exist "$folderPath/.git/hooks"
+	assert_dir_not_exist "$folderPath/.git/hooks"
 }
 
 @test "If repositories path contains 2 repositories committing on a blocked branch in the second repository after setting up git-hooks should be blocked" {
