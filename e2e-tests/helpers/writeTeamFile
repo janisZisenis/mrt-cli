@@ -5,13 +5,13 @@ teamFileName() {
 }
 
 getTestingRepositoryUrl() {
-	repositoryName=$1
+	local repositoryName="$1"
 
 	echo "git@github-testing:janisZisenisTesting/$repositoryName.git"
 }
 
 getRepositoryUrls() {
-	repositoryNames=("$@")
+	local repositoryNames=("$@")
 
 	for r in "${repositoryNames[@]}"; do
 		getTestingRepositoryUrl "$r"
@@ -19,11 +19,11 @@ getRepositoryUrls() {
 }
 
 writeBlockedBranches() {
-	blockedBranches=("$@")
+	local blockedBranches=("$@")
 
 	createTeamFileIfNotExisting
 
-	concatenation=""
+	local concatenation=""
 	for b in "${blockedBranches[@]}"; do
 		concatenation="$concatenation\"$b\","
 	done
@@ -32,18 +32,19 @@ writeBlockedBranches() {
 		concatenation=${concatenation::-1}
 	fi
 
-	jsonArray="[$concatenation]"
+	local jsonArray="[$concatenation]"
 
+	local string
 	string=$(jq --argjson jsonArray "$jsonArray" '. += {"blockedBranches": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
 	echo "$string" >"$(testEnvDir)/$(teamFileName)"
 }
 
 writeRepositoriesUrls() {
-	repositoriesUrls=("$@")
+	local repositoriesUrls=("$@")
 
 	createTeamFileIfNotExisting
 
-	string=""
+	local string=""
 	for r in "${repositoriesUrls[@]}"; do
 		string="$string\"$r\","
 	done
@@ -52,18 +53,19 @@ writeRepositoriesUrls() {
 		string=${string::-1}
 	fi
 
-	jsonArray="[$string]"
+	local jsonArray="[$string]"
 
+	local string
 	string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositories": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
 	echo "$string" >"$(testEnvDir)/$(teamFileName)"
 }
 
 writeRepositoriesPrefixes() {
-	repositoriesPrefixes=("$@")
+	local repositoriesPrefixes=("$@")
 
 	createTeamFileIfNotExisting
 
-	concatenation=""
+	local concatenation=""
 	for p in "${repositoriesPrefixes[@]}"; do
 		concatenation="$concatenation\"$p\","
 	done
@@ -72,26 +74,29 @@ writeRepositoriesPrefixes() {
 		concatenation=${concatenation::-1}
 	fi
 
-	jsonArray="[$concatenation]"
+	local jsonArray="[$concatenation]"
 
+	local string
 	string=$(jq --argjson jsonArray "$jsonArray" '. += {"repositoriesPrefixes": ($jsonArray)}' "$(testEnvDir)/$(teamFileName)")
 	echo "$string" >"$(testEnvDir)/$(teamFileName)"
 }
 
 writeRepositoriesPath() {
-	repositoriesPath=$1
+	local repositoriesPath="$1"
 
 	createTeamFileIfNotExisting
 
+	local string
 	string=$(jq --arg repositoriesPath "$repositoriesPath" '. += {"repositoriesPath": ($repositoriesPath)}' "$(testEnvDir)/$(teamFileName)")
 	echo "$string" >"$(testEnvDir)/$(teamFileName)"
 }
 
 writeCommitPrefixRegex() {
-	prefix=$1
+	local prefix="$1"
 
 	createTeamFileIfNotExisting
 
+	local string
 	string=$(jq --arg prefix "$prefix" '. += {"commitPrefixRegex": ($prefix)}' "$(testEnvDir)/$(teamFileName)")
 	echo "$string" >"$(testEnvDir)/$(teamFileName)"
 }
