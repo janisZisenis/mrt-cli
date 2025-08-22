@@ -1,4 +1,3 @@
-
 bats_load_library "fixtures/authenticated_fixture"
 bats_load_library 'git'
 bats_load_library 'setup'
@@ -68,7 +67,7 @@ repositoriesDir() {
 }
 
 test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages() {
-	repositoriesPath=$1
+	local repositoriesPath="$1"
 	writeRepositoriesPath "$repositoriesPath"
 
 	run setupGitHooks
