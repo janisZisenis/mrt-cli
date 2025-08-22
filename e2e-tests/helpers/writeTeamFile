@@ -31,12 +31,15 @@ _toJsonString() {
 
 _updateJsonField() {
   local fieldName="$1"
-  local jsonArray="$2"
+  local value="$2"
 
   _createTeamFileIfNotExisting
 
-  jq --argjson jsonArray "$jsonArray" ". += {\"$fieldName\": \$jsonArray}" "$(_teamFilePath)" > "$(_teamFilePath).tmp" \
-    && mv "$(_teamFilePath).tmp" "$(_teamFilePath)"
+  local temp_file
+  temp_file="$(_teamFilePath).tmp"
+
+  jq --argjson value "$value" ". += {\"$fieldName\": \$value}" "$(_teamFilePath)" > "$temp_file" \
+    && mv "$temp_file" "$(_teamFilePath)"
 }
 
 writeBlockedBranches() {
