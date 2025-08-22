@@ -13,12 +13,26 @@ _check_if_private_key_file_exists() {
 	fi
 }
 
-authenticate() {
+_authenticate() {
 	_check_if_private_key_file_exists
 	ssh-add "$(_private_key_file)"
 }
 
-revoke-authentication() {
+_revoke_authentication() {
 	_check_if_private_key_file_exists
 	ssh-add -d "$(_private_key_file)"
+}
+
+authenticated_setup() {
+	bats_load_library common_fixture
+
+	common_setup
+	_authenticate
+}
+
+authenticated_teardown() {
+	bats_load_library common_fixture
+
+  _revoke_authentication
+	common_teardown
 }

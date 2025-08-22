@@ -1,17 +1,14 @@
 bats_load_library 'setup'
-bats_load_library 'ssh-authenticate'
-bats_load_library 'common_fixture'
 bats_load_library 'repositoriesPath'
 bats_load_library 'testRepositories'
+bats_load_library "fixtures/authenticated_fixture"
 
 setup() {
-	common_setup
-	authenticate
+	authenticated_setup
 }
 
 teardown() {
-	revoke-authentication
-	common_teardown
+	authenticated_teardown
 }
 
 @test "if setup is run with skipping the clone step it should not clone the repositories" {

@@ -1,19 +1,16 @@
-bats_load_library 'common_fixture'
-bats_load_library 'ssh-authenticate'
 bats_load_library 'writeTeamFile'
 bats_load_library 'repositoriesPath'
 bats_load_library 'assertLineReversed'
 bats_load_library 'commands/setupCommandWriter'
 bats_load_library 'testRepositories'
+bats_load_library "fixtures/authenticated_fixture"
 
 setup() {
-	common_setup
-	authenticate
+	authenticated_setup
 }
 
 teardown() {
-	revoke-authentication
-	common_teardown
+	authenticated_teardown
 }
 
 @test "if team file contains repository and two setup commands exist it should clone the repository, install git-hooks and execute the commands" {

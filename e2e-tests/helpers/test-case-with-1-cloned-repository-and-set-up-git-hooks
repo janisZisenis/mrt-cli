@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-bats_load_library "ssh-authenticate"
-bats_load_library "common_fixture"
+bats_load_library "fixtures/authenticated_fixture"
 bats_load_library "setup"
 bats_load_library "git"
 bats_load_library "repositoriesPath"
@@ -10,16 +9,14 @@ bats_load_library "repositoriesPath"
 repository="1_TestRepository"
 
 setup() {
-	common_setup
-	authenticate
+	authenticated_setup
 
 	cloneTestingRepositories "$(testEnvDir)/$(default_repositories_path)" "$repository"
 	setupGitHooks
 }
 
 teardown() {
-	revoke-authentication
-	common_teardown
+	authenticated_teardown
 }
 
 repositoryDir() {

@@ -1,9 +1,8 @@
 bats_load_library 'setup'
-bats_load_library 'ssh-authenticate'
-bats_load_library 'common_fixture'
 bats_load_library 'repositoriesPath'
 bats_load_library 'git'
 bats_load_library 'testRepositories'
+bats_load_library "fixtures/authenticated_fixture"
 
 repository="1_TestRepository"
 repositoryUrl="$(getTestingRepositoryUrl "$repository")"
@@ -14,16 +13,14 @@ repositoryDir() {
 }
 
 setup() {
-	common_setup
-	authenticate
+  authenticated_setup
 
 	writeRepositoriesUrls "$repositoryUrl"
 	run execute setup all --skip-install-git-hooks
 }
 
 teardown() {
-	revoke-authentication
-	common_teardown
+	authenticated_teardown
 }
 
 @test "After setup all with 'skip-git-hooks' committing on a blocked branch is not rejected" {
