@@ -24,14 +24,14 @@ _revoke_authentication() {
 }
 
 authenticated_setup() {
-	bats_load_library common_fixture
+	bats_load_library fixtures/common_fixture
 
 	common_setup
 	_authenticate
 }
 
 authenticated_teardown() {
-	bats_load_library common_fixture
+	bats_load_library fixtures/common_fixture
 
   _revoke_authentication
 	common_teardown
