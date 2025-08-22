@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+bats_load_library "jsonWriter"
+
 _teamFileName() {
 	echo "team.json"
 }
@@ -8,56 +10,27 @@ _teamFilePath() {
   echo "$(testEnvDir)/$(_teamFileName)"
 }
 
-_createTeamFileIfNotExisting() {
-	if [[ ! -f "$(_teamFilePath)" ]]; then
-		echo "{}" > "$(_teamFilePath)"
-	fi
-}
 
-_toJsonArray() {
-  local inputArray=("$@")
-
-  if [[ ${#inputArray[@]} -eq 0 ]]; then
-    echo "[]"
-    return
-  fi
-
-  jq -Rn --argjson args "$(printf '%s\n' "${inputArray[@]}" | jq -R . | jq -s .)" '$args'
-}
-
-_toJsonString() {
-  echo "\"$1\""
-}
-
-_updateJsonField() {
-  local fieldName="$1"
-  local value="$2"
-
-  _createTeamFileIfNotExisting
-
-  local temp_file
-  temp_file="$(_teamFilePath).tmp"
-
-  jq --argjson value "$value" ". += {\"$fieldName\": \$value}" "$(_teamFilePath)" > "$temp_file" \
-    && mv "$temp_file" "$(_teamFilePath)"
+_writeToTeamFile() {
+  writeJsonField "$(_teamFilePath)" "$1" "$2"
 }
 
 writeBlockedBranches() {
-	_updateJsonField "blockedBranches" "$(_toJsonArray "$@")"
+	_writeToTeamFile "blockedBranches" "$(toJsonArray "$@")"
 }
 
 writeRepositoriesPrefixes() {
-	_updateJsonField "repositoriesPrefixes" "$(_toJsonArray "$@")"
+	_writeToTeamFile "repositoriesPrefixes" "$(toJsonArray "$@")"
 }
 
 writeRepositoriesUrls() {
-	_updateJsonField "repositories" "$(_toJsonArray "$@")"
+	_writeToTeamFile "repositories" "$(toJsonArray "$@")"
 }
 
 writeRepositoriesPath() {
-  _updateJsonField "repositoriesPath" "$(_toJsonString "$1")"
+  _writeToTeamFile "repositoriesPath" "$(toJsonString "$1")"
 }
 
 writeCommitPrefixRegex() {
-  _updateJsonField "commitPrefixRegex" "$(_toJsonString "$1")"
+  _writeToTeamFile "commitPrefixRegex" "$(toJsonString "$1")"
 }
