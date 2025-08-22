@@ -1,4 +1,4 @@
-bats_load_library 'test-case-with-1-cloned-repository-and-set-up-git-hooks'
+bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture'
 
 @test "if subcommand 'git-hook' gets called with an unknown git hook it fails" {
 	hookName="unknown-hook"

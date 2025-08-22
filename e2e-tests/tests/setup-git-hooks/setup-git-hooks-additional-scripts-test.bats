@@ -1,4 +1,4 @@
-bats_load_library 'test-case-with-1-cloned-repository-and-set-up-git-hooks'
+bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture'
 bats_load_library 'scripts/scriptWriter'
 
 @test "if pre-commit scripts exist 'committing' will execute them" {

@@ -6,12 +6,10 @@ bats_load_library "setup"
 bats_load_library "git"
 bats_load_library "repositoriesPath"
 
-repository="1_TestRepository"
-
 setup() {
 	authenticated_setup
 
-	cloneTestingRepositories "$(testEnvDir)/$(default_repositories_path)" "$repository"
+	cloneTestingRepositories "$(testEnvDir)/$(default_repositories_path)" "$(repositoryName)"
 	setupGitHooks
 }
 
@@ -20,5 +18,9 @@ teardown() {
 }
 
 repositoryDir() {
-	echo "$(testEnvDir)/$(default_repositories_path)/$repository"
+	echo "$(testEnvDir)/$(default_repositories_path)/$(repositoryName)"
+}
+
+repositoryName() {
+  echo "1_TestRepository"
 }
