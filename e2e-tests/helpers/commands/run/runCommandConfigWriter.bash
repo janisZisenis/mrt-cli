@@ -1,6 +1,3 @@
-bats_load_library "jsonWriter.bash"
-bats_load_library "commands/run/runCommandLocation.bash"
-
 _configFileName() {
 	echo "config.json"
 }
@@ -8,6 +5,7 @@ _configFileName() {
 configFilePath() {
   local commandName="$1"
 
+  bats_load_library 'commands/run/runCommandLocation.bash'
   echo "$(runCommandLocation)/$commandName/$(_configFileName)"
 }
 
@@ -22,6 +20,7 @@ _writeToConfigFile() {
 writeEmptyJsonObjectAsConfig() {
   local commandName="$1"
 
+  bats_load_library "jsonWriter.bash"
   writeEmptyJsonIfFileDoesNotExist "$(configFilePath "$commandName")"
 }
 
@@ -29,5 +28,6 @@ writeShortDescription() {
   local commandName="$1"
   local shortDescription="$2"
 
+  bats_load_library "jsonWriter.bash"
   _writeToConfigFile "$commandName" "shortDescription" "$(toJsonString "$shortDescription")"
 }
