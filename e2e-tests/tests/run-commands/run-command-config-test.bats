@@ -36,7 +36,7 @@ teardown() {
 @test "if command config is completely empty, it should exit with an error" {
 	commandName="some-command"
   shortDescription="A command that outputs some-output"
-  configFile="$(testEnvDir)/run/$commandName/config.json"
+  configFile="$(configFilePath "$commandName")"
   writeDummyRunCommand "$commandName"
   touch "$configFile"
 

@@ -7,7 +7,7 @@ _configFileName() {
 	echo "config.json"
 }
 
-_configFilePath() {
+configFilePath() {
   local commandName="$1"
 
   echo "$(runCommandLocation)/$commandName/$(_configFileName)"
@@ -18,13 +18,13 @@ _writeToConfigFile() {
   local fieldName="$2"
   local fieldValue="$3"
 
-  writeJsonField "$(_configFilePath "$commandName")" "$fieldName" "$fieldValue"
+  writeJsonField "$(configFilePath "$commandName")" "$fieldName" "$fieldValue"
 }
 
 writeEmptyJsonObjectAsConfig() {
   local commandName="$1"
 
-  writeEmptyJsonIfFileDoesNotExist "$(_configFilePath "$commandName")"
+  writeEmptyJsonIfFileDoesNotExist "$(configFilePath "$commandName")"
 }
 
 writeShortDescription() {
