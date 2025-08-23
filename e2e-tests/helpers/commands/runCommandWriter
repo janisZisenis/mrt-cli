@@ -6,6 +6,12 @@ _runCommandLocation() {
   echo "$(testEnvDir)/run"
 }
 
+writeDummyRunCommand() {
+	local commandName="$1"
+
+  writeDummyCommand "$(_runCommandLocation)" "$commandName"
+}
+
 writeStubRunCommand() {
 	local commandName="$1"
 	local exitCode="$2"

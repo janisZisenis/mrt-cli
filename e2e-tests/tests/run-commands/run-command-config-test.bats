@@ -13,7 +13,7 @@ teardown() {
 @test "if command config contains shortDescription, it is displayed in help" {
 	commandName="some-command"
   shortDescription="A command that outputs some-output"
-  writeStubRunCommand "$commandName" "0" "some-output"
+  writeDummyRunCommand "$commandName"
   writeShortDescription "$commandName" "$shortDescription"
 
   run bats_pipe runCommand "-h" \| grep "$commandName"
@@ -24,7 +24,7 @@ teardown() {
 @test "if command config does not contain shortDescription the default is displayed in help" {
 	commandName="some-command"
   shortDescription="A command that outputs some-output"
-  writeStubRunCommand "$commandName" "0" "some-output"
+  writeDummyRunCommand "$commandName"
   writeEmptyJsonObjectAsConfig "$commandName"
 
   run bats_pipe runCommand "-h" \| grep "$commandName"
@@ -36,7 +36,7 @@ teardown() {
 	commandName="some-command"
   shortDescription="A command that outputs some-output"
   configFile="$(testEnvDir)/run/$commandName/config.json"
-  writeStubRunCommand "$commandName" "0" "some-output"
+  writeDummyRunCommand "$commandName"
   touch "$configFile"
 
   run runCommand "-h"

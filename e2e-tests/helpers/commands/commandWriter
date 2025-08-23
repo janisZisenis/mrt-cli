@@ -6,6 +6,13 @@ commandFileName() {
 	echo "command"
 }
 
+writeDummyCommand() {
+  local commandLocation="$1"
+  local commandName="$2"
+
+  writeDummyScript "$commandLocation/$commandName/$(commandFileName)"
+}
+
 writeStubCommand() {
 	local commandLocation="$1"
 	local commandName="$2"

@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+makeDummyScript() {
+cat <<EOF
+#!/bin/bash
+EOF
+}
+
 makeStubScript() {
   local output="$1"
   local exitCode="$2"

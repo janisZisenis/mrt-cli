@@ -12,6 +12,14 @@ writeScript() {
   chmod +x "$scriptPath"
 }
 
+writeDummyScript() {
+	local scriptPath="$1"
+	local exitCode="$2"
+	local output="$3"
+
+  writeScript "$(makeDummyScript)" "$scriptPath"
+}
+
 writeStubScript() {
 	local scriptPath="$1"
 	local exitCode="$2"
