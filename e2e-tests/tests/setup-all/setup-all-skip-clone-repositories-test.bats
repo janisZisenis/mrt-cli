@@ -1,11 +1,10 @@
-bats_load_library 'mrt/clone.bash'
-bats_load_library 'repositoriesPath.bash'
-bats_load_library 'testRepositories.bash'
-bats_load_library 'fixtures/authenticated_fixture.bash'
-bats_load_library 'mrt/setup.bash'
-bats_load_library 'writeTeamFile.bash'
-
 setup() {
+  bats_load_library 'repositoriesPath.bash'
+  bats_load_library 'testRepositories.bash'
+  bats_load_library 'fixtures/authenticated_fixture.bash'
+  bats_load_library 'mrt/setup.bash'
+  bats_load_library 'writeTeamFile.bash'
+
 	authenticated_setup
 }
 

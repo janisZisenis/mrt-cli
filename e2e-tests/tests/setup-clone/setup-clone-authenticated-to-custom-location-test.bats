@@ -1,9 +1,9 @@
-bats_load_library 'fixtures/authenticated_fixture.bash'
-bats_load_library 'fixtures/common_fixture.bash'
-bats_load_library 'mrt/clone.bash'
-bats_load_library 'writeTeamFile.bash'
-
 setup() {
+  bats_load_library 'fixtures/authenticated_fixture.bash'
+  bats_load_library 'fixtures/common_fixture.bash'
+  bats_load_library 'mrt/clone.bash'
+  bats_load_library 'writeTeamFile.bash'
+
 	authenticated_setup
 }
 

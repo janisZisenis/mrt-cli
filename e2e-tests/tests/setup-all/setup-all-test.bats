@@ -1,12 +1,12 @@
-bats_load_library 'writeTeamFile.bash'
-bats_load_library 'repositoriesPath.bash'
-bats_load_library 'assertLineReversed.bash'
-bats_load_library 'commands/setup/setupCommandWriter.bash'
-bats_load_library 'testRepositories.bash'
-bats_load_library 'fixtures/authenticated_fixture.bash'
-bats_load_library 'mrt/setup.bash'
-
 setup() {
+  bats_load_library 'writeTeamFile.bash'
+  bats_load_library 'repositoriesPath.bash'
+  bats_load_library 'testRepositories.bash'
+  bats_load_library 'assertLineReversed.bash'
+  bats_load_library 'commands/setup/setupCommandWriter.bash'
+  bats_load_library 'fixtures/authenticated_fixture.bash'
+  bats_load_library 'mrt/setup.bash'
+
 	authenticated_setup
 }
 

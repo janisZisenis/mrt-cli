@@ -1,11 +1,7 @@
-bats_load_library 'mrt/setup.bash'
-bats_load_library 'repositoriesPath.bash'
-bats_load_library 'writeTeamFile.bash'
-bats_load_library 'git.bash'
-bats_load_library 'testRepositories.bash'
-bats_load_library 'fixtures/authenticated_fixture.bash'
-
 setup() {
+  bats_load_library 'mrt/setup.bash'
+  bats_load_library 'fixtures/authenticated_fixture.bash'
+
   authenticated_setup
 }
 

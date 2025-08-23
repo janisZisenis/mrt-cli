@@ -1,9 +1,8 @@
-bats_load_library 'fixtures/common_fixture.bash'
-bats_load_library 'git.bash'
-bats_load_library 'mrt/setup.bash'
-bats_load_library 'commands/setup/setupCommandWriter.bash'
-
 setup() {
+  bats_load_library 'fixtures/common_fixture.bash'
+  bats_load_library 'mrt/setup.bash'
+  bats_load_library 'commands/setup/setupCommandWriter.bash'
+
 	common_setup
 }
 

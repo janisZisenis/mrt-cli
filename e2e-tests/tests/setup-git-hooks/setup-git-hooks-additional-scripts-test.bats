@@ -1,5 +1,13 @@
-bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
-bats_load_library 'scripts/scriptWriter.bash'
+setup() {
+  bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
+  bats_load_library 'scripts/scriptWriter.bash'
+
+  one_cloned_repository_with_git_hooks_setup
+}
+
+teardown() {
+  one_cloned_repository_with_git_hooks_teardown
+}
 
 @test "if pre-commit scripts exist 'committing' will execute them" {
 	scriptsPath="$(repositoryDir)/hook-scripts/pre-commit"
