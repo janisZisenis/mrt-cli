@@ -2,7 +2,7 @@
 set -e
 
 _private_key_file() {
-	echo ./.ssh/private-key
+	echo "./.ssh/private-key"
 }
 
 _check_if_private_key_file_exists() {
