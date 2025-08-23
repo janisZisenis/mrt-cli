@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
 bats_load_library "commands/commandWriter"
-
-_runCommandLocation() {
-  echo "$(testEnvDir)/run"
-}
+bats_load_library "commands/run/runCommandLocation"
 
 writeDummyRunCommand() {
 	local commandName="$1"
 
-  writeDummyCommand "$(_runCommandLocation)" "$commandName"
+  writeDummyCommand "$(runCommandLocation)" "$commandName"
 }
 
 writeStubRunCommand() {
@@ -17,38 +14,38 @@ writeStubRunCommand() {
 	local exitCode="$2"
 	local output="$3"
 
-  writeStubCommand "$(_runCommandLocation)" "$commandName" "$exitCode" "$output"
+  writeStubCommand "$(runCommandLocation)" "$commandName" "$exitCode" "$output"
 }
 
 writeSpyRunCommand() {
 	local commandName="$1"
 
-  writeSpyCommand "$(_runCommandLocation)" "$commandName"
+  writeSpyCommand "$(runCommandLocation)" "$commandName"
 }
 
 assert_run_command_was_executed_with_parameters() {
 	local commandName="$1"
 	local expectedParameters="$2"
 
-	assert_command_was_executed_with_parameters "$(_runCommandLocation)" "$commandName" "$expectedParameters"
+	assert_command_was_executed_with_parameters "$(runCommandLocation)" "$commandName" "$expectedParameters"
 }
 
 writeStdErrRunCommand() {
 	local commandName="$1"
 	local error="$2"
 
-	writeStdErrCommand "$(_runCommandLocation)" "$commandName" "$error"
+	writeStdErrCommand "$(runCommandLocation)" "$commandName" "$error"
 }
 
 writeRunCommandRequestingInput() {
 	local commandName="$1"
 
-	writeCommandRequestingInput "$(_runCommandLocation)" "$commandName"
+	writeCommandRequestingInput "$(runCommandLocation)" "$commandName"
 }
 
 assert_run_command_received_input() {
 	local commandName="$1"
 	local expectedInput="$2"
 
-	assert_command_received_input "$(_runCommandLocation)" "$commandName" "$expectedInput"
+	assert_command_received_input "$(runCommandLocation)" "$commandName" "$expectedInput"
 }

@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
 bats_load_library "jsonWriter"
-
-_runCommandLocation() {
-  echo "$(testEnvDir)/run"
-}
+bats_load_library "commands/run/runCommandLocation"
 
 _configFileName() {
 	echo "config.json"
@@ -13,9 +10,8 @@ _configFileName() {
 _configFilePath() {
   local commandName="$1"
 
-  echo "$(_runCommandLocation)/$commandName/$(_configFileName)"
+  echo "$(runCommandLocation)/$commandName/$(_configFileName)"
 }
-
 
 _writeToConfigFile() {
   local commandName="$1"

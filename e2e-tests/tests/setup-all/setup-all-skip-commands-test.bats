@@ -1,7 +1,7 @@
 bats_load_library 'setup'
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'repositoriesPath'
-bats_load_library 'commands/setupCommandWriter'
+bats_load_library 'commands/setup/setupCommandWriter'
 
 setup() {
 	common_setup
