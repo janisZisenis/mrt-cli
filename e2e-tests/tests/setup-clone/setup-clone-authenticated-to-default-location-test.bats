@@ -1,6 +1,6 @@
 repositoriesDir() {
   bats_load_library 'fixtures/common_fixture.bash'
-  bats_load_library 'repositoriesPath.bash'
+  bats_load_library 'repositories_path.bash'
 
   echo "$(testEnvDir)/$(default_repositories_path)"
 }
@@ -13,11 +13,11 @@ cloned_git_folder() {
 
 setup() {
   bats_load_library 'fixtures/authenticated_fixture.bash'
-  bats_load_library 'testRepositories.bash'
+  bats_load_library 'test_repositories.bash'
   bats_load_library 'mrt/clone.bash'
   bats_load_library 'git.bash'
-  bats_load_library 'assertLineReversed.bash'
-  bats_load_library 'writeTeamFile.bash'
+  bats_load_library 'assert_line_reversed.bash'
+  bats_load_library 'write_team_file.bash'
 
 	authenticated_setup
 }

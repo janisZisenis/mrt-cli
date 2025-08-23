@@ -1,6 +1,6 @@
 setup() {
   bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
-  bats_load_library 'scripts/scriptWriter.bash'
+  bats_load_library 'scripts/script_writer.bash'
 
   one_cloned_repository_with_git_hooks_setup
 }

@@ -1,9 +1,9 @@
 setup() {
-  bats_load_library 'writeTeamFile.bash'
-  bats_load_library 'repositoriesPath.bash'
-  bats_load_library 'testRepositories.bash'
-  bats_load_library 'assertLineReversed.bash'
-  bats_load_library 'commands/setup/setupCommandWriter.bash'
+  bats_load_library 'write_team_file.bash'
+  bats_load_library 'repositories_path.bash'
+  bats_load_library 'test_repositories.bash'
+  bats_load_library 'assert_line_reversed.bash'
+  bats_load_library 'commands/setup/setup_command_writer.bash'
   bats_load_library 'fixtures/authenticated_fixture.bash'
   bats_load_library 'mrt/setup.bash'
 

@@ -1,6 +1,6 @@
 setup() {
   bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
-  bats_load_library 'writeTeamFile.bash'
+  bats_load_library 'write_team_file.bash'
 
   one_cloned_repository_with_git_hooks_setup
 }

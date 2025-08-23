@@ -2,9 +2,9 @@ setup() {
   bats_load_library 'fixtures/common_fixture.bash'
   bats_load_library 'mrt/setup.bash'
   bats_load_library 'mrt/clone.bash'
-  bats_load_library 'writeTeamFile.bash'
-  bats_load_library 'assertLineReversed.bash'
-  bats_load_library 'testRepositories.bash'
+  bats_load_library 'write_team_file.bash'
+  bats_load_library 'assert_line_reversed.bash'
+  bats_load_library 'test_repositories.bash'
 
 	common_setup
 }

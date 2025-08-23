@@ -7,7 +7,7 @@ cloneTestingRepositories() {
   shift
   local repositoriesToClone=("$@")
 
-  bats_load_library 'testRepositories.bash'
+  bats_load_library 'test_repositories.bash'
 	for repositoryToClone in "${repositoriesToClone[@]}"; do
 		git clone "$(getTestingRepositoryUrl "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
 	done
