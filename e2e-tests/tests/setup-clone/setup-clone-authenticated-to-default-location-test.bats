@@ -1,6 +1,7 @@
 bats_load_library 'fixtures/authenticated_fixture.bash'
 bats_load_library 'fixtures/common_fixture.bash'
 bats_load_library 'repositoriesPath.bash'
+bats_load_library 'testRepositories.bash'
 bats_load_library 'mrt/clone.bash'
 bats_load_library 'git.bash'
 bats_load_library 'assertLineReversed.bash'

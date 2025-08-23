@@ -1,5 +1,3 @@
-bats_load_library 'scripts/scriptFactory.bash'
-
 writeScript() {
   local content="$1"
   local scriptPath="$2"
@@ -15,6 +13,7 @@ writeDummyScript() {
 	local exitCode="$2"
 	local output="$3"
 
+  bats_load_library 'scripts/scriptFactory.bash'
   writeScript "$(makeDummyScript)" "$scriptPath"
 }
 
@@ -23,6 +22,7 @@ writeStubScript() {
 	local exitCode="$2"
 	local output="$3"
 
+  bats_load_library 'scripts/scriptFactory.bash'
   writeScript "$(makeStubScript "$output" "$exitCode")" "$scriptPath"
 }
 
@@ -32,6 +32,7 @@ writeSpyScript() {
   local commandName
   commandName="$(basename "$scriptPath")"
 
+  bats_load_library 'scripts/scriptFactory.bash'
   local content
   content="$(makeSpyScript "$commandName")"
 
@@ -44,20 +45,24 @@ assert_script_was_executed_with_parameters() {
 
   assert_script_was_executed "$1"
 
+  bats_load_library 'scripts/scriptFactory.bash'
 	assert_equal "$(cat "$scriptPath$(spyFileSuffix)")" "$expectedParameters"
 }
 
 assert_script_was_executed() {
+  bats_load_library 'scripts/scriptFactory.bash'
 	assert_file_exist "$1$(spyFileSuffix)"
 }
 
 assert_script_was_not_executed() {
+  bats_load_library 'scripts/scriptFactory.bash'
 	assert_file_not_exist "$1$(spyFileSuffix)"
 }
 
 writeScriptRequestingInput() {
 	local scriptPath=$1
 
+  bats_load_library 'scripts/scriptFactory.bash'
   writeScript "$(makeScriptRequestingInput)" "$scriptPath"
 }
 
@@ -72,5 +77,6 @@ writeStdErrScript() {
 	local scriptPath=$1
 	local errorMessage=$2
 
+  bats_load_library 'scripts/scriptFactory.bash'
 	writeScript "$(makeStdErrScript "$errorMessage")" "$scriptPath"
 }
