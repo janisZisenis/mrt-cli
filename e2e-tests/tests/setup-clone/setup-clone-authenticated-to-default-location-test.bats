@@ -57,7 +57,9 @@ teardown() {
 }
 
 @test "if team json does not contain any repository it does not clone any repository" {
-	run clone_repositories_using_mrt ""
+  noRepositories=()
+
+	run clone_repositories_using_mrt "${noRepositories[@]}"
 
 	assert_dir_not_exist "$(repositoriesDir)"
 }

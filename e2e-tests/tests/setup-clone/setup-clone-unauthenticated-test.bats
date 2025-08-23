@@ -23,7 +23,7 @@ teardown() {
 }
 
 test_if_team_file_contains_repository_setup_prints_message_about_cloning_repositories() {
-	repositoryPath=$1
+	repositoryPath="$1"
 	repositories=(
 		"1_TestRepository"
 	)
