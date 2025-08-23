@@ -1,6 +1,7 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'commands/run/runCommandWriter'
 bats_load_library 'commands/run/runCommandConfigWriter'
+bats_load_library 'mrt/execute'
 
 setup() {
 	common_setup
@@ -16,7 +17,7 @@ teardown() {
   writeDummyRunCommand "$commandName"
   writeShortDescription "$commandName" "$shortDescription"
 
-  run bats_pipe runCommand "-h" \| grep "$commandName"
+  run bats_pipe mrtRun "-h" \| grep "$commandName"
 
 	assert_output "  $commandName $shortDescription"
 }
@@ -27,7 +28,7 @@ teardown() {
   writeDummyRunCommand "$commandName"
   writeEmptyJsonObjectAsConfig "$commandName"
 
-  run bats_pipe runCommand "-h" \| grep "$commandName"
+  run bats_pipe mrtRun "-h" \| grep "$commandName"
 
 	assert_output "  $commandName Executes run command $commandName"
 }
@@ -39,7 +40,7 @@ teardown() {
   writeDummyRunCommand "$commandName"
   touch "$configFile"
 
-  run runCommand "-h"
+  run mrtRun "-h"
 
   assert_equal "$status" 1
   assert_line --index 0 "Error while reading $configFile"

@@ -4,6 +4,7 @@ bats_load_library 'assertLineReversed'
 bats_load_library 'commands/setup/setupCommandWriter'
 bats_load_library 'testRepositories'
 bats_load_library "fixtures/authenticated_fixture"
+bats_load_library "mrt/execute"
 
 setup() {
 	authenticated_setup
@@ -23,7 +24,7 @@ teardown() {
 	writeSpySetupCommand "$someCommandName"
 	writeSpySetupCommand "$anotherCommandName"
 
-	run execute setup all
+	run mrtSetupAll
 
 	assert_line --index 0 "Start cloning repositories into \"$(default_repositories_path)\""
 	assert_line --index 1 "Cloning $repositoryUrl"
@@ -43,7 +44,7 @@ teardown() {
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {
-	run execute setup all
+	run mrtSetupAll
 
 	refute_output --partial "Skipping install-git-hooks step."
 }
@@ -52,7 +53,7 @@ teardown() {
 	commandName="some-command"
 	writeSpyCommand "$(testEnvDir)/setup" "$commandName"
 
-	run execute setup all
+	run mrtSetupAll
 
 	refute_output --partial "Skipping setup command: $commandName"
 }

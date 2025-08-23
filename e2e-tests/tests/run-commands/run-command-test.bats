@@ -1,5 +1,6 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'commands/run/runCommandWriter'
+bats_load_library 'mrt/execute'
 
 setup() {
 	common_setup
@@ -22,7 +23,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	local parameters=("$@")
 	writeSpyRunCommand "$commandName"
 
-	run runCommand "$commandName" -- "${parameters[@]}"
+	run mrtRun "$commandName" -- "${parameters[@]}"
 
 	assert_run_command_was_executed_with_parameters "$commandName" "$(testEnvDir) ${parameters[*]}"
 }
@@ -32,7 +33,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	someOutput="some-output"
 	writeStubRunCommand "$commandName" "0" "$someOutput"
 
-	run runCommand "$commandName"
+	run mrtRun "$commandName"
 
 	assert_output "$someOutput"
 }
@@ -42,7 +43,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	writeRunCommandRequestingInput "$commandName"
 	input="some-input"
 
-	run runCommand $commandName <<<$input
+	run mrtRun $commandName <<<$input
 
 	assert_run_command_received_input "$commandName" "$input"
 }
@@ -52,7 +53,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	error="some-error"
 	writeStdErrRunCommand "$commandName" "$error"
 
-	run runCommand "$commandName"
+	run mrtRun "$commandName"
 
 	assert_output "$error"
 }
@@ -72,7 +73,7 @@ test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
   local commandName="some-command"
   writeStubRunCommand "$commandName" "$exitCode" ""
 
-  run runCommand "$commandName"
+  run mrtRun "$commandName"
 
   # shellcheck disable=SC2031
   assert_equal "$status" "$exitCode"
@@ -84,7 +85,7 @@ test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
 	exitCode=0
 	writeStubRunCommand "$commandName" "$exitCode" ""
 
-	run runCommand "$commandName"
+	run mrtRun "$commandName"
 
 	assert_success
 }

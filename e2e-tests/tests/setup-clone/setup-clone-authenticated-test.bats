@@ -1,6 +1,6 @@
 bats_load_library "fixtures/authenticated_fixture"
 bats_load_library 'repositoriesPath'
-bats_load_library 'setup'
+bats_load_library 'mrt/clone'
 bats_load_library 'git'
 bats_load_library 'assertLineReversed'
 
@@ -21,7 +21,7 @@ teardown() {
 @test "if team json does not contain repositoriesPath it clones repository into 'repositories' folder" {
 	repositories=("1_TestRepository")
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -30,7 +30,7 @@ teardown() {
 	repository="1_TestRepository"
 	repositoryUrl="$(getRepositoryUrls "$repository")"
 
-	run setupCloneUrls "$repositoryUrl"
+	run clone_repository_urls_using_mrt "$repositoryUrl"
 
 	assert_line --index 1 "Cloning $repositoryUrl"
 	assert_line --index 3 --regexp "Enumerating objects: [0-9]+, done."
@@ -42,7 +42,7 @@ teardown() {
 	writeRepositoriesPath "$repositoriesPath"
 	repository="1_TestRepository"
 
-	run setupClone "$repository"
+	run clone_repositories_using_mrt "$repository"
 
 	assert_dir_exist "$(repositoriesDir)/$repository/.git"
 }
@@ -54,14 +54,14 @@ teardown() {
 	)
 	cloneTestingRepositories "$(repositoriesDir)" "${repositories[0]}"
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
 	assert_dir_exist "$(repositoriesDir)/${repositories[1]}/.git"
 }
 
 @test "if team json does not contain any repository it does not clone any repository" {
-	run setupClone ""
+	run clone_repositories_using_mrt ""
 
 	assert_dir_not_exist "$(repositoriesDir)"
 }
@@ -70,7 +70,7 @@ teardown() {
 	repository="not-existing"
 	repositoryUrl="$(getRepositoryUrls "$repository")"
 
-	run setupCloneUrls "$repositoryUrl"
+	run clone_repository_urls_using_mrt "$repositoryUrl"
 
 	assert_output --partial "fatal: Could not read from remote repository."
 }
@@ -81,7 +81,7 @@ teardown() {
 		"non-existing"
 	)
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
 }
@@ -93,7 +93,7 @@ teardown() {
 	)
 	writeRepositoriesPrefixes "Prefix1_" "Prefix2_"
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_dir_exist "$(repositoriesDir)/TestRepository1/.git"
 	assert_dir_exist "$(repositoriesDir)/TestRepository2/.git"
@@ -106,7 +106,7 @@ teardown() {
 	)
 	writeRepositoriesPrefixes "TestRepository1" "TestRepository2"
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
 	assert_dir_exist "$(repositoriesDir)/${repositories[1]}/.git"

@@ -1,6 +1,6 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'git'
-bats_load_library 'setup'
+bats_load_library 'mrt/clone'
 bats_load_library 'commands/setup/setupCommandWriter'
 
 setup() {
@@ -23,7 +23,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	commandName=$1
 	writeSpySetupCommand "$commandName"
 
-	execute setup "$commandName"
+	mrtSetup "$commandName"
 
 	assert_setup_command_was_executed "$commandName" "$(testEnvDir)"
 }
@@ -33,7 +33,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	someOutput="some-output"
 	writeStubSetupCommand "$commandName" "0" "$someOutput"
 
-	run setupCommand $commandName
+	run mrtSetup $commandName
 
 	assert_line --index 0 "Execute setup command: $commandName"
 	assert_line --index 1 "$someOutput"
@@ -46,7 +46,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	exitCode=15
 	writeStubSetupCommand "$commandName" "$exitCode" "$someOutput"
 
-	run setupCommand "$commandName"
+	run mrtSetup "$commandName"
 
 	assert_line --index 0 "Execute setup command: $commandName"
 	assert_line --index 1 "$someOutput"
@@ -58,7 +58,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	writeSetupCommandRequestingInput "$commandName"
 	input="some-input"
 
-	run setupCommand $commandName <<<$input
+	run mrtSetup $commandName <<<$input
 
 	assert_setup_command_received_input "$commandName" "$input"
 }
@@ -68,7 +68,7 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	error="some-error"
 	writeStdErrSetupCommand "$commandName" "$error"
 
-	run setupCommand "$commandName"
+	run mrtSetup "$commandName"
 
 	assert_output --partial "$error"
 }

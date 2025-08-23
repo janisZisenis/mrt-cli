@@ -1,7 +1,8 @@
-bats_load_library 'setup'
+bats_load_library 'mrt/clone'
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'repositoriesPath'
 bats_load_library 'commands/setup/setupCommandWriter'
+bats_load_library 'mrt/execute'
 
 setup() {
 	common_setup
@@ -17,7 +18,7 @@ teardown() {
 	writeSpySetupCommand "$someCommandName"
 	writeSpySetupCommand "$anotherCommandName"
 
-	run execute setup all "--skip-$someCommandName"
+	run mrtSetupAll "--skip-$someCommandName"
 
 	assert_setup_command_was_not_executed "$someCommandName"
 	assert_setup_command_was_executed "$anotherCommandName" "$(testEnvDir)"
@@ -29,7 +30,7 @@ teardown() {
 	writeSpySetupCommand "$someCommandName"
 	writeSpySetupCommand "$anotherCommandName"
 
-	run execute setup all "--skip-$anotherCommandName"
+	run mrtSetupAll "--skip-$anotherCommandName"
 
 	assert_setup_command_was_executed "$someCommandName" "$(testEnvDir)"
 	assert_setup_command_was_not_executed "$anotherCommandName"
@@ -39,7 +40,7 @@ teardown() {
 	commandName="some-command"
 	writeSpySetupCommand "$commandName"
 
-	run execute setup all "--skip-$commandName"
+	run mrtSetupAll "--skip-$commandName"
 
 	assert_output --partial "Skipping setup command: $commandName"
 }

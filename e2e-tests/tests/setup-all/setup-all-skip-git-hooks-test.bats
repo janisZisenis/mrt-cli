@@ -1,5 +1,6 @@
-bats_load_library 'setup'
+bats_load_library 'mrt/execute'
 bats_load_library 'repositoriesPath'
+bats_load_library 'writeTeamFile'
 bats_load_library 'git'
 bats_load_library 'testRepositories'
 bats_load_library "fixtures/authenticated_fixture"
@@ -16,7 +17,7 @@ setup() {
   authenticated_setup
 
 	writeRepositoriesUrls "$repositoryUrl"
-	run execute setup all --skip-install-git-hooks
+	run mrtSetupAll --skip-install-git-hooks
 }
 
 teardown() {

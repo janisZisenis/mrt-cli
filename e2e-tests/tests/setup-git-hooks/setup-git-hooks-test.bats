@@ -1,6 +1,7 @@
 bats_load_library "fixtures/authenticated_fixture"
 bats_load_library 'git'
-bats_load_library 'setup'
+bats_load_library 'mrt/clone'
+bats_load_library 'mrt/execute'
 bats_load_library 'repositoriesPath'
 
 setup() {
@@ -24,7 +25,7 @@ repositoriesDir() {
 	writeRepositoriesPath "$repositoriesPath"
 	writeBlockedBranches "$branchName"
 	cloneTestingRepositories "$(repositoriesDir)" "$repository"
-	setupGitHooks
+	mrtSetupGitHooks
 
 	run commit_changes "$(repositoriesDir)/$repository" $branchName
 
@@ -37,7 +38,7 @@ repositoriesDir() {
 	folderPath="$(repositoriesDir)/$repository"
 	mkdir -p "$folderPath"
 
-	run setupGitHooks
+	run mrtSetupGitHooks
 
 	assert_dir_not_exist "$folderPath/.git/hooks"
 }
@@ -50,7 +51,7 @@ repositoriesDir() {
 	branchName="some-branch"
 	cloneTestingRepositories "$(repositoriesDir)" "${repositories[@]}"
 	writeBlockedBranches "$branchName"
-	setupGitHooks
+	mrtSetupGitHooks
 
 	run commit_changes "$(repositoriesDir)/${repositories[1]}" $branchName
 
@@ -70,7 +71,7 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 	local repositoriesPath="$1"
 	writeRepositoriesPath "$repositoriesPath"
 
-	run setupGitHooks
+	run mrtSetupGitHooks
 
 	assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositoriesDir)\""
 	assert_line --index 1 "Did not find any repositories. Skip installing git-hooks."
@@ -84,7 +85,7 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 	)
 	cloneTestingRepositories "$(repositoriesDir)" "${repositories[@]}"
 
-	run setupGitHooks
+	run mrtSetupGitHooks
 
 	assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositoriesDir)\""
 	assert_line --index 1 "Installing git-hooks to \"$(repositoriesDir)/${repositories[0]}/.git\""

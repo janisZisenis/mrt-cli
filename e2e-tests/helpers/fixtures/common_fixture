@@ -15,11 +15,3 @@ common_setup() {
 common_teardown() {
 	eval "$(ssh-agent -k)"
 }
-
-execute() {
-	"$(mrt run binary-location -- --exe-name)" --team-dir "$(testEnvDir)" "$@"
-}
-
-runCommand() {
-	execute run "$@"
-}

@@ -1,6 +1,7 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'repositoriesPath'
-bats_load_library 'setup'
+bats_load_library 'mrt/clone'
+bats_load_library 'mrt/execute'
 bats_load_library 'writeTeamFile'
 bats_load_library 'assertLineReversed'
 bats_load_library 'testRepositories'
@@ -28,7 +29,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 	)
 	writeRepositoriesPath "$repositoryPath"
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_line --index 0 "Start cloning repositories into \"$repositoryPath\""
 	assert_line --index 9 "Cloning repositories done"
@@ -40,7 +41,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 		"2_TestRepository"
 	)
 
-	run setupClone "${repositories[@]}"
+	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_line_reversed_output 0 "Cloning repositories done"
 }
@@ -49,7 +50,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 	repository="1_TestRepository"
 	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 
-	run setupCloneUrls "$repositoryUrl"
+	run clone_repository_urls_using_mrt "$repositoryUrl"
 
 	assert_line --index 1 "Cloning $repositoryUrl"
 	assert_line --index 7 "Failed to clone repository, skipping it."
@@ -59,14 +60,14 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 	repositoriesUrls=()
 	writeRepositoriesUrls "${repositoriesUrls[@]}"
 
-	run execute setup clone-repositories
+	run mrtSetupClone
 
 	assert_success
 	assert_output 'The team file does not contain any repositories, no repositories to clone.'
 }
 
 @test "if team json does not exist it prints out a message" {
-	run execute setup clone-repositories
+	run mrtSetupClone
 
 	assert_success
 	assert_output 'Could not read team file. To setup your repositories create a "team.json" file and add repositories to it.'

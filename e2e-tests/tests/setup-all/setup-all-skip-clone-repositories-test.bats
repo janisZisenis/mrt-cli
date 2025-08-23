@@ -1,7 +1,8 @@
-bats_load_library 'setup'
+bats_load_library 'mrt/clone'
 bats_load_library 'repositoriesPath'
 bats_load_library 'testRepositories'
 bats_load_library "fixtures/authenticated_fixture"
+bats_load_library "mrt/execute"
 
 setup() {
 	authenticated_setup
@@ -16,7 +17,7 @@ teardown() {
 	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 	writeRepositoriesUrls "$repositoryUrl"
 
-	run execute setup all --skip-clone-repositories
+	run mrtSetupAll --skip-clone-repositories
 
 	assert_dir_not_exist "$(testEnvDir)/$(default_repositories_path)/$repository"
 }
@@ -26,7 +27,7 @@ teardown() {
 	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 	writeRepositoriesUrls "$repositoryUrl"
 
-	run execute setup all --skip-clone-repositories
+	run mrtSetupAll --skip-clone-repositories
 
 	assert_line --index 0 "Skipping clone-repositories step."
 }

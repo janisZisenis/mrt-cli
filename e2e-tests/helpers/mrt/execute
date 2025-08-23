@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+mrtExecute() {
+  bats_load_library fixtures/common_fixture
+
+	"$(mrt run binary-location -- --exe-name)" --team-dir "$(testEnvDir)" "$@"
+}
+
+mrtRun() {
+	mrtExecute run "$@"
+}
+
+mrtSetup() {
+	mrtExecute setup "$@"
+}
+
+mrtSetupAll() {
+	mrtSetup all "$@"
+}
+
+mrtSetupGitHooks() {
+	mrtSetup install-git-hooks
+}
+
+mrtSetupClone() {
+  mrtSetup clone-repositories
+}
