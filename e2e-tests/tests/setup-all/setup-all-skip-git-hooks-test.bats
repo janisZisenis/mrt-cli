@@ -1,4 +1,4 @@
-bats_load_library 'mrt/execute'
+bats_load_library 'mrt/setup'
 bats_load_library 'repositoriesPath'
 bats_load_library 'writeTeamFile'
 bats_load_library 'git'

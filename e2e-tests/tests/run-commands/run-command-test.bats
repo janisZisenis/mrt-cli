@@ -1,6 +1,6 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'commands/run/runCommandWriter'
-bats_load_library 'mrt/execute'
+bats_load_library 'mrt/run'
 
 setup() {
 	common_setup

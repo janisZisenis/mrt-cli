@@ -2,7 +2,7 @@ bats_load_library 'mrt/clone'
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'repositoriesPath'
 bats_load_library 'commands/setup/setupCommandWriter'
-bats_load_library 'mrt/execute'
+bats_load_library 'mrt/setup'
 
 setup() {
 	common_setup

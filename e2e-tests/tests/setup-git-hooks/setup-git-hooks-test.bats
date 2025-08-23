@@ -1,8 +1,8 @@
 bats_load_library "fixtures/authenticated_fixture"
 bats_load_library 'git'
-bats_load_library 'mrt/clone'
-bats_load_library 'mrt/execute'
+bats_load_library 'mrt/setup'
 bats_load_library 'repositoriesPath'
+bats_load_library 'writeTeamFile'
 
 setup() {
 	authenticated_setup

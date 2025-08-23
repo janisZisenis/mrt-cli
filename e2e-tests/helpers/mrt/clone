@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
-bats_load_library "writeTeamFile"
-bats_load_library "mrt/execute"
-
 clone_repositories_using_mrt() {
+  bats_load_library "testRepositories"
+
 	readarray -t repositoriesUrls < <(getRepositoryUrls "$@")
 	clone_repository_urls_using_mrt "${repositoriesUrls[@]}"
 }
 
 clone_repository_urls_using_mrt() {
+  bats_load_library "writeTeamFile"
 	writeRepositoriesUrls "$@"
 
+  bats_load_library "mrt/setup"
 	mrtSetupClone
 }

@@ -1,6 +1,6 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'git'
-bats_load_library 'mrt/clone'
+bats_load_library 'mrt/setup'
 bats_load_library 'commands/setup/setupCommandWriter'
 
 setup() {

@@ -3,6 +3,7 @@ bats_load_library 'repositoriesPath'
 bats_load_library 'mrt/clone'
 bats_load_library 'git'
 bats_load_library 'assertLineReversed'
+bats_load_library 'writeTeamFile'
 
 repositoriesPath=$(default_repositories_path)
 
