@@ -1,10 +1,10 @@
-bats_load_library 'mrt/setup'
-bats_load_library 'repositoriesPath'
-bats_load_library 'writeTeamFile'
-bats_load_library 'git'
-bats_load_library 'testRepositories'
-bats_load_library "fixtures/common_fixture"
-bats_load_library "fixtures/authenticated_fixture"
+bats_load_library 'mrt/setup.bash'
+bats_load_library 'repositoriesPath.bash'
+bats_load_library 'writeTeamFile.bash'
+bats_load_library 'git.bash'
+bats_load_library 'testRepositories.bash'
+bats_load_library 'fixtures/common_fixture.bash'
+bats_load_library 'fixtures/authenticated_fixture.bash'
 
 set_fixture_variables() {
   repository="1_TestRepository"

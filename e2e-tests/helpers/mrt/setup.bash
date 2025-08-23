@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
-
 mrtSetup() {
-  bats_load_library 'mrt/execute'
+  bats_load_library 'mrt/execute.bash'
 
 	mrtExecute setup "$@"
 }

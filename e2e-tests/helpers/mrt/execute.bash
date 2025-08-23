@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
-
 mrtExecute() {
-  bats_load_library 'fixtures/common_fixture'
+  bats_load_library 'fixtures/common_fixture.bash'
 
 	"$(mrt run binary-location -- --exe-name)" --team-dir "$(testEnvDir)" "$@"
 }

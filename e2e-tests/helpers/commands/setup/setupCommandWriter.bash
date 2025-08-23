@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-bats_load_library "commands/commandWriter"
+bats_load_library "commands/commandWriter.bash"
 
 _setupCommandLocation() {
   echo "$(testEnvDir)/setup"

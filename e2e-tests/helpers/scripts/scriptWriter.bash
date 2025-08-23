@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-bats_load_library "scripts/scriptFactory"
+bats_load_library 'scripts/scriptFactory.bash'
 
 writeScript() {
   local content="$1"

@@ -1,8 +1,8 @@
-bats_load_library 'mrt/clone'
-bats_load_library 'fixtures/common_fixture'
-bats_load_library 'repositoriesPath'
-bats_load_library 'commands/setup/setupCommandWriter'
-bats_load_library 'mrt/setup'
+bats_load_library 'mrt/clone.bash'
+bats_load_library 'mrt/setup.bash'
+bats_load_library 'fixtures/common_fixture.bash'
+bats_load_library 'repositoriesPath.bash'
+bats_load_library 'commands/setup/setupCommandWriter.bash'
 
 setup() {
 	common_setup

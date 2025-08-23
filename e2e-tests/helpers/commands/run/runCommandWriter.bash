@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
-
-bats_load_library "commands/commandWriter"
-bats_load_library "commands/run/runCommandLocation"
+bats_load_library "commands/commandWriter.bash"
+bats_load_library "commands/run/runCommandLocation.bash"
 
 writeDummyRunCommand() {
 	local commandName="$1"

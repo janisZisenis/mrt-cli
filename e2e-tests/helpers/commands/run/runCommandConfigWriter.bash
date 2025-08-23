@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
-
-bats_load_library "jsonWriter"
-bats_load_library "commands/run/runCommandLocation"
+bats_load_library "jsonWriter.bash"
+bats_load_library "commands/run/runCommandLocation.bash"
 
 _configFileName() {
 	echo "config.json"

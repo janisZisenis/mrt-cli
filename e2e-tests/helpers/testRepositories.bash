@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 getTestingRepositoryUrl() {
 	local repositoryName="$1"
 

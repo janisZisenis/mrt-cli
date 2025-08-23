@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-bats_load_library "scripts/scriptWriter"
+bats_load_library "scripts/scriptWriter.bash"
 
 commandFileName() {
 	echo "command"

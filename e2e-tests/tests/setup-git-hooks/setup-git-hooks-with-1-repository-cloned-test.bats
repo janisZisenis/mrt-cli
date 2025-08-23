@@ -1,5 +1,5 @@
-bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture'
-bats_load_library 'writeTeamFile'
+bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
+bats_load_library 'writeTeamFile.bash'
 
 @test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
 	branchName="some-branch"

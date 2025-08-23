@@ -1,6 +1,3 @@
-#!/usr/bin/env bash
-set -e
-
 _private_key_file() {
 	echo "./.ssh/private-key"
 }
@@ -24,14 +21,14 @@ _revoke_authentication() {
 }
 
 authenticated_setup() {
-	bats_load_library fixtures/common_fixture
+	bats_load_library 'fixtures/common_fixture.bash'
 
 	common_setup
 	_authenticate
 }
 
 authenticated_teardown() {
-	bats_load_library fixtures/common_fixture
+	bats_load_library 'fixtures/common_fixture.bash'
 
   _revoke_authentication
 	common_teardown

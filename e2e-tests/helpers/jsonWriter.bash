@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 writeEmptyJsonIfFileDoesNotExist() {
   local filePath="$1"
 

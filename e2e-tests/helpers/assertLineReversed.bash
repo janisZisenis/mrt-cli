@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 assert_line_reversed_output() {
 	local index="$1"
 	local expected="$2"

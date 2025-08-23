@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-bats_load_library 'testRepositories'
+bats_load_library 'testRepositories.bash'
 
 unique_branch_name() {
 	echo "branch-$(uuidgen)"

@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 makeDummyScript() {
 cat <<EOF
 #!/bin/bash

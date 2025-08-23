@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 testEnvDir() {
 	echo "$BATS_TEST_TMPDIR"
 }

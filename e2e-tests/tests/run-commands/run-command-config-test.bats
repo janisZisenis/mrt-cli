@@ -1,7 +1,7 @@
-bats_load_library 'fixtures/common_fixture'
-bats_load_library 'commands/run/runCommandWriter'
-bats_load_library 'commands/run/runCommandConfigWriter'
-bats_load_library 'mrt/run'
+bats_load_library 'fixtures/common_fixture.bash'
+bats_load_library 'commands/run/runCommandWriter.bash'
+bats_load_library 'commands/run/runCommandConfigWriter.bash'
+bats_load_library 'mrt/run.bash'
 
 setup() {
 	common_setup

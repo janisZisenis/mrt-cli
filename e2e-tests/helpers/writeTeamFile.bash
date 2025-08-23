@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-bats_load_library "jsonWriter"
+bats_load_library 'jsonWriter.bash'
 
 _teamFileName() {
 	echo "team.json"

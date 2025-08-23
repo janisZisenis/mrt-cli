@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-mrtRun() {
-  bats_load_library 'mrt/execute'
-
-	mrtExecute run "$@"
-}
