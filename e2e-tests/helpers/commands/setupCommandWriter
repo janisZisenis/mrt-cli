@@ -6,6 +6,14 @@ _setupCommandLocation() {
   echo "$(testEnvDir)/setup"
 }
 
+writeStubSetupCommand() {
+	local commandName="$1"
+	local exitCode="$2"
+	local output="$3"
+
+  writeStubCommand "$(_setupCommandLocation)" "$commandName" "$exitCode" "$output"
+}
+
 writeSpySetupCommand() {
 	local commandName="$1"
 
@@ -23,14 +31,6 @@ assert_setup_command_was_not_executed() {
 	local commandName="$1"
 
 	assert_command_was_not_executed "$(_setupCommandLocation)" "$commandName"
-}
-
-writeStubSetupCommand() {
-	local commandName="$1"
-	local exitCode="$2"
-	local output="$3"
-
-  writeStubCommand "$(_setupCommandLocation)" "$commandName" "$exitCode" "$output"
 }
 
 writeStdErrSetupCommand() {

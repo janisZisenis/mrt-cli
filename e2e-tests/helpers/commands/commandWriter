@@ -6,6 +6,15 @@ commandFileName() {
 	echo "command"
 }
 
+writeStubCommand() {
+	local commandLocation="$1"
+	local commandName="$2"
+	local exitCode="$3"
+	local output="$4"
+
+	writeStubScript "$commandLocation/$commandName/$(commandFileName)" "$exitCode" "$output"
+}
+
 writeSpyCommand() {
 	local commandLocation="$1"
 	local commandName="$2"
@@ -26,15 +35,6 @@ assert_command_was_not_executed() {
 	local commandName="$2"
 
 	assert_script_was_not_executed "$commandLocation/$commandName/$(commandFileName)"
-}
-
-writeStubCommand() {
-	local commandLocation="$1"
-	local commandName="$2"
-	local exitCode="$3"
-	local output="$4"
-
-	writeStubScript "$commandLocation/$commandName/$(commandFileName)" "$exitCode" "$output"
 }
 
 writeStdErrCommand() {

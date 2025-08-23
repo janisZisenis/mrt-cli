@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+makeStubScript() {
+  local output="$1"
+  local exitCode="$2"
+
+cat <<EOF
+#!/bin/bash
+
+echo "$output"
+exit $exitCode
+EOF
+}
+
 spyFileSuffix() {
 	echo "Executed"
 }
@@ -12,18 +24,6 @@ cat <<EOF
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
-EOF
-}
-
-makeStubScript() {
-  local output="$1"
-  local exitCode="$2"
-
-cat <<EOF
-#!/bin/bash
-
-echo "$output"
-exit $exitCode
 EOF
 }
 

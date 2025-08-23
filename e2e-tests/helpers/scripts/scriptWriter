@@ -12,6 +12,14 @@ writeScript() {
   chmod +x "$scriptPath"
 }
 
+writeStubScript() {
+	local scriptPath="$1"
+	local exitCode="$2"
+	local output="$3"
+
+  writeScript "$(makeStubScript "$output" "$exitCode")" "$scriptPath"
+}
+
 writeSpyScript() {
 	local scriptPath="$1"
 
@@ -39,14 +47,6 @@ assert_script_was_executed() {
 
 assert_script_was_not_executed() {
 	assert_file_not_exist "$1$(spyFileSuffix)"
-}
-
-writeStubScript() {
-	local scriptPath="$1"
-	local exitCode="$2"
-	local output="$3"
-
-  writeScript "$(makeStubScript "$output" "$exitCode")" "$scriptPath"
 }
 
 writeScriptRequestingInput() {
