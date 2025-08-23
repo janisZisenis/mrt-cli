@@ -27,7 +27,7 @@ teardown() {
 }
 
 @test "if team json does not contain repositoriesPath it clones repository into 'repositories' folder" {
-	repositories=("1_TestRepository")
+	local repositories=("1_TestRepository")
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
@@ -35,8 +35,8 @@ teardown() {
 }
 
 @test "if team json contains an existing repository it should print a messages about successful cloning" {
-	repository="1_TestRepository"
-	repositoryUrl="$(getRepositoryUrls "$repository")"
+	local repository="1_TestRepository"
+	local repositoryUrl; repositoryUrl="$(getRepositoryUrls "$repository")"
 
 	run clone_repository_urls_using_mrt "$repositoryUrl"
 
@@ -46,7 +46,7 @@ teardown() {
 }
 
 @test "if team json contains already existing repositories it clones remaining repositories and skips existing ones" {
-	repositories=(
+	local repositories=(
 		"1_TestRepository"
 		"2_TestRepository"
 	)
@@ -59,7 +59,7 @@ teardown() {
 }
 
 @test "if team json does not contain any repository it does not clone any repository" {
-  noRepositories=()
+  local noRepositories=()
 
 	run clone_repositories_using_mrt "${noRepositories[@]}"
 
@@ -67,8 +67,8 @@ teardown() {
 }
 
 @test "if team json contains non-existing repository it should print out a failure message" {
-	repository="not-existing"
-	repositoryUrl="$(getRepositoryUrls "$repository")"
+	local repository="not-existing"
+	local repositoryUrl; repositoryUrl="$(getRepositoryUrls "$repository")"
 
 	run clone_repository_urls_using_mrt "$repositoryUrl"
 
@@ -76,7 +76,7 @@ teardown() {
 }
 
 @test "if team json contains non-existing and existing repository it should clone the existing one" {
-	repositories=(
+	local repositories=(
 		"1_TestRepository"
 		"non-existing"
 	)
@@ -87,7 +87,7 @@ teardown() {
 }
 
 @test "if team json contains repositoriesPrefixes should trim the prefixes while cloning the repositories" {
-	repositories=(
+	local repositories=(
 		"Prefix1_TestRepository1"
 		"Prefix2_TestRepository2"
 	)
@@ -100,7 +100,7 @@ teardown() {
 }
 
 @test "if team json contains repositoriesPrefixes it should not trim when the prefixes are not in the beginning of the repository names" {
-	repositories=(
+	local repositories=(
 		"Prefix1_TestRepository1"
 		"Prefix2_TestRepository2"
 	)

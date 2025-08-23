@@ -12,9 +12,9 @@ teardown() {
 }
 
 @test "if team json contains repositoriesPath it clones the repositories into given repositoriesPath folder" {
-	repositoriesPath="xyz"
+	local repositoriesPath="xyz"
 	writeRepositoriesPath "$repositoriesPath"
-	repository="1_TestRepository"
+	local repository="1_TestRepository"
 
 	run clone_repositories_using_mrt "$repository"
 

@@ -9,7 +9,7 @@ teardown() {
 }
 
 @test "if subcommand 'git-hook' gets called with an unknown git hook it fails" {
-	hookName="unknown-hook"
+	local hookName="unknown-hook"
 
 	run mrtExecute git-hook --hook-name "$hookName" --repository-path "$(repositoryDir)"
 

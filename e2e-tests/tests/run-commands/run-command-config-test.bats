@@ -12,8 +12,8 @@ teardown() {
 }
 
 @test "if command config contains shortDescription, it is displayed in help" {
-	commandName="some-command"
-  shortDescription="A command that outputs some-output"
+	local commandName="some-command"
+  local shortDescription="A command that outputs some-output"
   writeDummyRunCommand "$commandName"
   writeShortDescription "$commandName" "$shortDescription"
 
@@ -23,8 +23,8 @@ teardown() {
 }
 
 @test "if command config does not contain shortDescription the default is displayed in help" {
-	commandName="some-command"
-  shortDescription="A command that outputs some-output"
+	local commandName="some-command"
+  local shortDescription="A command that outputs some-output"
   writeDummyRunCommand "$commandName"
   writeEmptyJsonObjectAsConfig "$commandName"
 
@@ -34,9 +34,9 @@ teardown() {
 }
 
 @test "if command config is completely empty, it should exit with an error" {
-	commandName="some-command"
-  shortDescription="A command that outputs some-output"
-  configFile="$(configFilePath "$commandName")"
+	local commandName="some-command"
+  local shortDescription="A command that outputs some-output"
+  local configFile; configFile="$(configFilePath "$commandName")"
   writeDummyRunCommand "$commandName"
   touch "$configFile"
 

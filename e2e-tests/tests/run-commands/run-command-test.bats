@@ -29,8 +29,8 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 }
 
 @test "if command succeeds with output it will print the command's output" {
-	commandName="some-command"
-	someOutput="some-output"
+	local commandName="some-command"
+	local someOutput="some-output"
 	writeStubRunCommand "$commandName" "0" "$someOutput"
 
 	run mrtRun "$commandName"
@@ -39,9 +39,9 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 }
 
 @test "if command is requesting input it should process the input" {
-	commandName="input"
+	local commandName="input"
 	writeRunCommandRequestingInput "$commandName"
-	input="some-input"
+	local input="some-input"
 
 	run mrtRun $commandName <<<$input
 
@@ -49,8 +49,8 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 }
 
 @test "if command writes to stderr it outputs stderr" {
-	commandName="error"
-	error="some-error"
+	local commandName="error"
+	local error="some-error"
 	writeStdErrRunCommand "$commandName" "$error"
 
 	run mrtRun "$commandName"
@@ -81,8 +81,8 @@ test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
 }
 
 @test "if command exits with code 0 it will succeed" {
-	commandName="some-command"
-	exitCode=0
+	local commandName="some-command"
+	local exitCode=0
 	writeStubRunCommand "$commandName" "$exitCode" ""
 
 	run mrtRun "$commandName"

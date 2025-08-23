@@ -19,9 +19,9 @@ repositoriesDir() {
 }
 
 @test "If repositories are cloned to repositories path from team file commiting on the blocked branches after setting up git-hooks should be blocked" {
-	repositoriesPath="some-path"
-	repository="1_TestRepository"
-	branchName="some-branch"
+	local repositoriesPath="some-path"
+	local repository="1_TestRepository"
+	local branchName="some-branch"
 	writeRepositoriesPath "$repositoriesPath"
 	writeBlockedBranches "$branchName"
 	cloneTestingRepositories "$(repositoriesDir)" "$repository"
@@ -34,8 +34,8 @@ repositoriesDir() {
 }
 
 @test "If repositories path contains non-repository folder it does not install git-hooks" {
-	repository="1_TestRepository"
-	folderPath="$(repositoriesDir)/$repository"
+	local repository="1_TestRepository"
+	local folderPath; folderPath="$(repositoriesDir)/$repository"
 	mkdir -p "$folderPath"
 
 	run mrtSetupGitHooks
@@ -44,11 +44,11 @@ repositoriesDir() {
 }
 
 @test "If repositories path contains 2 repositories committing on a blocked branch in the second repository after setting up git-hooks should be blocked" {
-	repositories=(
+	local repositories=(
 		"1_TestRepository"
 		"2_TestRepository"
 	)
-	branchName="some-branch"
+	local branchName="some-branch"
 	cloneTestingRepositories "$(repositoriesDir)" "${repositories[@]}"
 	writeBlockedBranches "$branchName"
 	mrtSetupGitHooks
@@ -79,7 +79,7 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 }
 
 @test "If repositories path contains two repositories setting up git-hooks prints out messages about installing the git-hooks" {
-	repositories=(
+	local repositories=(
 		"1_TestRepository"
 		"2_TestRepository"
 	)

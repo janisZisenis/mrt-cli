@@ -22,10 +22,8 @@ teardown() {
 }
 
 test_if_team_file_contains_repository_setup_prints_message_about_cloning_repositories() {
-	repositoryPath="$1"
-	repositories=(
-		"1_TestRepository"
-	)
+	local repositoryPath="$1"
+	local repositories=("1_TestRepository")
 	writeRepositoriesPath "$repositoryPath"
 
 	run clone_repositories_using_mrt "${repositories[@]}"
@@ -35,7 +33,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "If team json contains 2 repositories it should print out a done message after cloning second" {
-	repositories=(
+	local repositories=(
 		"1_TestRepository"
 		"2_TestRepository"
 	)
@@ -46,8 +44,8 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "if team json contains existing repositories but authentication is missing it should print a failure message" {
-	repository="1_TestRepository"
-	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
+	local repository="1_TestRepository"
+	local repositoryUrl; repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 
 	run clone_repository_urls_using_mrt "$repositoryUrl"
 
@@ -56,7 +54,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 }
 
 @test "if team json does not contain any repositories it prints out a message" {
-	repositoriesUrls=()
+	local repositoriesUrls=()
 	writeRepositoriesUrls "${repositoriesUrls[@]}"
 
 	run mrtSetupClone

@@ -11,8 +11,8 @@ teardown() {
 }
 
 @test "if two setup commands exist setup all with skipping the first it should only run the second" {
-	someCommandName="some-command"
-	anotherCommandName="another-command"
+	local someCommandName="some-command"
+	local anotherCommandName="another-command"
 	writeSpySetupCommand "$someCommandName"
 	writeSpySetupCommand "$anotherCommandName"
 
@@ -23,8 +23,8 @@ teardown() {
 }
 
 @test "if two setup commands exist setup all with skipping the second it should only run the first" {
-	someCommandName="some-command"
-	anotherCommandName="another-command"
+	local someCommandName="some-command"
+	local anotherCommandName="another-command"
 	writeSpySetupCommand "$someCommandName"
 	writeSpySetupCommand "$anotherCommandName"
 
@@ -35,7 +35,7 @@ teardown() {
 }
 
 @test "if one setup commands exists setup all with skipping the command prints out skip message" {
-	commandName="some-command"
+	local commandName="some-command"
 	writeSpySetupCommand "$commandName"
 
 	run mrtSetupAll "--skip-$commandName"

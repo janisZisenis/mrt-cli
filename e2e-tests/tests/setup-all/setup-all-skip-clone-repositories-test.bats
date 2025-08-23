@@ -13,8 +13,8 @@ teardown() {
 }
 
 @test "if setup is run with skipping the clone step it should not clone the repositories" {
-	repository="1_TestRepository"
-	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
+	local repository="1_TestRepository"
+	local repositoryUrl; repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 	writeRepositoriesUrls "$repositoryUrl"
 
 	run mrtSetupAll --skip-clone-repositories
@@ -23,8 +23,8 @@ teardown() {
 }
 
 @test "if setup is run with skipping the clone step it should print a skip message" {
-	repository="1_TestRepository"
-	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
+	local repository="1_TestRepository"
+	local repositoryUrl; repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 	writeRepositoriesUrls "$repositoryUrl"
 
 	run mrtSetupAll --skip-clone-repositories

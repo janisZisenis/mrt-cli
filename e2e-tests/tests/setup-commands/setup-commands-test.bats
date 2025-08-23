@@ -28,8 +28,8 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 }
 
 @test "if setup command succeeds with output it will print the command's output" {
-	commandName="some-command"
-	someOutput="some-output"
+	local commandName="some-command"
+	local someOutput="some-output"
 	writeStubSetupCommand "$commandName" "0" "$someOutput"
 
 	run mrtSetup $commandName
@@ -40,9 +40,9 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 }
 
 @test "if setup command fails with output it will print the command's output and the failure" {
-	commandName="another-command"
-	someOutput="another-output"
-	exitCode=15
+	local commandName="another-command"
+	local someOutput="another-output"
+	local exitCode=15
 	writeStubSetupCommand "$commandName" "$exitCode" "$someOutput"
 
 	run mrtSetup "$commandName"
@@ -53,9 +53,9 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 }
 
 @test "if setup command is requesting input it should process the input" {
-	commandName="input"
+	local commandName="input"
 	writeSetupCommandRequestingInput "$commandName"
-	input="some-input"
+	local input="some-input"
 
 	run mrtSetup $commandName <<<$input
 
@@ -63,8 +63,8 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 }
 
 @test "if setup command writes to stderr it outputs stderr" {
-	commandName="error"
-	error="some-error"
+	local commandName="error"
+	local error="some-error"
 	writeStdErrSetupCommand "$commandName" "$error"
 
 	run mrtSetup "$commandName"

@@ -15,12 +15,14 @@ teardown() {
 }
 
 @test "if team file contains repository and two setup commands exist it should clone the repository, install git-hooks and execute the commands" {
-	repository="1_TestRepository"
+	local repository="1_TestRepository"
+	local repositoryUrl
 	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 	writeRepositoriesUrls "$repositoryUrl"
+	local repositoryDir
 	repositoryDir="$(testEnvDir)/$(default_repositories_path)/$repository"
-	someCommandName="some-command"
-	anotherCommandName="another-command"
+	local someCommandName="some-command"
+	local anotherCommandName="another-command"
 	writeSpySetupCommand "$someCommandName"
 	writeSpySetupCommand "$anotherCommandName"
 
@@ -50,7 +52,7 @@ teardown() {
 }
 
 @test "if setup command exists setup without skipping the command should not print skip message" {
-	commandName="some-command"
+	local commandName="some-command"
 	writeSpySetupCommand "$commandName"
 
 	run mrtSetupAll

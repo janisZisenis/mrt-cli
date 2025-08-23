@@ -10,7 +10,7 @@ teardown() {
 }
 
 @test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
-	branchName="some-branch"
+	local branchName="some-branch"
 	writeBlockedBranches "$branchName"
 
 	run commit_changes "$(repositoryDir)" $branchName
@@ -28,7 +28,7 @@ teardown() {
 }
 
 @test "If team json contains 2 blocked branch commiting on second one after setting up git-hooks should be blocked" {
-	branchName="some-branch"
+	local branchName="some-branch"
 	writeBlockedBranches "another-branch" "$branchName"
 
 	run commit_changes "$(repositoryDir)" $branchName
@@ -38,7 +38,7 @@ teardown() {
 }
 
 @test "If team json contains blocked branch pushing on the blocked after setting up git-hooks branch should be blocked" {
-	branchName="$(unique_branch_name)"
+	local branchName; branchName="$(unique_branch_name)"
 	commit_changes "$(repositoryDir)" "$branchName"
 	writeBlockedBranches "$branchName"
 
@@ -49,7 +49,7 @@ teardown() {
 }
 
 @test "if team json contains commitPrefixRegex 'commiting' with a message and a branch both without matching prefix is blocked" {
-	commitPrefixRegex="Test-[0-9]+"
+	local commitPrefixRegex="Test-[0-9]+"
 	writeCommitPrefixRegex "$commitPrefixRegex"
 
 	run commit_changes "$(repositoryDir)" "no-prefix-branch" "no-prefix-message"
@@ -61,7 +61,7 @@ teardown() {
 }
 
 @test "if team json contains commitPrefixRegex 'commiting' with a message that has a matching prefix on a branch without prefix is not blocked" {
-	matchingPrefix="Test-1"
+	local matchingPrefix="Test-1"
 	writeCommitPrefixRegex "Test-[0-9]+"
 
 	run commit_changes "$(repositoryDir)" "no-prefix-branch" "$matchingPrefix: prefixed-message"
@@ -71,7 +71,7 @@ teardown() {
 }
 
 @test "if team json contains commitPrefixRegex 'commiting' with a message that has no matching prefix on a branch containing prefix is not blocked" {
-	commitPrefix=Asdf-99
+	local commitPrefix="Asdf-99"
 	writeCommitPrefixRegex "Asdf-[0-9]+"
 
 	run commit_changes "$(repositoryDir)" "feature/$commitPrefix/prefixed-branch" "not-prefix-message"
@@ -89,7 +89,7 @@ teardown() {
 }
 
 test_merge_commit_messages_are_not_blocked() {
-	commit_message=$1
+	local commit_message="$1"
 	writeCommitPrefixRegex "Asdf-[0-9]+"
 
 	run commit_changes "$(repositoryDir)" "no-prefix-branch" "$commit_message"
@@ -99,7 +99,7 @@ test_merge_commit_messages_are_not_blocked() {
 }
 
 @test "if team json contains commitPrefixRegex 'commiting' with a message that has a matching prefix leads to commit with given message" {
-	commitMessage="Test-1: prefixed-message"
+	local commitMessage="Test-1: prefixed-message"
 	writeCommitPrefixRegex "Test-[0-9]+"
 	commit_changes "$(repositoryDir)" "no-prefix-branch" "$commitMessage"
 
@@ -109,8 +109,8 @@ test_merge_commit_messages_are_not_blocked() {
 }
 
 @test "if team json contains commitPrefixRegex 'commiting' with a message that has no matching prefix on a branch containing prefix leads to commit with prefixed message" {
-	matchingPrefix=Asdf-99
-	commitMessage="not-prefixed-message"
+	local matchingPrefix="Asdf-99"
+	local commitMessage="not-prefixed-message"
 	writeCommitPrefixRegex "Asdf-[0-9]+"
 	commit_changes "$(repositoryDir)" "feature/$matchingPrefix/prefixed-branch" "$commitMessage"
 
@@ -139,7 +139,7 @@ test_merge_commit_messages_are_not_blocked() {
 }
 
 test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
-	commit_message=$1
+	local commit_message="$1"
 
 	run commit_changes "$(repositoryDir)" "no-prefix-branch" "$commit_message"
 
