@@ -3,16 +3,17 @@ bats_load_library 'repositoriesPath'
 bats_load_library 'writeTeamFile'
 bats_load_library 'git'
 bats_load_library 'testRepositories'
+bats_load_library "fixtures/common_fixture"
 bats_load_library "fixtures/authenticated_fixture"
 
-repository="1_TestRepository"
-branchName="$(unique_branch_name)"
-
-repositoryDir() {
-	echo "$(testEnvDir)/$(default_repositories_path)/$repository"
+set_fixture_variables() {
+  repository="1_TestRepository"
+  branchName="$(unique_branch_name)"
+  repositoryDir="$(testEnvDir)/$(default_repositories_path)/$repository"
 }
 
 setup() {
+  set_fixture_variables
   authenticated_setup
 
 	writeRepositoriesUrls "$(getTestingRepositoryUrl "$repository")"
@@ -26,16 +27,16 @@ teardown() {
 @test "After setup all with 'skip-git-hooks' committing on a blocked branch is not rejected" {
 	writeBlockedBranches "$branchName"
 
-	run commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	run commit_changes "$repositoryDir" "$branchName" "some-message"
 
 	assert_success
 }
 
 @test "After setup all with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
 	writeBlockedBranches "$branchName"
-	commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	commit_changes "$repositoryDir" "$branchName" "some-message"
 
-	run push_changes "$(repositoryDir)" "$branchName"
+	run push_changes "$repositoryDir" "$branchName"
 
 	assert_success
 }
@@ -44,7 +45,7 @@ teardown() {
 	writeBlockedBranches "$branchName"
 	writeCommitPrefixRegex "Some-Prefix"
 
-	run commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	run commit_changes "$repositoryDir" "$branchName" "some-message"
 
 	assert_success
 }

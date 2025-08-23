@@ -51,7 +51,7 @@ teardown() {
 
 @test "if setup command exists setup without skipping the command should not print skip message" {
 	commandName="some-command"
-	writeSpyCommand "$(testEnvDir)/setup" "$commandName"
+	writeSpySetupCommand "$commandName"
 
 	run mrtSetupAll
 
