@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+bats_load_library "jsonWriter"
+
+_runCommandLocation() {
+  echo "$(testEnvDir)/run"
+}
+
+_configFileName() {
+	echo "config.json"
+}
+
+_configFilePath() {
+  local commandName="$1"
+
+  echo "$(_runCommandLocation)/$commandName/$(_configFileName)"
+}
+
+
+_writeToConfigFile() {
+  local commandName="$1"
+  local fieldName="$2"
+  local fieldValue="$3"
+
+  writeJsonField "$(_configFilePath "$commandName")" "$fieldName" "$fieldValue"
+}
+
+writeEmptyJsonObjectAsConfig() {
+  local commandName="$1"
+
+  writeEmptyJsonIfFileDoesNotExist "$(_configFilePath "$commandName")"
+}
+
+writeShortDescription() {
+  local commandName="$1"
+  local shortDescription="$2"
+
+  _writeToConfigFile "$commandName" "shortDescription" "$(toJsonString "$shortDescription")"
+}

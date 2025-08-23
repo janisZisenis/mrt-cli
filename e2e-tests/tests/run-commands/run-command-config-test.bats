@@ -1,5 +1,6 @@
 bats_load_library 'fixtures/common_fixture'
 bats_load_library 'commands/runCommandWriter'
+bats_load_library 'commands/runCommandConfigWriter'
 
 setup() {
 	common_setup
@@ -13,11 +14,7 @@ teardown() {
 	commandName="some-command"
   shortDescription="A command that outputs some-output"
   writeStubRunCommand "$commandName" "0" "some-output"
-  cat <<EOF >"$(testEnvDir)/run/$commandName/config.json"
-{
-  "shortDescription": "$shortDescription"
-}
-EOF
+  writeShortDescription "$commandName" "$shortDescription"
 
   run bats_pipe runCommand "-h" \| grep "$commandName"
 
@@ -28,9 +25,7 @@ EOF
 	commandName="some-command"
   shortDescription="A command that outputs some-output"
   writeStubRunCommand "$commandName" "0" "some-output"
-  cat <<EOF >"$(testEnvDir)/run/$commandName/config.json"
-{}
-EOF
+  writeEmptyJsonObjectAsConfig "$commandName"
 
   run bats_pipe runCommand "-h" \| grep "$commandName"
 

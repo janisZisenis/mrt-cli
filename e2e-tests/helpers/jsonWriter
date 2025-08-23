@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-_writeEmptyJsonIfFileDoesNotExist() {
+writeEmptyJsonIfFileDoesNotExist() {
   local filePath="$1"
 
 	if [[ ! -f "$filePath" ]]; then
@@ -28,7 +28,7 @@ writeJsonField() {
   local fieldName="$2"
   local value="$3"
 
-  _writeEmptyJsonIfFileDoesNotExist "$filePath"
+  writeEmptyJsonIfFileDoesNotExist "$filePath"
 
   local temp_file="$filePath.tmp"
 
