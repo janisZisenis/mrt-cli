@@ -1,14 +1,19 @@
 bats_load_library "fixtures/authenticated_fixture"
+bats_load_library "fixtures/common_fixture"
 bats_load_library 'repositoriesPath'
 bats_load_library 'mrt/clone'
 bats_load_library 'git'
 bats_load_library 'assertLineReversed'
 bats_load_library 'writeTeamFile'
 
-repositoriesPath=$(default_repositories_path)
-
 repositoriesDir() {
-	echo "$(testEnvDir)/$repositoriesPath"
+  echo "$(testEnvDir)/$(default_repositories_path)"
+}
+
+cloned_git_folder() {
+  local repository="$1"
+
+  echo "$(repositoriesDir)/$repository/.git"
 }
 
 setup() {
@@ -24,7 +29,7 @@ teardown() {
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
-	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
+	assert_dir_exist "$(cloned_git_folder "${repositories[0]}")"
 }
 
 @test "if team json contains an existing repository it should print a messages about successful cloning" {
@@ -38,16 +43,6 @@ teardown() {
 	assert_line_reversed_output 1 "Successfully cloned $repositoryUrl"
 }
 
-@test "if team json contains repositoriesPath it clones the repositories into given repositoriesPath folder" {
-	repositoriesPath=xyz
-	writeRepositoriesPath "$repositoriesPath"
-	repository="1_TestRepository"
-
-	run clone_repositories_using_mrt "$repository"
-
-	assert_dir_exist "$(repositoriesDir)/$repository/.git"
-}
-
 @test "if team json contains already existing repositories it clones remaining repositories and skips existing ones" {
 	repositories=(
 		"1_TestRepository"
@@ -57,8 +52,8 @@ teardown() {
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
-	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
-	assert_dir_exist "$(repositoriesDir)/${repositories[1]}/.git"
+	assert_dir_exist "$(cloned_git_folder "${repositories[0]}")"
+	assert_dir_exist "$(cloned_git_folder "${repositories[1]}")"
 }
 
 @test "if team json does not contain any repository it does not clone any repository" {
@@ -84,7 +79,7 @@ teardown() {
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
-	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
+	assert_dir_exist "$(cloned_git_folder "${repositories[0]}")"
 }
 
 @test "if team json contains repositoriesPrefixes should trim the prefixes while cloning the repositories" {
@@ -96,8 +91,8 @@ teardown() {
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
-	assert_dir_exist "$(repositoriesDir)/TestRepository1/.git"
-	assert_dir_exist "$(repositoriesDir)/TestRepository2/.git"
+	assert_dir_exist "$(cloned_git_folder "TestRepository1")"
+	assert_dir_exist "$(cloned_git_folder "TestRepository2")"
 }
 
 @test "if team json contains repositoriesPrefixes it should not trim when the prefixes are not in the beginning of the repository names" {
@@ -109,6 +104,6 @@ teardown() {
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
-	assert_dir_exist "$(repositoriesDir)/${repositories[0]}/.git"
-	assert_dir_exist "$(repositoriesDir)/${repositories[1]}/.git"
+  assert_dir_exist "$(cloned_git_folder "${repositories[0]}")"
+	assert_dir_exist "$(cloned_git_folder "${repositories[1]}")"
 }
