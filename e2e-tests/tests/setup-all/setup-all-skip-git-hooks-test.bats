@@ -6,7 +6,6 @@ bats_load_library 'testRepositories'
 bats_load_library "fixtures/authenticated_fixture"
 
 repository="1_TestRepository"
-repositoryUrl="$(getTestingRepositoryUrl "$repository")"
 branchName="$(unique_branch_name)"
 
 repositoryDir() {
@@ -16,7 +15,7 @@ repositoryDir() {
 setup() {
   authenticated_setup
 
-	writeRepositoriesUrls "$repositoryUrl"
+	writeRepositoriesUrls "$(getTestingRepositoryUrl "$repository")"
 	mrtSetupAll --skip-install-git-hooks
 }
 
