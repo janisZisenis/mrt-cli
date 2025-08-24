@@ -3,13 +3,13 @@ unique_branch_name() {
 }
 
 clone_testing_repositories() {
-	local repositoryDir="$1"
+	local repository_dir="$1"
   shift
-  local repositoriesToClone=("$@")
+  local repositories_to_clone=("$@")
 
   bats_load_library 'test_repositories.bash'
-	for repositoryToClone in "${repositoriesToClone[@]}"; do
-		git clone "$(get_testing_repository_url "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
+	for repository_to_clone in "${repositories_to_clone[@]}"; do
+		git clone "$(get_testing_repository_url "$repository_to_clone")" "$repository_dir/$repository_to_clone"
 	done
 }
 
