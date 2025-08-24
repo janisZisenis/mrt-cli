@@ -22,13 +22,13 @@ teardown() {
 }
 
 test_if_team_file_contains_repository_setup_prints_message_about_cloning_repositories() {
-	local repositoryPath="$1"
+	local repository_path="$1"
 	local repositories=("1_TestRepository")
-	write_repositories_path "$repositoryPath"
+	write_repositories_path "$repository_path"
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
-	assert_line --index 0 "Start cloning repositories into \"$repositoryPath\""
+	assert_line --index 0 "Start cloning repositories into \"$repository_path\""
 	assert_line --index 9 "Cloning repositories done"
 }
 
@@ -45,17 +45,17 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 
 @test "if team json contains existing repositories but authentication is missing it should print a failure message" {
 	local repository="1_TestRepository"
-	local repositoryUrl; repositoryUrl="$(get_testing_repository_url "$repository")"
+	local repository_url; repository_url="$(get_testing_repository_url "$repository")"
 
-	run clone_repository_urls_using_mrt "$repositoryUrl"
+	run clone_repository_urls_using_mrt "$repository_url"
 
-	assert_line --index 1 "Cloning $repositoryUrl"
+	assert_line --index 1 "Cloning $repository_url"
 	assert_line --index 7 "Failed to clone repository, skipping it."
 }
 
 @test "if team json does not contain any repositories it prints out a message" {
-	local repositoriesUrls=()
-	write_repositories_urls "${repositoriesUrls[@]}"
+	local repositories_urls=()
+	write_repositories_urls "${repositories_urls[@]}"
 
 	run mrt_setup_clone
 

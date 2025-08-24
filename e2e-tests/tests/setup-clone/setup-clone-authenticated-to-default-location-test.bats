@@ -36,13 +36,13 @@ teardown() {
 
 @test "if team json contains an existing repository it should print a messages about successful cloning" {
 	local repository="1_TestRepository"
-	local repositoryUrl; repositoryUrl="$(get_repository_urls "$repository")"
+	local repository_url; repository_url="$(get_repository_urls "$repository")"
 
-	run clone_repository_urls_using_mrt "$repositoryUrl"
+	run clone_repository_urls_using_mrt "$repository_url"
 
-	assert_line --index 1 "Cloning $repositoryUrl"
+	assert_line --index 1 "Cloning $repository_url"
 	assert_line --index 3 --regexp "Enumerating objects: [0-9]+, done."
-	assert_line_reversed_output 1 "Successfully cloned $repositoryUrl"
+	assert_line_reversed_output 1 "Successfully cloned $repository_url"
 }
 
 @test "if team json contains already existing repositories it clones remaining repositories and skips existing ones" {
@@ -59,18 +59,18 @@ teardown() {
 }
 
 @test "if team json does not contain any repository it does not clone any repository" {
-  local noRepositories=()
+  local no_repositories=()
 
-	run clone_repositories_using_mrt "${noRepositories[@]}"
+	run clone_repositories_using_mrt "${no_repositories[@]}"
 
 	assert_dir_not_exist "$(repositories_dir)"
 }
 
 @test "if team json contains non-existing repository it should print out a failure message" {
 	local repository="not-existing"
-	local repositoryUrl; repositoryUrl="$(get_repository_urls "$repository")"
+	local repository_url; repository_url="$(get_repository_urls "$repository")"
 
-	run clone_repository_urls_using_mrt "$repositoryUrl"
+	run clone_repository_urls_using_mrt "$repository_url"
 
 	assert_output --partial "fatal: Could not read from remote repository."
 }

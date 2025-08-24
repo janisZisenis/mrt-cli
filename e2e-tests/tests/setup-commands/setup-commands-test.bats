@@ -19,55 +19,55 @@ teardown() {
 }
 
 test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter() {
-	local commandName="$1"
-	write_spy_setup_command "$commandName"
+	local command_name="$1"
+	write_spy_setup_command "$command_name"
 
-	mrt_setup "$commandName"
+	mrt_setup "$command_name"
 
-	assert_setup_command_was_executed "$commandName" "$(test_env_dir)"
+	assert_setup_command_was_executed "$command_name" "$(test_env_dir)"
 }
 
 @test "if setup command succeeds with output it will print the command's output" {
-	local commandName="some-command"
-	local someOutput="some-output"
-	write_stub_setup_command "$commandName" "0" "$someOutput"
+	local command_name="some-command"
+	local some_output="some-output"
+	write_stub_setup_command "$command_name" "0" "$some_output"
 
-	run mrt_setup $commandName
+	run mrt_setup $command_name
 
-	assert_line --index 0 "Execute setup command: $commandName"
-	assert_line --index 1 "$someOutput"
-	assert_line --index 2 "$commandName executed successfully"
+	assert_line --index 0 "Execute setup command: $command_name"
+	assert_line --index 1 "$some_output"
+	assert_line --index 2 "$command_name executed successfully"
 }
 
 @test "if setup command fails with output it will print the command's output and the failure" {
-	local commandName="another-command"
-	local someOutput="another-output"
-	local exitCode=15
-	write_stub_setup_command "$commandName" "$exitCode" "$someOutput"
+	local command_name="another-command"
+	local some_output="another-output"
+	local exit_code=15
+	write_stub_setup_command "$command_name" "$exit_code" "$some_output"
 
-	run mrt_setup "$commandName"
+	run mrt_setup "$command_name"
 
-	assert_line --index 0 "Execute setup command: $commandName"
-	assert_line --index 1 "$someOutput"
-	assert_line --index 2 "$commandName failed with: exit status $exitCode"
+	assert_line --index 0 "Execute setup command: $command_name"
+	assert_line --index 1 "$some_output"
+	assert_line --index 2 "$command_name failed with: exit status $exit_code"
 }
 
 @test "if setup command is requesting input it should process the input" {
-	local commandName="input"
-	write_setup_command_requesting_input "$commandName"
+	local command_name="input"
+	write_setup_command_requesting_input "$command_name"
 	local input="some-input"
 
-	run mrt_setup $commandName <<<$input
+	run mrt_setup $command_name <<<$input
 
-	assert_setup_command_received_input "$commandName" "$input"
+	assert_setup_command_received_input "$command_name" "$input"
 }
 
 @test "if setup command writes to stderr it outputs stderr" {
-	local commandName="error"
+	local command_name="error"
 	local error="some-error"
-	write_std_err_setup_command "$commandName" "$error"
+	write_std_err_setup_command "$command_name" "$error"
 
-	run mrt_setup "$commandName"
+	run mrt_setup "$command_name"
 
 	assert_output --partial "$error"
 }

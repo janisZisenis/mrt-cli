@@ -11,12 +11,12 @@ teardown() {
 	authenticated_teardown
 }
 
-@test "if team json contains repositoriesPath it clones the repositories into given repositoriesPath folder" {
-	local repositoriesPath="xyz"
-	write_repositories_path "$repositoriesPath"
+@test "if team json contains repositories_path it clones the repositories into given repositories_path folder" {
+	local repositories_path="xyz"
+	write_repositories_path "$repositories_path"
 	local repository="1_TestRepository"
 
 	run clone_repositories_using_mrt "$repository"
 
-	assert_dir_exist "$(test_env_dir)/$repositoriesPath/$repository/.git"
+	assert_dir_exist "$(test_env_dir)/$repositories_path/$repository/.git"
 }
