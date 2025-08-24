@@ -9,11 +9,11 @@ teardown() {
 }
 
 @test "if subcommand 'git-hook' gets called with an unknown git hook it fails" {
-	local hookName="unknown-hook"
+	local hook_name="unknown-hook"
 
-	run mrt_execute git-hook --hook-name "$hookName" --repository-path "$(repository_dir)"
+	run mrt_execute git-hook --hook-name "$hook_name" --repository-path "$(repository_dir)"
 
-	assert_output --partial "The given git-hook \"$hookName\" does not exist."
+	assert_output --partial "The given git-hook \"$hook_name\" does not exist."
 	assert_failure
 }
 
