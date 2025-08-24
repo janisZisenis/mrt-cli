@@ -19,41 +19,41 @@ teardown() {
 }
 
 test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it() {
-	local commandName=$1; shift
+	local command_name=$1; shift
 	local parameters=("$@")
-	write_spy_run_command "$commandName"
+	write_spy_run_command "$command_name"
 
-	run mrt_run "$commandName" -- "${parameters[@]}"
+	run mrt_run "$command_name" -- "${parameters[@]}"
 
-	assert_run_command_was_executed_with_parameters "$commandName" "$(test_env_dir) ${parameters[*]}"
+	assert_run_command_was_executed_with_parameters "$command_name" "$(test_env_dir) ${parameters[*]}"
 }
 
 @test "if command succeeds with output it will print the command's output" {
-	local commandName="some-command"
-	local someOutput="some-output"
-	write_stub_run_command "$commandName" "0" "$someOutput"
+	local command_name="some-command"
+	local some_output="some-output"
+	write_stub_run_command "$command_name" "0" "$some_output"
 
-	run mrt_run "$commandName"
+	run mrt_run "$command_name"
 
-	assert_output "$someOutput"
+	assert_output "$some_output"
 }
 
 @test "if command is requesting input it should process the input" {
-	local commandName="input"
-	write_run_command_requesting_input "$commandName"
+	local command_name="input"
+	write_run_command_requesting_input "$command_name"
 	local input="some-input"
 
-	run mrt_run $commandName <<<$input
+	run mrt_run $command_name <<<$input
 
-	assert_run_command_received_input "$commandName" "$input"
+	assert_run_command_received_input "$command_name" "$input"
 }
 
 @test "if command writes to stderr it outputs stderr" {
-	local commandName="error"
+	local command_name="error"
 	local error="some-error"
-	write_std_err_run_command "$commandName" "$error"
+	write_std_err_run_command "$command_name" "$error"
 
-	run mrt_run "$commandName"
+	run mrt_run "$command_name"
 
 	assert_output "$error"
 }
@@ -69,23 +69,23 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 }
 
 test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
-  local exitCode="$1"
-  local commandName="some-command"
-  write_stub_run_command "$commandName" "$exitCode" ""
+  local exit_code="$1"
+  local command_name="some-command"
+  write_stub_run_command "$command_name" "$exit_code" ""
 
-  run mrt_run "$commandName"
+  run mrt_run "$command_name"
 
   # shellcheck disable=SC2031
-  assert_equal "$status" "$exitCode"
+  assert_equal "$status" "$exit_code"
   assert_failure
 }
 
 @test "if command exits with code 0 it will succeed" {
-	local commandName="some-command"
-	local exitCode=0
-	write_stub_run_command "$commandName" "$exitCode" ""
+	local command_name="some-command"
+	local exit_code=0
+	write_stub_run_command "$command_name" "$exit_code" ""
 
-	run mrt_run "$commandName"
+	run mrt_run "$command_name"
 
 	assert_success
 }
