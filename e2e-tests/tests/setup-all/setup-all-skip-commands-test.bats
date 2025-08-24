@@ -11,34 +11,34 @@ teardown() {
 }
 
 @test "if two setup commands exist setup all with skipping the first it should only run the second" {
-	local someCommandName="some-command"
-	local anotherCommandName="another-command"
-	write_spy_setup_command "$someCommandName"
-	write_spy_setup_command "$anotherCommandName"
+	local some_command_name="some-command"
+	local another_command_name="another-command"
+	write_spy_setup_command "$some_command_name"
+	write_spy_setup_command "$another_command_name"
 
-	run mrt_setup_all "--skip-$someCommandName"
+	run mrt_setup_all "--skip-$some_command_name"
 
-	assert_setup_command_was_not_executed "$someCommandName"
-	assert_setup_command_was_executed "$anotherCommandName" "$(test_env_dir)"
+	assert_setup_command_was_not_executed "$some_command_name"
+	assert_setup_command_was_executed "$another_command_name" "$(test_env_dir)"
 }
 
 @test "if two setup commands exist setup all with skipping the second it should only run the first" {
-	local someCommandName="some-command"
-	local anotherCommandName="another-command"
-	write_spy_setup_command "$someCommandName"
-	write_spy_setup_command "$anotherCommandName"
+	local some_command_name="some-command"
+	local another_command_name="another-command"
+	write_spy_setup_command "$some_command_name"
+	write_spy_setup_command "$another_command_name"
 
-	run mrt_setup_all "--skip-$anotherCommandName"
+	run mrt_setup_all "--skip-$another_command_name"
 
-	assert_setup_command_was_executed "$someCommandName" "$(test_env_dir)"
-	assert_setup_command_was_not_executed "$anotherCommandName"
+	assert_setup_command_was_executed "$some_command_name" "$(test_env_dir)"
+	assert_setup_command_was_not_executed "$another_command_name"
 }
 
 @test "if one setup commands exists setup all with skipping the command prints out skip message" {
-	local commandName="some-command"
-	write_spy_setup_command "$commandName"
+	local command_name="some-command"
+	write_spy_setup_command "$command_name"
 
-	run mrt_setup_all "--skip-$commandName"
+	run mrt_setup_all "--skip-$command_name"
 
-	assert_output --partial "Skipping setup command: $commandName"
+	assert_output --partial "Skipping setup command: $command_name"
 }
