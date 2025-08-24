@@ -6,13 +6,13 @@ EOF
 
 make_stub_script() {
   local output="$1"
-  local exitCode="$2"
+  local exit_code="$2"
 
 cat <<EOF
 #!/bin/bash
 
 echo "$output"
-exit $exitCode
+exit $exit_code
 EOF
 }
 
@@ -21,13 +21,13 @@ spy_file_suffix() {
 }
 
 make_spy_script() {
-  local scriptName="$1"
+  local script_name="$1"
 
 cat <<EOF
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spy_file_suffix)"
+echo "\$@" > "\$SCRIPT_DIR/$script_name$(spy_file_suffix)"
 EOF
 }
 
@@ -42,10 +42,10 @@ EOF
 }
 
 make_std_err_script() {
-  local errorMessage="$1"
+  local error_message="$1"
 cat <<EOF
 #!/bin/bash
 
-echo "$errorMessage" 1>&2
+echo "$error_message" 1>&2
 EOF
 }

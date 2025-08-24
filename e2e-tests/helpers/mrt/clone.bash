@@ -1,8 +1,8 @@
 clone_repositories_using_mrt() {
   bats_load_library 'test_repositories.bash'
 
-	readarray -t repositoriesUrls < <(get_repository_urls "$@")
-	clone_repository_urls_using_mrt "${repositoriesUrls[@]}"
+	local repositories_urls; readarray -t repositories_urls < <(get_repository_urls "$@")
+	clone_repository_urls_using_mrt "${repositories_urls[@]}"
 }
 
 clone_repository_urls_using_mrt() {
