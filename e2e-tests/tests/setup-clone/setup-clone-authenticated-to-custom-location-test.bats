@@ -13,10 +13,10 @@ teardown() {
 
 @test "if team json contains repositoriesPath it clones the repositories into given repositoriesPath folder" {
 	local repositoriesPath="xyz"
-	writeRepositoriesPath "$repositoriesPath"
+	write_repositories_path "$repositoriesPath"
 	local repository="1_TestRepository"
 
 	run clone_repositories_using_mrt "$repository"
 
-	assert_dir_exist "$(testEnvDir)/$repositoriesPath/$repository/.git"
+	assert_dir_exist "$(test_env_dir)/$repositoriesPath/$repository/.git"
 }

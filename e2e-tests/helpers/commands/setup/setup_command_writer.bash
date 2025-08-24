@@ -1,23 +1,23 @@
-_setupCommandLocation() {
+_setup_command_location() {
   bats_load_library 'fixtures/common_fixture.bash'
 
-  echo "$(testEnvDir)/setup"
+  echo "$(test_env_dir)/setup"
 }
 
-writeStubSetupCommand() {
+write_stub_setup_command() {
 	local commandName="$1"
 	local exitCode="$2"
 	local output="$3"
 
   bats_load_library 'commands/command_writer.bash'
-  writeStubCommand "$(_setupCommandLocation)" "$commandName" "$exitCode" "$output"
+  write_stub_command "$(_setup_command_location)" "$commandName" "$exitCode" "$output"
 }
 
-writeSpySetupCommand() {
+write_spy_setup_command() {
 	local commandName="$1"
 
   bats_load_library 'commands/command_writer.bash'
-  writeSpyCommand "$(_setupCommandLocation)" "$commandName"
+  write_spy_command "$(_setup_command_location)" "$commandName"
 }
 
 assert_setup_command_was_executed() {
@@ -25,29 +25,29 @@ assert_setup_command_was_executed() {
 	local expectedParameters="$2"
 
   bats_load_library 'commands/command_writer.bash'
-	assert_command_was_executed_with_parameters "$(_setupCommandLocation)" "$commandName" "$expectedParameters"
+	assert_command_was_executed_with_parameters "$(_setup_command_location)" "$commandName" "$expectedParameters"
 }
 
 assert_setup_command_was_not_executed() {
 	local commandName="$1"
 
   bats_load_library 'commands/command_writer.bash'
-	assert_command_was_not_executed "$(_setupCommandLocation)" "$commandName"
+	assert_command_was_not_executed "$(_setup_command_location)" "$commandName"
 }
 
-writeStdErrSetupCommand() {
+write_std_err_setup_command() {
 	local commandName="$1"
 	local error="$2"
 
   bats_load_library 'commands/command_writer.bash'
-	writeStdErrCommand "$(_setupCommandLocation)" "$commandName" "$error"
+	write_std_err_command "$(_setup_command_location)" "$commandName" "$error"
 }
 
-writeSetupCommandRequestingInput() {
+write_setup_command_requesting_input() {
 	local commandName="$1"
 
   bats_load_library 'commands/command_writer.bash'
-	writeCommandRequestingInput "$(_setupCommandLocation)" "$commandName"
+	write_command_requesting_input "$(_setup_command_location)" "$commandName"
 }
 
 assert_setup_command_received_input() {
@@ -55,5 +55,5 @@ assert_setup_command_received_input() {
 	local expectedInput="$2"
 
   bats_load_library 'commands/command_writer.bash'
-	assert_command_received_input "$(_setupCommandLocation)" "$commandName" "$expectedInput"
+	assert_command_received_input "$(_setup_command_location)" "$commandName" "$expectedInput"
 }

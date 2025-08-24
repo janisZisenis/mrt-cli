@@ -1,13 +1,13 @@
-getTestingRepositoryUrl() {
+get_testing_repository_url() {
 	local repositoryName="$1"
 
 	echo "git@github-testing:janisZisenisTesting/$repositoryName.git"
 }
 
-getRepositoryUrls() {
+get_repository_urls() {
 	local repositoryNames=("$@")
 
 	for r in "${repositoryNames[@]}"; do
-		getTestingRepositoryUrl "$r"
+		get_testing_repository_url "$r"
 	done
 }

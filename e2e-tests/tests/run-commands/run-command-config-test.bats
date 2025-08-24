@@ -14,10 +14,10 @@ teardown() {
 @test "if command config contains shortDescription, it is displayed in help" {
 	local commandName="some-command"
   local shortDescription="A command that outputs some-output"
-  writeDummyRunCommand "$commandName"
-  writeShortDescription "$commandName" "$shortDescription"
+  write_dummy_run_command "$commandName"
+  write_short_description "$commandName" "$shortDescription"
 
-  run bats_pipe mrtRun "-h" \| grep "$commandName"
+  run bats_pipe mrt_run "-h" \| grep "$commandName"
 
 	assert_output "  $commandName $shortDescription"
 }
@@ -25,10 +25,10 @@ teardown() {
 @test "if command config does not contain shortDescription the default is displayed in help" {
 	local commandName="some-command"
   local shortDescription="A command that outputs some-output"
-  writeDummyRunCommand "$commandName"
-  writeEmptyJsonObjectAsConfig "$commandName"
+  write_dummy_run_command "$commandName"
+  write_empty_json_object_as_config "$commandName"
 
-  run bats_pipe mrtRun "-h" \| grep "$commandName"
+  run bats_pipe mrt_run "-h" \| grep "$commandName"
 
 	assert_output "  $commandName Executes run command $commandName"
 }
@@ -36,11 +36,11 @@ teardown() {
 @test "if command config is completely empty, it should exit with an error" {
 	local commandName="some-command"
   local shortDescription="A command that outputs some-output"
-  local configFile; configFile="$(configFilePath "$commandName")"
-  writeDummyRunCommand "$commandName"
+  local configFile; configFile="$(config_file_path "$commandName")"
+  write_dummy_run_command "$commandName"
   touch "$configFile"
 
-  run mrtRun "-h"
+  run mrt_run "-h"
 
   assert_equal "$status" 1
   assert_line --index 0 "Error while reading $configFile"

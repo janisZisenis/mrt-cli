@@ -1,27 +1,27 @@
-writeDummyRunCommand() {
+write_dummy_run_command() {
 	local commandName="$1"
 
   bats_load_library 'commands/command_writer.bash'
   bats_load_library 'commands/run/run_command_location.bash'
-  writeDummyCommand "$(runCommandLocation)" "$commandName"
+  write_dummy_command "$(run_command_location)" "$commandName"
 }
 
-writeStubRunCommand() {
+write_stub_run_command() {
 	local commandName="$1"
 	local exitCode="$2"
 	local output="$3"
 
   bats_load_library 'commands/command_writer.bash'
   bats_load_library 'commands/run/run_command_location.bash'
-  writeStubCommand "$(runCommandLocation)" "$commandName" "$exitCode" "$output"
+  write_stub_command "$(run_command_location)" "$commandName" "$exitCode" "$output"
 }
 
-writeSpyRunCommand() {
+write_spy_run_command() {
 	local commandName="$1"
 
   bats_load_library 'commands/command_writer.bash'
   bats_load_library 'commands/run/run_command_location.bash'
-  writeSpyCommand "$(runCommandLocation)" "$commandName"
+  write_spy_command "$(run_command_location)" "$commandName"
 }
 
 assert_run_command_was_executed_with_parameters() {
@@ -30,24 +30,24 @@ assert_run_command_was_executed_with_parameters() {
 
   bats_load_library 'commands/command_writer.bash'
   bats_load_library 'commands/run/run_command_location.bash'
-  assert_command_was_executed_with_parameters "$(runCommandLocation)" "$commandName" "$expectedParameters"
+  assert_command_was_executed_with_parameters "$(run_command_location)" "$commandName" "$expectedParameters"
 }
 
-writeStdErrRunCommand() {
+write_std_err_run_command() {
 	local commandName="$1"
 	local error="$2"
 
   bats_load_library 'commands/command_writer.bash'
 	bats_load_library 'commands/run/run_command_location.bash'
-	writeStdErrCommand "$(runCommandLocation)" "$commandName" "$error"
+	write_std_err_command "$(run_command_location)" "$commandName" "$error"
 }
 
-writeRunCommandRequestingInput() {
+write_run_command_requesting_input() {
 	local commandName="$1"
 
   bats_load_library 'commands/command_writer.bash'
 	bats_load_library 'commands/run/run_command_location.bash'
-	writeCommandRequestingInput "$(runCommandLocation)" "$commandName"
+	write_command_requesting_input "$(run_command_location)" "$commandName"
 }
 
 assert_run_command_received_input() {
@@ -56,5 +56,5 @@ assert_run_command_received_input() {
 
   bats_load_library 'commands/command_writer.bash'
 	bats_load_library 'commands/run/run_command_location.bash'
-	assert_command_received_input "$(runCommandLocation)" "$commandName" "$expectedInput"
+	assert_command_received_input "$(run_command_location)" "$commandName" "$expectedInput"
 }

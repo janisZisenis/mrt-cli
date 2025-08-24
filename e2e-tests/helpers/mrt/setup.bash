@@ -1,17 +1,17 @@
-mrtSetup() {
+mrt_setup() {
   bats_load_library 'mrt/execute.bash'
 
-	mrtExecute setup "$@"
+	mrt_execute setup "$@"
 }
 
-mrtSetupAll() {
-	mrtSetup all "$@"
+mrt_setup_all() {
+	mrt_setup all "$@"
 }
 
-mrtSetupGitHooks() {
-	mrtSetup install-git-hooks
+mrt_setup_git_hooks() {
+	mrt_setup install-git-hooks
 }
 
-mrtSetupClone() {
-  mrtSetup clone-repositories
+mrt_setup_clone() {
+  mrt_setup clone-repositories
 }

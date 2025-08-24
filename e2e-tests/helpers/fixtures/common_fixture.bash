@@ -1,4 +1,4 @@
-testEnvDir() {
+test_env_dir() {
 	echo "$BATS_TEST_TMPDIR"
 }
 

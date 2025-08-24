@@ -1,4 +1,4 @@
-writeEmptyJsonIfFileDoesNotExist() {
+write_empty_json_if_file_does_not_exist() {
   local filePath="$1"
 
 	if [[ ! -f "$filePath" ]]; then
@@ -6,7 +6,7 @@ writeEmptyJsonIfFileDoesNotExist() {
 	fi
 }
 
-toJsonArray() {
+to_json_array() {
   local inputArray=("$@")
 
   if [[ ${#inputArray[@]} -eq 0 ]]; then
@@ -17,16 +17,16 @@ toJsonArray() {
   jq -Rn --argjson args "$(printf '%s\n' "${inputArray[@]}" | jq -R . | jq -s .)" '$args'
 }
 
-toJsonString() {
+to_json_string() {
   echo "\"$1\""
 }
 
-writeJsonField() {
+write_json_field() {
   local filePath="$1"
   local fieldName="$2"
   local value="$3"
 
-  writeEmptyJsonIfFileDoesNotExist "$filePath"
+  write_empty_json_if_file_does_not_exist "$filePath"
 
   local temp_file="$filePath.tmp"
 

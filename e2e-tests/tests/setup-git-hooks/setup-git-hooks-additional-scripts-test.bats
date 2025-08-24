@@ -10,64 +10,64 @@ teardown() {
 }
 
 @test "if pre-commit scripts exist 'committing' will execute them" {
-	local scriptsPath; scriptsPath="$(repositoryDir)/hook-scripts/pre-commit"
+	local scriptsPath; scriptsPath="$(repository_dir)/hook-scripts/pre-commit"
 	local firstScript="$scriptsPath/script1"
 	local secondScript="$scriptsPath/script2"
-	writeSpyScript "$firstScript"
-	writeSpyScript "$secondScript"
+	write_spy_script "$firstScript"
+	write_spy_script "$secondScript"
 
-	commit_changes "$(repositoryDir)" "some-branch" "some-message"
+	commit_changes "$(repository_dir)" "some-branch" "some-message"
 
 	assert_script_was_executed "$firstScript"
 	assert_script_was_executed "$secondScript"
 }
 
 @test "if commit-msg scripts exits with failure 'commiting' will also fail" {
-	local scriptPath; scriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
-	writeStubScript "$scriptPath" "1" "some-output"
+	local scriptPath; scriptPath="$(repository_dir)/hook-scripts/commit-msg/script"
+	write_stub_script "$scriptPath" "1" "some-output"
 
-	run commit_changes "$(repositoryDir)" "some-branch" "some-message"
+	run commit_changes "$(repository_dir)" "some-branch" "some-message"
 
 	assert_failure
 }
 
 @test "if commit-msg scripts has output 'commiting' will contain the same output" {
 	local scriptOutput="some-output"
-	local scriptPath; scriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
-	writeStubScript "$scriptPath" "0" "$scriptOutput"
+	local scriptPath; scriptPath="$(repository_dir)/hook-scripts/commit-msg/script"
+	write_stub_script "$scriptPath" "0" "$scriptOutput"
 
-	run commit_changes "$(repositoryDir)" "some-branch" "some-message"
+	run commit_changes "$(repository_dir)" "some-branch" "some-message"
 
 	assert_output --partial "$scriptOutput"
 }
 
 @test "if pre-commit hook gets executed, it gets passed the git parameters" {
-	local scriptPath; scriptPath="$(repositoryDir)/hook-scripts/pre-commit/script"
-	writeSpyScript "$scriptPath"
+	local scriptPath; scriptPath="$(repository_dir)/hook-scripts/pre-commit/script"
+	write_spy_script "$scriptPath"
 
-	commit_changes "$(repositoryDir)" "some-branch" "some-message"
+	commit_changes "$(repository_dir)" "some-branch" "some-message"
 
 	assert_script_was_executed_with_parameters "$scriptPath" ""
 }
 
 @test "if pre-push hook gets executed, it gets passed the git parameters" {
-	local scriptPath; scriptPath="$(repositoryDir)/hook-scripts/pre-push/script"
-	writeSpyScript "$scriptPath"
+	local scriptPath; scriptPath="$(repository_dir)/hook-scripts/pre-push/script"
+	write_spy_script "$scriptPath"
 	local branchName; branchName="$(unique_branch_name)"
-	commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	commit_changes "$(repository_dir)" "$branchName" "some-message"
 
-	push_changes "$(repositoryDir)" "$branchName"
+	push_changes "$(repository_dir)" "$branchName"
 
-	local originUrl; originUrl=$(git -C "$(repositoryDir)" config --get remote.origin.url)
+	local originUrl; originUrl=$(git -C "$(repository_dir)" config --get remote.origin.url)
 	local remoteName; remoteName=$(git remote)
 	assert_script_was_executed_with_parameters "$scriptPath" "$remoteName $originUrl"
 }
 
 @test "if commit-msg hook gets executed, it gets passed the git parameters" {
-	local scriptPath; scriptPath="$(repositoryDir)/hook-scripts/commit-msg/script"
-	writeSpyScript "$scriptPath"
+	local scriptPath; scriptPath="$(repository_dir)/hook-scripts/commit-msg/script"
+	write_spy_script "$scriptPath"
 
-	commit_changes "$(repositoryDir)" "some-branch" "some-message"
+	commit_changes "$(repository_dir)" "some-branch" "some-message"
 
 	assert_script_was_executed_with_parameters "$scriptPath" ".git/COMMIT_EDITMSG"
 }

@@ -10,7 +10,7 @@ teardown() {
 }
 
 @test "If setup is run with skipping git hooks, it should print skip message" {
-  run mrtSetupAll --skip-install-git-hooks
+  run mrt_setup_all --skip-install-git-hooks
 
 	assert_line --partial "Skipping install-git-hooks step."
 }

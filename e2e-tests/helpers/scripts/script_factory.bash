@@ -1,10 +1,10 @@
-makeDummyScript() {
+make_dummy_script() {
 cat <<EOF
 #!/bin/bash
 EOF
 }
 
-makeStubScript() {
+make_stub_script() {
   local output="$1"
   local exitCode="$2"
 
@@ -16,22 +16,22 @@ exit $exitCode
 EOF
 }
 
-spyFileSuffix() {
+spy_file_suffix() {
 	echo "Executed"
 }
 
-makeSpyScript() {
+make_spy_script() {
   local scriptName="$1"
 
 cat <<EOF
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spyFileSuffix)"
+echo "\$@" > "\$SCRIPT_DIR/$scriptName$(spy_file_suffix)"
 EOF
 }
 
-makeScriptRequestingInput() {
+make_script_requesting_input() {
 cat <<EOF
 #!/bin/bash
 
@@ -41,7 +41,7 @@ touch "\$SCRIPT_DIR/\$input"
 EOF
 }
 
-makeStdErrScript() {
+make_std_err_script() {
   local errorMessage="$1"
 cat <<EOF
 #!/bin/bash

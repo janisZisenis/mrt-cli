@@ -1,5 +1,5 @@
-mrtRun() {
+mrt_run() {
   bats_load_library 'mrt/execute.bash'
 
-	mrtExecute run "$@"
+	mrt_execute run "$@"
 }

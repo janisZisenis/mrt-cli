@@ -1,14 +1,14 @@
-repositoriesDir() {
+repositories_dir() {
   bats_load_library 'fixtures/common_fixture.bash'
   bats_load_library 'repositories_path.bash'
 
-  echo "$(testEnvDir)/$(default_repositories_path)"
+  echo "$(test_env_dir)/$(default_repositories_path)"
 }
 
 cloned_git_folder() {
   local repository="$1"
 
-  echo "$(repositoriesDir)/$repository/.git"
+  echo "$(repositories_dir)/$repository/.git"
 }
 
 setup() {
@@ -36,7 +36,7 @@ teardown() {
 
 @test "if team json contains an existing repository it should print a messages about successful cloning" {
 	local repository="1_TestRepository"
-	local repositoryUrl; repositoryUrl="$(getRepositoryUrls "$repository")"
+	local repositoryUrl; repositoryUrl="$(get_repository_urls "$repository")"
 
 	run clone_repository_urls_using_mrt "$repositoryUrl"
 
@@ -50,7 +50,7 @@ teardown() {
 		"1_TestRepository"
 		"2_TestRepository"
 	)
-	cloneTestingRepositories "$(repositoriesDir)" "${repositories[0]}"
+	clone_testing_repositories "$(repositories_dir)" "${repositories[0]}"
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
@@ -63,12 +63,12 @@ teardown() {
 
 	run clone_repositories_using_mrt "${noRepositories[@]}"
 
-	assert_dir_not_exist "$(repositoriesDir)"
+	assert_dir_not_exist "$(repositories_dir)"
 }
 
 @test "if team json contains non-existing repository it should print out a failure message" {
 	local repository="not-existing"
-	local repositoryUrl; repositoryUrl="$(getRepositoryUrls "$repository")"
+	local repositoryUrl; repositoryUrl="$(get_repository_urls "$repository")"
 
 	run clone_repository_urls_using_mrt "$repositoryUrl"
 
@@ -91,7 +91,7 @@ teardown() {
 		"Prefix1_TestRepository1"
 		"Prefix2_TestRepository2"
 	)
-	writeRepositoriesPrefixes "Prefix1_" "Prefix2_"
+	write_repositories_prefixes "Prefix1_" "Prefix2_"
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
@@ -104,7 +104,7 @@ teardown() {
 		"Prefix1_TestRepository1"
 		"Prefix2_TestRepository2"
 	)
-	writeRepositoriesPrefixes "TestRepository1" "TestRepository2"
+	write_repositories_prefixes "TestRepository1" "TestRepository2"
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 

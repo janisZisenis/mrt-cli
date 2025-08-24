@@ -1,31 +1,31 @@
-commandFileName() {
+command_file_name() {
 	echo "command"
 }
 
-writeDummyCommand() {
+write_dummy_command() {
   local commandLocation="$1"
   local commandName="$2"
 
   bats_load_library "scripts/script_writer.bash"
-  writeDummyScript "$commandLocation/$commandName/$(commandFileName)"
+  write_dummy_script "$commandLocation/$commandName/$(command_file_name)"
 }
 
-writeStubCommand() {
+write_stub_command() {
 	local commandLocation="$1"
 	local commandName="$2"
 	local exitCode="$3"
 	local output="$4"
 
   bats_load_library "scripts/script_writer.bash"
-	writeStubScript "$commandLocation/$commandName/$(commandFileName)" "$exitCode" "$output"
+	write_stub_script "$commandLocation/$commandName/$(command_file_name)" "$exitCode" "$output"
 }
 
-writeSpyCommand() {
+write_spy_command() {
 	local commandLocation="$1"
 	local commandName="$2"
 
   bats_load_library "scripts/script_writer.bash"
-	writeSpyScript "$commandLocation/$commandName/$(commandFileName)"
+	write_spy_script "$commandLocation/$commandName/$(command_file_name)"
 }
 
 assert_command_was_executed_with_parameters() {
@@ -34,7 +34,7 @@ assert_command_was_executed_with_parameters() {
 	local expectedParameters="$3"
 
   bats_load_library "scripts/script_writer.bash"
-	assert_script_was_executed_with_parameters "$commandLocation/$commandName/$(commandFileName)" "$expectedParameters"
+	assert_script_was_executed_with_parameters "$commandLocation/$commandName/$(command_file_name)" "$expectedParameters"
 }
 
 assert_command_was_not_executed() {
@@ -42,24 +42,24 @@ assert_command_was_not_executed() {
 	local commandName="$2"
 
   bats_load_library "scripts/script_writer.bash"
-	assert_script_was_not_executed "$commandLocation/$commandName/$(commandFileName)"
+	assert_script_was_not_executed "$commandLocation/$commandName/$(command_file_name)"
 }
 
-writeStdErrCommand() {
+write_std_err_command() {
 	local commandLocation="$1"
 	local commandName="$2"
 	local error="$3"
 
   bats_load_library "scripts/script_writer.bash"
-	writeStdErrScript "$commandLocation/$commandName/$(commandFileName)" "$error"
+	write_std_err_script "$commandLocation/$commandName/$(command_file_name)" "$error"
 }
 
-writeCommandRequestingInput() {
+write_command_requesting_input() {
 	local commandLocation="$1"
 	local commandName="$2"
 
   bats_load_library "scripts/script_writer.bash"
-	writeScriptRequestingInput "$commandLocation/$commandName/$(commandFileName)"
+	write_script_requesting_input "$commandLocation/$commandName/$(command_file_name)"
 }
 
 assert_command_received_input() {
@@ -68,5 +68,5 @@ assert_command_received_input() {
 	local expectedInput="$3"
 
   bats_load_library "scripts/script_writer.bash"
-  assert_script_received_input "$commandLocation/$commandName/$(commandFileName)" "$expectedInput"
+  assert_script_received_input "$commandLocation/$commandName/$(command_file_name)" "$expectedInput"
 }

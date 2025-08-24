@@ -14,20 +14,20 @@ teardown() {
 
 repositoriesPath=$(default_repositories_path)
 
-repositoriesDir() {
-	echo "$(testEnvDir)/$repositoriesPath"
+repositories_dir() {
+	echo "$(test_env_dir)/$repositoriesPath"
 }
 
 @test "If repositories are cloned to repositories path from team file commiting on the blocked branches after setting up git-hooks should be blocked" {
 	local repositoriesPath="some-path"
 	local repository="1_TestRepository"
 	local branchName="some-branch"
-	writeRepositoriesPath "$repositoriesPath"
-	writeBlockedBranches "$branchName"
-	cloneTestingRepositories "$(repositoriesDir)" "$repository"
-	mrtSetupGitHooks
+	write_repositories_path "$repositoriesPath"
+	write_blocked_branches "$branchName"
+	clone_testing_repositories "$(repositories_dir)" "$repository"
+	mrt_setup_git_hooks
 
-	run commit_changes "$(repositoriesDir)/$repository" $branchName
+	run commit_changes "$(repositories_dir)/$repository" $branchName
 
 	assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
 	assert_failure
@@ -35,10 +35,10 @@ repositoriesDir() {
 
 @test "If repositories path contains non-repository folder it does not install git-hooks" {
 	local repository="1_TestRepository"
-	local folderPath; folderPath="$(repositoriesDir)/$repository"
+	local folderPath; folderPath="$(repositories_dir)/$repository"
 	mkdir -p "$folderPath"
 
-	run mrtSetupGitHooks
+	run mrt_setup_git_hooks
 
 	assert_dir_not_exist "$folderPath/.git/hooks"
 }
@@ -49,11 +49,11 @@ repositoriesDir() {
 		"2_TestRepository"
 	)
 	local branchName="some-branch"
-	cloneTestingRepositories "$(repositoriesDir)" "${repositories[@]}"
-	writeBlockedBranches "$branchName"
-	mrtSetupGitHooks
+	clone_testing_repositories "$(repositories_dir)" "${repositories[@]}"
+	write_blocked_branches "$branchName"
+	mrt_setup_git_hooks
 
-	run commit_changes "$(repositoriesDir)/${repositories[1]}" $branchName
+	run commit_changes "$(repositories_dir)/${repositories[1]}" $branchName
 
 	assert_output --partial "Action \"commit\" not allowed on branch \"$branchName\""
 	assert_failure
@@ -69,11 +69,11 @@ repositoriesDir() {
 
 test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages() {
 	local repositoriesPath="$1"
-	writeRepositoriesPath "$repositoriesPath"
+	write_repositories_path "$repositoriesPath"
 
-	run mrtSetupGitHooks
+	run mrt_setup_git_hooks
 
-	assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositoriesDir)\""
+	assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositories_dir)\""
 	assert_line --index 1 "Did not find any repositories. Skip installing git-hooks."
 	assert_line --index 2 "Done installing git-hooks."
 }
@@ -83,14 +83,14 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 		"1_TestRepository"
 		"2_TestRepository"
 	)
-	cloneTestingRepositories "$(repositoriesDir)" "${repositories[@]}"
+	clone_testing_repositories "$(repositories_dir)" "${repositories[@]}"
 
-	run mrtSetupGitHooks
+	run mrt_setup_git_hooks
 
-	assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositoriesDir)\""
-	assert_line --index 1 "Installing git-hooks to \"$(repositoriesDir)/${repositories[0]}/.git\""
-	assert_line --index 2 "Done installing git-hooks to \"$(repositoriesDir)/${repositories[0]}/.git\""
-	assert_line --index 3 "Installing git-hooks to \"$(repositoriesDir)/${repositories[1]}/.git\""
-	assert_line --index 4 "Done installing git-hooks to \"$(repositoriesDir)/${repositories[1]}/.git\""
+	assert_line --index 0 "Installing git-hooks to repositories located in \"$(repositories_dir)\""
+	assert_line --index 1 "Installing git-hooks to \"$(repositories_dir)/${repositories[0]}/.git\""
+	assert_line --index 2 "Done installing git-hooks to \"$(repositories_dir)/${repositories[0]}/.git\""
+	assert_line --index 3 "Installing git-hooks to \"$(repositories_dir)/${repositories[1]}/.git\""
+	assert_line --index 4 "Done installing git-hooks to \"$(repositories_dir)/${repositories[1]}/.git\""
 	assert_line --index 5 "Done installing git-hooks."
 }

@@ -1,33 +1,33 @@
-_configFileName() {
+_config_file_name() {
 	echo "config.json"
 }
 
-configFilePath() {
+config_file_path() {
   local commandName="$1"
 
   bats_load_library 'commands/run/run_command_location.bash'
-  echo "$(runCommandLocation)/$commandName/$(_configFileName)"
+  echo "$(run_command_location)/$commandName/$(_config_file_name)"
 }
 
-_writeToConfigFile() {
+_write_to_config_file() {
   local commandName="$1"
   local fieldName="$2"
   local fieldValue="$3"
 
-  writeJsonField "$(configFilePath "$commandName")" "$fieldName" "$fieldValue"
+  write_json_field "$(config_file_path "$commandName")" "$fieldName" "$fieldValue"
 }
 
-writeEmptyJsonObjectAsConfig() {
+write_empty_json_object_as_config() {
   local commandName="$1"
 
   bats_load_library "json_writer.bash"
-  writeEmptyJsonIfFileDoesNotExist "$(configFilePath "$commandName")"
+  write_empty_json_if_file_does_not_exist "$(config_file_path "$commandName")"
 }
 
-writeShortDescription() {
+write_short_description() {
   local commandName="$1"
   local shortDescription="$2"
 
   bats_load_library "json_writer.bash"
-  _writeToConfigFile "$commandName" "shortDescription" "$(toJsonString "$shortDescription")"
+  _write_to_config_file "$commandName" "shortDescription" "$(to_json_string "$shortDescription")"
 }

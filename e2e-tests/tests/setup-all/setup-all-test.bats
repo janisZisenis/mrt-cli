@@ -16,24 +16,22 @@ teardown() {
 
 @test "if team file contains repository and two setup commands exist it should clone the repository, install git-hooks and execute the commands" {
 	local repository="1_TestRepository"
-	local repositoryUrl
-	repositoryUrl="$(getTestingRepositoryUrl "$repository")"
-	writeRepositoriesUrls "$repositoryUrl"
-	local repositoryDir
-	repositoryDir="$(testEnvDir)/$(default_repositories_path)/$repository"
+	local repositoryUrl; repositoryUrl="$(get_testing_repository_url "$repository")"
+	write_repositories_urls "$repositoryUrl"
+	local repositoryDir; repositoryDir="$(test_env_dir)/$(default_repositories_path)/$repository"
 	local someCommandName="some-command"
 	local anotherCommandName="another-command"
-	writeSpySetupCommand "$someCommandName"
-	writeSpySetupCommand "$anotherCommandName"
+	write_spy_setup_command "$someCommandName"
+	write_spy_setup_command "$anotherCommandName"
 
-	run mrtSetupAll
+	run mrt_setup_all
 
 	assert_line --index 0 "Start cloning repositories into \"$(default_repositories_path)\""
 	assert_line --index 1 "Cloning $repositoryUrl"
 	assert_line --index 3 --regexp "Enumerating objects: [0-9]+, done."
 	assert_line_reversed_output 11 "Successfully cloned $repositoryUrl"
 	assert_line_reversed_output 10 "Cloning repositories done"
-	assert_line_reversed_output 9 "Installing git-hooks to repositories located in \"$(testEnvDir)/$(default_repositories_path)\""
+	assert_line_reversed_output 9 "Installing git-hooks to repositories located in \"$(test_env_dir)/$(default_repositories_path)\""
 	assert_line_reversed_output 8 "Installing git-hooks to \"$repositoryDir/.git\""
 	assert_line_reversed_output 7 "Done installing git-hooks to \"$repositoryDir/.git\""
 	assert_line_reversed_output 6 "Done installing git-hooks."
@@ -46,16 +44,16 @@ teardown() {
 }
 
 @test "if setup is run without skipping git hooks it should not print skip message" {
-	run mrtSetupAll
+	run mrt_setup_all
 
 	refute_output --partial "Skipping install-git-hooks step."
 }
 
 @test "if setup command exists setup without skipping the command should not print skip message" {
 	local commandName="some-command"
-	writeSpySetupCommand "$commandName"
+	write_spy_setup_command "$commandName"
 
-	run mrtSetupAll
+	run mrt_setup_all
 
 	refute_output --partial "Skipping setup command: $commandName"
 }

@@ -21,29 +21,29 @@ teardown() {
 test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it() {
 	local commandName=$1; shift
 	local parameters=("$@")
-	writeSpyRunCommand "$commandName"
+	write_spy_run_command "$commandName"
 
-	run mrtRun "$commandName" -- "${parameters[@]}"
+	run mrt_run "$commandName" -- "${parameters[@]}"
 
-	assert_run_command_was_executed_with_parameters "$commandName" "$(testEnvDir) ${parameters[*]}"
+	assert_run_command_was_executed_with_parameters "$commandName" "$(test_env_dir) ${parameters[*]}"
 }
 
 @test "if command succeeds with output it will print the command's output" {
 	local commandName="some-command"
 	local someOutput="some-output"
-	writeStubRunCommand "$commandName" "0" "$someOutput"
+	write_stub_run_command "$commandName" "0" "$someOutput"
 
-	run mrtRun "$commandName"
+	run mrt_run "$commandName"
 
 	assert_output "$someOutput"
 }
 
 @test "if command is requesting input it should process the input" {
 	local commandName="input"
-	writeRunCommandRequestingInput "$commandName"
+	write_run_command_requesting_input "$commandName"
 	local input="some-input"
 
-	run mrtRun $commandName <<<$input
+	run mrt_run $commandName <<<$input
 
 	assert_run_command_received_input "$commandName" "$input"
 }
@@ -51,9 +51,9 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 @test "if command writes to stderr it outputs stderr" {
 	local commandName="error"
 	local error="some-error"
-	writeStdErrRunCommand "$commandName" "$error"
+	write_std_err_run_command "$commandName" "$error"
 
-	run mrtRun "$commandName"
+	run mrt_run "$commandName"
 
 	assert_output "$error"
 }
@@ -71,9 +71,9 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
   local exitCode="$1"
   local commandName="some-command"
-  writeStubRunCommand "$commandName" "$exitCode" ""
+  write_stub_run_command "$commandName" "$exitCode" ""
 
-  run mrtRun "$commandName"
+  run mrt_run "$commandName"
 
   # shellcheck disable=SC2031
   assert_equal "$status" "$exitCode"
@@ -83,9 +83,9 @@ test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
 @test "if command exits with code 0 it will succeed" {
 	local commandName="some-command"
 	local exitCode=0
-	writeStubRunCommand "$commandName" "$exitCode" ""
+	write_stub_run_command "$commandName" "$exitCode" ""
 
-	run mrtRun "$commandName"
+	run mrt_run "$commandName"
 
 	assert_success
 }

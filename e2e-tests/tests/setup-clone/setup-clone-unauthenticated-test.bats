@@ -24,7 +24,7 @@ teardown() {
 test_if_team_file_contains_repository_setup_prints_message_about_cloning_repositories() {
 	local repositoryPath="$1"
 	local repositories=("1_TestRepository")
-	writeRepositoriesPath "$repositoryPath"
+	write_repositories_path "$repositoryPath"
 
 	run clone_repositories_using_mrt "${repositories[@]}"
 
@@ -45,7 +45,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 
 @test "if team json contains existing repositories but authentication is missing it should print a failure message" {
 	local repository="1_TestRepository"
-	local repositoryUrl; repositoryUrl="$(getTestingRepositoryUrl "$repository")"
+	local repositoryUrl; repositoryUrl="$(get_testing_repository_url "$repository")"
 
 	run clone_repository_urls_using_mrt "$repositoryUrl"
 
@@ -55,16 +55,16 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 
 @test "if team json does not contain any repositories it prints out a message" {
 	local repositoriesUrls=()
-	writeRepositoriesUrls "${repositoriesUrls[@]}"
+	write_repositories_urls "${repositoriesUrls[@]}"
 
-	run mrtSetupClone
+	run mrt_setup_clone
 
 	assert_success
 	assert_output 'The team file does not contain any repositories, no repositories to clone.'
 }
 
 @test "if team json does not exist it prints out a message" {
-	run mrtSetupClone
+	run mrt_setup_clone
 
 	assert_success
 	assert_output 'Could not read team file. To setup your repositories create a "team.json" file and add repositories to it.'

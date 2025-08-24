@@ -2,14 +2,14 @@ unique_branch_name() {
 	echo "branch-$(uuidgen)"
 }
 
-cloneTestingRepositories() {
+clone_testing_repositories() {
 	local repositoryDir="$1"
   shift
   local repositoriesToClone=("$@")
 
   bats_load_library 'test_repositories.bash'
 	for repositoryToClone in "${repositoriesToClone[@]}"; do
-		git clone "$(getTestingRepositoryUrl "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
+		git clone "$(get_testing_repository_url "$repositoryToClone")" "$repositoryDir/$repositoryToClone"
 	done
 }
 
