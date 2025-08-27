@@ -3,7 +3,6 @@ package core
 import (
 	"app/log"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -27,11 +26,13 @@ func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string
 type ExitCode = int
 
 func ExecuteScript(scriptPath string, args []string) ExitCode {
-	script := exec.Command(scriptPath, args...)
-	script.Stdout = os.Stdout
-	script.Stdin = os.Stdin
-	script.Stderr = os.Stderr
-	err := script.Run()
+	err := NewCommandBuilder().
+		WithCommand(scriptPath).
+		WithArgs(args...).
+		WithStdout(os.Stdout).
+		WithStdin(os.Stdin).
+		WithStderr(os.Stderr).
+		Run()
 
 	if err == nil {
 		return 0

@@ -1,0 +1,78 @@
+package core
+
+import (
+	"context"
+	"io"
+	"os/exec"
+	"time"
+)
+
+type CommandBuilder struct {
+	command string
+	args    []string
+	stdout  io.Writer
+	stderr  io.Writer
+	stdin   io.Reader
+	timeout time.Duration
+}
+
+func NewCommandBuilder() *CommandBuilder {
+	return &CommandBuilder{
+		stdout:  nil,
+		stderr:  nil,
+		stdin:   nil,
+		timeout: 5 * time.Second,
+	}
+}
+
+func (b *CommandBuilder) WithCommand(command string) *CommandBuilder {
+	b.command = command
+	return b
+}
+
+func (b *CommandBuilder) WithArgs(args ...string) *CommandBuilder {
+	b.args = append(b.args, args...)
+	return b
+}
+
+func (b *CommandBuilder) WithStdout(stdout io.Writer) *CommandBuilder {
+	b.stdout = stdout
+	return b
+}
+
+func (b *CommandBuilder) WithStderr(stderr io.Writer) *CommandBuilder {
+	b.stderr = stderr
+	return b
+}
+
+func (b *CommandBuilder) WithStdin(stdin io.Reader) *CommandBuilder {
+	b.stdin = stdin
+	return b
+}
+
+func (b *CommandBuilder) WithTimeout(timeout time.Duration) *CommandBuilder {
+	b.timeout = timeout
+	return b
+}
+
+func (b *CommandBuilder) Run() error {
+	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, b.command, b.args...)
+	cmd.Stdout = b.stdout
+	cmd.Stderr = b.stderr
+	cmd.Stdin = b.stdin
+
+	err := cmd.Run()
+
+	if ctxErr := ctx.Err(); ctxErr != nil {
+		return ctxErr
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
