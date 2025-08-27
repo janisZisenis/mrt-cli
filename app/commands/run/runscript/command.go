@@ -15,12 +15,8 @@ type CommandConfig struct {
 	ShortDescription string `json:"shortDescription"`
 }
 
-func GetRunDirectory() string {
-	return "/run"
-}
-
 func GetScriptsPath() string {
-	return GetRunDirectory() + "/*/" + core.CommandFileName()
+	return "/run/*/" + core.CommandFileName()
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
