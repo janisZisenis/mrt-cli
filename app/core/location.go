@@ -5,15 +5,16 @@ import (
 	"path/filepath"
 )
 
-var TeamDirectory *string
+//nolint:gochecknoglobals // This is a global flag that we can set on every command to change the execution path
+var teamDirectory *string
 
 func SetTeamDirectory(directory *string) {
-	TeamDirectory = directory
+	teamDirectory = directory
 }
 
 func GetExecutionPath() string {
-	if TeamDirectory != nil {
-		return *TeamDirectory
+	if teamDirectory != nil {
+		return *teamDirectory
 	}
 	pwd, _ := os.Getwd()
 	return pwd
