@@ -52,14 +52,8 @@ func (b *CommandBuilder) WithStdin(stdin io.Reader) *CommandBuilder {
 	return b
 }
 
-func (b *CommandBuilder) WithTimeout(timeout time.Duration) *CommandBuilder {
-	b.timeout = timeout
-	return b
-}
-
-func (b *CommandBuilder) Run() error {
+func (b *CommandBuilder) Build() (*exec.Cmd, context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
-	defer cancel()
 
 	// #nosec G204 - We actually want the user to execute scripts and commands with their own arguments.
 	// We don't know yet what these commands will be and what arguments they will pass to them.
@@ -67,6 +61,13 @@ func (b *CommandBuilder) Run() error {
 	cmd.Stdout = b.stdout
 	cmd.Stderr = b.stderr
 	cmd.Stdin = b.stdin
+
+	return cmd, ctx, cancel
+}
+
+func (b *CommandBuilder) Run() error {
+	cmd, ctx, cancel := b.Build()
+	defer cancel()
 
 	err := cmd.Run()
 
@@ -74,22 +75,11 @@ func (b *CommandBuilder) Run() error {
 		return ctxErr
 	}
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (b *CommandBuilder) Start() (context.CancelFunc, func() error, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
-
-	// #nosec G204 - We actually want the user to execute scripts and commands with their own arguments.
-	// We don't know yet what these commands will be and what arguments they will pass to them.
-	cmd := exec.CommandContext(ctx, b.command, b.args...)
-	cmd.Stdout = b.stdout
-	cmd.Stderr = b.stderr
-	cmd.Stdin = b.stdin
+	cmd, ctx, cancel := b.Build()
 
 	wait := func() error {
 		err := cmd.Wait()
@@ -98,11 +88,7 @@ func (b *CommandBuilder) Start() (context.CancelFunc, func() error, error) {
 			return ctxErr
 		}
 
-		if err != nil {
-			return err
-		}
-
-		return nil
+		return err
 	}
 
 	err := cmd.Start()
