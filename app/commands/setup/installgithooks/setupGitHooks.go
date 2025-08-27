@@ -25,7 +25,7 @@ func setupGitHooks(teamInfo core.TeamInfo) {
 }
 
 func writeHooks(repository string) {
-	for _, hook := range core.GitHooks {
+	for _, hook := range core.GetGitHooks() {
 		writeGitHook(repository, hook)
 	}
 }

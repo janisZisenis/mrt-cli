@@ -4,8 +4,10 @@ const CommitMsg = "commit-msg"
 const PreCommit = "pre-commit"
 const PrePush = "pre-push"
 
-var GitHooks = []string{
-	CommitMsg,
-	PreCommit,
-	PrePush,
+func GetGitHooks() []string {
+	return []string{
+		CommitMsg,
+		PreCommit,
+		PrePush,
+	}
 }
