@@ -28,7 +28,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	setDefaultValueToTrue(command, skipCloneFlag)
 
-	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(_ string, scriptName string) {
+	core.ForScriptInPathDo(teamDirectory+setupscript.GetScriptsPath(), func(_ string, scriptName string) {
 		var skipFlag = skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
 		setDefaultValueToTrue(command, skipFlag)
@@ -63,7 +63,7 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Infof("Executing setup commands.")
 
-	core.ForScriptInPathDo(core.GetExecutionPath()+setupscript.ScriptsPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(core.GetExecutionPath()+setupscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
 		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 		if !skipFlag {
 			setupscript.MakeCommand(scriptPath, scriptName).Run(cmd, args)

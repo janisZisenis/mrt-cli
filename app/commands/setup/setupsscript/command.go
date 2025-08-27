@@ -9,7 +9,9 @@ import (
 	"app/log"
 )
 
-var ScriptsPath = "/setup/*/" + core.CommandFileName()
+func GetScriptsPath() string {
+	return "/setup/*/" + core.CommandFileName()
+}
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
 	var command = &cobra.Command{

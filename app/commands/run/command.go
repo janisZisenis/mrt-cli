@@ -15,7 +15,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 		Short: "Executes a specified run command",
 	}
 
-	core.ForScriptInPathDo(teamDirectory+runscript.ScriptsPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(teamDirectory+runscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
 		command.AddCommand(runscript.MakeCommand(scriptName, scriptPath))
 	})
 
