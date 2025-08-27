@@ -80,3 +80,31 @@ func (b *CommandBuilder) Run() error {
 
 	return nil
 }
+
+func (b *CommandBuilder) Start() (context.CancelFunc, func() error, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
+
+	// #nosec G204 - We actually want the user to execute scripts and commands with their own arguments.
+	// We don't know yet what these commands will be and what arguments they will pass to them.
+	cmd := exec.CommandContext(ctx, b.command, b.args...)
+	cmd.Stdout = b.stdout
+	cmd.Stderr = b.stderr
+	cmd.Stdin = b.stdin
+
+	wait := func() error {
+		err := cmd.Wait()
+
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return ctxErr
+		}
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	err := cmd.Start()
+	return cancel, wait, err
+}

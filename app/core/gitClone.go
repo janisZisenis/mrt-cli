@@ -6,37 +6,42 @@ import (
 	"errors"
 	"io"
 	"os"
-	"os/exec"
 	"sync"
-	"time"
 )
 
 func CloneRepository(repositoryURL, destination string) {
 	log.Infof("Cloning " + repositoryURL)
 
+	var waitGroup sync.WaitGroup
+	numberOfPipesToWaitFor := 2
+	waitGroup.Add(numberOfPipesToWaitFor)
+
 	stdoutReader, stdoutWriter := io.Pipe()
 	stderrReader, stderrWriter := io.Pipe()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	cancel, wait, startErr := NewCommandBuilder().
+		WithCommand("git").
+		WithArgs("clone", "--progress", repositoryURL, destination).
+		WithStdout(stdoutWriter).
+		WithStderr(stderrWriter).
+		Start()
+
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, "git", "clone", "--progress", repositoryURL, destination)
-	cmd.Stdout = stdoutWriter
-	cmd.Stderr = stderrWriter
-
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	if err := cmd.Start(); err != nil {
-		log.Errorf("Error starting command: %v\n", err)
+	if startErr != nil {
+		log.Errorf("Error starting command: %v\n", startErr)
 		_ = stdoutWriter.Close()
 		_ = stderrWriter.Close()
 		return
 	}
 
 	go func() {
-		if err := cmd.Wait(); err != nil {
-			log.Warningf("Failed to clone repository, skipping it.")
+		if waitErr := wait(); waitErr != nil {
+			if errors.Is(waitErr, context.DeadlineExceeded) {
+				log.Warningf("Repository clone timed out after 5 minutes")
+			} else {
+				log.Warningf("Failed to clone repository, skipping it.")
+			}
 		}
 
 		_ = stdoutWriter.Close()
@@ -44,21 +49,16 @@ func CloneRepository(repositoryURL, destination string) {
 	}()
 
 	go func() {
-		defer wg.Done()
+		defer waitGroup.Done()
 		copyWithColor(os.Stdout, stdoutReader)
 	}()
 
 	go func() {
-		defer wg.Done()
+		defer waitGroup.Done()
 		copyWithColor(os.Stderr, stderrReader)
 	}()
 
-	wg.Wait()
-
-	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-		log.Warningf("Repository clone timed out after 5 minutes")
-		return
-	}
+	waitGroup.Wait()
 
 	log.Successf("Successfully cloned " + repositoryURL)
 }
