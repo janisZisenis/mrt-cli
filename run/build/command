@@ -25,12 +25,9 @@ help() {
 }
 
 build_binary() {
-	local platform
-	local semver
-	local commit_sha
-	platform=$1
-	semver=$2
-	commit_sha=$3
+	local platform="$1"
+	local semver="$2"
+	local commit_sha="$3"
 
 	binaryLocation="$(mrt --team-dir "$rootDir" run binary-location -- "$platform")"
 	GOOS="${platform%/*}"

@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//nolint:gochecknoglobals // These variables are injected at build time via -ldflags, it's not really global variables.
 var (
 	semver = "v0.0.0"
 	commit = "000000"
