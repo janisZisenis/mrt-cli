@@ -1,21 +1,21 @@
 set_fixture_variables() {
-  bats_load_library 'git.bash'
-  bats_load_library 'repositories_path.bash'
-  bats_load_library 'fixtures/common_fixture.bash'
+	bats_load_library 'git.bash'
+	bats_load_library 'repositories_path.bash'
+	bats_load_library 'fixtures/common_fixture.bash'
 
-  repository="1_TestRepository"
-  branch_name="$(unique_branch_name)"
-  repository_dir="$(test_env_dir)/$(default_repositories_path)/$repository"
+	repository="1_TestRepository"
+	branch_name="$(unique_branch_name)"
+	repository_dir="$(test_env_dir)/$(default_repositories_path)/$repository"
 }
 
 setup() {
-  bats_load_library 'mrt/setup.bash'
-  bats_load_library 'write_team_file.bash'
-  bats_load_library 'test_repositories.bash'
-  bats_load_library 'fixtures/authenticated_fixture.bash'
+	bats_load_library 'mrt/setup.bash'
+	bats_load_library 'write_team_file.bash'
+	bats_load_library 'test_repositories.bash'
+	bats_load_library 'fixtures/authenticated_fixture.bash'
 
-  set_fixture_variables
-  authenticated_setup
+	set_fixture_variables
+	authenticated_setup
 
 	write_repositories_urls "$(get_testing_repository_url "$repository")"
 	mrt_setup_all --skip-install-git-hooks

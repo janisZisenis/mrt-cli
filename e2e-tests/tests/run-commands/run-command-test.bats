@@ -1,7 +1,7 @@
 setup() {
-  bats_load_library 'fixtures/common_fixture.bash'
-  bats_load_library 'commands/run/run_command_writer.bash'
-  bats_load_library 'mrt/run.bash'
+	bats_load_library 'fixtures/common_fixture.bash'
+	bats_load_library 'commands/run/run_command_writer.bash'
+	bats_load_library 'mrt/run.bash'
 
 	common_setup
 }
@@ -19,7 +19,8 @@ teardown() {
 }
 
 test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it() {
-	local command_name=$1; shift
+	local command_name=$1
+	shift
 	local parameters=("$@")
 	write_spy_run_command "$command_name"
 
@@ -60,24 +61,24 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 
 # shellcheck disable=SC2030
 @test "if command fails with code 1 it will fail with error code 1 as well" {
-  test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 1
+	test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 1
 }
 
 # shellcheck disable=SC2030
 @test "if command fails with code 2 it will fail with error code 2 as well" {
-  test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 2
+	test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 2
 }
 
 test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
-  local exit_code="$1"
-  local command_name="some-command"
-  write_stub_run_command "$command_name" "$exit_code" ""
+	local exit_code="$1"
+	local command_name="some-command"
+	write_stub_run_command "$command_name" "$exit_code" ""
 
-  run mrt_run "$command_name"
+	run mrt_run "$command_name"
 
-  # shellcheck disable=SC2031
-  assert_equal "$status" "$exit_code"
-  assert_failure
+	# shellcheck disable=SC2031
+	assert_equal "$status" "$exit_code"
+	assert_failure
 }
 
 @test "if command exits with code 0 it will succeed" {

@@ -7,9 +7,9 @@ assert_line_reversed_output() {
 		return 1
 	fi
 
-  # we want a zero-based notation
-  # but using 'tail' it would be is one-based
-  local zero_based_index=$((index + 1))
+	# we want a zero-based notation
+	# but using 'tail' it would be is one-based
+	local zero_based_index=$((index + 1))
 
 	local actual
 	# shellcheck disable=SC2154

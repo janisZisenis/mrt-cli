@@ -30,6 +30,6 @@ authenticated_setup() {
 authenticated_teardown() {
 	bats_load_library 'fixtures/common_fixture.bash'
 
-  _revoke_authentication
+	_revoke_authentication
 	common_teardown
 }

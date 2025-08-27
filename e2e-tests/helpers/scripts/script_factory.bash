@@ -1,14 +1,14 @@
 make_dummy_script() {
-cat <<EOF
+	cat <<EOF
 #!/bin/bash
 EOF
 }
 
 make_stub_script() {
-  local output="$1"
-  local exit_code="$2"
+	local output="$1"
+	local exit_code="$2"
 
-cat <<EOF
+	cat <<EOF
 #!/bin/bash
 
 echo "$output"
@@ -21,9 +21,9 @@ spy_file_suffix() {
 }
 
 make_spy_script() {
-  local script_name="$1"
+	local script_name="$1"
 
-cat <<EOF
+	cat <<EOF
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -32,7 +32,7 @@ EOF
 }
 
 make_script_requesting_input() {
-cat <<EOF
+	cat <<EOF
 #!/bin/bash
 
 SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -42,8 +42,8 @@ EOF
 }
 
 make_std_err_script() {
-  local error_message="$1"
-cat <<EOF
+	local error_message="$1"
+	cat <<EOF
 #!/bin/bash
 
 echo "$error_message" 1>&2

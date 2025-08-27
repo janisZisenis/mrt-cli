@@ -1,3 +1,3 @@
 run_command_location() {
-  echo "$(test_env_dir)/run"
+	echo "$(test_env_dir)/run"
 }

@@ -83,7 +83,7 @@ jobs:
     name: Release binaries for ${{ matrix.platform }}
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [create-release, build-matrix]
+    needs: [ create-release, build-matrix ]
     strategy:
       matrix:
         platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}

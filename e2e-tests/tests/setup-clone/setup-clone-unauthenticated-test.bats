@@ -1,10 +1,10 @@
 setup() {
-  bats_load_library 'fixtures/common_fixture.bash'
-  bats_load_library 'mrt/setup.bash'
-  bats_load_library 'mrt/clone.bash'
-  bats_load_library 'write_team_file.bash'
-  bats_load_library 'assert_line_reversed.bash'
-  bats_load_library 'test_repositories.bash'
+	bats_load_library 'fixtures/common_fixture.bash'
+	bats_load_library 'mrt/setup.bash'
+	bats_load_library 'mrt/clone.bash'
+	bats_load_library 'write_team_file.bash'
+	bats_load_library 'assert_line_reversed.bash'
+	bats_load_library 'test_repositories.bash'
 
 	common_setup
 }
@@ -45,7 +45,8 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 
 @test "if team json contains existing repositories but authentication is missing it should print a failure message" {
 	local repository="1_TestRepository"
-	local repository_url; repository_url="$(get_testing_repository_url "$repository")"
+	local repository_url
+	repository_url="$(get_testing_repository_url "$repository")"
 
 	run clone_repository_urls_using_mrt "$repository_url"
 

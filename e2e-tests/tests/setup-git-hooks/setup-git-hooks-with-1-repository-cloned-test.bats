@@ -1,12 +1,12 @@
 setup() {
-  bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
-  bats_load_library 'write_team_file.bash'
+	bats_load_library 'fixtures/one_cloned_repository_with_git_hooks_set_up_fixture.bash'
+	bats_load_library 'write_team_file.bash'
 
-  one_cloned_repository_with_git_hooks_setup
+	one_cloned_repository_with_git_hooks_setup
 }
 
 teardown() {
-  one_cloned_repository_with_git_hooks_teardown
+	one_cloned_repository_with_git_hooks_teardown
 }
 
 @test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
@@ -38,7 +38,8 @@ teardown() {
 }
 
 @test "If team json contains blocked branch pushing on the blocked after setting up git-hooks branch should be blocked" {
-	local branch_name; branch_name="$(unique_branch_name)"
+	local branch_name
+	branch_name="$(unique_branch_name)"
 	commit_changes "$(repository_dir)" "$branch_name"
 	write_blocked_branches "$branch_name"
 

@@ -4,10 +4,10 @@ unique_branch_name() {
 
 clone_testing_repositories() {
 	local repository_dir="$1"
-  shift
-  local repositories_to_clone=("$@")
+	shift
+	local repositories_to_clone=("$@")
 
-  bats_load_library 'test_repositories.bash'
+	bats_load_library 'test_repositories.bash'
 	for repository_to_clone in "${repositories_to_clone[@]}"; do
 		git clone "$(get_testing_repository_url "$repository_to_clone")" "$repository_dir/$repository_to_clone"
 	done

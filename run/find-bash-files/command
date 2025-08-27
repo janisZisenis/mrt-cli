@@ -1,9 +1,46 @@
 #!/usr/bin/env bash
-
 set -e
 
-rootDir=$1
+rootDir="$1"
 shift
 
-find "$rootDir"/e2e-tests -type d -name "3rdParty" -prune -o -type f -print
-find "$rootDir"/run -type d -name "3rdParty" -prune -o -type f -print
+CONFIG_FILE_NAME=".lint-bash.json"
+CONFIG_FILE="$rootDir/$CONFIG_FILE_NAME"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+	echo "Error: Configuration file '$CONFIG_FILE_NAME' not found in $rootDir"
+	exit 1
+fi
+
+excluded=$(jq -c '.excluded[]' "$CONFIG_FILE")
+included=$(jq -c '.included[]' "$CONFIG_FILE")
+
+build_prune_args() {
+	local prune_args=""
+	for entry in $excluded; do
+		entry=$(echo "$entry" | sed 's/^"//;s/"$//')
+
+		if [[ "$entry" == */ ]]; then
+			prune_args="$prune_args -path \"$SEARCH_DIR/${entry%/}\" -prune -o"
+		else
+			prune_args="$prune_args -path \"$SEARCH_DIR/$entry\" -prune -o"
+		fi
+	done
+	echo "$prune_args"
+}
+
+build_include_args() {
+	local include_args=""
+	for pattern in $included; do
+		pattern=$(echo "$pattern" | sed 's/^"//;s/"$//')
+		include_args="$include_args -name \"$pattern\" -o"
+	done
+	echo "${include_args%-o}"
+}
+
+SEARCH_DIR="$rootDir"
+
+prune_args=$(build_prune_args)
+include_args=$(build_include_args)
+
+eval "find \"$SEARCH_DIR\" \( $prune_args -false \) -o -type f \( $include_args \) -print"

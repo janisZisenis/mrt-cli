@@ -1,19 +1,19 @@
 set_fixture_variables() {
-  bats_load_library 'fixtures/common_fixture.bash'
-  bats_load_library 'repositories_path.bash'
+	bats_load_library 'fixtures/common_fixture.bash'
+	bats_load_library 'repositories_path.bash'
 
-  repositories_path=$(default_repositories_path)
-  repositories_dir="$(test_env_dir)/$repositories_path"
+	repositories_path=$(default_repositories_path)
+	repositories_dir="$(test_env_dir)/$repositories_path"
 }
 
 setup() {
-  bats_load_library 'fixtures/authenticated_fixture.bash'
-  bats_load_library 'git.bash'
-  bats_load_library 'mrt/setup.bash'
-  bats_load_library 'repositories_path.bash'
-  bats_load_library 'write_team_file.bash'
+	bats_load_library 'fixtures/authenticated_fixture.bash'
+	bats_load_library 'git.bash'
+	bats_load_library 'mrt/setup.bash'
+	bats_load_library 'repositories_path.bash'
+	bats_load_library 'write_team_file.bash'
 
-  set_fixture_variables
+	set_fixture_variables
 	authenticated_setup
 }
 
@@ -23,7 +23,8 @@ teardown() {
 
 @test "If repositories path contains non-repository folder it does not install git-hooks" {
 	local repository="1_TestRepository"
-	local folder_path; folder_path="$repositories_dir/$repository"
+	local folder_path
+	folder_path="$repositories_dir/$repository"
 	mkdir -p "$folder_path"
 
 	run mrt_setup_git_hooks

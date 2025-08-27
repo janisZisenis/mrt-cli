@@ -1,11 +1,11 @@
 setup() {
-  bats_load_library 'write_team_file.bash'
-  bats_load_library 'repositories_path.bash'
-  bats_load_library 'test_repositories.bash'
-  bats_load_library 'assert_line_reversed.bash'
-  bats_load_library 'commands/setup/setup_command_writer.bash'
-  bats_load_library 'fixtures/authenticated_fixture.bash'
-  bats_load_library 'mrt/setup.bash'
+	bats_load_library 'write_team_file.bash'
+	bats_load_library 'repositories_path.bash'
+	bats_load_library 'test_repositories.bash'
+	bats_load_library 'assert_line_reversed.bash'
+	bats_load_library 'commands/setup/setup_command_writer.bash'
+	bats_load_library 'fixtures/authenticated_fixture.bash'
+	bats_load_library 'mrt/setup.bash'
 
 	authenticated_setup
 }
@@ -16,9 +16,11 @@ teardown() {
 
 @test "if team file contains repository and two setup commands exist it should clone the repository, install git-hooks and execute the commands" {
 	local repository="1_TestRepository"
-	local repository_url; repository_url="$(get_testing_repository_url "$repository")"
+	local repository_url
+	repository_url="$(get_testing_repository_url "$repository")"
 	write_repositories_urls "$repository_url"
-	local repository_dir; repository_dir="$(test_env_dir)/$(default_repositories_path)/$repository"
+	local repository_dir
+	repository_dir="$(test_env_dir)/$(default_repositories_path)/$repository"
 	local some_command_name="some-command"
 	local another_command_name="another-command"
 	write_spy_setup_command "$some_command_name"
