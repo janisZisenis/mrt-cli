@@ -3,7 +3,7 @@ package all
 import (
 	"app/commands/setup/clonerepositories"
 	"app/commands/setup/installgithooks"
-	"app/commands/setup/setupsscript"
+	"app/commands/setup/setupscript"
 	"app/core"
 	"app/log"
 
@@ -63,14 +63,16 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Infof("Executing setup commands.")
 
-	core.ForScriptInPathDo(core.GetExecutionPath()+setupscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
-		skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
-		if !skipFlag {
-			setupscript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
-		} else {
-			log.Infof("Skipping setup command: " + scriptName)
-		}
-	})
+	core.ForScriptInPathDo(
+		core.GetExecutionPath()+setupscript.GetScriptsPath(),
+		func(scriptPath string, scriptName string) {
+			skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
+			if !skipFlag {
+				setupscript.MakeCommand(scriptPath, scriptName).Run(cmd, args)
+			} else {
+				log.Infof("Skipping setup command: " + scriptName)
+			}
+		})
 
 	log.Successf("Done executing setup commands.")
 }

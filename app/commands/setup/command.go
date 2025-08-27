@@ -6,7 +6,7 @@ import (
 	"app/commands/setup/all"
 	"app/commands/setup/clonerepositories"
 	"app/commands/setup/installgithooks"
-	"app/commands/setup/setupsscript"
+	"app/commands/setup/setupscript"
 	"app/core"
 )
 
