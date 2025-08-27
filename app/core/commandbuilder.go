@@ -16,12 +16,14 @@ type CommandBuilder struct {
 	timeout time.Duration
 }
 
+const defaultCommandTimeout = 5
+
 func NewCommandBuilder() *CommandBuilder {
 	return &CommandBuilder{
 		stdout:  nil,
 		stderr:  nil,
 		stdin:   nil,
-		timeout: 5 * time.Second,
+		timeout: defaultCommandTimeout * time.Second,
 	}
 }
 
@@ -59,6 +61,8 @@ func (b *CommandBuilder) Run() error {
 	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
 	defer cancel()
 
+	// #nosec G204 - We actually want the user to execute scripts and commands with their own arguments.
+	// We don't know yet what these commands will be and what arguments they will pass to them.
 	cmd := exec.CommandContext(ctx, b.command, b.args...)
 	cmd.Stdout = b.stdout
 	cmd.Stderr = b.stderr

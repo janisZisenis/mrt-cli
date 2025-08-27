@@ -1,9 +1,9 @@
 package core
 
 import (
-	"fmt"
-	"github.com/fatih/color"
 	"io"
+
+	"github.com/fatih/color"
 )
 
 type ColorWriter struct {
@@ -12,9 +12,9 @@ type ColorWriter struct {
 	Prefix string
 }
 
-func (cw *ColorWriter) Write(p []byte) (n int, err error) {
+func (cw *ColorWriter) Write(p []byte) (int, error) {
 	purpleFatih := color.New(color.FgMagenta).SprintFunc()
+	coloredOutput := purpleFatih(string(p))
 
-	coloredOutput := fmt.Sprintf("%s", purpleFatih(string(p)))
 	return cw.Target.Write([]byte(coloredOutput))
 }
