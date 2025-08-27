@@ -1,15 +1,11 @@
 package core
 
 import (
-	"fmt"
+	"app/log"
 	"io"
 	"os"
 	"os/exec"
 	"sync"
-
-	"github.com/fatih/color"
-
-	"app/log"
 )
 
 func CloneRepository(repositoryURL, destination string) {
@@ -19,18 +15,18 @@ func CloneRepository(repositoryURL, destination string) {
 
 	stdoutPipe, stdoutPipeErr := cmd.StdoutPipe()
 	if stdoutPipeErr != nil {
-		log.Errorf("Errorf getting StdoutPipe: %v\n", stdoutPipeErr)
+		log.Errorf("Error getting StdoutPipe: %v\n", stdoutPipeErr)
 		return
 	}
 
 	stderrPipe, stdErrPipeErr := cmd.StderrPipe()
 	if stdErrPipeErr != nil {
-		log.Errorf("Errorf getting StderrPipe: %v\n", stdErrPipeErr)
+		log.Errorf("Error getting StderrPipe: %v\n", stdErrPipeErr)
 		return
 	}
 
 	if startErr := cmd.Start(); startErr != nil {
-		log.Errorf("Errorf starting command: %v\n", startErr)
+		log.Errorf("Error starting command: %v\n", startErr)
 		return
 	}
 
@@ -40,12 +36,12 @@ func CloneRepository(repositoryURL, destination string) {
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stdout, stdoutPipe)
+		copyWithColor(&ColorWriter{Target: os.Stdout}, stdoutPipe)
 	}()
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stderr, stderrPipe)
+		copyWithColor(&ColorWriter{Target: os.Stderr}, stderrPipe)
 	}()
 
 	waitGroup.Wait()
@@ -57,25 +53,23 @@ func CloneRepository(repositoryURL, destination string) {
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {
-	purpleFatih := color.New(color.FgMagenta).SprintFunc()
-
 	numberOfBytes := 1024
 	buf := make([]byte, numberOfBytes)
 	for {
 		n, readErr := src.Read(buf)
 		if n > 0 {
 			text := string(buf[:n])
-			_, writeErr := fmt.Fprintf(dst, "%s", purpleFatih(text))
+			_, writeErr := dst.Write([]byte(text))
 
 			if writeErr != nil {
-				log.Errorf("Errorf writing to destination: %v\n", readErr)
+				log.Errorf("Error writing to destination: %v\n", writeErr)
 			}
 		}
 		if readErr != nil {
 			if readErr == io.EOF {
 				break
 			}
-			log.Errorf("Errorf reading from source: %v\n", readErr)
+			log.Errorf("Error reading from source: %v\n", readErr)
 			break
 		}
 	}
