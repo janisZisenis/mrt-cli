@@ -38,6 +38,7 @@ runs:
         gofumpt --version
 
     - name: Verify gofumpt Installation
+      shell: bash
       run: gofumpt --version
 
     - name: Cache golangci-lint
@@ -57,6 +58,7 @@ runs:
         golangci-lint version
 
     - name: Verify golangci-lint Installation
+      shell: bash
       run: golangci-lint version
 
     - name: Cache goimports
@@ -82,4 +84,5 @@ runs:
         goimports --help
 
     - name: Verify goimports Installation
+      shell: bash
       run: goimports --help

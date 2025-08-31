@@ -70,7 +70,7 @@ jobs:
   run-linux-tests:
     name: Run tests on linux
     runs-on: ubuntu-latest
-    needs: [build, lint-bash, format-bash]
+    needs: [build, lint-bash, format-bash, lint-go, format-go]
     env:
       binary-path: build/bin
       binary-name: mrt-linux-amd64
@@ -82,7 +82,7 @@ jobs:
   run-darwin-tests:
     name: Run tests on darwin
     runs-on: macos-15
-    needs: [build, lint-bash, format-bash]
+    needs: [build, lint-bash, format-bash, lint-go, format-go]
     env:
       binary-path: build/bin
       binary-name: mrt-darwin-arm64
