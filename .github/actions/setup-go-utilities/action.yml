@@ -1,0 +1,85 @@
+name: Setup Go utilities
+description: Install and cache gofumpt, golangci-lint, and goimports.
+
+inputs:
+  gofumpt_version:
+    description: The version of gofumpt to install.
+    required: false
+    default: "v1.24.2"
+  golangci_lint_version:
+    description: The version of golangci-lint to install.
+    required: false
+    default: "v2.4.0"
+  goimports_version:
+    description: The version of goimports to install (uses the `golang.org/x/tools` module).
+    required: false
+    default: "0.36.0"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache gofumpt
+      id: gofumpt-cache
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/gofumpt
+        key: gofumpt-${{ inputs.gofumpt_version }}-ubuntu
+
+    - name: Install gofumpt (if cache miss)
+      if: steps.gofumpt-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        GOFUMPT_VERSION="${{ inputs.gofumpt_version }}"
+        echo "Installing gofumpt version: $GOFUMPT_VERSION"
+        curl -L "https://github.com/mvdan/gofumpt/releases/download/$GOFUMPT_VERSION/gofumpt_${GOFUMPT_VERSION#v}_linux_amd64.tar.gz" -o gofumpt.tar.gz
+        tar -xzf gofumpt.tar.gz gofumpt
+        sudo mv gofumpt /usr/local/bin/
+        rm -rf gofumpt.tar.gz
+        gofumpt --version
+
+    - name: Verify gofumpt Installation
+      run: gofumpt --version
+
+    - name: Cache golangci-lint
+      id: golangci-lint-cache
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/golangci-lint
+        key: golangci-lint-${{ inputs.golangci_lint_version }}-ubuntu
+
+    - name: Install golangci-lint (if cache miss)
+      if: steps.golangci-lint-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        GOLANGCI_LINT_VERSION="${{ inputs.golangci_lint_version }}"
+        echo "Installing golangci-lint version: $GOLANGCI_LINT_VERSION"
+        curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b /usr/local/bin "$GOLANGCI_LINT_VERSION"
+        golangci-lint version
+
+    - name: Verify golangci-lint Installation
+      run: golangci-lint version
+
+    - name: Cache goimports
+      id: goimports-cache
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/goimports
+        key: goimports-${{ inputs.goimports_version }}-ubuntu
+
+    - name: Install goimports (if cache miss)
+      if: steps.goimports-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        GOIMPORTS_VERSION="${{ inputs.goimports_version }}"
+        echo "Installing goimports version: $GOIMPORTS_VERSION"
+        if [[ "$GOIMPORTS_VERSION" == "latest" ]]; then
+          GOIMPORTS_VERSION_FLAG=""
+        else
+          GOIMPORTS_VERSION_FLAG="@$GOIMPORTS_VERSION"
+        fi
+        GO111MODULE=on go install golang.org/x/tools/cmd/goimports$GOIMPORTS_VERSION_FLAG
+        sudo mv ~/go/bin/goimports /usr/local/bin/
+        goimports --help
+
+    - name: Verify goimports Installation
+      run: goimports --help
