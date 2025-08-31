@@ -17,46 +17,46 @@ jobs:
       - uses: actions/checkout@v4
       - id: set-build-matrix
         uses: ./.github/actions/set-build-matrix
-#  lint-bash:
-#    name: Lint Bash Scripts
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: ./.github/actions/setup-mrt
-#      - name: Install shellcheck
-#        run: brew install shellcheck
-#      - name: Run bash linting
-#        run: mrt run lint-bash
-#  format-bash:
-#    name: Check Bash Formatting
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: ./.github/actions/setup-mrt
-#      - name: Install shfmt
-#        run: brew install shfmt
-#      - name: Check bash formatting
-#        run: mrt run format-bash -- --check-only
-#  lint-go:
-#    name: Lint go files
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: ./.github/actions/setup-mrt
-#      - name: Install golangci-lint
-#        run: brew install golangci-lint
-#      - name: Run bash linting
-#        run: mrt run lint-go
-#  format-go:
-#    name: Format go files
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: ./.github/actions/setup-mrt
-#      - name: Install gofumpt and goimports
-#        run: brew install gofumpt goimports
-#      - name: Run bash formatting
-#        run: mrt run format-go
+  lint-bash:
+    name: Lint Bash Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-mrt
+      - name: Install shellcheck
+        run: brew install shellcheck
+      - name: Run bash linting
+        run: mrt run lint-bash
+  format-bash:
+    name: Check Bash Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-mrt
+      - name: Install shfmt
+        run: brew install shfmt
+      - name: Check bash formatting
+        run: mrt run format-bash -- --check-only
+  lint-go:
+    name: Lint go files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-mrt
+      - name: Install golangci-lint
+        run: brew install golangci-lint
+      - name: Run bash linting
+        run: mrt run lint-go
+  format-go:
+    name: Format go files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-mrt
+      - name: Install gofumpt and goimports
+        run: brew install gofumpt goimports
+      - name: Run bash formatting
+        run: mrt run format-go
   build:
     name: Build for Platform ${{ matrix.platform }}
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
   run-linux-tests:
     name: Run tests on linux
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [build, lint-bash, format-bash, lint-go, format-go]
     env:
       binary-path: build/bin
       binary-name: mrt-linux-amd64
@@ -86,7 +86,7 @@ jobs:
   run-darwin-tests:
     name: Run tests on darwin
     runs-on: macos-15
-    needs: [build]
+    needs: [build, lint-bash, format-bash, lint-go, format-go]
     env:
       binary-path: build/bin
       binary-name: mrt-darwin-arm64
