@@ -23,7 +23,7 @@ runs:
         restore-keys: |
           ${{ runner.os }}-go-
     - uses: actions/setup-go@v5
-      if: steps.cache-primes.outputs.cache-hit != 'true'
+      if: steps.cache-go.outputs.cache-hit != 'true'
       with:
         go-version: 1.24.5
 
