@@ -13,7 +13,7 @@ import (
 const commandName = "setup"
 
 func MakeCommand(teamDirectory string) *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   commandName,
 		Short: "Sets up you machine for development",
 	}

@@ -6,8 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const CommandName = "version"
-const builtBy = "Janis Zisenis"
+const (
+	CommandName = "version"
+	builtBy     = "Janis Zisenis"
+)
 
 func MakeCommand(semver string, commit string, date string) *cobra.Command {
 	return &cobra.Command{

@@ -1,11 +1,12 @@
 package core
 
 import (
-	"app/log"
 	"bytes"
 	"errors"
 	"os"
 	"strings"
+
+	"app/log"
 )
 
 func GetCurrentBranchShortName(repoDir string) (string, error) {
@@ -15,7 +16,6 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 		WithArgs("-C", repoDir, "rev-parse", "--abbrev-ref", "HEAD").
 		WithStdout(&stdout).
 		Run()
-
 	if err != nil {
 		log.Errorf("The given path \"" + repoDir + "\" does not contain a repository.")
 		os.Exit(1)

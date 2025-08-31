@@ -1,9 +1,10 @@
 package installgithooks
 
 import (
+	"path/filepath"
+
 	"app/core"
 	"app/log"
-	"path/filepath"
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {

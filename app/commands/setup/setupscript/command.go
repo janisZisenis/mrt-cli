@@ -14,7 +14,7 @@ func GetScriptsPath() string {
 }
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   scriptName,
 		Short: "Executes setup command " + scriptName,
 		Run: func(_ *cobra.Command, _ []string) {

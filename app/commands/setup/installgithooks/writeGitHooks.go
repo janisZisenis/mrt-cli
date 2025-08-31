@@ -1,10 +1,11 @@
 package installgithooks
 
 import (
+	"os"
+
 	"app/commands/githook"
 	"app/core"
 	"app/log"
-	"os"
 )
 
 func getHookTemplate() string {
@@ -18,9 +19,9 @@ hook_name=$(basename "$0")
 func writeGitHook(repositoryDirectory string, hookName string) {
 	hooksPath := repositoryDirectory + "/hooks/"
 	// #nosec G301 - githooks folder needs 0755 to be executable
-	_ = os.MkdirAll(hooksPath, 0755)
+	_ = os.MkdirAll(hooksPath, 0o755)
 	// #nosec G306 - githooks need 0755 to be executable
-	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0755)
+	err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0o755)
 	if err != nil {
 		log.Infof("unable to write file: " + err.Error())
 	}

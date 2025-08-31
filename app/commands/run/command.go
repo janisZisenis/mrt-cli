@@ -10,7 +10,7 @@ import (
 const CommandName = "run"
 
 func MakeCommand(teamDirectory string) *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   CommandName,
 		Short: "Executes a specified run command",
 	}

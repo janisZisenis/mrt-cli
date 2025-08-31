@@ -1,11 +1,12 @@
 package core
 
 import (
-	"app/log"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"app/log"
 )
 
 func CommandFileName() string {
@@ -42,8 +43,8 @@ func ExecuteScript(scriptPath string, args []string) ExitCode {
 }
 
 func extractExitCode(err error, defaultExitCode int) int {
-	var codeString = strings.TrimPrefix(err.Error(), "exit status ")
-	var extractedCode, conversionErr = strconv.Atoi(codeString)
+	codeString := strings.TrimPrefix(err.Error(), "exit status ")
+	extractedCode, conversionErr := strconv.Atoi(codeString)
 
 	if conversionErr != nil {
 		log.Errorf("Could not extract exit code from error: " + err.Error())

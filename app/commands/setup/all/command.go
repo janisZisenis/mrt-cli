@@ -10,13 +10,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const scriptName = "all"
-const skipFlagPrefix = "skip-"
-const skipCloneFlag = skipFlagPrefix + clonerepositories.CommandName
-const skipHooksFlag = skipFlagPrefix + installgithooks.CommandName
+const (
+	scriptName     = "all"
+	skipFlagPrefix = "skip-"
+	skipCloneFlag  = skipFlagPrefix + clonerepositories.CommandName
+	skipHooksFlag  = skipFlagPrefix + installgithooks.CommandName
+)
 
 func MakeCommand(teamDirectory string) *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   scriptName,
 		Short: "Executes all setup commands",
 		Run:   command,
@@ -29,7 +31,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	setDefaultValueToTrue(command, skipCloneFlag)
 
 	core.ForScriptInPathDo(teamDirectory+setupscript.GetScriptsPath(), func(_ string, scriptName string) {
-		var skipFlag = skipFlagPrefix + scriptName
+		skipFlag := skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
 		setDefaultValueToTrue(command, skipFlag)
 	})

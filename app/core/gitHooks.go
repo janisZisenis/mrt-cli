@@ -1,8 +1,10 @@
 package core
 
-const CommitMsg = "commit-msg"
-const PreCommit = "pre-commit"
-const PrePush = "pre-push"
+const (
+	CommitMsg = "commit-msg"
+	PreCommit = "pre-commit"
+	PrePush   = "pre-push"
+)
 
 func GetGitHooks() []string {
 	return []string{

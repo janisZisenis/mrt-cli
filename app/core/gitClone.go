@@ -1,12 +1,13 @@
 package core
 
 import (
-	"app/log"
 	"context"
 	"errors"
 	"io"
 	"os"
 	"sync"
+
+	"app/log"
 )
 
 func CloneRepository(repositoryURL, destination string) {

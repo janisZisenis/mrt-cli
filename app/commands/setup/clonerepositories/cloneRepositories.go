@@ -1,9 +1,10 @@
 package clonerepositories
 
 import (
+	"strings"
+
 	"app/core"
 	"app/log"
-	"strings"
 )
 
 func CloneRepositories(teamInfo core.TeamInfo) {
@@ -23,7 +24,7 @@ func getRepositoryName(repositoryURL string) string {
 }
 
 func getFolderName(repositoryName string, prefixes []string) string {
-	var folderName = repositoryName
+	folderName := repositoryName
 	for _, prefix := range prefixes {
 		if strings.HasPrefix(folderName, prefix) {
 			folderName = strings.Replace(folderName, prefix, "", 1)

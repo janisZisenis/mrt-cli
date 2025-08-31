@@ -1,11 +1,12 @@
 package runscript
 
 import (
-	"app/core"
-	"app/log"
 	"errors"
 	"os"
 	"path/filepath"
+
+	"app/core"
+	"app/log"
 
 	"github.com/spf13/viper"
 
@@ -62,7 +63,7 @@ func defaultConfig(commandDir string) CommandConfig {
 func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 	config := LoadCommandConfig(scriptPath)
 
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   scriptName,
 		Short: config.ShortDescription,
 		Run: func(_ *cobra.Command, args []string) {
