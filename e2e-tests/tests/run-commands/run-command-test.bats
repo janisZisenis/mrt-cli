@@ -67,7 +67,7 @@ test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
 
 	run mrt_run "$command_name"
 
-  # shellcheck disable=SC2031
+	# shellcheck disable=SC2031
 	assert_equal "$status" "$exit_code"
 	assert_failure
 }
