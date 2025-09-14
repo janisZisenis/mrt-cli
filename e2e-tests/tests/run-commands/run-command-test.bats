@@ -10,14 +10,6 @@ teardown() {
 	common_teardown
 }
 
-@test "if some-command is run it should execute it" {
-	test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it "some-command" "some" "--flag"
-}
-
-@test "if another-command is run it should execute it" {
-	test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it "another-command" "another" "parameter"
-}
-
 test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it() {
 	local command_name=$1
 	shift
@@ -27,6 +19,14 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	run mrt_run "$command_name" -- "${parameters[@]}"
 
 	assert_run_command_was_executed_with_parameters "$command_name" "$(test_env_dir) ${parameters[*]}"
+}
+
+@test "if some-command is run it should execute it" {
+	test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it "some-command" "some" "--flag"
+}
+
+@test "if another-command is run it should execute it" {
+	test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters_to_it "another-command" "another" "parameter"
 }
 
 @test "if command succeeds with output it will print the command's output" {
@@ -49,6 +49,7 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	assert_run_command_received_input "$command_name" "$input"
 }
 
+# shellcheck disable=SC2030
 @test "if command writes to stderr it outputs stderr" {
 	local command_name="error"
 	local error="some-error"
@@ -59,16 +60,6 @@ test_if_run_is_executed_with_command_name_it_should_pass_root_dir_and_parameters
 	assert_output "$error"
 }
 
-# shellcheck disable=SC2030
-@test "if command fails with code 1 it will fail with error code 1 as well" {
-	test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 1
-}
-
-# shellcheck disable=SC2030
-@test "if command fails with code 2 it will fail with error code 2 as well" {
-	test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 2
-}
-
 test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
 	local exit_code="$1"
 	local command_name="some-command"
@@ -76,9 +67,17 @@ test_if_command_fails_with_error_code_it_fails_with_the_same_error_code() {
 
 	run mrt_run "$command_name"
 
-	# shellcheck disable=SC2031
+  # shellcheck disable=SC2031
 	assert_equal "$status" "$exit_code"
 	assert_failure
+}
+
+@test "if command fails with code 1 it will fail with error code 1 as well" {
+	test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 1
+}
+
+@test "if command fails with code 2 it will fail with error code 2 as well" {
+	test_if_command_fails_with_error_code_it_fails_with_the_same_error_code 2
 }
 
 @test "if command exits with code 0 it will succeed" {

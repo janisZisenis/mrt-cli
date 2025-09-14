@@ -10,14 +10,6 @@ teardown() {
 	common_teardown
 }
 
-@test "if setup command (some-command) exists executing it will pass the team folder path as parameter" {
-	test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter "some-command"
-}
-
-@test "if setup command (another-command) exists executing it will pass the team folder path as parameter" {
-	test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter "another-command"
-}
-
 test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter() {
 	local command_name="$1"
 	write_spy_setup_command "$command_name"
@@ -25,6 +17,14 @@ test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter
 	mrt_setup "$command_name"
 
 	assert_setup_command_was_executed "$command_name" "$(test_env_dir)"
+}
+
+@test "if setup command (some-command) exists executing it will pass the team folder path as parameter" {
+	test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter "some-command"
+}
+
+@test "if setup command (another-command) exists executing it will pass the team folder path as parameter" {
+	test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter "another-command"
 }
 
 @test "if setup command succeeds with output it will print the command's output" {

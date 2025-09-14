@@ -132,14 +132,6 @@ test_merge_commit_messages_are_not_blocked() {
 	refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
 }
 
-@test "if team json does not contain commitPrefixRegex 'commiting' with a message that starts with 'Merge branch' does not check for prefix" {
-	test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge branch"
-}
-
-@test "if team json does not contain commitPrefixRegex 'commiting' with a message that starts with 'Merge remote-tracking branch' does not check for prefix" {
-	test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge remote-tracking branch"
-}
-
 test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
 	local commit_message="$1"
 
@@ -147,4 +139,12 @@ test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
 
 	refute_output --partial "Merge commit detected, skipping commit-msg hook."
 	assert_success
+}
+
+@test "if team json does not contain commitPrefixRegex 'commiting' with a message that starts with 'Merge branch' does not check for prefix" {
+	test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge branch"
+}
+
+@test "if team json does not contain commitPrefixRegex 'commiting' with a message that starts with 'Merge remote-tracking branch' does not check for prefix" {
+	test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge remote-tracking branch"
 }

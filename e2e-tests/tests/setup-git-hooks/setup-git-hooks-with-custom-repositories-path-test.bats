@@ -28,14 +28,6 @@ teardown() {
 	assert_failure
 }
 
-@test "If repositories path (some-path) does not contain any repositories setting up git-hooks prints out message that it didn't find repositories" {
-	test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages "some-path"
-}
-
-@test "If repositories path (another-path) does not contain any repositories setting up git-hooks prints out message that it didn't find repositories" {
-	test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages "some-path"
-}
-
 test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages() {
 	local repositories_path="$1"
 	local repositories_dir
@@ -47,4 +39,12 @@ test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prin
 	assert_line --index 0 "Installing git-hooks to repositories located in \"$repositories_dir\""
 	assert_line --index 1 "Did not find any repositories. Skip installing git-hooks."
 	assert_line --index 2 "Done installing git-hooks."
+}
+
+@test "If repositories path (some-path) does not contain any repositories setting up git-hooks prints out message that it didn't find repositories" {
+	test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages "some-path"
+}
+
+@test "If repositories path (another-path) does not contain any repositories setting up git-hooks prints out message that it didn't find repositories" {
+	test_if_repositories_path_does_not_contain_repositories_setting_up_git_hook_prints_out_not_found_messages "some-path"
 }
