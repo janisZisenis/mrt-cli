@@ -5,7 +5,7 @@ inputs:
   gofumpt_version:
     description: The version of gofumpt to install.
     required: false
-    default: "v1.24.2"
+    default: "v0.9.1"
   golangci_lint_version:
     description: The version of golangci-lint to install.
     required: false
@@ -30,16 +30,12 @@ runs:
       shell: bash
       run: |
         GOFUMPT_VERSION="${{ inputs.gofumpt_version }}"
-        echo "Installing gofumpt version: $GOFUMPT_VERSION"
-        curl -L "https://github.com/mvdan/gofumpt/releases/download/$GOFUMPT_VERSION/gofumpt_${GOFUMPT_VERSION#v}_linux_amd64.tar.gz" -o gofumpt.tar.gz
-        tar -xzf gofumpt.tar.gz gofumpt
-        sudo mv gofumpt /usr/local/bin/
-        rm -rf gofumpt.tar.gz
-        gofumpt --version
+        curl -L "https://github.com/mvdan/gofumpt/releases/download/${GOFUMPT_VERSION}/gofumpt_${GOFUMPT_VERSION}_linux_amd64.tar.gz" -o gofumpt
+        chmod +x gofumpt
 
     - name: Verify gofumpt Installation
       shell: bash
-      run: gofumpt --version
+      run: ./gofumpt --version
 
     - name: Cache golangci-lint
       id: golangci-lint-cache
