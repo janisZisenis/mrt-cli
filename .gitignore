@@ -1,7 +1,5 @@
 .idea
-/.ssh/private-key
+/.ssh
 /build
-/.ssh/private-key.pub
-config
 test-repos
 run/local-gitlab/gitlab-data
