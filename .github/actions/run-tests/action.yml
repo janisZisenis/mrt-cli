@@ -24,5 +24,4 @@ runs:
     - name: Run E2E Tests
       shell: bash
       run: |
-        mrt run detect-platform
-        mrt run e2e-tests
+        mrt run e2e-tests -- --ci
