@@ -29,13 +29,13 @@ runs:
       if: steps.gofumpt-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        GOFUMPT_VERSION="${{ inputs.gofumpt_version }}"
-        curl -L "https://github.com/mvdan/gofumpt/releases/download/${GOFUMPT_VERSION}/gofumpt_${GOFUMPT_VERSION}_linux_amd64.tar.gz" -o gofumpt
+        curl -sSfL "https://github.com/mvdan/gofumpt/releases/download/${{ inputs.gofumpt_version }}/gofumpt_${{ inputs.gofumpt_version }}_linux_amd64" -o gofumpt
         chmod +x gofumpt
+        sudo mv gofumpt /usr/local/bin/
 
     - name: Verify gofumpt Installation
       shell: bash
-      run: ./gofumpt --version
+      run: gofumpt --version
 
     - name: Cache golangci-lint
       id: golangci-lint-cache
