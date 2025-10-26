@@ -31,3 +31,11 @@ write_short_description() {
 	bats_load_library "json_writer.bash"
 	_write_to_config_file "$command_name" "shortDescription" "$(to_json_string "$short_description")"
 }
+
+write_command_file_name() {
+	local command_name="$1"
+	local file_name="$2"
+
+	bats_load_library "json_writer.bash"
+	_write_to_config_file "$command_name" "commandFileName" "$(to_json_string "$file_name")"
+}
