@@ -1,14 +1,22 @@
-bats_load_library 'common'
-bats_load_library 'writeMockCommand'
-bats_load_library 'git'
-bats_load_library 'setup'
-
 setup() {
+	bats_load_library 'fixtures/common_fixture.bash'
+	bats_load_library 'mrt/setup.bash'
+	bats_load_library 'commands/setup/setup_command_writer.bash'
+
 	common_setup
 }
 
 teardown() {
 	common_teardown
+}
+
+test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter() {
+	local command_name="$1"
+	write_spy_setup_command "$command_name"
+
+	mrt_setup "$command_name"
+
+	assert_setup_command_was_executed "$command_name" "$(test_env_dir)"
 }
 
 @test "if setup command (some-command) exists executing it will pass the team folder path as parameter" {
@@ -19,58 +27,47 @@ teardown() {
 	test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter "another-command"
 }
 
-test_if_setup_command_exists_executing_it_will_pass_the_team_folder_as_parameter() {
-	commandName=$1
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$commandName"
-
-	execute setup "$commandName"
-
-	assert_command_spy_file_has_content "$commandLocation" "$commandName" "$(testEnvDir)"
-}
-
 @test "if setup command succeeds with output it will print the command's output" {
-	commandName="some-command"
-	someOutput="some-output"
-	writeStubCommand "$(testEnvDir)/setup" "$commandName" "0" "$someOutput"
+	local command_name="some-command"
+	local some_output="some-output"
+	write_stub_setup_command "$command_name" "0" "$some_output"
 
-	run setupCommand $commandName
+	run mrt_setup $command_name
 
-	assert_line --index 0 "Execute setup command: $commandName"
-	assert_line --index 1 "$someOutput"
-	assert_line --index 2 "$commandName executed successfully"
+	assert_line --index 0 "Execute setup command: $command_name"
+	assert_line --index 1 "$some_output"
+	assert_line --index 2 "$command_name executed successfully"
 }
 
 @test "if setup command fails with output it will print the command's output and the failure" {
-	commandName="another-command"
-	someOutput="another-output"
-	exitCode=15
-	writeStubCommand "$(testEnvDir)/setup" "$commandName" "$exitCode" "$someOutput"
+	local command_name="another-command"
+	local some_output="another-output"
+	local exit_code=15
+	write_stub_setup_command "$command_name" "$exit_code" "$some_output"
 
-	run setupCommand "$commandName"
+	run mrt_setup "$command_name"
 
-	assert_line --index 0 "Execute setup command: $commandName"
-	assert_line --index 1 "$someOutput"
-	assert_line --index 2 "$commandName failed with: exit status $exitCode"
+	assert_line --index 0 "Execute setup command: $command_name"
+	assert_line --index 1 "$some_output"
+	assert_line --index 2 "$command_name failed with: exit status $exit_code"
 }
 
 @test "if setup command is requesting input it should process the input" {
-	commandName="input"
-	commandLocation="$(testEnvDir)/setup"
-	writeCommandRequestingInput "$commandLocation" "$commandName"
-	input="some-input"
+	local command_name="input"
+	write_setup_command_requesting_input "$command_name"
+	local input="some-input"
 
-	run setupCommand $commandName <<<$input
+	run mrt_setup $command_name <<<$input
 
-	assert_command_received_input "$commandLocation" "$commandName" "$input"
+	assert_setup_command_received_input "$command_name" "$input"
 }
 
 @test "if setup command writes to stderr it outputs stderr" {
-	commandName="error"
-	error="some-error"
-	writeStdErrCommand "$(testEnvDir)/setup" "$commandName" "$error"
+	local command_name="error"
+	local error="some-error"
+	write_std_err_setup_command "$command_name" "$error"
 
-	run setupCommand "$commandName"
+	run mrt_setup "$command_name"
 
 	assert_output --partial "$error"
 }

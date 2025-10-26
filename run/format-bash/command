@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
 
@@ -22,8 +23,12 @@ EOF
 
 function check_formatting {
 	local file="$1"
-	if ! shfmt "$check_flag" "$file"; then
-		echo -e "${RED}✗ Formatting issues found in $file${RESET}"
+	if shfmt "$check_flag" "$file"; then
+		echo -e "${GREEN}✓ $file${RESET}"
+		return 0
+	else
+		echo -e "${RED}✗ Formatting issues found in file: $file${RESET}"
+		return 1
 	fi
 }
 
@@ -48,12 +53,15 @@ done
 
 readarray -t bash_files < <(mrt --team-dir "$rootDir" run find-bash-files)
 
+exit_code=0
+
 for file in "${bash_files[@]}"; do
 	if [[ -f "$file" && -s "$file" && -r "$file" ]]; then
-		check_formatting "$file"
+		check_formatting "$file" || exit_code=1
 	else
 		echo -e "${RED}Skipping invalid file: $file${RESET}"
 	fi
 done
 
 echo -e "All files processed."
+exit $exit_code

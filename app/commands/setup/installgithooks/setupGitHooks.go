@@ -1,9 +1,10 @@
 package installgithooks
 
 import (
+	"path/filepath"
+
 	"app/core"
 	"app/log"
-	"path/filepath"
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {
@@ -25,7 +26,7 @@ func setupGitHooks(teamInfo core.TeamInfo) {
 }
 
 func writeHooks(repository string) {
-	for _, hook := range core.GitHooks {
+	for _, hook := range core.GetGitHooks() {
 		writeGitHook(repository, hook)
 	}
 }

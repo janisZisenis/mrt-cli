@@ -19,7 +19,7 @@ func Successf(format string, args ...interface{}) {
 }
 
 func Infof(format string, args ...interface{}) {
-	fmt.Println(formatMessage(format, args))
+	color.White(formatMessage(format, args))
 }
 
 func formatMessage(format string, args []interface{}) string {

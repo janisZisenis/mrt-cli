@@ -1,13 +1,11 @@
 package core
 
 import (
-	"fmt"
+	"context"
+	"errors"
 	"io"
 	"os"
-	"os/exec"
 	"sync"
-
-	"github.com/fatih/color"
 
 	"app/log"
 )
@@ -15,49 +13,59 @@ import (
 func CloneRepository(repositoryURL, destination string) {
 	log.Infof("Cloning " + repositoryURL)
 
-	cmd := exec.Command("git", "clone", "--progress", repositoryURL, destination)
-
-	stdoutPipe, stdoutPipeErr := cmd.StdoutPipe()
-	if stdoutPipeErr != nil {
-		log.Errorf("Errorf getting StdoutPipe: %v\n", stdoutPipeErr)
-		return
-	}
-
-	stderrPipe, stdErrPipeErr := cmd.StderrPipe()
-	if stdErrPipeErr != nil {
-		log.Errorf("Errorf getting StderrPipe: %v\n", stdErrPipeErr)
-		return
-	}
-
-	if startErr := cmd.Start(); startErr != nil {
-		log.Errorf("Errorf starting command: %v\n", startErr)
-		return
-	}
-
 	var waitGroup sync.WaitGroup
 	numberOfPipesToWaitFor := 2
 	waitGroup.Add(numberOfPipesToWaitFor)
 
+	stdoutReader, stdoutWriter := io.Pipe()
+	stderrReader, stderrWriter := io.Pipe()
+
+	cancel, wait, startErr := NewCommandBuilder().
+		WithCommand("git").
+		WithArgs("clone", "--progress", repositoryURL, destination).
+		WithStdout(stdoutWriter).
+		WithStderr(stderrWriter).
+		Start()
+
+	defer cancel()
+
+	if startErr != nil {
+		log.Errorf("Error starting command: %v\n", startErr)
+		_ = stdoutWriter.Close()
+		_ = stderrWriter.Close()
+		return
+	}
+
 	go func() {
-		defer waitGroup.Done()
-		copyWithColor(os.Stdout, stdoutPipe)
+		if waitErr := wait(); waitErr != nil {
+			if errors.Is(waitErr, context.DeadlineExceeded) {
+				log.Warningf("Repository clone timed out after 5 minutes")
+			} else {
+				log.Warningf("Failed to clone repository, skipping it.")
+			}
+		}
+
+		_ = stdoutWriter.Close()
+		_ = stderrWriter.Close()
 	}()
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stderr, stderrPipe)
+		copyWithColor(os.Stdout, stdoutReader)
+	}()
+
+	go func() {
+		defer waitGroup.Done()
+		copyWithColor(os.Stderr, stderrReader)
 	}()
 
 	waitGroup.Wait()
-	if err := cmd.Wait(); err != nil {
-		log.Warningf("Failed to clone repository, skipping it.")
-	}
 
 	log.Successf("Successfully cloned " + repositoryURL)
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {
-	purpleFatih := color.New(color.FgMagenta).SprintFunc()
+	colorWriter := ColorWriter{Target: dst}
 
 	numberOfBytes := 1024
 	buf := make([]byte, numberOfBytes)
@@ -65,17 +73,17 @@ func copyWithColor(dst io.Writer, src io.Reader) {
 		n, readErr := src.Read(buf)
 		if n > 0 {
 			text := string(buf[:n])
-			_, writeErr := fmt.Fprintf(dst, "%s", purpleFatih(text))
+			_, writeErr := colorWriter.Write([]byte(text))
 
 			if writeErr != nil {
-				log.Errorf("Errorf writing to destination: %v\n", readErr)
+				log.Errorf("Error writing to destination: %v\n", writeErr)
 			}
 		}
 		if readErr != nil {
-			if readErr == io.EOF {
+			if errors.Is(readErr, io.EOF) {
 				break
 			}
-			log.Errorf("Errorf reading from source: %v\n", readErr)
+			log.Errorf("Error reading from source: %v\n", readErr)
 			break
 		}
 	}

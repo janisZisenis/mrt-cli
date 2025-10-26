@@ -310,6 +310,36 @@ With the folder structure above in place you can run the following code snippet 
   mrt run release
 ```
 
+### Add descriptions to your run commands
+
+You can add a short description to your run commands by creating a `config.json` file in the command folder. This description will be displayed when running `mrt run <command> -h`.
+
+Below you can see an example folder structure with a `config.json`:
+
+```
+/team-folder
+  |-- team.json
+  |-- repositories
+  |   |-- ...
+  |-- run
+  |   |-- build-binary
+  |   |   |-- config.json
+  |   |   |-- command
+  |   |-- release
+  |   |   |-- config.json
+  |   |   |-- command
+```
+
+The `config.json` file should contain the `shortDescription` field:
+
+```json
+{
+  "shortDescription": "Build the binary for all repositories"
+}
+```
+
+When you run `mrt run build-binary -h`, the short description will be displayed in the help output.
+
 ### Use your run commands in the pipeline
 
 You can use the *Multi Repository Tool* without the setup flow to just add key automations in the style of run commands to all your repositories. In that case you don't manage cloned repositories and also don't need a team configuration file. You can just add run commands in a *./run* folder to any of your repositories and execute the tools *run* subcommand in them (or use the *--team-dir* flag).

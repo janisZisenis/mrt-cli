@@ -1,0 +1,35 @@
+_private_key_file() {
+	echo "./.ssh/private-key"
+}
+
+_check_if_private_key_file_exists() {
+	if [ ! -f "$(_private_key_file)" ]; then
+		echo "Private key file not found."
+		echo "Please make sure you create a valid private key file at $(_private_key_file)."
+		exit 1
+	fi
+}
+
+_authenticate() {
+	_check_if_private_key_file_exists
+	ssh-add "$(_private_key_file)"
+}
+
+_revoke_authentication() {
+	_check_if_private_key_file_exists
+	ssh-add -d "$(_private_key_file)"
+}
+
+authenticated_setup() {
+	bats_load_library 'fixtures/common_fixture.bash'
+
+	common_setup
+	_authenticate
+}
+
+authenticated_teardown() {
+	bats_load_library 'fixtures/common_fixture.bash'
+
+	_revoke_authentication
+	common_teardown
+}

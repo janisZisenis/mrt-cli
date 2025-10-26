@@ -14,10 +14,19 @@ runs:
   using: 'composite'
   steps:
     - uses: ./.github/actions/setup-mrt
-    - name: Setup Golang
-      uses: magnetikonline/action-golang-cache@v5
+    - name: Cache Go
+      id: cache-go
+      uses: actions/cache@v4
       with:
-        go-version-file: app/go.mod
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - uses: actions/setup-go@v5
+      if: steps.cache-go.outputs.cache-hit != 'true'
+      with:
+        go-version: 1.24.5
+
     - name: Build binary
       shell: bash
       run: |

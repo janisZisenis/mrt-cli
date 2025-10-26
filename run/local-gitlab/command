@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+set -e
+
+FLAG_START="--start"
+FLAG_STOP="--stop"
+FLAG_DUMP_REPOS_FLAG="--dump-repos"
+FLAG_HELP_SHORT="-h"
+FLAG_HELP_LONG="--help"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+export CONTAINER_NAME="local-gitlab"
+export IMPORT_SCRIPT_PATH="/import_dumped_repositories.rb"
+DOCKER_COMPOSE_CMD="docker-compose -f \"$SCRIPT_DIR/docker-compose.yml\""
+
+rootDir="$1"
+shift
+PUBLIC_SSH_KEY_FILE="$rootDir/.ssh/private-key.pub"
+
+function display_help() {
+	cat <<EOF
+Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS]
+
+Manage local GitLab instance with Docker Compose.
+
+Options:
+  $FLAG_START|$FLAG_STOP      Start/Stop the local GitLab instance (default: $FLAG_START).
+  $FLAG_DUMP_REPOS_FLAG     Dumps the test repositories when starting the instance. (default: false)
+  $FLAG_HELP_SHORT|$FLAG_HELP_LONG           Display this help message and exit.
+EOF
+}
+
+function dump_repositories() {
+	GITHUB_OWNER="janisZisenisTesting"
+	TEST_REPO_DIR="$SCRIPT_DIR/test-repos"
+
+	echo "Deleting existing test repositories directory..."
+	rm -rf "$SCRIPT_DIR/test-repos"
+
+	if ! gh auth status &>/dev/null; then
+		echo "Please log in using 'gh auth login'."
+		exit 1
+	fi
+
+	REPOS=$(gh repo list $GITHUB_OWNER --limit 1000 --json nameWithOwner -q '.[] | .nameWithOwner')
+	[ -z "$REPOS" ] && {
+		echo "No repositories found."
+		exit 1
+	}
+
+	rm -rf "$TEST_REPO_DIR"
+
+	for REPO in $REPOS; do
+		REPO=$(echo "$REPO" | tr -d '"')
+		TARGET_DIR="$TEST_REPO_DIR/$REPO.git"
+		mkdir -p "$(dirname "$TARGET_DIR")"
+		gh repo clone "$REPO" "$TARGET_DIR" -- --bare
+	done
+
+	echo "Cloning completed! Repositories are stored as bare repositories in '$TEST_REPO_DIR'."
+}
+
+function wait_for_gitlab_ready() {
+	echo "Waiting for GitLab to be ready..."
+	local max_attempts=60
+	local attempt=1
+	local wait_seconds=10
+
+	while [ $attempt -le $max_attempts ]; do
+		echo "Attempt $attempt of $max_attempts: Checking GitLab readiness..."
+
+		if curl -s http://localhost/-/readiness >/dev/null; then
+			echo "GitLab is ready!"
+			return 0
+		else
+			echo "GitLab is not ready yet. Waiting $wait_seconds seconds..."
+			sleep $wait_seconds
+			attempt=$((attempt + 1))
+		fi
+	done
+
+	echo "Error: GitLab did not become ready within the timeout period."
+	return 1
+}
+
+function import_repositories() {
+	echo "Running import script in GitLab container..."
+	docker exec "$CONTAINER_NAME" gitlab-rails runner "$IMPORT_SCRIPT_PATH"
+	echo "Repository import completed."
+}
+
+function setup_ssh_key() {
+	echo "Running setup ssh key script in GitLab container..."
+
+	SSH_PUBLIC_KEY=$(cat "$PUBLIC_SSH_KEY_FILE")
+
+	docker exec "$CONTAINER_NAME" gitlab-rails runner "
+  ssh_key = \"$SSH_PUBLIC_KEY\".strip
+
+  user = User.find_by_username('root')
+  raise 'Root user not found!' unless user
+
+  puts 'Delete all existing SSH key(s) for the root user.'
+  user.keys.delete_all
+
+  puts 'Add SSH key for root user.'
+  user.keys.create!(title: 'Root User SSH Key', key: ssh_key)
+  puts '✅ SSH key added successfully for the root user!'
+  system('yes yes | gitlab-rake gitlab:shell:setup')
+  "
+
+	echo "SSH key setup completed."
+}
+
+action="$FLAG_START"
+should_dump_repositories=false
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+	"$FLAG_HELP_SHORT" | "$FLAG_HELP_LONG")
+		display_help
+		exit 0
+		;;
+	"$FLAG_START" | "$FLAG_STOP")
+		action="$1"
+		shift
+		;;
+	"$FLAG_DUMP_REPOS_FLAG")
+		should_dump_repositories=true
+		shift
+		;;
+	--*)
+		echo "Error: Unknown option '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	*)
+		echo "Error: Unknown argument '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	esac
+done
+
+if [[ "$action" == "$FLAG_START" ]]; then
+	if [[ "$should_dump_repositories" == true ]]; then
+		dump_repositories
+	fi
+
+	echo "Starting GitLab container..."
+	eval "$DOCKER_COMPOSE_CMD up -d"
+
+	if wait_for_gitlab_ready; then
+		import_repositories
+		setup_ssh_key
+	fi
+elif [[ "$action" == "$FLAG_STOP" ]]; then
+	echo "Stopping GitLab container..."
+	eval "$DOCKER_COMPOSE_CMD down -v"
+fi

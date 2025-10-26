@@ -6,11 +6,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-const teamFileName = "team"
-const teamFileExtension = "json"
-const defaultRepositoriesPath = "repositories"
-const TeamFile = teamFileName + "." + teamFileExtension
-const RepositoriesPath = "repositoriesPath"
+const (
+	teamFileName            = "team"
+	teamFileExtension       = "json"
+	defaultRepositoriesPath = "repositories"
+	TeamFile                = teamFileName + "." + teamFileExtension
+	RepositoriesPath        = "repositoriesPath"
+)
 
 type TeamInfo struct {
 	RepositoriesPath     string   `json:"repositoriesPath"`

@@ -1,10 +1,11 @@
 package githook
 
 import (
-	"app/core"
-	"app/log"
 	"os"
 	"slices"
+
+	"app/core"
+	"app/log"
 )
 
 func failIfBranchIsBlocked(teamInfo core.TeamInfo, branch string, action string) {

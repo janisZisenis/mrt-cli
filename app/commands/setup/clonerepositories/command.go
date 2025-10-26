@@ -10,7 +10,7 @@ import (
 const CommandName = "clone-repositories"
 
 func MakeCommand() *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   CommandName,
 		Short: "Clones all repositories from " + core.TeamFile + " file",
 		Run:   command,
@@ -21,7 +21,6 @@ func MakeCommand() *cobra.Command {
 
 func command(_ *cobra.Command, _ []string) {
 	teamInfo, err := core.LoadTeamConfiguration()
-
 	if err != nil {
 		log.Infof("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" " +
 			"file and add repositories to it.")

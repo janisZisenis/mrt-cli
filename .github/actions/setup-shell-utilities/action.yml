@@ -1,0 +1,60 @@
+name: Setup shell utilities
+description: Install and cache ShellCheck and shfmt.
+
+inputs:
+  shellcheck_version:
+    description: The version of ShellCheck to install.
+    required: false
+    default: "v0.11.0"
+  shfmt_version:
+    description: The version of shfmt to install.
+    required: false
+    default: "v3.12.0"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache ShellCheck
+      id: shellcheck-cache
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/shellcheck
+        key: shellcheck-${{ inputs.shellcheck_version }}-ubuntu
+
+    - name: Install ShellCheck (if cache miss)
+      if: steps.shellcheck-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        SHELLCHECK_VERSION="${{ inputs.shellcheck_version }}"
+        echo "Installing ShellCheck version: $SHELLCHECK_VERSION"
+        curl -L "https://github.com/koalaman/shellcheck/releases/download/$SHELLCHECK_VERSION/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" -o shellcheck.tar.xz
+        tar -xvf shellcheck.tar.xz --xz
+        sudo mv shellcheck-${SHELLCHECK_VERSION}/shellcheck /usr/local/bin/
+        rm -rf shellcheck-${SHELLCHECK_VERSION} shellcheck.tar.xz
+        shellcheck --version
+
+    - name: Verify ShellCheck Installation
+      shell: bash
+      run: shellcheck --version
+
+    - name: Cache shfmt
+      id: shfmt-cache
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/shfmt
+        key: shfmt-${{ inputs.shfmt_version }}-ubuntu
+
+    - name: Install shfmt (if cache miss)
+      if: steps.shfmt-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        SHFMT_VERSION="${{ inputs.shfmt_version }}"
+        echo "Installing shfmt version: $SHFMT_VERSION"
+        curl -L "https://github.com/mvdan/sh/releases/download/$SHFMT_VERSION/shfmt_${SHFMT_VERSION}_linux_amd64" -o shfmt
+        chmod +x shfmt
+        sudo mv shfmt /usr/local/bin/
+        shfmt --version
+
+    - name: Verify shfmt Installation
+      shell: bash
+      run: shfmt --version

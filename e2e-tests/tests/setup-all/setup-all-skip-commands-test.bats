@@ -1,11 +1,8 @@
-bats_load_library 'setup'
-bats_load_library 'ssh-authenticate'
-bats_load_library 'common'
-bats_load_library 'repositoriesPath'
-bats_load_library 'directoryAssertions'
-bats_load_library 'writeMockCommand'
-
 setup() {
+	bats_load_library 'mrt/setup.bash'
+	bats_load_library 'fixtures/common_fixture.bash'
+	bats_load_library 'commands/setup/setup_command_writer.bash'
+
 	common_setup
 }
 
@@ -14,37 +11,34 @@ teardown() {
 }
 
 @test "if two setup commands exist setup all with skipping the first it should only run the second" {
-	someCommandName="some-command"
-	anotherCommandName="another-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$someCommandName"
-	writeSpyCommand "$commandLocation" "$anotherCommandName"
+	local some_command_name="some-command"
+	local another_command_name="another-command"
+	write_spy_setup_command "$some_command_name"
+	write_spy_setup_command "$another_command_name"
 
-	run execute setup all "--skip-$someCommandName"
+	run mrt_setup_all "--skip-$some_command_name"
 
-	assert_command_spy_file_does_not_exist "$commandLocation" "$someCommandName"
-	assert_command_spy_file_exists "$commandLocation" "$anotherCommandName"
+	assert_setup_command_was_not_executed "$some_command_name"
+	assert_setup_command_was_executed "$another_command_name" "$(test_env_dir)"
 }
 
 @test "if two setup commands exist setup all with skipping the second it should only run the first" {
-	someCommandName="some-command"
-	anotherCommandName="another-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$someCommandName"
-	writeSpyCommand "$commandLocation" "$anotherCommandName"
+	local some_command_name="some-command"
+	local another_command_name="another-command"
+	write_spy_setup_command "$some_command_name"
+	write_spy_setup_command "$another_command_name"
 
-	run execute setup all "--skip-$anotherCommandName"
+	run mrt_setup_all "--skip-$another_command_name"
 
-	assert_command_spy_file_exists "$commandLocation" "$someCommandName"
-	assert_command_spy_file_does_not_exist "$commandLocation" "$anotherCommandName"
+	assert_setup_command_was_executed "$some_command_name" "$(test_env_dir)"
+	assert_setup_command_was_not_executed "$another_command_name"
 }
 
 @test "if one setup commands exists setup all with skipping the command prints out skip message" {
-	commandName="some-command"
-	commandLocation="$(testEnvDir)/setup"
-	writeSpyCommand "$commandLocation" "$commandName"
+	local command_name="some-command"
+	write_spy_setup_command "$command_name"
 
-	run execute setup all "--skip-$commandName"
+	run mrt_setup_all "--skip-$command_name"
 
-	assert_output --partial "Skipping setup command: $commandName"
+	assert_output --partial "Skipping setup command: $command_name"
 }

@@ -1,56 +1,52 @@
-bats_load_library 'setup'
-bats_load_library 'ssh-authenticate'
-bats_load_library 'common'
-bats_load_library 'repositoriesPath'
-bats_load_library 'git'
+set_fixture_variables() {
+	bats_load_library 'git.bash'
+	bats_load_library 'repositories_path.bash'
+	bats_load_library 'fixtures/common_fixture.bash'
 
-repository="1_TestRepository"
-repositoryUrl="$(getTestingRepositoryUrl "$repository")"
-branchName="$(unique_branch_name)"
-
-repositoryDir() {
-	echo "$(testEnvDir)/$(default_repositories_path)/$repository"
+	repository="1_TestRepository"
+	branch_name="$(unique_branch_name)"
+	repository_dir="$(test_env_dir)/$(default_repositories_path)/$repository"
 }
 
 setup() {
-	common_setup
-	authenticate
+	bats_load_library 'mrt/setup.bash'
+	bats_load_library 'write_team_file.bash'
+	bats_load_library 'test_repositories.bash'
+	bats_load_library 'fixtures/authenticated_fixture.bash'
 
-	writeRepositoriesUrls "$repositoryUrl"
-	run execute setup all --skip-install-git-hooks
+	set_fixture_variables
+	authenticated_setup
+
+	write_repositories_urls "$(get_testing_repository_url "$repository")"
+	mrt_setup_all --skip-install-git-hooks
 }
 
 teardown() {
-	revoke-authentication
-	common_teardown
+	authenticated_teardown
 }
 
 @test "After setup all with 'skip-git-hooks' committing on a blocked branch is not rejected" {
-	writeBlockedBranches "$branchName"
+	write_blocked_branches "$branch_name"
 
-	run commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	run commit_changes "$repository_dir" "$branch_name" "some-message"
 
 	assert_success
 }
 
 @test "After setup all with 'skip-git-hooks' pushing to a blocked branch is not rejected" {
-	writeBlockedBranches "$branchName"
-	commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	write_blocked_branches "$branch_name"
+	commit_changes "$repository_dir" "$branch_name" "some-message"
 
-	run push_changes "$(repositoryDir)" "$branchName"
+	run push_changes "$repository_dir" "$branch_name"
 
 	assert_success
 }
 
 @test "After setup all with 'skip-git-hooks' commiting with missing prefix in commit messages is not rejected" {
-	writeBlockedBranches "$branchName"
-	writeCommitPrefixRegex "Some-Prefix"
+	write_blocked_branches "$branch_name"
+	write_commit_prefix_regex "Some-Prefix"
 
-	run commit_changes "$(repositoryDir)" "$branchName" "some-message"
+	run commit_changes "$repository_dir" "$branch_name" "some-message"
 
 	assert_success
-}
-
-@test "If setup is run with skipping git hooks, it should print skip message" {
-	assert_line --partial "Skipping install-git-hooks step."
 }

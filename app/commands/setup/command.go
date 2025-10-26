@@ -6,14 +6,14 @@ import (
 	"app/commands/setup/all"
 	"app/commands/setup/clonerepositories"
 	"app/commands/setup/installgithooks"
-	"app/commands/setup/setupsscript"
+	"app/commands/setup/setupscript"
 	"app/core"
 )
 
 const commandName = "setup"
 
 func MakeCommand(teamDirectory string) *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   commandName,
 		Short: "Sets up you machine for development",
 	}
@@ -22,7 +22,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.AddCommand(clonerepositories.MakeCommand())
 	command.AddCommand(installgithooks.MakeCommand())
 
-	core.ForScriptInPathDo(teamDirectory+setupscript.ScriptsPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(teamDirectory+setupscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
 		command.AddCommand(setupscript.MakeCommand(scriptPath, scriptName))
 	})
 

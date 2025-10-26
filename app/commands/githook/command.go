@@ -10,12 +10,14 @@ import (
 	"app/log"
 )
 
-const CommandName = "git-hook"
-const repositoryPath = "repository-path"
-const hookNameFlag = "hook-name"
+const (
+	CommandName    = "git-hook"
+	repositoryPath = "repository-path"
+	hookNameFlag   = "hook-name"
+)
 
 func MakeCommand() *cobra.Command {
-	var command = &cobra.Command{
+	command := &cobra.Command{
 		Use:   CommandName,
 		Short: "Executes the specified git-hook for a specified repository",
 		Run:   command,
@@ -28,7 +30,7 @@ func MakeCommand() *cobra.Command {
 }
 
 func command(cmd *cobra.Command, args []string) {
-	var teamInfo, _ = core.LoadTeamConfiguration()
+	teamInfo, _ := core.LoadTeamConfiguration()
 	hookName, _ := cmd.Flags().GetString(hookNameFlag)
 	repositoryPath, _ := cmd.Flags().GetString(repositoryPath)
 
@@ -62,7 +64,6 @@ func executeAdditionalScripts(repositoryPath string, hookName string, args []str
 
 func getCurrentBranchName(repositoryPath string) string {
 	shortBranchName, err := core.GetCurrentBranchShortName(repositoryPath)
-
 	if err != nil {
 		log.Errorf("The given path \"" + repositoryPath + "\" does not contain a repository.")
 		os.Exit(1)
