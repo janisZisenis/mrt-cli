@@ -2,75 +2,41 @@
 
 This project utilizes several third-party dependencies. Below is a list of these dependencies along with their respective licenses.
 
+---
+
+# Runtime Dependencies
+
+These are Go modules that are part of the compiled application.
+
 ## Direct Dependencies
 
-- **github.com/fatih/color v1.17.0**
+- **github.com/fatih/color v1.18.0**
   - License: MIT
   - URL: https://github.com/fatih/color
 
-- **github.com/spf13/cobra v1.8.1**
+- **github.com/spf13/cobra v1.9.1**
   - License: Apache License 2.0
   - URL: https://github.com/spf13/cobra
 
-- **github.com/spf13/viper v1.19.0**
+- **github.com/spf13/viper v1.20.1**
   - License: MIT
   - URL: https://github.com/spf13/viper
 
 ## Indirect Dependencies
 
-- **dario.cat/mergo v1.0.0**
-  - License: Apache License 2.0
-  - URL: https://github.com/imdario/mergo
-
-- **github.com/Microsoft/go-winio v0.6.1**
-  - License: MIT
-  - URL: https://github.com/Microsoft/go-winio
-
-- **github.com/ProtonMail/go-crypto v1.0.0**
-  - License: MIT
-  - URL: https://github.com/ProtonMail/go-crypto
-
-- **github.com/cloudflare/circl v1.3.7**
-  - License: BSD-3-Clause
-  - URL: https://github.com/cloudflare/circl
-
-- **github.com/cyphar/filepath-securejoin v0.2.4**
-  - License: Apache License 2.0
-  - URL: https://github.com/cyphar/filepath-securejoin
-
-- **github.com/emirpasic/gods v1.18.1**
-  - License: BSD-2-Clause
-  - URL: https://github.com/emirpasic/gods
-
-- **github.com/fsnotify/fsnotify v1.7.0**
+- **github.com/fsnotify/fsnotify v1.9.0**
   - License: BSD-3-Clause
   - URL: https://github.com/fsnotify/fsnotify
 
-- **github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da**
-  - License: Apache License 2.0
-  - URL: https://github.com/golang/groupcache
-
-- **github.com/hashicorp/hcl v1.0.0**
-  - License: MPL-2.0
-  - URL: https://github.com/hashicorp/hcl
+- **github.com/go-viper/mapstructure/v2 v2.4.0**
+  - License: MIT
+  - URL: https://github.com/go-viper/mapstructure
 
 - **github.com/inconshreveable/mousetrap v1.1.0**
   - License: Apache License 2.0
   - URL: https://github.com/inconshreveable/mousetrap
 
-- **github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99**
-  - License: MIT
-  - URL: https://github.com/jbenet/go-context
-
-- **github.com/kevinburke/ssh_config v1.2.0**
-  - License: MIT
-  - URL: https://github.com/kevinburke/ssh_config
-
-- **github.com/magiconair/properties v1.8.7**
-  - License: BSD-3-Clause
-  - URL: https://github.com/magiconair/properties
-
-- **github.com/mattn/go-colorable v0.1.13**
+- **github.com/mattn/go-colorable v0.1.14**
   - License: MIT
   - URL: https://github.com/mattn/go-colorable
 
@@ -78,47 +44,31 @@ This project utilizes several third-party dependencies. Below is a list of these
   - License: MIT
   - URL: https://github.com/mattn/go-isatty
 
-- **github.com/mitchellh/mapstructure v1.5.0**
-  - License: MIT
-  - URL: https://github.com/mitchellh/mapstructure
-
-- **github.com/pelletier/go-toml/v2 v2.2.2**
+- **github.com/pelletier/go-toml/v2 v2.2.4**
   - License: MIT
   - URL: https://github.com/pelletier/go-toml
 
-- **github.com/pjbgf/sha1cd v0.3.0**
-  - License: MIT
-  - URL: https://github.com/pjbgf/sha1cd
+- **github.com/rogpeppe/go-internal v1.14.1**
+  - License: BSD-3-Clause
+  - URL: https://github.com/rogpeppe/go-internal
 
-- **github.com/sagikazarmark/locafero v0.4.0**
+- **github.com/sagikazarmark/locafero v0.10.0**
   - License: MIT
   - URL: https://github.com/sagikazarmark/locafero
 
-- **github.com/sagikazarmark/slog-shim v0.1.0**
-  - License: MIT
-  - URL: https://github.com/sagikazarmark/slog-shim
-
-- **github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3**
-  - License: MIT
-  - URL: https://github.com/sergi/go-diff
-
-- **github.com/skeema/knownhosts v1.2.2**
-  - License: MIT
-  - URL: https://github.com/skeema/knownhosts
-
-- **github.com/sourcegraph/conc v0.3.0**
+- **github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8**
   - License: MIT
   - URL: https://github.com/sourcegraph/conc
 
-- **github.com/spf13/afero v1.11.0**
+- **github.com/spf13/afero v1.14.0**
   - License: Apache License 2.0
   - URL: https://github.com/spf13/afero
 
-- **github.com/spf13/cast v1.6.0**
+- **github.com/spf13/cast v1.9.2**
   - License: MIT
   - URL: https://github.com/spf13/cast
 
-- **github.com/spf13/pflag v1.0.5**
+- **github.com/spf13/pflag v1.0.7**
   - License: BSD-3-Clause
   - URL: https://github.com/spf13/pflag
 
@@ -126,73 +76,125 @@ This project utilizes several third-party dependencies. Below is a list of these
   - License: MIT
   - URL: https://github.com/subosito/gotenv
 
-- **github.com/xanzy/ssh-agent v0.3.3**
-  - License: MIT
-  - URL: https://github.com/xanzy/ssh-agent
-
-- **go.uber.org/atomic v1.9.0**
-  - License: MIT
-  - URL: https://github.com/uber-go/atomic
-
-- **go.uber.org/multierr v1.9.0**
-  - License: MIT
-  - URL: https://github.com/uber-go/multierr
-
-- **golang.org/x/crypto v0.21.0**
-  - License: BSD-3-Clause
-  - URL: https://github.com/golang/crypto
-
-- **golang.org/x/exp v0.0.0-20230905200255-921286631fa9**
-  - License: BSD-3-Clause
-  - URL: https://github.com/golang/exp
-
-- **golang.org/x/mod v0.12.0**
-  - License: BSD-3-Clause
-  - URL: https://github.com/golang/mod
-
-- **golang.org/x/net v0.23.0**
-  - License: BSD-3-Clause
-  - URL: https://github.com/golang/net
-
-- **golang.org/x/sys v0.18.0**
+- **golang.org/x/sys v0.35.0**
   - License: BSD-3-Clause
   - URL: https://github.com/golang/sys
 
-- **golang.org/x/text v0.14.0**
+- **golang.org/x/text v0.28.0**
   - License: BSD-3-Clause
   - URL: https://github.com/golang/text
 
-- **golang.org/x/tools v0.13.0**
-  - License: BSD-3-Clause
-  - URL: https://github.com/golang/tools
-
-- **gopkg.in/ini.v1 v1.67.0**
-  - License: Apache License 2.0
-  - URL: https://github.com/go-ini/ini
-
-- **gopkg.in/warnings.v0 v0.1.2**
-  - License: MIT
-  - URL: https://github.com/go-ini/warnings
+- **gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c**
+  - License: BSD-2-Clause
+  - URL: https://github.com/go-check/check
 
 - **gopkg.in/yaml.v3 v3.0.1**
   - License: MIT
   - URL: https://github.com/go-yaml/yaml
 
-## Automation and Test Execution Tools
+---
+
+# Development and Testing Dependencies
+
+These tools are used during development, testing, and CI/CD processes, but are not bundled with the compiled application.
+
+## Build and Code Quality Tools
+
+- **golangci-lint v2.1.6**
+  - License: GPL-3.0
+  - URL: https://github.com/golangci/golangci-lint
+  - Description: Go linter with 80+ enabled linters for code quality
+
+- **gofumpt v0.9.1**
+  - License: BSD-3-Clause
+  - URL: https://github.com/mvdan/gofumpt
+  - Description: Stricter Go formatter (gofmt + extra rules)
+
+- **goimports v0.38.0**
+  - License: BSD-3-Clause
+  - URL: https://github.com/golang/tools
+  - Description: Go import formatter and organizer
+
+- **ShellCheck v0.11.0**
+  - License: GPL-3.0
+  - URL: https://github.com/koalaman/shellcheck
+  - Description: Bash/shell script linter
+
+- **shfmt v3.12.0**
+  - License: MIT
+  - URL: https://github.com/mvdan/sh
+  - Description: Bash/shell script formatter
 
 - **jq**
   - License: MIT
   - URL: https://stedolan.github.io/jq/
+  - Description: JSON command-line processor
 
 - **bats (Bash Automated Testing System)**
   - License: MIT
   - URL: https://github.com/bats-core/bats-core
+  - Description: Bash testing framework for end-to-end tests
+
+- **bats-support v0.3.0**
+    - License: MIT
+    - URL: https://github.com/bats-core/bats-support
+    - Description: Common test helper library
+
+- **bats-file v0.4.0**
+    - License: MIT
+    - URL: https://github.com/bats-core/bats-file
+    - Description: File and path assertion helpers
+
+- **bats-assert v2.1.0**
+    - License: MIT
+    - URL: https://github.com/bats-core/bats-assert
+    - Description: Assertion helpers for BATS tests
+
+- **bats-detik v1.3.1**
+    - License: MIT
+    - URL: https://github.com/bats-core/bats-detik
+    - Description: Docker and container testing helpers
 
 - **GNU parallel**
   - License: GPL-3.0
   - URL: https://www.gnu.org/software/parallel/
-  - Citation:  O. Tange (2018): GNU Parallel 2018, March 2018, https://doi.org/10.5281/zenodo.1146014. 
-  
+  - Citation: O. Tange (2018): GNU Parallel 2018, March 2018, https://doi.org/10.5281/zenodo.1146014
+  - Description: Parallel job execution for running tests in parallel
+
+## Container and Infrastructure Tools
+
+- **Docker / Docker Compose**
+  - License: Apache License 2.0
+  - URL: https://github.com/moby/moby
+  - Description: Container runtime and orchestration for isolated testing environments
+
+- **tini v0.19.0**
+  - License: MIT
+  - URL: https://github.com/krallin/tini
+  - Description: Lightweight init system for Docker containers
+
+## CI/CD and Automation Tools
+
+- **GitHub Actions**
+  - License: Proprietary (GitHub)
+  - URL: https://github.com/features/actions
+  - Description: CI/CD platform for automated testing, building, and release management
+
+- **GitHub CLI (gh)**
+  - License: MIT
+  - URL: https://github.com/cli/cli
+  - Description: Command-line interface for repository management and automation
+
+---
+
+## License Compliance Note
+
+**Project License**: This project is licensed under the MIT License.
+
+**Runtime vs. Development Dependencies**: The runtime dependencies (Go modules) are all compatible with the MIT license. The development and testing tools section includes some GPL-3.0 licensed software (golangci-lint, ShellCheck, and GNU parallel). These tools are used exclusively during development and CI/CD processes and are **not bundled with or compiled into the distributed binary**. They run as separate processes during testing and code quality checks, and therefore do not create a licensing conflict with the MIT license.
+
+**Distribution**: When distributing this project as a compiled binary or package, only the runtime dependencies are included. Users installing the binary do not need to install or comply with the GPL-3.0 tools.
+
 ---
 
 This project is a comprehensive collection of utilities and components bringing together various pieces of functionality under a common framework for ease of use and improved stability. It adheres to the licenses specified above and ensures compliance with their respective terms.
