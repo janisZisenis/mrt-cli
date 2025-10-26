@@ -25,7 +25,7 @@ runs:
         path: /usr/local/bin/gofumpt
         key: gofumpt-${{ inputs.gofumpt_version }}-ubuntu
 
-    - name: Install gofumpt (if cache miss)
+    - name: Install gofumpt
       if: steps.gofumpt-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
@@ -44,13 +44,12 @@ runs:
         path: /usr/local/bin/golangci-lint
         key: golangci-lint-${{ inputs.golangci_lint_version }}-ubuntu
 
-    - name: Install golangci-lint (if cache miss)
+    - name: Install golangci-lint
       if: steps.golangci-lint-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        echo "Installing golangci-lint version: $${{ inputs.golangci_lint_version }}"
-        curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b /usr/local/bin "$GOLANGCI_LINT_VERSION"
-        golangci-lint version
+        echo "Installing golangci-lint version: ${{ inputs.golangci_lint_version }}"
+        curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b /usr/local/bin "${{ inputs.golangci_lint_version }}"
 
     - name: Verify golangci-lint Installation
       shell: bash
@@ -63,15 +62,14 @@ runs:
         path: /usr/local/bin/goimports
         key: goimports-${{ inputs.goimports_version }}-ubuntu
 
-    - name: Install goimports (if cache miss)
+    - name: Install goimports
       if: steps.goimports-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
         echo "Installing goimports version: ${{ inputs.goimports_version }}"
         GO111MODULE=on go install golang.org/x/tools/cmd/goimports@${{ inputs.goimports_version }}
         sudo mv ~/go/bin/goimports /usr/local/bin/
-        goimports --help
 
     - name: Verify goimports Installation
       shell: bash
-      run: goimports --help
+      run: which goimports
