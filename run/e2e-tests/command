@@ -6,7 +6,9 @@ FLAG_REMOTE="--remote"
 FLAG_CLEAN="--clean"
 FLAG_MANUAL="--manual"
 FLAG_CI="--ci"
-FLAG_HELP="-h|--help"
+KEEP_TEST_RUN="--keep"
+FLAG_HELP_SHORT="-h"
+FLAG_HELP_LONG="--help"
 
 declare -A HOSTNAME_MAP=(
 	["$FLAG_LOCAL"]="localhost"
@@ -23,7 +25,8 @@ Options:
   $FLAG_LOCAL|$FLAG_REMOTE   Use the local gitlab or github.com to run e2e-tests (default: remote).
   $FLAG_CLEAN            Perform a clean build before running the tests.
   $FLAG_MANUAL|FLAG_CI   Determines whether tests are run manually or on from CI.
-  $FLAG_HELP          Display this help message and exit.
+  $KEEP_TEST_RUN           Do not clean up temporary directories after tests complete.
+  $FLAG_HELP_SHORT|$FLAG_HELP_LONG          Display this help message and exit.
 
 FILES:
   List of specific .bats test files to be executed. If not provided,
@@ -36,6 +39,7 @@ shift
 clean_build=false
 run_mode="$FLAG_MANUAL"
 hostname="${HOSTNAME_MAP[$FLAG_REMOTE]}"
+no_tempdir_cleanup=false
 declare -a files
 
 while [[ $# -gt 0 ]]; do
@@ -52,7 +56,11 @@ while [[ $# -gt 0 ]]; do
 		run_mode="$1"
 		shift
 		;;
-	"$FLAG_HELP")
+	"$KEEP_TEST_RUN")
+		no_tempdir_cleanup=true
+		shift
+		;;
+	"$FLAG_HELP_SHORT" | "$FLAG_HELP_LONG")
 		display_help
 		exit 0
 		;;
@@ -117,4 +125,10 @@ echo "Running tests with BATS..."
 
 export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
 export BATS_LIB_PATH="$e2eTestDir/3rdParty/test_helper":"$e2eTestDir/helpers"
-"$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
+
+bats_args=("${files[@]}" --jobs 10)
+if [[ "$no_tempdir_cleanup" == true ]]; then
+	bats_args+=(--no-tempdir-cleanup)
+fi
+
+"$e2eTestDir"/3rdParty/bats/bin/bats "${bats_args[@]}"
