@@ -29,9 +29,9 @@ runs:
       if: steps.gofumpt-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        curl -sSfL "https://github.com/mvdan/gofumpt/releases/download/${{ inputs.gofumpt_version }}/gofumpt_${{ inputs.gofumpt_version }}_linux_amd64" -o gofumpt
-        chmod +x gofumpt
-        sudo mv gofumpt /usr/local/bin/
+        echo "Installing gofumpt version: ${{ inputs.gofumpt_version }}"
+        GO111MODULE=on go install mvdan.cc/gofumpt@${{ inputs.gofumpt_version }}
+        echo "${HOME}/go/bin" >> $GITHUB_PATH
 
     - name: Verify gofumpt Installation
       shell: bash
