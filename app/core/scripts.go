@@ -10,7 +10,7 @@ import (
 )
 
 func CommandFileName() string {
-	return "command.bash"
+	return "command"
 }
 
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
