@@ -3,6 +3,7 @@ package tests
 import (
 	"bytes"
 	"fmt"
+	"mrt-cli/go-e2e/assertions"
 
 	"mrt-cli/go-e2e/utils"
 	"os"
@@ -51,7 +52,7 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 		os.Exit(1)
 	}
 
-	utils.TestDirectoryExists(t, tempDir+"/repositories/"+repositoryName+"/.git")
+	assertions.TestDirectoryExists(t, tempDir+"/repositories/"+repositoryName+"/.git")
 }
 
 func stringTrimNewline(s string) string {
