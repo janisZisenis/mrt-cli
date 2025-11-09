@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"app/log"
+	"mrt-cli/app/log"
 )
 
 func CloneRepository(repositoryURL, destination string) {

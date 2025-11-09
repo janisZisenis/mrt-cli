@@ -36,7 +36,7 @@ build_binary() {
 	echo "Building for $platform..."
 	if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build \
 		-ldflags "-X main.semver=$semver -X main.commit=$commit_sha -X main.date=$(date +'%Y-%m-%d')" \
-		-o "$binaryLocation"; then
+		-o "$binaryLocation" ./app; then
 		echo "Error occurred while building for ${platform}"
 		exit 1
 	else
@@ -79,7 +79,6 @@ if [[ "${#platforms[@]}" -eq 0 ]]; then
 	platforms=("$(mrt --team-dir "$rootDir" run detect-platform)")
 fi
 
-cd "$rootDir"/app
 for platform in "${platforms[@]}"; do
 	build_binary "$platform" "$semver" "$commit_sha"
 done

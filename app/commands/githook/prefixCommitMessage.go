@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"app/core"
-	"app/log"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 )
 
 func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {

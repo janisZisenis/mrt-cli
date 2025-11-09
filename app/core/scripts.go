@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"app/log"
+	"mrt-cli/app/log"
 )
 
 func CommandFileName() string {

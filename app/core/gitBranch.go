@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"app/log"
+	"mrt-cli/app/log"
 )
 
 func GetCurrentBranchShortName(repoDir string) (string, error) {

@@ -3,9 +3,9 @@ package installgithooks
 import (
 	"os"
 
-	"app/commands/githook"
-	"app/core"
-	"app/log"
+	"mrt-cli/app/commands/githook"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 )
 
 func getHookTemplate() string {

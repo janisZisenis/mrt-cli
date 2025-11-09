@@ -1,7 +1,7 @@
 package version
 
 import (
-	"app/log"
+	"mrt-cli/app/log"
 
 	"github.com/spf13/cobra"
 )
