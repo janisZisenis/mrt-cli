@@ -12,10 +12,9 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	f := fixtures.MakeAuthenticatedFixture(t)
 
 	repositoryName := "1_TestRepository"
-	data := map[string]interface{}{
-		"repositories": []string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"},
-	}
-	_ = utils.TeamConfigWriter(f.TempDir, data)
+	utils.WriteTeamJsonTo(f.TempDir,
+		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"}),
+	)
 
 	f.MakeMrtCommand().
 		RunInDirectory(f.TempDir).
