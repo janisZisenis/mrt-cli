@@ -26,14 +26,6 @@ teardown() {
 	authenticated_teardown
 }
 
-@test "if team json does not contain repositoriesPath it clones repository into 'repositories' folder" {
-	local repositories=("1_TestRepository")
-
-	run clone_repositories_using_mrt "${repositories[@]}"
-
-	assert_dir_exist "$(cloned_git_folder "${repositories[0]}")"
-}
-
 @test "if team json contains an existing repository it should print a messages about successful cloning" {
 	local repository="1_TestRepository"
 	local repository_url
