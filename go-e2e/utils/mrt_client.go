@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type Mrt struct {
@@ -39,23 +39,23 @@ func (m *Mrt) Clone() *Mrt {
 	return m
 }
 
-type MrtExecutionError struct {
-	TeamDir string
-	Err     error
-	Output  string
-}
+func (m *Mrt) Execute() *Output {
+	byteOutput, err := m.command.Output()
+	output := string(byteOutput)
 
-func (e *MrtExecutionError) Error() string {
-	return fmt.Sprintf("failed to clone repositories in %s: %v\noutput: %s", e.TeamDir, e.Err, e.Output)
-}
-
-func (m *Mrt) Execute() {
-	m.command.Stdout = os.Stdout
-	m.command.Stderr = os.Stderr
-
-	if err := m.command.Run(); err != nil {
-		panic("executing mrt command failed: " + err.Error())
+	if err != nil {
+		panic("executing mrt command failed: " + output)
 	}
+
+	return MakeOutput(SplitLines(output))
+}
+
+func SplitLines(output string) []string {
+	if output == "" {
+		return []string{}
+	}
+
+	return strings.Split(strings.TrimSpace(output), "\n")
 }
 
 func (m *Mrt) makeMrtCommand() *exec.Cmd {
