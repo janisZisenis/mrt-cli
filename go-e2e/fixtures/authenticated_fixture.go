@@ -1,8 +1,11 @@
-package utils
+package fixtures
 
-import "testing"
+import (
+	"mrt-cli/go-e2e/utils"
+	"testing"
+)
 
-func AuthenticatedFixture(t *testing.T, keyPath string) *Agent {
+func AuthenticatedFixture(t *testing.T, keyPath string) *utils.Agent {
 	t.Helper()
 	agent := StartSSHAgentFixture(t)
 

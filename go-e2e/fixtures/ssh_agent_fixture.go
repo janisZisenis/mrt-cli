@@ -1,13 +1,14 @@
-package utils
+package fixtures
 
 import (
+	"mrt-cli/go-e2e/utils"
 	"testing"
 )
 
-func StartSSHAgentFixture(t *testing.T) *Agent {
+func StartSSHAgentFixture(t *testing.T) *utils.Agent {
 	t.Helper()
 
-	agent, err := StartSSHAgent()
+	agent, err := utils.StartSSHAgent()
 	if err != nil {
 		t.Fatalf("%v", err)
 	} else {

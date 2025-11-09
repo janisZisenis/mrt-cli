@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"mrt-cli/go-e2e/assertions"
+	"mrt-cli/go-e2e/fixtures"
 
 	"mrt-cli/go-e2e/utils"
 	"os"
@@ -14,19 +15,12 @@ import (
 
 func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	t.Parallel()
-
-	//println()
-	//val := os.Getenv("GIT_SSH_COMMAND")
-	//if val == "" {
-	//	t.Fatal("GIT_SSH_COMMAND not set")
-	//}
-	//t.Logf("GIT_SSH_COMMAND = %s", val)
-
 	repositoryDir := "/Users/jazi/Documents/Development/mrt/repositories/mrt-cli"
-	agent := utils.AuthenticatedFixture(t, repositoryDir+"/.ssh/private-key")
+	agent := fixtures.AuthenticatedFixture(t, repositoryDir+"/.ssh/private-key")
+	_ = setupPath(repositoryDir)
+
 	_ = agent.ShowKeys()
 	tempDir := t.TempDir()
-	_ = setupPath(repositoryDir)
 	teamConfig := tempDir + "/team.json"
 	repositoryName := "1_TestRepository"
 	_ = utils.WriteJSONFile(teamConfig, map[string]interface{}{
