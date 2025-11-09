@@ -5,11 +5,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"app/commands/githook"
-	"app/commands/run"
-	"app/commands/setup"
-	"app/commands/version"
-	"app/core"
+	"mrt-cli/app/commands/githook"
+	"mrt-cli/app/commands/run"
+	"mrt-cli/app/commands/setup"
+	"mrt-cli/app/commands/version"
+	"mrt-cli/app/core"
 
 	"github.com/spf13/cobra"
 )

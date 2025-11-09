@@ -4,8 +4,8 @@ import (
 	"os"
 	"slices"
 
-	"app/core"
-	"app/log"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 )
 
 func failIfBranchIsBlocked(teamInfo core.TeamInfo, branch string, action string) {

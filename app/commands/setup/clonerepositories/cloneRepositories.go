@@ -3,8 +3,8 @@ package clonerepositories
 import (
 	"strings"
 
-	"app/core"
-	"app/log"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 )
 
 func CloneRepositories(teamInfo core.TeamInfo) {

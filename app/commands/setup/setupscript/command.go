@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"app/core"
-	"app/log"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 )
 
 func GetScriptsPath() string {

@@ -1,11 +1,11 @@
 package all
 
 import (
-	"app/commands/setup/clonerepositories"
-	"app/commands/setup/installgithooks"
-	"app/commands/setup/setupscript"
-	"app/core"
-	"app/log"
+	"mrt-cli/app/commands/setup/clonerepositories"
+	"mrt-cli/app/commands/setup/installgithooks"
+	"mrt-cli/app/commands/setup/setupscript"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 
 	"github.com/spf13/cobra"
 )

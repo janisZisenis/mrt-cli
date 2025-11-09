@@ -3,8 +3,8 @@ package installgithooks
 import (
 	"path/filepath"
 
-	"app/core"
-	"app/log"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {

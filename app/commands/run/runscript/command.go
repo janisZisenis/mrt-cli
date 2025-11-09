@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"app/core"
-	"app/log"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 
 	"github.com/spf13/viper"
 

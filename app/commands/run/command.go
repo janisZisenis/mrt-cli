@@ -1,8 +1,8 @@
 package run
 
 import (
-	"app/commands/run/runscript"
-	"app/core"
+	"mrt-cli/app/commands/run/runscript"
+	"mrt-cli/app/core"
 
 	"github.com/spf13/cobra"
 )

@@ -1,4 +1,4 @@
-module app
+module mrt-cli
 
 go 1.24.5
 
