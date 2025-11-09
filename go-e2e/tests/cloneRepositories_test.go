@@ -10,18 +10,18 @@ import (
 func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	t.Parallel()
 	f := fixtures.MakeAuthenticatedFixture(t)
-	tempDir := t.TempDir()
+
 	repositoryName := "1_TestRepository"
 	data := map[string]interface{}{
 		"repositories": []string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"},
 	}
-	_ = utils.TeamConfigWriter(tempDir, data)
+	_ = utils.TeamConfigWriter(f.TempDir, data)
 
-	utils.MakeMrtCommand(binaryName, f.Agent.Env()).
-		RunInDirectory(tempDir).
+	f.MakeMrtCommand().
+		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
 
-	assertions.TestDirectoryExists(t, tempDir+"/repositories/"+repositoryName+"/.git")
+	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
 }

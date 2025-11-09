@@ -11,12 +11,12 @@ type Mrt struct {
 	command    *exec.Cmd
 }
 
-func MakeMrtCommand(binaryName string, env []string) *Mrt {
-	command := exec.Command(binaryName)
+func MakeMrtCommand(binaryPath string, env []string) *Mrt {
+	command := exec.Command(binaryPath)
 	command.Env = append(os.Environ(), env...)
 
 	return &Mrt{
-		binaryName: binaryName,
+		binaryName: binaryPath,
 		command:    command,
 	}
 }
