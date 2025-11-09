@@ -23,8 +23,7 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	mrtCmd := exec.Command("mrt", "--team-dir", repositoryDir, "run", "binary-location", "--", "--exe-name")
 	exePathBytes, err := mrtCmd.Output()
 	if err != nil {
-		fmt.Printf("failed to get executable path: %v\n", err)
-		os.Exit(1)
+		t.Fatalf("failed to get executable path: %v", err)
 	}
 	exePath := stringTrimNewline(string(exePathBytes))
 	tempDir := t.TempDir()
@@ -42,8 +41,7 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("command failed: %v\n", err)
-		os.Exit(1)
+		t.Fatalf("command failed: %v", err)
 	}
 
 	assertions.TestDirectoryExists(t, tempDir+"/repositories/"+repositoryName+"/.git")
