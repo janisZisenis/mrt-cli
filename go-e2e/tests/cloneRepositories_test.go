@@ -17,7 +17,7 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	}
 	_ = utils.TeamConfigWriter(tempDir, data)
 
-	utils.MrtNew(binaryName, agent.Env()).
+	utils.MakeMrtCommand(binaryName, agent.Env()).
 		RunInDirectory(tempDir).
 		Setup().
 		Clone().

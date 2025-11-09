@@ -11,7 +11,7 @@ type Mrt struct {
 	command    *exec.Cmd
 }
 
-func MrtNew(binaryName string, env []string) *Mrt {
+func MakeMrtCommand(binaryName string, env []string) *Mrt {
 	command := exec.Command(binaryName)
 	command.Env = append(os.Environ(), env...)
 
