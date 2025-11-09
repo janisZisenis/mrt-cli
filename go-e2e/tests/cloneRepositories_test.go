@@ -11,22 +11,17 @@ import (
 
 func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	t.Parallel()
-	repositoryDir := "/Users/jazi/Documents/Development/mrt/repositories/mrt-cli"
-	agent := fixtures.AuthenticatedFixture(t, repositoryDir+"/.ssh/private-key")
+	agent := fixtures.AuthenticatedFixture(t)
 	tempDir := t.TempDir()
-	repositoryName := writeTeamConfig(tempDir)
+	repositoryName := "1_TestRepository"
+	data := map[string]interface{}{
+		"repositories": []string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"},
+	}
+	_ = utils.TeamConfigWriter(tempDir, data)
 
 	cloneRepositories(t, tempDir, agent)
 
 	assertions.TestDirectoryExists(t, tempDir+"/repositories/"+repositoryName+"/.git")
-}
-
-func writeTeamConfig(tempDir string) string {
-	repositoryName := "1_TestRepository"
-	_ = utils.TeamConfigWriter(tempDir, map[string]interface{}{
-		"repositories": []string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"},
-	})
-	return repositoryName
 }
 
 func cloneRepositories(t *testing.T, tempDir string, agent *utils.Agent) {

@@ -5,9 +5,10 @@ import (
 	"testing"
 )
 
-func AuthenticatedFixture(t *testing.T, keyPath string) *utils.Agent {
+func AuthenticatedFixture(t *testing.T) *utils.Agent {
 	t.Helper()
 	agent := StartSSHAgentFixture(t)
+	keyPath := utils.GetRepoRootDir() + "/.ssh/private-key"
 
 	if err := agent.AddKey(keyPath); err != nil {
 		t.Fatalf("%v", err)

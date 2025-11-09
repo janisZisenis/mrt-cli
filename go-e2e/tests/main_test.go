@@ -1,18 +1,19 @@
 package tests
 
 import (
+	"mrt-cli/go-e2e/utils"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
 )
 
-var repositoryDir = "/Users/jazi/Documents/Development/mrt/repositories/mrt-cli"
 var binaryName string
 
 func TestMain(m *testing.M) {
+	repositoryDir := utils.GetRepoRootDir()
 	binaryDir := getBinaryDir(repositoryDir)
-	binaryName = getBinaryName()
+	binaryName = getBinaryName(repositoryDir)
 
 	panicIfBinaryCanNotBeFound(binaryDir, binaryName)
 
@@ -56,7 +57,7 @@ func getBinaryDir(repositoryDir string) string {
 	return binaryDir
 }
 
-func getBinaryName() string {
+func getBinaryName(repositoryDir string) string {
 	cmd := exec.Command("mrt", "--team-dir", repositoryDir, "run", "binary-location", "--", "--exe-name")
 	exePathBytes, err := cmd.Output()
 
