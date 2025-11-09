@@ -5,20 +5,18 @@ import (
 	"testing"
 )
 
+var privateKeyPath = utils.GetRepoRootDir() + "/.ssh/private-key"
+
 func MakeAuthenticatedFixture(t *testing.T) *MrtFixture {
 	t.Helper()
 	f := MakeMrtFixture(t)
 
-	keyPath := utils.GetRepoRootDir() + "/.ssh/private-key"
-
-	if err := f.agent.AddKey(keyPath); err != nil {
+	if err := f.agent.AddKey(privateKeyPath); err != nil {
 		t.Fatalf("%v", err)
-	} else {
-		t.Logf("Added key %s to ssh-Agent", keyPath)
 	}
 
 	t.Cleanup(func() {
-		if err := f.agent.RemoveKey(keyPath); err != nil {
+		if err := f.agent.RemoveKey(privateKeyPath); err != nil {
 			t.Fatalf("%v", err)
 		}
 	})

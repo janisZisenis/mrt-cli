@@ -19,7 +19,7 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 
 	agent, err := utils.StartSSHAgent()
 	if err != nil {
-		panic("Could not start SSH Agent.")
+		t.Fatalf("Could not start SSH Agent.")
 	}
 
 	t.Cleanup(func() {
@@ -29,7 +29,7 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	})
 
 	return &MrtFixture{
-		binaryPath: getBinaryPath(utils.GetRepoRootDir()),
+		binaryPath: getBinaryPath(utils.GetRepoRootDir(), t),
 		agent:      agent,
 		TempDir:    t.TempDir(),
 	}
@@ -39,24 +39,24 @@ func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
 	return utils.MakeMrtCommand(m.binaryPath, m.agent.Env())
 }
 
-func getBinaryPath(repositoryDir string) string {
+func getBinaryPath(repositoryDir string, t *testing.T) string {
 	cmd := exec.Command("mrt", "--team-dir", repositoryDir, "run", "binary-location")
 	binaryPathBytes, err := cmd.Output()
 
 	output := string(binaryPathBytes)
 
 	if err != nil {
-		panic("failed to run mrt command: " + output)
+		t.Fatalf("failed to run mrt command: %s", output)
 	}
 
 	binaryPath := stringTrimNewline(output)
 
 	if binaryPath == "" {
-		panic("command returned empty directory")
+		t.Fatalf("command returned empty directory")
 	}
 
 	if _, err := os.Stat(binaryPath); os.IsNotExist(err) {
-		panic("binary not found at: " + binaryPath)
+		t.Fatalf("binary not found at: %s", binaryPath)
 	}
 
 	return binaryPath
