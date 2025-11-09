@@ -6,13 +6,14 @@ import (
 	"os"
 )
 
-func WriteJSONFile(filePath string, data interface{}) error {
+func TeamConfigWriter(tempDir string, data interface{}) error {
+	teamConfig := tempDir + "/team.json"
 	jsonBytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal data to JSON: %w", err)
 	}
 
-	if err := os.WriteFile(filePath, jsonBytes, 0644); err != nil {
+	if err := os.WriteFile(teamConfig, jsonBytes, 0644); err != nil {
 		return fmt.Errorf("failed to write JSON file: %w", err)
 	}
 

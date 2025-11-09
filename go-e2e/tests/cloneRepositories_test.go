@@ -28,9 +28,8 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	exePath := stringTrimNewline(string(exePathBytes))
 	tempDir := t.TempDir()
 
-	teamConfig := tempDir + "/team.json"
 	repositoryName := "1_TestRepository"
-	_ = utils.WriteJSONFile(teamConfig, map[string]interface{}{
+	_ = utils.TeamConfigWriter(tempDir, map[string]interface{}{
 		"repositories": []string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"},
 	})
 
