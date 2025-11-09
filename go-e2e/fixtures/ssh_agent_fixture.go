@@ -5,7 +5,12 @@ import (
 	"testing"
 )
 
-func StartSSHAgentFixture(t *testing.T) *utils.Agent {
+type AgentFixture struct {
+	t     *testing.T
+	Agent *utils.Agent
+}
+
+func MakeAgentFixture(t *testing.T) *AgentFixture {
 	t.Helper()
 
 	agent, err := utils.StartSSHAgent()
@@ -21,5 +26,8 @@ func StartSSHAgentFixture(t *testing.T) *utils.Agent {
 		}
 	})
 
-	return agent
+	return &AgentFixture{
+		t:     t,
+		Agent: agent,
+	}
 }

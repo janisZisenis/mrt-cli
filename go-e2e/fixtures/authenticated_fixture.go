@@ -5,22 +5,23 @@ import (
 	"testing"
 )
 
-func AuthenticatedFixture(t *testing.T) *utils.Agent {
+func MakeAuthenticatedFixture(t *testing.T) *AgentFixture {
 	t.Helper()
-	agent := StartSSHAgentFixture(t)
+	f := MakeAgentFixture(t)
+
 	keyPath := utils.GetRepoRootDir() + "/.ssh/private-key"
 
-	if err := agent.AddKey(keyPath); err != nil {
+	if err := f.Agent.AddKey(keyPath); err != nil {
 		t.Fatalf("%v", err)
 	} else {
-		t.Logf("Added key %s to ssh-agent", keyPath)
+		t.Logf("Added key %s to ssh-Agent", keyPath)
 	}
 
 	t.Cleanup(func() {
-		if err := agent.RemoveKey(keyPath); err != nil {
+		if err := f.Agent.RemoveKey(keyPath); err != nil {
 			t.Fatalf("%v", err)
 		}
 	})
 
-	return agent
+	return f
 }

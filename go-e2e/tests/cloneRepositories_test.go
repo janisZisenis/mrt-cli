@@ -9,7 +9,7 @@ import (
 
 func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	t.Parallel()
-	agent := fixtures.AuthenticatedFixture(t)
+	f := fixtures.MakeAuthenticatedFixture(t)
 	tempDir := t.TempDir()
 	repositoryName := "1_TestRepository"
 	data := map[string]interface{}{
@@ -17,7 +17,7 @@ func TestCloneRepositoriesToCustomPath(t *testing.T) {
 	}
 	_ = utils.TeamConfigWriter(tempDir, data)
 
-	utils.MakeMrtCommand(binaryName, agent.Env()).
+	utils.MakeMrtCommand(binaryName, f.Agent.Env()).
 		RunInDirectory(tempDir).
 		Setup().
 		Clone().
