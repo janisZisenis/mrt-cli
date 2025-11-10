@@ -5,17 +5,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func AssertDirectoryExists(t *testing.T, directory string) {
 	t.Helper()
 
 	info, err := os.Stat(directory)
-	assert.NoError(t, err, "failed to stat directory: %s", directory)
-	if err != nil {
-		return
-	}
-
+	require.NoError(t, err, "failed to stat directory: %s", directory)
 	assert.True(t, info.IsDir(), "%s exists but is not a directory", directory)
 }
 
