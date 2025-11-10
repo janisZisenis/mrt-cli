@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var defaultRepositoriesPath = "repositories"
+
 func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(t *testing.T) {
 	t.Parallel()
 	f := fixtures.MakeAuthenticatedFixture(t)
@@ -19,7 +21,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 		Clone().
 		Execute()
 
-	f.AssertRepositoryExists(repositoryName, "repositories")
+	f.AssertRepositoryExists(repositoryName, defaultRepositoriesPath)
 }
 
 func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
@@ -60,8 +62,8 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 		Clone().
 		Execute()
 
-	f.AssertRepositoryExists(firstRepositoryName, "repositories")
-	f.AssertRepositoryExists(secondRepositoryName, "repositories")
+	f.AssertRepositoryExists(firstRepositoryName, defaultRepositoriesPath)
+	f.AssertRepositoryExists(secondRepositoryName, defaultRepositoriesPath)
 }
 
 func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
@@ -76,7 +78,7 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 		Clone().
 		Execute()
 
-	f.AssertFolderDoesNotExist("repositories")
+	f.AssertFolderDoesNotExist(defaultRepositoriesPath)
 }
 
 func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(t *testing.T) {
@@ -110,7 +112,7 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 		Clone().
 		Execute()
 
-	f.AssertRepositoryExists(repositoryName, "repositories")
+	f.AssertRepositoryExists(repositoryName, defaultRepositoriesPath)
 }
 
 func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWhileCloningTheRepositories(t *testing.T) {
@@ -131,8 +133,8 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 		Clone().
 		Execute()
 
-	f.AssertRepositoryExists("TestRepository1", "repositories")
-	f.AssertRepositoryExists("TestRepository2", "repositories")
+	f.AssertRepositoryExists("TestRepository1", defaultRepositoriesPath)
+	f.AssertRepositoryExists("TestRepository2", defaultRepositoriesPath)
 }
 
 func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Cloning_ShouldNotTrim(t *testing.T) {
@@ -153,6 +155,6 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 		Clone().
 		Execute()
 
-	f.AssertRepositoryExists(firstRepositoryName, "repositories")
-	f.AssertRepositoryExists(secondRepositoryName, "repositories")
+	f.AssertRepositoryExists(firstRepositoryName, defaultRepositoriesPath)
+	f.AssertRepositoryExists(secondRepositoryName, defaultRepositoriesPath)
 }
