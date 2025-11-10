@@ -1,8 +1,9 @@
 package fixtures
 
 import (
-	"mrt-cli/go-e2e/utils"
 	"testing"
+
+	"mrt-cli/go-e2e/utils"
 )
 
 var privateKeyPath = utils.GetRepoRootDir() + "/.ssh/private-key"

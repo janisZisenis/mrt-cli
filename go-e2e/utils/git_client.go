@@ -34,7 +34,6 @@ func (git *Git) Clone(repositoryUrl string, destination string) GitCloneCommand 
 
 func (git *Git) Execute() {
 	outputBytes, err := git.command.CombinedOutput()
-
 	if err != nil {
 		panic("executing git command failed: " + string(outputBytes))
 	}

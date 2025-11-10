@@ -17,7 +17,7 @@ type TeamJson struct {
 type TeamConfigOption func(*TeamJson)
 
 func WriteTeamJsonTo(dir string, withOptions ...TeamConfigOption) {
-	createDirError := os.MkdirAll(dir, 0755)
+	createDirError := os.MkdirAll(dir, 0o755)
 	if createDirError != nil {
 		panic("failed to create directory " + dir + ": " + createDirError.Error())
 	}
@@ -30,7 +30,7 @@ func WriteTeamJsonTo(dir string, withOptions ...TeamConfigOption) {
 
 	filePath := filepath.Join(dir, teamFileName)
 
-	writeError := os.WriteFile(filePath, jsonBytes, 0644)
+	writeError := os.WriteFile(filePath, jsonBytes, 0o644)
 	if writeError != nil {
 		panic("failed to write TeamJson to file " + filePath + ": " + writeError.Error())
 	}

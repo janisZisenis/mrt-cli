@@ -1,11 +1,12 @@
 package fixtures
 
 import (
-	"mrt-cli/go-e2e/utils"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
+
+	"mrt-cli/go-e2e/utils"
 )
 
 type MrtFixture struct {

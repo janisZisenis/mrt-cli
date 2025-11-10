@@ -1,9 +1,10 @@
 package tests
 
 import (
+	"testing"
+
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/utils"
-	"testing"
 )
 
 var defaultRepositoriesPath = "repositories"
