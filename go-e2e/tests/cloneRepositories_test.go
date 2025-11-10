@@ -20,7 +20,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 		Clone().
 		Execute()
 
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
+	f.AssertRepositoryExists(repositoryName, "repositories")
 }
 
 func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
@@ -61,8 +61,8 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 		Clone().
 		Execute()
 
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+firstRepositoryName+"/.git")
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+secondRepositoryName+"/.git")
+	f.AssertRepositoryExists(firstRepositoryName, "repositories")
+	f.AssertRepositoryExists(secondRepositoryName, "repositories")
 }
 
 func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
@@ -111,7 +111,7 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 		Clone().
 		Execute()
 
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
+	f.AssertRepositoryExists(repositoryName, "repositories")
 }
 
 func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWhileCloningTheRepositories(t *testing.T) {
@@ -132,8 +132,8 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 		Clone().
 		Execute()
 
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/TestRepository1/.git")
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/TestRepository2/.git")
+	f.AssertRepositoryExists("TestRepository1", "repositories")
+	f.AssertRepositoryExists("TestRepository2", "repositories")
 }
 
 func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Cloning_ShouldNotTrim(t *testing.T) {
@@ -154,6 +154,6 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 		Clone().
 		Execute()
 
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+firstRepositoryName+"/.git")
-	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+secondRepositoryName+"/.git")
+	f.AssertRepositoryExists(firstRepositoryName, "repositories")
+	f.AssertRepositoryExists(secondRepositoryName, "repositories")
 }

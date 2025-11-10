@@ -1,6 +1,7 @@
 package fixtures
 
 import (
+	"mrt-cli/go-e2e/assertions"
 	"mrt-cli/go-e2e/utils"
 	"os"
 	"os/exec"
@@ -9,6 +10,7 @@ import (
 )
 
 type MrtFixture struct {
+	t          *testing.T
 	binaryPath string
 	Agent      *utils.Agent
 	TempDir    string
@@ -29,6 +31,7 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	})
 
 	return &MrtFixture{
+		t:          t,
 		binaryPath: getBinaryPath(utils.GetRepoRootDir(), t),
 		Agent:      agent,
 		TempDir:    t.TempDir(),
@@ -43,6 +46,10 @@ func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
 
 func (m *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
 	utils.WriteTeamJsonTo(m.TempDir, withOptions...)
+}
+
+func (m *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
+	assertions.AssertDirectoryExists(m.t, m.TempDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
