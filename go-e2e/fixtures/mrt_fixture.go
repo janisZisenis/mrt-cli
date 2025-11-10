@@ -1,7 +1,6 @@
 package fixtures
 
 import (
-	"mrt-cli/go-e2e/assertions"
 	"mrt-cli/go-e2e/utils"
 	"os"
 	"os/exec"
@@ -63,12 +62,12 @@ func (f *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
 	f.t.Helper()
-	assertions.AssertDirectoryExists(f.t, f.tempDir+"/"+inFolder+"/"+repositoryName+"/.git")
+	utils.AssertDirectoryExists(f.t, f.tempDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
-	assertions.AssertDirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
+	utils.AssertDirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {

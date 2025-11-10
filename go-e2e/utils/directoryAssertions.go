@@ -1,4 +1,4 @@
-package assertions
+package utils
 
 import (
 	"os"
