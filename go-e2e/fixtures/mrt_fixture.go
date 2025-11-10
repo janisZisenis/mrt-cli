@@ -51,7 +51,7 @@ func (f *MrtFixture) GitClone(repositoryName string, destination string) {
 		Execute()
 }
 
-func (f *MrtFixture) MakeMrtCommand() *utils.Mrt {
+func (f *MrtFixture) MakeMrtCommand() utils.MrtDirectedCommand {
 	return utils.
 		MakeMrtCommand(f.binaryPath, f.agent.Env()).
 		RunInDirectory(f.tempDir)

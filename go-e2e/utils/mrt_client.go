@@ -6,12 +6,32 @@ import (
 	"strings"
 )
 
+type MrtBaseCommand interface {
+	RunInDirectory(directory string) MrtDirectedCommand
+	Setup() MrtSetupCommand
+	Execute() *Output
+}
+
+type MrtDirectedCommand interface {
+	Setup() MrtSetupCommand
+	Execute() *Output
+}
+
+type MrtSetupCommand interface {
+	Clone() MrtCloneCommand
+	Execute() *Output
+}
+
+type MrtCloneCommand interface {
+	Execute() *Output
+}
+
 type Mrt struct {
 	binaryName string
 	command    *exec.Cmd
 }
 
-func MakeMrtCommand(binaryPath string, env []string) *Mrt {
+func MakeMrtCommand(binaryPath string, env []string) MrtBaseCommand {
 	command := exec.Command(binaryPath)
 	command.Env = append(os.Environ(), env...)
 
@@ -21,19 +41,19 @@ func MakeMrtCommand(binaryPath string, env []string) *Mrt {
 	}
 }
 
-func (mrt *Mrt) RunInDirectory(directory string) *Mrt {
+func (mrt *Mrt) RunInDirectory(directory string) MrtDirectedCommand {
 	mrt.command.Args = append(mrt.command.Args, "--team-dir", directory)
 
 	return mrt
 }
 
-func (mrt *Mrt) Setup() *Mrt {
+func (mrt *Mrt) Setup() MrtSetupCommand {
 	mrt.command.Args = append(mrt.command.Args, "setup")
 
 	return mrt
 }
 
-func (mrt *Mrt) Clone() *Mrt {
+func (mrt *Mrt) Clone() MrtCloneCommand {
 	mrt.command.Args = append(mrt.command.Args, "clone-repositories")
 
 	return mrt
