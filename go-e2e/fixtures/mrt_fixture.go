@@ -36,7 +36,9 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 }
 
 func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
-	return utils.MakeMrtCommand(m.binaryPath, m.Agent.Env())
+	return utils.
+		MakeMrtCommand(m.binaryPath, m.Agent.Env()).
+		RunInDirectory(m.TempDir)
 }
 
 func (m *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {

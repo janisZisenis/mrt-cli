@@ -16,7 +16,6 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 	)
 
 	f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -33,7 +32,6 @@ func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOu
 	)
 
 	output := f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -59,7 +57,6 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 		Execute()
 
 	f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -76,7 +73,6 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 	)
 
 	_ = f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -92,7 +88,6 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 	)
 
 	output := f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -110,7 +105,6 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 	)
 
 	_ = f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -132,7 +126,6 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 	)
 
 	f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
@@ -155,7 +148,6 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 	)
 
 	f.MakeMrtCommand().
-		RunInDirectory(f.TempDir).
 		Setup().
 		Clone().
 		Execute()
