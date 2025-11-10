@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"mrt-cli/go-e2e/assertions"
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/utils"
 	"testing"
@@ -77,7 +76,7 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 		Clone().
 		Execute()
 
-	assertions.AssertDirectoryDoesNotExist(t, f.TempDir+"/repositories")
+	f.AssertFolderDoesNotExist("repositories")
 }
 
 func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(t *testing.T) {

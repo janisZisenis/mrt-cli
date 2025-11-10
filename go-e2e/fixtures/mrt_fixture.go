@@ -52,6 +52,10 @@ func (m *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder stri
 	assertions.AssertDirectoryExists(m.t, m.TempDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
+func (m *MrtFixture) AssertFolderDoesNotExist(folder string) {
+	assertions.AssertDirectoryDoesNotExist(m.t, m.TempDir+"/"+folder)
+}
+
 func getBinaryPath(repositoryDir string, t *testing.T) string {
 	cmd := exec.Command("mrt", "--team-dir", repositoryDir, "run", "binary-location")
 	binaryPathBytes, err := cmd.Output()
