@@ -38,6 +38,12 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	}
 }
 
+func (m *MrtFixture) GitClone(repositoryName string, destination string) {
+	utils.MakeGitCommand(m.Agent.Env()).
+		Clone(utils.MakeCloneUrlFrom(repositoryName), m.TempDir+"/"+destination).
+		Execute()
+}
+
 func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
 	return utils.
 		MakeMrtCommand(m.binaryPath, m.Agent.Env()).

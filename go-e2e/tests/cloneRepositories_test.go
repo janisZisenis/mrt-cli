@@ -53,9 +53,7 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 			utils.MakeCloneUrlFrom(secondRepositoryName),
 		}),
 	)
-	utils.MakeGitCommand(f.Agent.Env()).
-		Clone(utils.MakeCloneUrlFrom(firstRepositoryName), f.TempDir+"/repositories").
-		Execute()
+	f.GitClone(firstRepositoryName, defaultRepositoriesPath)
 
 	f.MakeMrtCommand().
 		Setup().
