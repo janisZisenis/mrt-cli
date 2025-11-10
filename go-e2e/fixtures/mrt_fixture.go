@@ -38,28 +38,37 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	}
 }
 
-func (m *MrtFixture) GitClone(repositoryName string, destination string) {
-	utils.MakeGitCommand(m.Agent.Env()).
-		Clone(utils.MakeCloneUrlFrom(repositoryName), m.TempDir+"/"+destination).
+func (f *MrtFixture) Parallel() *MrtFixture {
+	f.t.Helper()
+	f.t.Parallel()
+
+	return f
+}
+
+func (f *MrtFixture) GitClone(repositoryName string, destination string) {
+	utils.MakeGitCommand(f.Agent.Env()).
+		Clone(utils.MakeCloneUrlFrom(repositoryName), f.TempDir+"/"+destination).
 		Execute()
 }
 
-func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
+func (f *MrtFixture) MakeMrtCommand() *utils.Mrt {
 	return utils.
-		MakeMrtCommand(m.binaryPath, m.Agent.Env()).
-		RunInDirectory(m.TempDir)
+		MakeMrtCommand(f.binaryPath, f.Agent.Env()).
+		RunInDirectory(f.TempDir)
 }
 
-func (m *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
-	utils.WriteTeamJsonTo(m.TempDir, withOptions...)
+func (f *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
+	utils.WriteTeamJsonTo(f.TempDir, withOptions...)
 }
 
-func (m *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
-	assertions.AssertDirectoryExists(m.t, m.TempDir+"/"+inFolder+"/"+repositoryName+"/.git")
+func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
+	f.t.Helper()
+	assertions.AssertDirectoryExists(f.t, f.TempDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
-func (m *MrtFixture) AssertFolderDoesNotExist(folder string) {
-	assertions.AssertDirectoryDoesNotExist(m.t, m.TempDir+"/"+folder)
+func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
+	f.t.Helper()
+	assertions.AssertDirectoryDoesNotExist(f.t, f.TempDir+"/"+folder)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
