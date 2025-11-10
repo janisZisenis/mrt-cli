@@ -12,7 +12,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 	f := fixtures.MakeAuthenticatedFixture(t)
 	repositoryName := "1_TestRepository"
 	f.WriteTeamJson(
-		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"}),
+		utils.WithRepositories([]string{utils.MakeCloneUrlFrom(repositoryName)}),
 	)
 
 	f.MakeMrtCommand().
@@ -26,7 +26,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
 	t.Parallel()
 	f := fixtures.MakeAuthenticatedFixture(t)
-	repositoryURL := "git@github-testing:janisZisenisTesting/1_TestRepository.git"
+	repositoryURL := utils.MakeCloneUrlFrom("1_TestRepository")
 	f.WriteTeamJson(
 		utils.WithRepositories([]string{repositoryURL}),
 	)
@@ -48,12 +48,12 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 	secondRepositoryName := "2_TestRepository"
 	f.WriteTeamJson(
 		utils.WithRepositories([]string{
-			"git@github-testing:janisZisenisTesting/" + firstRepositoryName + ".git",
-			"git@github-testing:janisZisenisTesting/" + secondRepositoryName + ".git",
+			utils.MakeCloneUrlFrom(firstRepositoryName),
+			utils.MakeCloneUrlFrom(secondRepositoryName),
 		}),
 	)
 	utils.MakeGitCommand(f.Agent.Env()).
-		Clone("git@github-testing:janisZisenisTesting/"+firstRepositoryName+".git", f.TempDir+"/repositories").
+		Clone(utils.MakeCloneUrlFrom(firstRepositoryName), f.TempDir+"/repositories").
 		Execute()
 
 	f.MakeMrtCommand().
@@ -84,7 +84,7 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 	t.Parallel()
 	f := fixtures.MakeAuthenticatedFixture(t)
 	f.WriteTeamJson(
-		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/nonExisting.git"}),
+		utils.WithRepositories([]string{utils.MakeCloneUrlFrom("nonExistingRepository")}),
 	)
 
 	output := f.MakeMrtCommand().
@@ -100,8 +100,10 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 	f := fixtures.MakeAuthenticatedFixture(t)
 	repositoryName := "1_TestRepository"
 	f.WriteTeamJson(
-		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/nonExisting.git"}),
-		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"}),
+		utils.WithRepositories([]string{
+			utils.MakeCloneUrlFrom("nonExistingRepository"),
+			utils.MakeCloneUrlFrom(repositoryName),
+		}),
 	)
 
 	_ = f.MakeMrtCommand().
@@ -119,8 +121,8 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 	secondRepositoryName := "Prefix2_TestRepository2"
 	f.WriteTeamJson(
 		utils.WithRepositories([]string{
-			"git@github-testing:janisZisenisTesting/" + firstRepositoryName + ".git",
-			"git@github-testing:janisZisenisTesting/" + secondRepositoryName + ".git",
+			utils.MakeCloneUrlFrom(firstRepositoryName),
+			utils.MakeCloneUrlFrom(secondRepositoryName),
 		}),
 		utils.WithRepositoriesPrefixes([]string{"Prefix1_", "Prefix2_"}),
 	)
@@ -141,8 +143,8 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 	secondRepositoryName := "Prefix2_TestRepository2"
 	f.WriteTeamJson(
 		utils.WithRepositories([]string{
-			"git@github-testing:janisZisenisTesting/" + firstRepositoryName + ".git",
-			"git@github-testing:janisZisenisTesting/" + secondRepositoryName + ".git",
+			utils.MakeCloneUrlFrom(firstRepositoryName),
+			utils.MakeCloneUrlFrom(secondRepositoryName),
 		}),
 		utils.WithRepositoriesPrefixes([]string{"FirstPrefix", "SecondPrefix"}),
 	)
