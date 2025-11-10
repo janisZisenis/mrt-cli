@@ -5,11 +5,19 @@ import (
 	"os/exec"
 )
 
+type GitBaseCommand interface {
+	Clone(repositoryUrl string, destination string) GitCloneCommand
+}
+
+type GitCloneCommand interface {
+	Execute()
+}
+
 type Git struct {
 	command *exec.Cmd
 }
 
-func MakeGitCommand(env []string) *Git {
+func MakeGitCommand(env []string) GitBaseCommand {
 	command := exec.Command("git")
 	command.Env = append(os.Environ(), env...)
 
@@ -18,7 +26,7 @@ func MakeGitCommand(env []string) *Git {
 	}
 }
 
-func (git *Git) Clone(repositoryUrl string, destination string) *Git {
+func (git *Git) Clone(repositoryUrl string, destination string) GitCloneCommand {
 	git.command.Args = append(git.command.Args, "clone", repositoryUrl, destination)
 
 	return git
