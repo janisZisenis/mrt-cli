@@ -26,17 +26,6 @@ teardown() {
 	authenticated_teardown
 }
 
-
-@test "if team json contains non-existing repository it should print out a failure message" {
-	local repository="not-existing"
-	local repository_url
-	repository_url="$(get_repository_urls "$repository")"
-
-	run clone_repository_urls_using_mrt "$repository_url"
-
-	assert_output --partial "fatal: Could not read from remote repository."
-}
-
 @test "if team json contains non-existing and existing repository it should clone the existing one" {
 	local repositories=(
 		"1_TestRepository"

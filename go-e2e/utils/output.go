@@ -49,3 +49,9 @@ func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string)
 
 	assert.True(t, regex.MatchString(o.lines[index]), "line %d does not match pattern %s\ngot: %s", index, pattern, o.lines[index])
 }
+
+func (o *Output) AssertHasLine(t *testing.T, line string) {
+	t.Helper()
+
+	assert.Contains(t, o.lines, line, "output does not have line: %s", line)
+}
