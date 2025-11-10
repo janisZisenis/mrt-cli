@@ -36,9 +36,9 @@ func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOu
 		Clone().
 		Execute()
 
-	output.AssertLineContains(t, 1, "Cloning "+repositoryURL)
+	output.AssertLineEquals(t, 1, "Cloning "+repositoryURL)
 	output.AssertLineMatchesRegex(t, 3, "Enumerating objects: [0-9]+, done.")
-	output.Reversed().AssertLineContains(t, 1, "Successfully cloned "+repositoryURL)
+	output.Reversed().AssertLineEquals(t, 1, "Successfully cloned "+repositoryURL)
 }
 
 func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(t *testing.T) {
