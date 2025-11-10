@@ -26,19 +26,6 @@ teardown() {
 	authenticated_teardown
 }
 
-@test "if team json contains repositoriesPrefixes should trim the prefixes while cloning the repositories" {
-	local repositories=(
-		"Prefix1_TestRepository1"
-		"Prefix2_TestRepository2"
-	)
-	write_repositories_prefixes "Prefix1_" "Prefix2_"
-
-	run clone_repositories_using_mrt "${repositories[@]}"
-
-	assert_dir_exist "$(cloned_git_folder "TestRepository1")"
-	assert_dir_exist "$(cloned_git_folder "TestRepository2")"
-}
-
 @test "if team json contains repositoriesPrefixes it should not trim when the prefixes are not in the beginning of the repository names" {
 	local repositories=(
 		"Prefix1_TestRepository1"

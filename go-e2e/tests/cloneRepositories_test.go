@@ -117,3 +117,29 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 
 	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
 }
+
+func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWhileCloningTheRepositories(t *testing.T) {
+	t.Parallel()
+	f := fixtures.MakeAuthenticatedFixture(t)
+	firstRepositoryName := "Prefix1_TestRepository1"
+	secondRepositoryName := "Prefix2_TestRepository2"
+	utils.WriteTeamJsonTo(f.TempDir,
+		utils.WithRepositories([]string{
+			"git@github-testing:janisZisenisTesting/" + firstRepositoryName + ".git",
+			"git@github-testing:janisZisenisTesting/" + secondRepositoryName + ".git",
+		}),
+		utils.WithRepositoriesPrefixes([]string{"Prefix1_", "Prefix2_"}),
+	)
+	utils.MakeGitCommand(f.Agent.Env()).
+		Clone("git@github-testing:janisZisenisTesting/"+firstRepositoryName+".git", f.TempDir+"/repositories").
+		Execute()
+
+	f.MakeMrtCommand().
+		RunInDirectory(f.TempDir).
+		Setup().
+		Clone().
+		Execute()
+
+	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/TestRepository1/.git")
+	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/TestRepository2/.git")
+}

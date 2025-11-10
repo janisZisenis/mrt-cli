@@ -9,8 +9,9 @@ import (
 const teamFileName = "team.json"
 
 type TeamJson struct {
-	RepositoriesPath *string   `json:"repositoriesPath,omitempty"`
-	Repositories     *[]string `json:"repositories,omitempty"`
+	RepositoriesPath     *string   `json:"repositoriesPath,omitempty"`
+	Repositories         *[]string `json:"repositories,omitempty"`
+	RepositoriesPrefixes *[]string `json:"repositoriesPrefixes,omitempty"`
 }
 
 type TeamConfigOption func(*TeamJson)
@@ -54,5 +55,11 @@ func WithRepositoriesPath(path string) TeamConfigOption {
 func WithRepositories(repos []string) TeamConfigOption {
 	return func(c *TeamJson) {
 		c.Repositories = &repos
+	}
+}
+
+func WithRepositoriesPrefixes(prefixes []string) TeamConfigOption {
+	return func(c *TeamJson) {
+		c.RepositoriesPrefixes = &prefixes
 	}
 }
