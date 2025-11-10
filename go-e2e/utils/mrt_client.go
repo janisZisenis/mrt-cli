@@ -40,7 +40,7 @@ func (m *Mrt) Clone() *Mrt {
 }
 
 func (m *Mrt) Execute() *Output {
-	byteOutput, err := m.command.Output()
+	byteOutput, err := m.command.CombinedOutput()
 	output := string(byteOutput)
 
 	if err != nil {
