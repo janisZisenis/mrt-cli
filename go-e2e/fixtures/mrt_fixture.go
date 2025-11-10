@@ -12,8 +12,8 @@ import (
 type MrtFixture struct {
 	t          *testing.T
 	binaryPath string
-	Agent      *utils.Agent
-	TempDir    string
+	agent      *utils.Agent
+	tempDir    string
 }
 
 func MakeMrtFixture(t *testing.T) *MrtFixture {
@@ -21,7 +21,7 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 
 	agent, err := utils.StartSSHAgent()
 	if err != nil {
-		t.Fatalf("Could not start SSH Agent.")
+		t.Fatalf("Could not start SSH agent.")
 	}
 
 	t.Cleanup(func() {
@@ -33,8 +33,8 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	return &MrtFixture{
 		t:          t,
 		binaryPath: getBinaryPath(utils.GetRepoRootDir(), t),
-		Agent:      agent,
-		TempDir:    t.TempDir(),
+		agent:      agent,
+		tempDir:    t.TempDir(),
 	}
 }
 
@@ -46,29 +46,29 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 }
 
 func (f *MrtFixture) GitClone(repositoryName string, destination string) {
-	utils.MakeGitCommand(f.Agent.Env()).
-		Clone(utils.MakeCloneUrlFrom(repositoryName), f.TempDir+"/"+destination).
+	utils.MakeGitCommand(f.agent.Env()).
+		Clone(utils.MakeCloneUrlFrom(repositoryName), f.tempDir+"/"+destination).
 		Execute()
 }
 
 func (f *MrtFixture) MakeMrtCommand() *utils.Mrt {
 	return utils.
-		MakeMrtCommand(f.binaryPath, f.Agent.Env()).
-		RunInDirectory(f.TempDir)
+		MakeMrtCommand(f.binaryPath, f.agent.Env()).
+		RunInDirectory(f.tempDir)
 }
 
 func (f *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
-	utils.WriteTeamJsonTo(f.TempDir, withOptions...)
+	utils.WriteTeamJsonTo(f.tempDir, withOptions...)
 }
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
 	f.t.Helper()
-	assertions.AssertDirectoryExists(f.t, f.TempDir+"/"+inFolder+"/"+repositoryName+"/.git")
+	assertions.AssertDirectoryExists(f.t, f.tempDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
-	assertions.AssertDirectoryDoesNotExist(f.t, f.TempDir+"/"+folder)
+	assertions.AssertDirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
