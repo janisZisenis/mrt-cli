@@ -21,26 +21,26 @@ func MakeMrtCommand(binaryPath string, env []string) *Mrt {
 	}
 }
 
-func (m *Mrt) RunInDirectory(directory string) *Mrt {
-	m.command.Args = append(m.command.Args, "--team-dir", directory)
+func (mrt *Mrt) RunInDirectory(directory string) *Mrt {
+	mrt.command.Args = append(mrt.command.Args, "--team-dir", directory)
 
-	return m
+	return mrt
 }
 
-func (m *Mrt) Setup() *Mrt {
-	m.command.Args = append(m.command.Args, "setup")
+func (mrt *Mrt) Setup() *Mrt {
+	mrt.command.Args = append(mrt.command.Args, "setup")
 
-	return m
+	return mrt
 }
 
-func (m *Mrt) Clone() *Mrt {
-	m.command.Args = append(m.command.Args, "clone-repositories")
+func (mrt *Mrt) Clone() *Mrt {
+	mrt.command.Args = append(mrt.command.Args, "clone-repositories")
 
-	return m
+	return mrt
 }
 
-func (m *Mrt) Execute() *Output {
-	byteOutput, err := m.command.CombinedOutput()
+func (mrt *Mrt) Execute() *Output {
+	byteOutput, err := mrt.command.CombinedOutput()
 	output := string(byteOutput)
 
 	if err != nil {
@@ -56,9 +56,4 @@ func SplitLines(output string) []string {
 	}
 
 	return strings.Split(strings.TrimSpace(output), "\n")
-}
-
-func (m *Mrt) makeMrtCommand() *exec.Cmd {
-	cmd := exec.Command(m.binaryName)
-	return cmd
 }

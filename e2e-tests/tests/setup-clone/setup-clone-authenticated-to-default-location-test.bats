@@ -26,19 +26,6 @@ teardown() {
 	authenticated_teardown
 }
 
-@test "if team json contains already existing repositories it clones remaining repositories and skips existing ones" {
-	local repositories=(
-		"1_TestRepository"
-		"2_TestRepository"
-	)
-	clone_testing_repositories "$(repositories_dir)" "${repositories[0]}"
-
-	run clone_repositories_using_mrt "${repositories[@]}"
-
-	assert_dir_exist "$(cloned_git_folder "${repositories[0]}")"
-	assert_dir_exist "$(cloned_git_folder "${repositories[1]}")"
-}
-
 @test "if team json does not contain any repository it does not clone any repository" {
 	local no_repositories=()
 

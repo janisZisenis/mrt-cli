@@ -42,3 +42,28 @@ func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOu
 	output.AssertLineMatchesRegex(t, 3, "Enumerating objects: [0-9]+, done.")
 	output.Reversed().AssertLineContains(t, 1, "Successfully cloned "+repositoryURL)
 }
+
+func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(t *testing.T) {
+	t.Parallel()
+	f := fixtures.MakeAuthenticatedFixture(t)
+	firstRepositoryName := "1_TestRepository"
+	secondRepositoryName := "2_TestRepository"
+	utils.WriteTeamJsonTo(f.TempDir,
+		utils.WithRepositories([]string{
+			"git@github-testing:janisZisenisTesting/" + firstRepositoryName + ".git",
+			"git@github-testing:janisZisenisTesting/" + secondRepositoryName + ".git",
+		}),
+	)
+	utils.MakeGitCommand(f.Agent.Env()).
+		Clone("git@github-testing:janisZisenisTesting/"+firstRepositoryName+".git", f.TempDir+"/repositories").
+		Execute()
+
+	f.MakeMrtCommand().
+		RunInDirectory(f.TempDir).
+		Setup().
+		Clone().
+		Execute()
+
+	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+firstRepositoryName+"/.git")
+	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+secondRepositoryName+"/.git")
+}

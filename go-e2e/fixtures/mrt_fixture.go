@@ -10,7 +10,7 @@ import (
 
 type MrtFixture struct {
 	binaryPath string
-	agent      *utils.Agent
+	Agent      *utils.Agent
 	TempDir    string
 }
 
@@ -30,13 +30,13 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 
 	return &MrtFixture{
 		binaryPath: getBinaryPath(utils.GetRepoRootDir(), t),
-		agent:      agent,
+		Agent:      agent,
 		TempDir:    t.TempDir(),
 	}
 }
 
 func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
-	return utils.MakeMrtCommand(m.binaryPath, m.agent.Env())
+	return utils.MakeMrtCommand(m.binaryPath, m.Agent.Env())
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
