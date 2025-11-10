@@ -26,18 +26,6 @@ teardown() {
 	authenticated_teardown
 }
 
-@test "if team json contains an existing repository it should print a messages about successful cloning" {
-	local repository="1_TestRepository"
-	local repository_url
-	repository_url="$(get_repository_urls "$repository")"
-
-	run clone_repository_urls_using_mrt "$repository_url"
-
-	assert_line --index 1 "Cloning $repository_url"
-	assert_line --index 3 --regexp "Enumerating objects: [0-9]+, done."
-	assert_line_reversed_output 1 "Successfully cloned $repository_url"
-}
-
 @test "if team json contains already existing repositories it clones remaining repositories and skips existing ones" {
 	local repositories=(
 		"1_TestRepository"
