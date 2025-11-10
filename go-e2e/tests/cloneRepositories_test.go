@@ -99,3 +99,21 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 
 	output.AssertHasLine(t, "fatal: Could not read from remote repository.")
 }
+
+func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(t *testing.T) {
+	t.Parallel()
+	f := fixtures.MakeAuthenticatedFixture(t)
+	repositoryName := "1_TestRepository"
+	utils.WriteTeamJsonTo(f.TempDir,
+		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/nonExisting.git"}),
+		utils.WithRepositories([]string{"git@github-testing:janisZisenisTesting/" + repositoryName + ".git"}),
+	)
+
+	_ = f.MakeMrtCommand().
+		RunInDirectory(f.TempDir).
+		Setup().
+		Clone().
+		Execute()
+
+	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
+}
