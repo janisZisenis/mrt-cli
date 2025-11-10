@@ -149,3 +149,22 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 	f.AssertRepositoryExists(firstRepositoryName, defaultRepositoriesPath)
 	f.AssertRepositoryExists(secondRepositoryName, defaultRepositoriesPath)
 }
+
+func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesIntoGivenRepositoriesPath(t *testing.T) {
+	f := fixtures.MakeAuthenticatedFixture(t).Parallel()
+	repositoryName := "1_TestRepository"
+	repositoriesPath := "xyz"
+	f.WriteTeamJson(
+		utils.WithRepositories([]string{
+			utils.MakeCloneUrlFrom(repositoryName),
+		}),
+		utils.WithRepositoriesPath(repositoriesPath),
+	)
+
+	f.MakeMrtCommand().
+		Setup().
+		Clone().
+		Execute()
+
+	f.AssertRepositoryExists(repositoryName, repositoriesPath)
+}
