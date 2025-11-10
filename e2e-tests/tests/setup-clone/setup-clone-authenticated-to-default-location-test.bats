@@ -26,13 +26,6 @@ teardown() {
 	authenticated_teardown
 }
 
-@test "if team json does not contain any repository it does not clone any repository" {
-	local no_repositories=()
-
-	run clone_repositories_using_mrt "${no_repositories[@]}"
-
-	assert_dir_not_exist "$(repositories_dir)"
-}
 
 @test "if team json contains non-existing repository it should print out a failure message" {
 	local repository="not-existing"

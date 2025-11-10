@@ -21,7 +21,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 		Clone().
 		Execute()
 
-	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
+	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
 }
 
 func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
@@ -64,6 +64,22 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 		Clone().
 		Execute()
 
-	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+firstRepositoryName+"/.git")
-	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+secondRepositoryName+"/.git")
+	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+firstRepositoryName+"/.git")
+	assertions.AssertDirectoryExists(t, f.TempDir+"/repositories/"+secondRepositoryName+"/.git")
+}
+
+func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
+	t.Parallel()
+	f := fixtures.MakeAuthenticatedFixture(t)
+	utils.WriteTeamJsonTo(f.TempDir,
+		utils.WithRepositories([]string{}),
+	)
+
+	_ = f.MakeMrtCommand().
+		RunInDirectory(f.TempDir).
+		Setup().
+		Clone().
+		Execute()
+
+	assertions.AssertDirectoryDoesNotExist(t, f.TempDir+"/repositories")
 }
