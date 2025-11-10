@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func Test_IfTeamJsonDoesNotContainRepositoriesPath_ItClonesRepositoryIntoDefaultFolder(t *testing.T) {
+func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(t *testing.T) {
 	t.Parallel()
 	f := fixtures.MakeAuthenticatedFixture(t)
 	repositoryName := "1_TestRepository"
@@ -24,11 +24,10 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_ItClonesRepositoryIntoDefault
 	assertions.TestDirectoryExists(t, f.TempDir+"/repositories/"+repositoryName+"/.git")
 }
 
-func Test_IfTeamJsonContainsAnExistingRepository_ItShouldPrintMessageAboutSuccessfulCloning(t *testing.T) {
+func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
 	t.Parallel()
 	f := fixtures.MakeAuthenticatedFixture(t)
-	repositoryName := "1_TestRepository"
-	repositoryURL := "git@github-testing:janisZisenisTesting/" + repositoryName + ".git"
+	repositoryURL := "git@github-testing:janisZisenisTesting/1_TestRepository.git"
 	utils.WriteTeamJsonTo(f.TempDir,
 		utils.WithRepositories([]string{repositoryURL}),
 	)
