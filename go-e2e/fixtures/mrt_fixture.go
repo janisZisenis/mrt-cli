@@ -39,6 +39,10 @@ func (m *MrtFixture) MakeMrtCommand() *utils.Mrt {
 	return utils.MakeMrtCommand(m.binaryPath, m.Agent.Env())
 }
 
+func (m *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
+	utils.WriteTeamJsonTo(m.TempDir, withOptions...)
+}
+
 func getBinaryPath(repositoryDir string, t *testing.T) string {
 	cmd := exec.Command("mrt", "--team-dir", repositoryDir, "run", "binary-location")
 	binaryPathBytes, err := cmd.Output()
