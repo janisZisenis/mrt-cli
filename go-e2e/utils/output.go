@@ -30,7 +30,7 @@ func (o *Output) AssertLineEquals(t *testing.T, index int, expectedText string) 
 	t.Helper()
 
 	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines", index, len(o.lines))
-	assert.Equal(t, o.lines[index], expectedText, "line %d does not contain expected text", index)
+	assert.Equal(t, expectedText, o.lines[index], "line %d does not contain expected text", index)
 }
 
 func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string) {
