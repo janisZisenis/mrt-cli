@@ -36,17 +36,9 @@ func (o *Output) AssertLineEquals(t *testing.T, index int, expectedText string) 
 func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string) {
 	t.Helper()
 
-	assert.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines", index, len(o.lines))
-	if index >= len(o.lines) {
-		return
-	}
-
+	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines", index, len(o.lines))
 	regex, err := regexp.Compile(pattern)
-	assert.NoError(t, err, "invalid regex pattern: %s", pattern)
-	if err != nil {
-		return
-	}
-
+	require.NoError(t, err, "invalid regex pattern: %s", pattern)
 	assert.True(t, regex.MatchString(o.lines[index]), "line %d does not match pattern %s\ngot: %s", index, pattern, o.lines[index])
 }
 
