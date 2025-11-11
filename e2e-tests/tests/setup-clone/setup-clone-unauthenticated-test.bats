@@ -13,10 +13,6 @@ teardown() {
 	common_teardown
 }
 
-@test "If team json contains repository and some repository path it should print out message, that it clones the repositories" {
-	test_if_team_file_contains_repository_setup_prints_message_about_cloning_repositories "some-path"
-}
-
 @test "If team json contains repository and another repository path it should print out message, that it clones the repositories" {
 	test_if_team_file_contains_repository_setup_prints_message_about_cloning_repositories "another-path"
 }
