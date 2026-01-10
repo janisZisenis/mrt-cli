@@ -2,29 +2,7 @@
 
 Fast access to critical issues and their fixes.
 
-## 🔴 CRITICAL #1: Array Bounds Panic
-
-**File:** `app/commands/githook/prefixCommitMessage.go:13`
-
-**Before:**
-```go
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
-    commitFile := args[0]  // PANIC if empty!
-```
-
-**After:**
-```go
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
-    if len(args) == 0 {
-        log.Errorf("Missing commit message file argument")
-        return
-    }
-    commitFile := args[0]
-```
-
----
-
-## 🔴 CRITICAL #2: Unhandled Config Errors
+## 🔴 CRITICAL #1: Unhandled Config Errors
 
 **Files:** Multiple locations
 
@@ -50,27 +28,7 @@ if err != nil {
 
 ---
 
-## 🔴 CRITICAL #3: Regex Compile Panic
-
-**File:** `app/commands/githook/prefixCommitMessage.go:21`
-
-**Before:**
-```go
-regex := regexp.MustCompile(teamInfo.CommitPrefixRegex)  // Panics!
-```
-
-**After:**
-```go
-regex, err := regexp.Compile(teamInfo.CommitPrefixRegex)
-if err != nil {
-    log.Errorf("Invalid regex in team.json: %v", err)
-    return
-}
-```
-
----
-
-## 🔴 CRITICAL #4: Pipe Deadlock
+## 🔴 CRITICAL #2: Pipe Deadlock
 
 **File:** `app/core/gitClone.go`
 
@@ -114,28 +72,7 @@ func GetExecutionPath() string {
 
 ---
 
-## 🔴 MAJOR #2: Remove os.Exit() Calls
-
-**Files:** Multiple
-
-**Before:**
-```go
-if err != nil {
-    log.Errorf("Error: %v", err)
-    os.Exit(1)  // DON'T!
-}
-```
-
-**After:**
-```go
-if err != nil {
-    return fmt.Errorf("error: %w", err)  // Return error instead
-}
-```
-
----
-
-## 🔴 MAJOR #3: File Permissions
+## 🔴 MAJOR #2: File Permissions
 
 **File:** `app/commands/setup/installgithooks/writeGitHooks.go:24`
 
@@ -151,7 +88,7 @@ os.WriteFile(path, data, 0o700)  // Owner only
 
 ---
 
-## 🔴 MAJOR #4: Path Traversal
+## 🔴 MAJOR #3: Path Traversal
 
 **File:** `app/commands/setup/clonerepositories/cloneRepositories.go:23`
 
@@ -183,7 +120,7 @@ func getRepositoryName(repositoryURL string) string {
 
 ---
 
-## 🔴 MAJOR #5: Environment Variable Leakage
+## 🔴 MAJOR #4: Environment Variable Leakage
 
 **File:** `app/core/commandbuilder.go:61`
 
@@ -227,15 +164,12 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ## Priority Checklist
 
-- [ ] #1 - Array bounds
-- [ ] #2 - Config errors
-- [ ] #3 - Regex compile
-- [ ] #4 - Pipe deadlock
-- [ ] #5 - Global race
-- [ ] #6 - Remove os.Exit()
-- [ ] #7 - File perms
-- [ ] #8 - Path traversal
-- [ ] #9 - Env vars
+- [ ] #1 - Config errors
+- [ ] #2 - Pipe deadlock
+- [ ] #3 - Global race
+- [ ] #4 - File perms
+- [ ] #5 - Path traversal
+- [ ] #6 - Env vars
 
 ---
 

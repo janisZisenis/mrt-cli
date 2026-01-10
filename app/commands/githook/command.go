@@ -42,7 +42,10 @@ func command(cmd *cobra.Command, args []string) {
 	case core.PrePush:
 		failIfBranchIsBlocked(teamInfo, currentBranchName, "push")
 	case core.CommitMsg:
-		prefixCommitMessage(teamInfo, currentBranchName, args)
+		if err := prefixCommitMessage(teamInfo, currentBranchName, args); err != nil {
+			log.Errorf(err.Error())
+			os.Exit(1)
+		}
 	default:
 		log.Errorf("The given git-hook \"" + hookName + "\" does not exist.")
 		os.Exit(1)
