@@ -164,15 +164,12 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ## Priority Checklist
 
-- [x] #1 - Array bounds ✅ FIXED
-- [ ] #2 - Config errors
-- [x] #3 - Regex compile ✅ FIXED
-- [ ] #4 - Pipe deadlock
-- [ ] #5 - Global race
-- [x] #6 - Remove os.Exit() ✅ FIXED (prefixCommitMessage + custom errors)
-- [ ] #7 - File perms
-- [ ] #8 - Path traversal
-- [ ] #9 - Env vars
+- [ ] #1 - Config errors
+- [ ] #2 - Pipe deadlock
+- [ ] #3 - Global race
+- [ ] #4 - File perms
+- [ ] #5 - Path traversal
+- [ ] #6 - Env vars
 
 ---
 
