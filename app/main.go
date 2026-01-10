@@ -35,7 +35,9 @@ func main() {
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
 	rootCmd.PersistentFlags().StringVar(&executionPath, "team-dir", "", "Specifies the path to the team directory.")
-	_ = rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
 
 func readTeamDir() *string {
