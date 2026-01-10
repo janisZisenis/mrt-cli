@@ -13,7 +13,7 @@ func CloneRepository(repositoryURL, destination string) {
 	log.Infof("Cloning " + repositoryURL)
 
 	var waitGroup sync.WaitGroup
-	numberOfPipesToWaitFor := 2
+	numberOfPipesToWaitFor := 3
 	waitGroup.Add(numberOfPipesToWaitFor)
 
 	stdoutReader, stdoutWriter := io.Pipe()
@@ -36,6 +36,7 @@ func CloneRepository(repositoryURL, destination string) {
 	}
 
 	go func() {
+		defer waitGroup.Done()
 		if waitErr := wait(); waitErr != nil {
 			log.Warningf("Failed to clone repository, skipping it.")
 		}
