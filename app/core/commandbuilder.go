@@ -3,8 +3,8 @@ package core
 import (
 	"context"
 	"io"
+	"os"
 	"os/exec"
-	"time"
 )
 
 type CommandBuilder struct {
@@ -13,17 +13,13 @@ type CommandBuilder struct {
 	stdout  io.Writer
 	stderr  io.Writer
 	stdin   io.Reader
-	timeout time.Duration
 }
-
-const defaultCommandTimeout = 5
 
 func NewCommandBuilder() *CommandBuilder {
 	return &CommandBuilder{
-		stdout:  nil,
-		stderr:  nil,
-		stdin:   nil,
-		timeout: defaultCommandTimeout * time.Second,
+		stdout: nil,
+		stderr: nil,
+		stdin:  nil,
 	}
 }
 
@@ -53,7 +49,7 @@ func (b *CommandBuilder) WithStdin(stdin io.Reader) *CommandBuilder {
 }
 
 func (b *CommandBuilder) Build() (*exec.Cmd, context.Context, context.CancelFunc) {
-	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
+	ctx, cancel := context.WithCancel(context.Background())
 
 	// #nosec G204 - We actually want the user to execute scripts and commands with their own arguments.
 	// We don't know yet what these commands will be and what arguments they will pass to them.
@@ -61,6 +57,8 @@ func (b *CommandBuilder) Build() (*exec.Cmd, context.Context, context.CancelFunc
 	cmd.Stdout = b.stdout
 	cmd.Stderr = b.stderr
 	cmd.Stdin = b.stdin
+
+	cmd.Env = os.Environ()
 
 	return cmd, ctx, cancel
 }
