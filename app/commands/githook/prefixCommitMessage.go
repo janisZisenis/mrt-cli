@@ -25,12 +25,15 @@ func (e *FailedToReadCommitMessageError) Error() string {
 }
 
 type InvalidCommitPrefixRegexError struct {
-	regex    string
-	message  error
+	regex   string
+	message error
 }
 
 func (e *InvalidCommitPrefixRegexError) Error() string {
-	return fmt.Sprintf("Invalid commit prefix regex in team.json:\nCommitPrefixRegex: %s\nPlease fix the regex syntax in your team.json file\nDetails: %v", e.regex, e.message)
+	return fmt.Sprintf(`Invalid commit prefix regex in team.json:
+CommitPrefixRegex: %s
+Please fix the regex syntax in your team.json file
+Details: %v`, e.regex, e.message)
 }
 
 type InvalidCommitMessageError struct {
@@ -38,7 +41,9 @@ type InvalidCommitMessageError struct {
 }
 
 func (e *InvalidCommitMessageError) Error() string {
-	return fmt.Sprintf("The commit message needs a commit prefix that matches the following regex %s.\nEither add the commit prefix to your commit message, or include it in the branch name.\nUse '--no-verify' to skip git-hooks.", e.regex)
+	return fmt.Sprintf(`The commit message needs a commit prefix that matches the following regex %s.
+Either add the commit prefix to your commit message, or include it in the branch name.
+Use '--no-verify' to skip git-hooks.`, e.regex)
 }
 
 func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) error {
