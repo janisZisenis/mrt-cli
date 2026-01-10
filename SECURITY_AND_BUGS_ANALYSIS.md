@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **15 issues** ranging from critical security vulnerabilities to minor performance improvements. (6 issues have been fixed)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **13 issues** ranging from critical security vulnerabilities to minor performance improvements. (9 issues have been fixed)
 
 ### Issue Breakdown
 
@@ -230,7 +230,7 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 
 ### 🔴 MAJOR #3: Excessive File Permissions on Git Hooks
 
-**File:** `app/commands/setup/installgithooks/writeGitHooks.go:24`
+**File:** `app/commands/setup/installgithooks/writeGitHooks.go:22-23`
 
 **Severity:** MAJOR
 **Type:** File Security
@@ -239,6 +239,8 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 #### Problem
 
 ```go
+// #nosec G301 - githooks folder needs 0755 to be executable
+_ = os.MkdirAll(hooksPath, 0o755)
 err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0o755)
 ```
 
@@ -256,11 +258,9 @@ err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0o755)
 #### Fix
 
 ```go
+// #nosec G301 - githooks folder needs 0700 to be private (owner only)
+_ = os.MkdirAll(hooksPath, 0o700)
 err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0o700)
-if err != nil {
-    log.Errorf("Failed to write git hook: %v", err)
-    return err
-}
 ```
 
 ---
@@ -639,7 +639,7 @@ See full analysis above for details on:
 |----|----------|----------|------|-------|--------|
 | #1 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
 | #2 | MAJOR | Concurrency | location.go:9-21 | Global variable race | ⏳ TODO |
-| #3 | MAJOR | Security | writeGitHooks.go:24 | Excessive permissions | ⏳ TODO |
+| #3 | MAJOR | Security | writeGitHooks.go:22-28 | Excessive permissions | ✅ FIXED |
 | #4 | MAJOR | Security | cloneRepositories.go:23 | Path traversal | ⏳ TODO |
 | #5 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
 | #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
@@ -667,7 +667,7 @@ See full analysis above for details on:
 ```
 [ ] #5 - Add RWMutex to location.go
 [x] #6 - Replace os.Exit() with error returns (FIXED in prefixCommitMessage)
-[ ] #7 - Fix file permissions (0o755 → 0o700)
+[x] #7 - Fix file permissions (0o755 → 0o700) (FIXED)
 [ ] #8 - Sanitize repository URLs
 [ ] #9 - Restrict environment variables
 ```
@@ -682,6 +682,7 @@ See full analysis above for details on:
 
 ### Phase 4: MINOR (Technical debt)
 ```
+[x] #14 - Handle Cobra Execute errors (FIXED)
 [ ] #15-18 - Minor fixes and improvements
 ```
 

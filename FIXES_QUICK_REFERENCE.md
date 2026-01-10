@@ -53,23 +53,7 @@ func GetExecutionPath() string {
 
 ---
 
-## 🔴 MAJOR #2: File Permissions
-
-**File:** `app/commands/setup/installgithooks/writeGitHooks.go:24`
-
-**Before:**
-```go
-os.WriteFile(path, data, 0o755)  // Too permissive!
-```
-
-**After:**
-```go
-os.WriteFile(path, data, 0o700)  // Owner only
-```
-
----
-
-## 🔴 MAJOR #3: Path Traversal
+## 🔴 MAJOR #2: Path Traversal
 
 **File:** `app/commands/setup/clonerepositories/cloneRepositories.go:23`
 
@@ -147,7 +131,7 @@ grep -r "os.Exit" app/ --include="*.go"
 
 - [ ] #1 - Config errors (CRITICAL)
 - [ ] #2 - Global race (MAJOR)
-- [ ] #3 - File perms (MAJOR)
+- [x] #3 - File perms (MAJOR) - FIXED
 - [ ] #4 - Path traversal (MAJOR)
 - [ ] #5 - Env vars (MAJOR)
 
