@@ -10,15 +10,29 @@ import (
 )
 
 func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
+	if len(args) == 0 {
+		log.Errorf("Missing commit message file argument")
+		return
+	}
 	commitFile := args[0]
-	data, _ := os.ReadFile(commitFile)
+	data, err := os.ReadFile(commitFile)
+	if err != nil {
+		log.Errorf("Failed to read commit message file: %v", err)
+		return
+	}
 	commitMessage := string(data)
 
 	if teamInfo.CommitPrefixRegex == "" {
 		return
 	}
 
-	regex := regexp.MustCompile(teamInfo.CommitPrefixRegex)
+	regex, err := regexp.Compile(teamInfo.CommitPrefixRegex)
+	if err != nil {
+		log.Errorf("Invalid commit prefix regex in %v: %v", core.TeamFile, err)
+		log.Errorf("CommitPrefixRegex: %s", teamInfo.CommitPrefixRegex)
+		log.Errorf("Please fix the regex syntax in your %v file", core.TeamFile)
+		return
+	}
 
 	if strings.HasPrefix(commitMessage, "Merge branch") ||
 		strings.HasPrefix(commitMessage, "Merge remote-tracking branch") {

@@ -9,7 +9,37 @@ teardown() {
 	one_cloned_repository_with_git_hooks_teardown
 }
 
-@test "If team json contains blocked branch commiting on the blocked branches after setting up git-hooks should be blocked" {
+@test "if team json contains invalid commitPrefixRegex 'committing' should fail gracefully with error message" {
+	local invalid_regex="[invalid(regex"
+	write_commit_prefix_regex "$invalid_regex"
+
+	run commit_changes "$(repository_dir)" "test-branch" "test-message"
+
+	assert_output --partial "Invalid commit prefix regex in team.json:"
+	assert_output --partial "CommitPrefixRegex: $invalid_regex"
+	assert_output --partial "Please fix the regex syntax in your team.json file"
+#	assert_failure
+}
+
+@test "if commit message file cannot be read the hook should fail gracefully with error message" {
+	write_commit_prefix_regex "Test-[0-9]+"
+
+	run mrt_execute git-hook --hook-name "commit-msg" --repository-path "$(repository_dir)" /nonexistent/file.txt
+
+	assert_output --partial "Failed to read commit message file"
+#	assert_failure
+}
+
+@test "if commit message file argument is missing the hook should fail gracefully with error message" {
+	write_commit_prefix_regex "Test-[0-9]+"
+
+	run mrt_execute git-hook --hook-name "commit-msg" --repository-path "$(repository_dir)"
+
+	assert_output --partial "Missing commit message file argument"
+#	assert_failure
+}
+
+@test "If team json contains blocked branch committing on the blocked branches after setting up git-hooks should be blocked" {
 	local branch_name="some-branch"
 	write_blocked_branches "$branch_name"
 
@@ -19,7 +49,7 @@ teardown() {
 	assert_failure
 }
 
-@test "If team json contains blocked branch commiting on another blocked branch after setting up git-hooks should be allowed" {
+@test "If team json contains blocked branch committing on another blocked branch after setting up git-hooks should be allowed" {
 	write_blocked_branches "some-branch"
 
 	run commit_changes "$(repository_dir)" "another-branch"
@@ -27,7 +57,7 @@ teardown() {
 	assert_success
 }
 
-@test "If team json contains 2 blocked branch commiting on second one after setting up git-hooks should be blocked" {
+@test "If team json contains 2 blocked branch committing on second one after setting up git-hooks should be blocked" {
 	local branch_name="some-branch"
 	write_blocked_branches "another-branch" "$branch_name"
 
@@ -49,7 +79,7 @@ teardown() {
 	assert_failure
 }
 
-@test "if team json contains commitPrefixRegex 'commiting' with a message and a branch both without matching prefix is blocked" {
+@test "if team json contains commitPrefixRegex 'committing' with a message and a branch both without matching prefix is blocked" {
 	local commit_prefix_regex="Test-[0-9]+"
 	write_commit_prefix_regex "$commit_prefix_regex"
 
@@ -61,7 +91,7 @@ teardown() {
 	assert_failure
 }
 
-@test "if team json contains commit_prefix_regex 'commiting' with a message that has a matching prefix on a branch without prefix is not blocked" {
+@test "if team json contains commit_prefix_regex 'committing' with a message that has a matching prefix on a branch without prefix is not blocked" {
 	local matching_prefix="Test-1"
 	write_commit_prefix_regex "Test-[0-9]+"
 
@@ -71,7 +101,7 @@ teardown() {
 	assert_success
 }
 
-@test "if team json contains commitPrefixRegex 'commiting' with a message that has no matching prefix on a branch containing prefix is not blocked" {
+@test "if team json contains commitPrefixRegex 'committing' with a message that has no matching prefix on a branch containing prefix is not blocked" {
 	local commit_prefix="Asdf-99"
 	write_commit_prefix_regex "Asdf-[0-9]+"
 
@@ -81,11 +111,11 @@ teardown() {
 	assert_success
 }
 
-@test "if team json contains commitPrefixRegex 'commiting' with a message that starts with 'Merge branch' is not blocked" {
+@test "if team json contains commitPrefixRegex 'committing' with a message that starts with 'Merge branch' is not blocked" {
 	test_merge_commit_messages_are_not_blocked "Merge branch"
 }
 
-@test "if team json contains commitPrefixRegex 'commiting' with a message that starts with 'Merge remote-tracking branch' is not blocked" {
+@test "if team json contains commitPrefixRegex 'committing' with a message that starts with 'Merge remote-tracking branch' is not blocked" {
 	test_merge_commit_messages_are_not_blocked "Merge remote-tracking branch"
 }
 
@@ -99,7 +129,7 @@ test_merge_commit_messages_are_not_blocked() {
 	assert_success
 }
 
-@test "if team json contains commitPrefixRegex 'commiting' with a message that has a matching prefix leads to commit with given message" {
+@test "if team json contains commitPrefixRegex 'committing' with a message that has a matching prefix leads to commit with given message" {
 	local commit_message="Test-1: prefixed-message"
 	write_commit_prefix_regex "Test-[0-9]+"
 	commit_changes "$(repository_dir)" "no-prefix-branch" "$commit_message"
@@ -109,7 +139,7 @@ test_merge_commit_messages_are_not_blocked() {
 	assert_output "$commit_message"
 }
 
-@test "if team json contains commitPrefixRegex 'commiting' with a message that has no matching prefix on a branch containing prefix leads to commit with prefixed message" {
+@test "if team json contains commitPrefixRegex 'committing' with a message that has no matching prefix on a branch containing prefix leads to commit with prefixed message" {
 	local matching_prefix="Asdf-99"
 	local commit_message="not-prefixed-message"
 	write_commit_prefix_regex "Asdf-[0-9]+"
@@ -120,19 +150,19 @@ test_merge_commit_messages_are_not_blocked() {
 	assert_output "$matching_prefix: $commit_message"
 }
 
-@test "if team json does not contain commitPrefixRegex 'commiting' does not check for commit prefix" {
+@test "if team json does not contain commitPrefixRegex 'committing' does not check for commit prefix" {
 	run commit_changes "$(repository_dir)" "not-prefixed-branch" "not-prefixed-message"
 
 	refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
 }
 
-@test "if team json does not contain commitPrefixRegex while 'commiting' a merge commit, it does not check for commit prefix" {
+@test "if team json does not contain commitPrefixRegex while 'committing' a merge commit, it does not check for commit prefix" {
 	run commit_changes "$(repository_dir)" "not-prefixed-branch" "not-prefixed-message"
 
 	refute_output --partial "JIRA-ID '' was found in current branch name, prepended to commit message."
 }
 
-test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
+test_while_committing_merge_commit_it_does_not_check_for_commit_prefixes() {
 	local commit_message="$1"
 
 	run commit_changes "$(repository_dir)" "no-prefix-branch" "$commit_message"
@@ -141,10 +171,10 @@ test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes() {
 	assert_success
 }
 
-@test "if team json does not contain commitPrefixRegex 'commiting' with a message that starts with 'Merge branch' does not check for prefix" {
-	test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge branch"
+@test "if team json does not contain commitPrefixRegex 'committing' with a message that starts with 'Merge branch' does not check for prefix" {
+	test_while_committing_merge_commit_it_does_not_check_for_commit_prefixes "Merge branch"
 }
 
-@test "if team json does not contain commitPrefixRegex 'commiting' with a message that starts with 'Merge remote-tracking branch' does not check for prefix" {
-	test_while_commiting_merge_commit_it_does_not_check_for_commit_prefixes "Merge remote-tracking branch"
+@test "if team json does not contain commitPrefixRegex 'committing' with a message that starts with 'Merge remote-tracking branch' does not check for prefix" {
+	test_while_committing_merge_commit_it_does_not_check_for_commit_prefixes "Merge remote-tracking branch"
 }
