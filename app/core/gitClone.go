@@ -1,7 +1,6 @@
 package core
 
 import (
-	"context"
 	"errors"
 	"io"
 	"os"
@@ -38,11 +37,7 @@ func CloneRepository(repositoryURL, destination string) {
 
 	go func() {
 		if waitErr := wait(); waitErr != nil {
-			if errors.Is(waitErr, context.DeadlineExceeded) {
-				log.Warningf("Repository clone timed out after 5 minutes")
-			} else {
-				log.Warningf("Failed to clone repository, skipping it.")
-			}
+			log.Warningf("Failed to clone repository, skipping it.")
 		}
 
 		_ = stdoutWriter.Close()
