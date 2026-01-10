@@ -132,8 +132,8 @@ grep -r "os.Exit" app/ --include="*.go"
 - [ ] #1 - Config errors (CRITICAL)
 - [ ] #2 - Global race (MAJOR)
 - [x] #3 - File perms (MAJOR) - FIXED
-- [ ] #3 - Path traversal (MAJOR)
-- [ ] #4 - Env vars (MAJOR)
+- [ ] #4 - Path traversal (MAJOR)
+- [ ] #5 - Env vars (MAJOR)
 
 ---
 
