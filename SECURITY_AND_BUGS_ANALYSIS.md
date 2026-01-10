@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **17 issues** ranging from critical security vulnerabilities to minor performance improvements. (4 issues have been fixed)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **15 issues** ranging from critical security vulnerabilities to minor performance improvements. (6 issues have been fixed)
 
 ### Issue Breakdown
 
@@ -16,7 +16,7 @@ This report documents a comprehensive analysis of the MRT CLI codebase that iden
 |----------|-------|--------|
 | 🔴 CRITICAL | 1 | Must fix immediately |
 | 🔴 MAJOR | 4 | Fix within days |
-| 🟠 SIGNIFICANT | 5 | Fix within sprint |
+| 🟠 SIGNIFICANT | 3 | Fix within sprint |
 | 🟡 MINOR | 7 | Technical debt |
 
 ---
@@ -477,40 +477,7 @@ func GetExecutableName() (string, error) {
 
 ---
 
-### 🟠 SIGNIFICANT #3: Inefficient String Operations
-
-**File:** `app/commands/setup/clonerepositories/cloneRepositories.go:29-32`
-
-**Severity:** SIGNIFICANT
-**Type:** Performance
-**Impact:** Memory waste, slower performance with many prefixes
-
-#### Problem
-
-```go
-for _, prefix := range prefixes {
-    if strings.HasPrefix(folderName, prefix) {
-        folderName = strings.Replace(folderName, prefix, "", 1)  // Allocates new string each iteration
-    }
-}
-```
-
-Creates new string on each iteration. Should use `strings.TrimPrefix()`.
-
-#### Fix
-
-```go
-for _, prefix := range prefixes {
-    if strings.HasPrefix(folderName, prefix) {
-        folderName = strings.TrimPrefix(folderName, prefix)
-        break  // Only remove first matching prefix
-    }
-}
-```
-
----
-
-### 🟠 SIGNIFICANT #4: Viper Config Race Condition
+### 🟠 SIGNIFICANT #3: Viper Config Race Condition
 
 **File:** `app/commands/run/runscript/command.go:26-49`
 
@@ -677,13 +644,12 @@ See full analysis above for details on:
 | #5 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
 | #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
-| #8 | SIGNIFICANT | Performance | cloneRepositories.go | Inefficient strings | ⏳ TODO |
-| #9 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
-| #10 | SIGNIFICANT | Performance | gitClone.go | String allocation loop | ⏳ TODO |
-| #11 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ⏳ TODO |
-| #12 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
-| #13 | MINOR | Operability | gitClone.go | No timeout/cancellation | ⏳ TODO |
-| #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
+| #8 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
+| #9 | SIGNIFICANT | Performance | gitClone.go | String allocation loop | ⏳ TODO |
+| #10 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ⏳ TODO |
+| #11 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
+| #12 | MINOR | Operability | gitClone.go | No timeout/cancellation | ⏳ TODO |
+| #13 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
 
 ---
 
@@ -710,9 +676,8 @@ See full analysis above for details on:
 ```
 [ ] #10 - Sanitize glob patterns
 [ ] #11 - Handle path errors properly
-[ ] #12 - Optimize string operations
-[ ] #13 - Add Viper synchronization
-[ ] #14 - Optimize memory allocations
+[ ] #12 - Add Viper synchronization
+[ ] #13 - Optimize memory allocations
 ```
 
 ### Phase 4: MINOR (Technical debt)

@@ -145,11 +145,11 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ## Priority Checklist
 
-- [ ] #1 - Config errors
-- [ ] #2 - Global race
-- [ ] #3 - File perms
-- [ ] #4 - Path traversal
-- [ ] #5 - Env vars
+- [ ] #1 - Config errors (CRITICAL)
+- [ ] #2 - Global race (MAJOR)
+- [ ] #3 - File perms (MAJOR)
+- [ ] #4 - Path traversal (MAJOR)
+- [ ] #5 - Env vars (MAJOR)
 
 ---
 
