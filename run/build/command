@@ -44,8 +44,8 @@ build_binary() {
 	fi
 }
 
-semver="unkown"
-commit_sha="unkown"
+semver="unknown"
+commit_sha="unknown"
 while [ "$#" -gt 0 ]; do
 	case $1 in
 	"--help" | "-h")
