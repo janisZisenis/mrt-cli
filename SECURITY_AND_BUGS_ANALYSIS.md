@@ -23,51 +23,7 @@ This report documents a comprehensive analysis of the MRT CLI codebase that iden
 
 ## CRITICAL ISSUES (Must Fix Immediately)
 
-### 🔴 CRITICAL #1: Array Index Out of Bounds Panic
-
-**File:** `app/commands/githook/prefixCommitMessage.go:13`
-
-**Severity:** CRITICAL
-**Type:** Runtime Error
-**Impact:** Process crash on git hook execution
-
-#### Problem
-
-```go
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
-    commitFile := args[0]  // ← PANIC if args is empty!
-    data, _ := os.ReadFile(commitFile)
-```
-
-Direct array access without bounds checking. If git hook is triggered without arguments (edge case in custom git configurations), this will panic.
-
-#### Impact
-
-- ❌ Process crash
-- ❌ Failed git commits
-- ❌ Development blocked
-
-#### Fix
-
-```go
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
-    if len(args) == 0 {
-        log.Errorf("Missing commit message file argument")
-        return
-    }
-    commitFile := args[0]
-    data, err := os.ReadFile(commitFile)
-    if err != nil {
-        log.Errorf("Failed to read commit message file: %v", err)
-        return
-    }
-    // ... rest of function
-}
-```
-
----
-
-### 🔴 CRITICAL #2: Unhandled Configuration Errors
+### 🔴 CRITICAL #1: Unhandled Configuration Errors
 
 **Files:**
 - `app/commands/githook/command.go:33`
@@ -130,70 +86,7 @@ func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string
 
 ---
 
-### 🔴 CRITICAL #3: MustCompile Panic on Invalid Regex
-
-**File:** `app/commands/githook/prefixCommitMessage.go:21`
-
-**Severity:** CRITICAL
-**Type:** Security (DoS)
-**Impact:** Process crash on malformed configuration, unrecoverable state
-
-#### Problem
-
-```go
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
-    // ...
-    regex := regexp.MustCompile(teamInfo.CommitPrefixRegex)  // ← Panics if invalid!
-```
-
-`MustCompile` crashes the entire process if the regex is malformed. User-supplied regex from `team.json` config has no validation.
-
-#### Attack Scenario
-
-1. User edits `team.json` with invalid regex: `"CommitPrefixRegex": "[invalid(regex"`
-2. Any git commit hook is triggered
-3. MustCompile panics → process crashes immediately
-4. Git commit fails, repository becomes unusable
-5. All developers blocked until fixed
-
-#### Impact
-
-- ❌ DoS vulnerability (malformed config crashes process)
-- ❌ Unrecoverable git hook failures
-- ❌ Development completely blocked
-
-#### Fix
-
-```go
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
-    commitFile := args[0]
-    data, err := os.ReadFile(commitFile)
-    if err != nil {
-        log.Errorf("Failed to read commit message file: %v", err)
-        return
-    }
-    commitMessage := string(data)
-
-    if teamInfo.CommitPrefixRegex == "" {
-        return
-    }
-
-    // Use Compile instead of MustCompile for graceful error handling
-    regex, err := regexp.Compile(teamInfo.CommitPrefixRegex)
-    if err != nil {
-        log.Errorf("Invalid commit prefix regex in team.json: %v", err)
-        log.Errorf("CommitPrefixRegex: %s", teamInfo.CommitPrefixRegex)
-        log.Errorf("Please fix the regex syntax in your team.json file")
-        return  // Skip validation instead of crashing
-    }
-
-    // ... rest of function
-}
-```
-
----
-
-### 🔴 CRITICAL #4: Unbuffered Pipe Deadlock (Large Clone Failure)
+### 🔴 CRITICAL #2: Unbuffered Pipe Deadlock (Large Clone Failure)
 
 **File:** `app/core/gitClone.go:19-56`
 
@@ -870,24 +763,21 @@ See full analysis above for details on:
 
 | ID | Priority | Category | File | Issue | Status |
 |----|----------|----------|------|-------|--------|
-| #1 | CRITICAL | Runtime | prefixCommitMessage.go:13 | Array bounds panic | ⏳ TODO |
-| #2 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
-| #3 | CRITICAL | Runtime | prefixCommitMessage.go:21 | MustCompile panic | ⏳ TODO |
-| #4 | CRITICAL | Concurrency | gitClone.go:19-56 | Unbuffered pipe deadlock | ⏳ TODO |
-| #5 | MAJOR | Concurrency | location.go:9-21 | Global variable race | ⏳ TODO |
-| #6 | MAJOR | Error Handling | Multiple | Hard exit calls | ⏳ TODO |
-| #7 | MAJOR | Security | writeGitHooks.go:24 | Excessive permissions | ⏳ TODO |
-| #8 | MAJOR | Security | cloneRepositories.go:23 | Path traversal | ⏳ TODO |
-| #9 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
-| #10 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
-| #11 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
-| #12 | SIGNIFICANT | Performance | cloneRepositories.go | Inefficient strings | ⏳ TODO |
-| #13 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
-| #14 | SIGNIFICANT | Performance | gitClone.go | String allocation loop | ⏳ TODO |
-| #15 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ⏳ TODO |
-| #16 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
-| #17 | MINOR | Operability | gitClone.go | No timeout/cancellation | ⏳ TODO |
-| #18 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
+| #1 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
+| #2 | CRITICAL | Concurrency | gitClone.go:19-56 | Unbuffered pipe deadlock | ⏳ TODO |
+| #3 | MAJOR | Concurrency | location.go:9-21 | Global variable race | ⏳ TODO |
+| #4 | MAJOR | Security | writeGitHooks.go:24 | Excessive permissions | ⏳ TODO |
+| #5 | MAJOR | Security | cloneRepositories.go:23 | Path traversal | ⏳ TODO |
+| #6 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
+| #7 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
+| #8 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
+| #9 | SIGNIFICANT | Performance | cloneRepositories.go | Inefficient strings | ⏳ TODO |
+| #10 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
+| #11 | SIGNIFICANT | Performance | gitClone.go | String allocation loop | ⏳ TODO |
+| #12 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ⏳ TODO |
+| #13 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
+| #14 | MINOR | Operability | gitClone.go | No timeout/cancellation | ⏳ TODO |
+| #15 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
 
 ---
 
