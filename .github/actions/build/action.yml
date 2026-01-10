@@ -30,13 +30,15 @@ runs:
     - name: Build binary
       shell: bash
       run: |
-        command="mrt run build -- --commit-sha ${{ inputs.commit-sha }} ${{ inputs.platform }}"
+        command="mrt run build -- --commit-sha ${{ inputs.commit-sha }}"
 
-        if [ -z "${{ inputs.version }}" ]
+        if [ -n "${{ inputs.version }}" ]
         then
           command+=" --semver ${{ inputs.version }}"
         fi
-        
+
+        command+=" ${{ inputs.platform }}"
+
         $command
     - id: set-binary-variables
       uses: ./.github/actions/set-binary-variables
