@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bufio"
 	"errors"
 	"io"
 	"os"
@@ -18,6 +19,9 @@ func CloneRepository(repositoryURL, destination string) {
 
 	stdoutReader, stdoutWriter := io.Pipe()
 	stderrReader, stderrWriter := io.Pipe()
+
+	bufferedStdout := bufio.NewReaderSize(stdoutReader, 64*1024)
+	bufferedStderr := bufio.NewReaderSize(stderrReader, 64*1024)
 
 	cancel, wait, startErr := NewCommandBuilder().
 		WithCommand("git").
@@ -47,12 +51,12 @@ func CloneRepository(repositoryURL, destination string) {
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stdout, stdoutReader)
+		copyWithColor(os.Stdout, bufferedStdout)
 	}()
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stderr, stderrReader)
+		copyWithColor(os.Stderr, bufferedStderr)
 	}()
 
 	waitGroup.Wait()
