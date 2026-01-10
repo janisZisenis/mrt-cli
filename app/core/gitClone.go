@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bufio"
 	"errors"
 	"io"
 	"os"
@@ -8,6 +9,8 @@ import (
 
 	"mrt-cli/app/log"
 )
+
+const bufferSize = 64 * 1024
 
 func CloneRepository(repositoryURL, destination string) {
 	log.Infof("Cloning " + repositoryURL)
@@ -18,6 +21,9 @@ func CloneRepository(repositoryURL, destination string) {
 
 	stdoutReader, stdoutWriter := io.Pipe()
 	stderrReader, stderrWriter := io.Pipe()
+
+	bufferedStdout := bufio.NewReaderSize(stdoutReader, bufferSize)
+	bufferedStderr := bufio.NewReaderSize(stderrReader, bufferSize)
 
 	cancel, wait, startErr := NewCommandBuilder().
 		WithCommand("git").
@@ -47,12 +53,12 @@ func CloneRepository(repositoryURL, destination string) {
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stdout, stdoutReader)
+		copyWithColor(os.Stdout, bufferedStdout)
 	}()
 
 	go func() {
 		defer waitGroup.Done()
-		copyWithColor(os.Stderr, stderrReader)
+		copyWithColor(os.Stderr, bufferedStderr)
 	}()
 
 	waitGroup.Wait()

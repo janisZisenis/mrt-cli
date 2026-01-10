@@ -28,25 +28,6 @@ if err != nil {
 
 ---
 
-## 🔴 CRITICAL #2: Pipe Deadlock
-
-**File:** `app/core/gitClone.go`
-
-**Issue:** Unbuffered pipes → git hangs on large transfers
-
-**Quick Fix:** Use buffered approach or avoid pipes
-
-```go
-// BETTER APPROACH
-var stdoutBuf, stderrBuf bytes.Buffer
-cmd.Stdout = &stdoutBuf
-cmd.Stderr = &stderrBuf
-err := cmd.Run()
-// Then process buffers after command completes
-```
-
----
-
 ## 🔴 MAJOR #1: Global Variable Race
 
 **File:** `app/core/location.go`
@@ -165,11 +146,10 @@ grep -r "os.Exit" app/ --include="*.go"
 ## Priority Checklist
 
 - [ ] #1 - Config errors
-- [ ] #2 - Pipe deadlock
-- [ ] #3 - Global race
-- [ ] #4 - File perms
-- [ ] #5 - Path traversal
-- [ ] #6 - Env vars
+- [ ] #2 - Global race
+- [ ] #3 - File perms
+- [ ] #4 - Path traversal
+- [ ] #5 - Env vars
 
 ---
 
