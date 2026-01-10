@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **13 issues** ranging from critical security vulnerabilities to minor performance improvements. (9 issues have been fixed)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **12 issues** ranging from critical security vulnerabilities to minor performance improvements. (9 issues have been fixed)
 
 ### Issue Breakdown
 
@@ -59,16 +59,50 @@ scripts, _ := filepath.Glob(path)  // Error silently dropped!
 
 #### Fix
 
+**app/commands/githook/command.go (lines 33-35, 58, 47, 51):**
 ```go
-// githook/command.go
+// BEFORE - Error suppressions
+teamInfo, _ := core.LoadTeamConfiguration()
+hookName, _ := cmd.Flags().GetString(hookNameFlag)
+repositoryPath, _ := cmd.Flags().GetString(repositoryPath)
+files, _ := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
+
+// AFTER - With error handling
 teamInfo, err := core.LoadTeamConfiguration()
 if err != nil {
     log.Errorf("Failed to load team configuration: %v", err)
     cmd.SilenceUsage = true
-    return err
+    return
 }
 
-// scripts.go
+hookName, err := cmd.Flags().GetString(hookNameFlag)
+if err != nil {
+    log.Errorf("Failed to get hook-name flag: %v", err)
+    cmd.SilenceUsage = true
+    return
+}
+
+repositoryPath, err := cmd.Flags().GetString(repositoryPath)
+if err != nil {
+    log.Errorf("Failed to get repository-path flag: %v", err)
+    cmd.SilenceUsage = true
+    return
+}
+
+// In executeAdditionalScripts function
+files, err := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
+if err != nil {
+    log.Errorf("Failed to find hook scripts: %v", err)
+    return
+}
+
+// Replace os.Exit() with return/cmd.SilenceUsage pattern
+// Line 47: if err := prefixCommitMessage(...) { ... cmd.SilenceUsage = true; return }
+// Line 51: default case - cmd.SilenceUsage = true; return
+```
+
+**app/core/scripts.go (line 17):**
+```go
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) error {
     scripts, err := filepath.Glob(path)
     if err != nil {
@@ -645,10 +679,10 @@ See full analysis above for details on:
 | #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
 | #8 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
-| #9 | SIGNIFICANT | Performance | gitClone.go | String allocation loop | ⏳ TODO |
-| #10 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ⏳ TODO |
+| #9 | SIGNIFICANT | Performance | gitClone.go | Inefficient strings in prefixes | ✅ FIXED |
+| #10 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ✅ FIXED |
 | #11 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
-| #12 | MINOR | Operability | gitClone.go | No timeout/cancellation | ⏳ TODO |
+| #12 | MINOR | Operability | gitClone.go | Buffered reader pipe handling | ✅ FIXED |
 | #13 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
 
 ---
@@ -665,25 +699,24 @@ See full analysis above for details on:
 
 ### Phase 2: MAJOR (Next 1-2 days)
 ```
-[ ] #5 - Add RWMutex to location.go
-[x] #6 - Replace os.Exit() with error returns (FIXED in prefixCommitMessage)
-[x] #7 - Fix file permissions (0o755 → 0o700) (FIXED)
-[ ] #8 - Sanitize repository URLs
-[ ] #9 - Restrict environment variables
+[ ] #2 - Add RWMutex to location.go
+[ ] #4 - Sanitize repository URLs
+[ ] #5 - Restrict environment variables
 ```
 
 ### Phase 3: SIGNIFICANT (Within sprint)
 ```
-[ ] #10 - Sanitize glob patterns
-[ ] #11 - Handle path errors properly
-[ ] #12 - Add Viper synchronization
-[ ] #13 - Optimize memory allocations
+[ ] #6 - Sanitize glob patterns
+[ ] #7 - Handle path errors properly
+[ ] #8 - Add Viper synchronization
+[x] #9 - Optimize memory allocations (FIXED - getFolderName strings)
 ```
 
 ### Phase 4: MINOR (Technical debt)
 ```
-[x] #14 - Handle Cobra Execute errors (FIXED)
-[ ] #15-18 - Minor fixes and improvements
+[x] #10 - Handle Cobra Execute errors (FIXED)
+[ ] #11 - Unmarshal error handling
+[ ] #13 - Hardcoded paths cleanup
 ```
 
 ---

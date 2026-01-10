@@ -129,11 +129,22 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ## Priority Checklist
 
-- [ ] #1 - Config errors (CRITICAL)
-- [ ] #2 - Global race (MAJOR)
-- [x] #3 - File perms (MAJOR) - FIXED
-- [ ] #4 - Path traversal (MAJOR)
-- [ ] #5 - Env vars (MAJOR)
+### Remaining Critical Issues
+- [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
+- [ ] #2 - Global race (MAJOR) - ⏳ TODO
+- [x] #3 - File perms (MAJOR) - ✅ FIXED
+- [ ] #4 - Path traversal (MAJOR) - ⏳ TODO
+- [ ] #5 - Env vars (MAJOR) - ⏳ TODO
+
+### Additional Fixes Completed
+- [x] Array bounds check (prefixCommitMessage.go) - ✅ FIXED
+- [x] MustCompile → regexp.Compile (prefixCommitMessage.go) - ✅ FIXED
+- [x] Unbuffered pipe deadlock (gitClone.go with bufferSize) - ✅ FIXED
+- [x] Inefficient strings (getFolderName with TrimPrefix) - ✅ FIXED
+- [x] Cobra Execute error handling (main.go) - ✅ FIXED
+- [x] Darwin flock installation (.github/workflows) - ✅ FIXED
+- [x] Version build flag (.github/actions/build/action.yml) - ✅ FIXED
+- [x] Build script typo correction - ✅ FIXED
 
 ---
 
