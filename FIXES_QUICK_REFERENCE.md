@@ -1,0 +1,242 @@
+# Quick Reference: Critical Fixes
+
+Fast access to critical issues and their fixes.
+
+## 🔴 CRITICAL #1: Array Bounds Panic
+
+**File:** `app/commands/githook/prefixCommitMessage.go:13`
+
+**Before:**
+```go
+func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
+    commitFile := args[0]  // PANIC if empty!
+```
+
+**After:**
+```go
+func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
+    if len(args) == 0 {
+        log.Errorf("Missing commit message file argument")
+        return
+    }
+    commitFile := args[0]
+```
+
+---
+
+## 🔴 CRITICAL #2: Unhandled Config Errors
+
+**Files:** Multiple locations
+
+**Pattern:**
+```go
+// BEFORE - DON'T DO THIS
+teamInfo, _ := core.LoadTeamConfiguration()
+scripts, _ := filepath.Glob(path)
+
+// AFTER - DO THIS
+teamInfo, err := core.LoadTeamConfiguration()
+if err != nil {
+    log.Errorf("Failed to load configuration: %v", err)
+    return err
+}
+
+scripts, err := filepath.Glob(path)
+if err != nil {
+    log.Errorf("Failed to find scripts: %v", err)
+    return err
+}
+```
+
+---
+
+## 🔴 CRITICAL #3: Regex Compile Panic
+
+**File:** `app/commands/githook/prefixCommitMessage.go:21`
+
+**Before:**
+```go
+regex := regexp.MustCompile(teamInfo.CommitPrefixRegex)  // Panics!
+```
+
+**After:**
+```go
+regex, err := regexp.Compile(teamInfo.CommitPrefixRegex)
+if err != nil {
+    log.Errorf("Invalid regex in team.json: %v", err)
+    return
+}
+```
+
+---
+
+## 🔴 CRITICAL #4: Pipe Deadlock
+
+**File:** `app/core/gitClone.go`
+
+**Issue:** Unbuffered pipes → git hangs on large transfers
+
+**Quick Fix:** Use buffered approach or avoid pipes
+
+```go
+// BETTER APPROACH
+var stdoutBuf, stderrBuf bytes.Buffer
+cmd.Stdout = &stdoutBuf
+cmd.Stderr = &stderrBuf
+err := cmd.Run()
+// Then process buffers after command completes
+```
+
+---
+
+## 🔴 MAJOR #1: Global Variable Race
+
+**File:** `app/core/location.go`
+
+**Before:**
+```go
+var teamDirectory *string  // No synchronization!
+```
+
+**After:**
+```go
+var (
+    teamDirectory *string
+    mu sync.RWMutex
+)
+
+func GetExecutionPath() string {
+    mu.RLock()
+    defer mu.RUnlock()
+    // ... use teamDirectory
+}
+```
+
+---
+
+## 🔴 MAJOR #2: Remove os.Exit() Calls
+
+**Files:** Multiple
+
+**Before:**
+```go
+if err != nil {
+    log.Errorf("Error: %v", err)
+    os.Exit(1)  // DON'T!
+}
+```
+
+**After:**
+```go
+if err != nil {
+    return fmt.Errorf("error: %w", err)  // Return error instead
+}
+```
+
+---
+
+## 🔴 MAJOR #3: File Permissions
+
+**File:** `app/commands/setup/installgithooks/writeGitHooks.go:24`
+
+**Before:**
+```go
+os.WriteFile(path, data, 0o755)  // Too permissive!
+```
+
+**After:**
+```go
+os.WriteFile(path, data, 0o700)  // Owner only
+```
+
+---
+
+## 🔴 MAJOR #4: Path Traversal
+
+**File:** `app/commands/setup/clonerepositories/cloneRepositories.go:23`
+
+**Before:**
+```go
+func getRepositoryName(repositoryURL string) string {
+    return strings.TrimSuffix(repositoryURL[strings.LastIndex(repositoryURL, "/")+1:], ".git")
+}
+// Doesn't validate against path traversal (../)
+```
+
+**After:**
+```go
+func getRepositoryName(repositoryURL string) string {
+    lastSlash := strings.LastIndex(repositoryURL, "/")
+    if lastSlash == -1 {
+        return ""
+    }
+    name := repositoryURL[lastSlash+1:]
+    name = strings.TrimSuffix(name, ".git")
+
+    // Reject path traversal
+    if strings.Contains(name, "..") || strings.Contains(name, "/") {
+        return ""
+    }
+    return name
+}
+```
+
+---
+
+## 🔴 MAJOR #5: Environment Variable Leakage
+
+**File:** `app/core/commandbuilder.go:61`
+
+**Before:**
+```go
+cmd.Env = os.Environ()  // Leaks ALL credentials!
+```
+
+**After:**
+```go
+cmd.Env = []string{
+    "PATH=" + os.Getenv("PATH"),
+    "HOME=" + os.Getenv("HOME"),
+    "USER=" + os.Getenv("USER"),
+    "SSH_AUTH_SOCK=" + os.Getenv("SSH_AUTH_SOCK"),
+    // Only safe variables - NO credentials!
+}
+```
+
+---
+
+## Testing Commands
+
+### Check for race conditions
+```bash
+go run -race ./app
+```
+
+### Run security scanner
+```bash
+gosec ./app/...
+```
+
+### Find all error suppressions
+```bash
+grep -r ", _" app/ --include="*.go"
+grep -r "os.Exit" app/ --include="*.go"
+```
+
+---
+
+## Priority Checklist
+
+- [ ] #1 - Array bounds
+- [ ] #2 - Config errors
+- [ ] #3 - Regex compile
+- [ ] #4 - Pipe deadlock
+- [ ] #5 - Global race
+- [ ] #6 - Remove os.Exit()
+- [ ] #7 - File perms
+- [ ] #8 - Path traversal
+- [ ] #9 - Env vars
+
+---
+
+See `SECURITY_AND_BUGS_ANALYSIS.md` for detailed analysis and code examples.
