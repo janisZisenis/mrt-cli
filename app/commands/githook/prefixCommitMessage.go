@@ -1,6 +1,7 @@
 package githook
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -9,41 +10,67 @@ import (
 	"mrt-cli/app/log"
 )
 
-func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
+type MissingCommitMessageFileError struct{}
+
+func (e *MissingCommitMessageFileError) Error() string {
+	return "Missing commit message file argument"
+}
+
+type FailedToReadCommitMessageError struct {
+	message error
+}
+
+func (e *FailedToReadCommitMessageError) Error() string {
+	return fmt.Sprintf("Failed to read commit message file: %v", e.message)
+}
+
+type InvalidCommitPrefixRegexError struct {
+	regex    string
+	message  error
+}
+
+func (e *InvalidCommitPrefixRegexError) Error() string {
+	return fmt.Sprintf("Invalid commit prefix regex in team.json:\nCommitPrefixRegex: %s\nPlease fix the regex syntax in your team.json file\nDetails: %v", e.regex, e.message)
+}
+
+type InvalidCommitMessageError struct {
+	regex string
+}
+
+func (e *InvalidCommitMessageError) Error() string {
+	return fmt.Sprintf("The commit message needs a commit prefix that matches the following regex %s.\nEither add the commit prefix to your commit message, or include it in the branch name.\nUse '--no-verify' to skip git-hooks.", e.regex)
+}
+
+func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) error {
 	if len(args) == 0 {
-		log.Errorf("Missing commit message file argument")
-        os.Exit(1)
+		return &MissingCommitMessageFileError{}
 	}
 	commitFile := args[0]
 	data, err := os.ReadFile(commitFile)
 	if err != nil {
-		log.Errorf("Failed to read commit message file: %v", err)
-        os.Exit(1)
+		return &FailedToReadCommitMessageError{message: err}
 	}
 	commitMessage := string(data)
 
 	if teamInfo.CommitPrefixRegex == "" {
-		return
+		return nil
 	}
 
 	regex, err := regexp.Compile(teamInfo.CommitPrefixRegex)
 	if err != nil {
-		log.Errorf("Invalid commit prefix regex in %v: %v", core.TeamFile, err)
-		log.Errorf("CommitPrefixRegex: %s", teamInfo.CommitPrefixRegex)
-		log.Errorf("Please fix the regex syntax in your %v file", core.TeamFile)
-        os.Exit(1)
+		return &InvalidCommitPrefixRegexError{regex: teamInfo.CommitPrefixRegex, message: err}
 	}
 
 	if strings.HasPrefix(commitMessage, "Merge branch") ||
 		strings.HasPrefix(commitMessage, "Merge remote-tracking branch") {
 		log.Infof("Merge commit detected, skipping commit-msg hook.")
-		return
+		return nil
 	}
 
 	matchesFromMessage := regex.FindStringSubmatch(commitMessage)
 	if len(matchesFromMessage) > 0 && strings.HasPrefix(commitMessage, matchesFromMessage[0]+": ") {
 		log.Successf("The commit message contains an issue ID (" + matchesFromMessage[0] + "). Good job!")
-		return
+		return nil
 	}
 
 	matchesFromBranch := regex.FindStringSubmatch(branch)
@@ -51,12 +78,8 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) {
 		_ = os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0o600)
 		log.Successf("Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, " +
 			"prepended to commit message.")
-		return
+		return nil
 	}
 
-	log.Errorf("The commit message needs a commit prefix, that matches the following regex " +
-		teamInfo.CommitPrefixRegex + ".")
-	log.Errorf("Either add the commit prefix to you commit message, or include it in the branch name.")
-	log.Errorf("Use '--no-verify' to skip git-hooks.")
-	os.Exit(1)
+	return &InvalidCommitMessageError{regex: teamInfo.CommitPrefixRegex}
 }

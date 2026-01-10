@@ -85,8 +85,8 @@ teardown() {
 
 	run commit_changes "$(repository_dir)" "no-prefix-branch" "no-prefix-message"
 
-	assert_line --index 1 "The commit message needs a commit prefix, that matches the following regex $commit_prefix_regex."
-	assert_line --index 2 "Either add the commit prefix to you commit message, or include it in the branch name."
+	assert_line --index 1 "The commit message needs a commit prefix that matches the following regex $commit_prefix_regex."
+	assert_line --index 2 "Either add the commit prefix to your commit message, or include it in the branch name."
 	assert_line --index 3 "Use '--no-verify' to skip git-hooks."
 	assert_failure
 }
