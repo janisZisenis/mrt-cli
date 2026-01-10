@@ -27,7 +27,8 @@ func getFolderName(repositoryName string, prefixes []string) string {
 	folderName := repositoryName
 	for _, prefix := range prefixes {
 		if strings.HasPrefix(folderName, prefix) {
-			folderName = strings.Replace(folderName, prefix, "", 1)
+			folderName = strings.TrimPrefix(folderName, prefix)
+			break
 		}
 	}
 	return folderName
