@@ -10,6 +10,8 @@ import (
 	"mrt-cli/app/log"
 )
 
+const bufferSize = 64 * 1024
+
 func CloneRepository(repositoryURL, destination string) {
 	log.Infof("Cloning " + repositoryURL)
 
@@ -20,8 +22,8 @@ func CloneRepository(repositoryURL, destination string) {
 	stdoutReader, stdoutWriter := io.Pipe()
 	stderrReader, stderrWriter := io.Pipe()
 
-	bufferedStdout := bufio.NewReaderSize(stdoutReader, 64*1024)
-	bufferedStderr := bufio.NewReaderSize(stderrReader, 64*1024)
+	bufferedStdout := bufio.NewReaderSize(stdoutReader, bufferSize)
+	bufferedStderr := bufio.NewReaderSize(stderrReader, bufferSize)
 
 	cancel, wait, startErr := NewCommandBuilder().
 		WithCommand("git").
