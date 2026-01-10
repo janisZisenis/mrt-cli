@@ -1,7 +1,6 @@
 package core
 
 import (
-	"context"
 	"errors"
 	"io"
 	"os"
@@ -14,7 +13,7 @@ func CloneRepository(repositoryURL, destination string) {
 	log.Infof("Cloning " + repositoryURL)
 
 	var waitGroup sync.WaitGroup
-	numberOfPipesToWaitFor := 2
+	numberOfPipesToWaitFor := 3
 	waitGroup.Add(numberOfPipesToWaitFor)
 
 	stdoutReader, stdoutWriter := io.Pipe()
@@ -37,12 +36,9 @@ func CloneRepository(repositoryURL, destination string) {
 	}
 
 	go func() {
+		defer waitGroup.Done()
 		if waitErr := wait(); waitErr != nil {
-			if errors.Is(waitErr, context.DeadlineExceeded) {
-				log.Warningf("Repository clone timed out after 5 minutes")
-			} else {
-				log.Warningf("Failed to clone repository, skipping it.")
-			}
+			log.Warningf("Failed to clone repository, skipping it.")
 		}
 
 		_ = stdoutWriter.Close()
