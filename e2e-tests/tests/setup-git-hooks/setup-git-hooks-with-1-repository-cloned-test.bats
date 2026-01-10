@@ -18,7 +18,7 @@ teardown() {
 	assert_output --partial "Invalid commit prefix regex in team.json:"
 	assert_output --partial "CommitPrefixRegex: $invalid_regex"
 	assert_output --partial "Please fix the regex syntax in your team.json file"
-#	assert_failure
+	assert_failure
 }
 
 @test "if commit message file cannot be read the hook should fail gracefully with error message" {
@@ -27,7 +27,7 @@ teardown() {
 	run mrt_execute git-hook --hook-name "commit-msg" --repository-path "$(repository_dir)" /nonexistent/file.txt
 
 	assert_output --partial "Failed to read commit message file"
-#	assert_failure
+	assert_failure
 }
 
 @test "if commit message file argument is missing the hook should fail gracefully with error message" {
@@ -36,7 +36,7 @@ teardown() {
 	run mrt_execute git-hook --hook-name "commit-msg" --repository-path "$(repository_dir)"
 
 	assert_output --partial "Missing commit message file argument"
-#	assert_failure
+	assert_failure
 }
 
 @test "If team json contains blocked branch committing on the blocked branches after setting up git-hooks should be blocked" {
