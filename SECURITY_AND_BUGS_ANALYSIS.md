@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **15 issues** ranging from critical security vulnerabilities to minor performance improvements. (6 issues have been fixed)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **14 issues** ranging from critical security vulnerabilities to minor performance improvements. (7 issues have been fixed)
 
 ### Issue Breakdown
 
@@ -639,7 +639,7 @@ See full analysis above for details on:
 |----|----------|----------|------|-------|--------|
 | #1 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
 | #2 | MAJOR | Concurrency | location.go:9-21 | Global variable race | ⏳ TODO |
-| #3 | MAJOR | Security | writeGitHooks.go:24 | Excessive permissions | ⏳ TODO |
+| #3 | MAJOR | Security | writeGitHooks.go:24 | Excessive permissions | ✅ FIXED |
 | #4 | MAJOR | Security | cloneRepositories.go:23 | Path traversal | ⏳ TODO |
 | #5 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
 | #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
@@ -667,7 +667,7 @@ See full analysis above for details on:
 ```
 [ ] #5 - Add RWMutex to location.go
 [x] #6 - Replace os.Exit() with error returns (FIXED in prefixCommitMessage)
-[ ] #7 - Fix file permissions (0o755 → 0o700)
+[x] #7 - Fix file permissions (0o755 → 0o700) (FIXED)
 [ ] #8 - Sanitize repository URLs
 [ ] #9 - Restrict environment variables
 ```
