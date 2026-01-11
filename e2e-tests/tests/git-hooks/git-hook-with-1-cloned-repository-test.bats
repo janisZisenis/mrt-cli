@@ -26,7 +26,6 @@ assert_git_hook_fails_with_invalid_name() {
 	assert_git_hook_fails_with_invalid_name "pre-commit*" "$(repository_dir)"
 }
 
-
 @test "if subcommand 'git-hook' gets called with a path that does not contain a repository it fails" {
 	run mrt_execute git-hook --hook-name "pre-commit" --repository-path "$(test_env_dir)"
 
