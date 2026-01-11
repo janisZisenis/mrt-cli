@@ -17,7 +17,7 @@ This report documents a comprehensive analysis of the MRT CLI codebase that iden
 | 🔴 CRITICAL | 1 | Must fix immediately |
 | 🔴 MAJOR | 4 | Fix within days |
 | 🟠 SIGNIFICANT | 3 | Fix within sprint |
-| 🟡 MINOR | 2 | Technical debt |
+| 🟡 MINOR | 1 | Technical debt |
 
 ---
 
