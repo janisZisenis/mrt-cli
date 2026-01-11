@@ -14,10 +14,10 @@ func CloneRepositories(teamInfo core.TeamInfo) {
 		folderName := getFolderName(repositoryName, teamInfo.RepositoriesPrefixes)
 		repositoryDirectory := getRepositoryPath(teamInfo.RepositoriesPath, folderName)
 
-	    log.Infof("Cloning " + repositoryURL)
+		log.Infof("Cloning " + repositoryURL)
 		if err := core.CloneRepository(repositoryURL, repositoryDirectory); err != nil {
-            log.Errorf("Clone operation failed: %v", err)
-            log.Warningf("Failed to clone repository, skipping it.")
+			log.Errorf("Clone operation failed: %v", err)
+			log.Warningf("Failed to clone repository, skipping it.")
 			continue
 		}
 		log.Successf("Successfully cloned " + repositoryURL)
