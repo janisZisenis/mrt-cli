@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//nolint:gochecknoglobals // See GLOBAL_VIPER_STATE_FIX.md
 var configMutex sync.Mutex
 
 type CommandConfig struct {
@@ -47,6 +48,7 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 
 		log.Errorf("Error while reading %s/%s.%s", commandDir, configFileName, configFileExtension)
 		log.Errorf("%v", readErr)
+		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)
 	}
 
