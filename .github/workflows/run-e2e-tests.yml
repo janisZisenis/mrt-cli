@@ -76,6 +76,7 @@ jobs:
       binary-name: mrt-linux-amd64
     steps:
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/run-tests
         with:
           private-key: ${{ secrets.PRIVATE_KEY }}
@@ -88,6 +89,7 @@ jobs:
       binary-name: mrt-darwin-arm64
     steps:
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-go
       - name: Setup parallel
         shell: bash
         run: brew install parallel
