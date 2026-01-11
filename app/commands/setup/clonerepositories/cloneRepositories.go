@@ -16,6 +16,7 @@ func CloneRepositories(teamInfo core.TeamInfo) {
 
 	    log.Infof("Cloning " + repositoryURL)
 		if err := core.CloneRepository(repositoryURL, repositoryDirectory); err != nil {
+            log.Errorf("Clone operation failed: %v", err)
             log.Warningf("Failed to clone repository, skipping it.")
 			continue
 		}
