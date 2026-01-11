@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
@@ -12,6 +13,9 @@ import (
 
 	"github.com/spf13/cobra"
 )
+
+//nolint:gochecknoglobals // See GLOBAL_VIPER_STATE_FIX.md
+var configMutex sync.Mutex
 
 type CommandConfig struct {
 	ShortDescription string `json:"shortDescription"`
@@ -22,6 +26,9 @@ func GetScriptsPath() string {
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
+	configMutex.Lock()
+	defer configMutex.Unlock()
+
 	commandDir := filepath.Dir(commandPath)
 	setupDefaults(commandDir)
 
@@ -41,6 +48,7 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 
 		log.Errorf("Error while reading %s/%s.%s", commandDir, configFileName, configFileExtension)
 		log.Errorf("%v", readErr)
+		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)
 	}
 

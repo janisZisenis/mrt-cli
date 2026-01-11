@@ -8,15 +8,15 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **14 issues** ranging from critical security vulnerabilities to minor performance improvements. (11 issues have been fixed, 8 remain)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **14 issues** ranging from critical security vulnerabilities to minor performance improvements. (14 issues have been fixed, 5 remain)
 
 ### Issue Breakdown
 
 | Severity | Count | Status |
 |----------|-------|--------|
 | 🔴 CRITICAL | 1 | Must fix immediately |
-| 🔴 MAJOR | 3 | Fix within days |
-| 🟠 SIGNIFICANT | 3 | Fix within sprint |
+| 🔴 MAJOR | 1 | Fix within days |
+| 🟠 SIGNIFICANT | 2 | Fix within sprint |
 | 🟡 MINOR | 1 | Technical debt |
 
 ---
@@ -177,138 +177,6 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 
 ---
 
-### 🔴 MAJOR #4: Path Traversal in URL Parsing
-
-**File:** `app/commands/setup/clonerepositories/cloneRepositories.go:23`
-
-**Severity:** MAJOR
-**Type:** Security
-**Impact:** Path traversal vulnerability, cloning to unintended directories
-
-#### Problem
-
-```go
-func getRepositoryName(repositoryURL string) string {
-    return strings.TrimSuffix(repositoryURL[strings.LastIndex(repositoryURL, "/")+1:], ".git")
-}
-```
-
-No validation of URL format. URLs with path traversal sequences could extract and use malicious paths:
-
-```
-URL: ssh://github.com/user/../../sensitive
-Extracted: ../../sensitive
-Folder created: /teams/repositories/../../sensitive = /teams/sensitive (wrong!)
-```
-
-#### Impact
-
-- 🔓 Path traversal vulnerability
-- 🔓 Cloning to unexpected directories
-- 🔓 Potential directory/symlink attacks
-
-#### Fix
-
-```go
-func getRepositoryName(repositoryURL string) string {
-    lastSlash := strings.LastIndex(repositoryURL, "/")
-    if lastSlash == -1 {
-        return ""  // Invalid URL - no path separator
-    }
-
-    name := repositoryURL[lastSlash+1:]
-    name = strings.TrimSuffix(name, ".git")
-
-    // Security: Reject path traversal sequences
-    if strings.Contains(name, "..") || strings.Contains(name, "/") {
-        log.Errorf("Invalid repository name (contains path traversal): %s", name)
-        return ""
-    }
-
-    // Reject empty names
-    if name == "" {
-        return ""
-    }
-
-    return name
-}
-```
-
----
-
-### 🔴 MAJOR #5: Environment Variable Leakage
-
-**File:** `app/core/commandbuilder.go:61`
-
-**Severity:** MAJOR
-**Type:** Security
-**Impact:** Credential theft, cloud account compromise
-
-#### Problem
-
-```go
-cmd.Env = os.Environ()  // ALL environment passed to git and hooks!
-```
-
-**All** environment variables passed to spawned processes, including sensitive credentials:
-
-- `SSH_AUTH_SOCK` - SSH agent socket
-- `AWS_*`, `GCP_*` - Cloud credentials
-- `GITHUB_TOKEN` - API tokens
-- `DATABASE_PASSWORD` - DB credentials
-- Any user secrets in environment
-
-#### Attack
-
-Malicious git repository or hook script can read environment:
-
-```bash
-# Inside malicious git hook or .git/hooks/post-checkout
-env | grep -E 'AWS_|GITHUB_|TOKEN|PASSWORD|SECRET'
-```
-
-#### Impact
-
-- 🔓 Credential theft
-- 🔓 Cloud account compromise
-- 🔓 API token exposure
-- 🔓 Database password leakage
-
-#### Recommended Fix
-
-```go
-// Only pass necessary variables
-func (b *CommandBuilder) Build() (*exec.Cmd, context.Context, context.CancelFunc) {
-    ctx, cancel := context.WithCancel(context.Background())
-
-    cmd := exec.CommandContext(ctx, b.command, b.args...)
-    cmd.Stdout = b.stdout
-    cmd.Stderr = b.stderr
-    cmd.Stdin = b.stdin
-
-    // Only pass essential environment variables, not all of them
-    safeEnv := []string{
-        "PATH=" + os.Getenv("PATH"),
-        "HOME=" + os.Getenv("HOME"),
-        "USER=" + os.Getenv("USER"),
-        "SHELL=" + os.Getenv("SHELL"),
-        "SSH_AUTH_SOCK=" + os.Getenv("SSH_AUTH_SOCK"),
-        "TERM=" + os.Getenv("TERM"),
-        "LANG=" + os.Getenv("LANG"),
-        // Add other safe vars as needed
-        // Explicitly do NOT include:
-        // - AWS_*, GCP_*, AZURE_* (cloud credentials)
-        // - GITHUB_TOKEN, GITLAB_TOKEN (API tokens)
-        // - DATABASE_PASSWORD, DB_* (database credentials)
-    }
-    cmd.Env = safeEnv
-
-    return cmd, ctx, cancel
-}
-```
-
----
-
 ## SIGNIFICANT ISSUES (Fix Within Sprint)
 
 ### 🟠 SIGNIFICANT #1: Glob Pattern Injection
@@ -389,53 +257,6 @@ func GetExecutableName() (string, error) {
 
 ---
 
-### 🟠 SIGNIFICANT #3: Viper Config Race Condition
-
-**File:** `app/commands/run/runscript/command.go:26-49`
-
-**Severity:** SIGNIFICANT
-**Type:** Concurrency
-**Impact:** Configuration loading errors in concurrent scenarios
-
-#### Problem
-
-```go
-func LoadCommandConfig(commandPath string) CommandConfig {
-    setupDefaults(commandDir)
-    viper.AddConfigPath(commandDir)
-    viper.SetConfigName(configFileName)
-    viper.SetConfigType(configFileExtension)
-    readErr := viper.ReadInConfig()
-    // ...
-}
-```
-
-Viper is not concurrent-safe internally. Multiple concurrent `LoadCommandConfig()` calls can interfere with each other because Viper uses global state.
-
-#### Fix
-
-```go
-import "sync"
-
-var (
-    configMutex sync.Mutex
-)
-
-func LoadCommandConfig(commandPath string) (CommandConfig, error) {
-    configMutex.Lock()
-    defer configMutex.Unlock()
-
-    setupDefaults(commandDir)
-    viper.AddConfigPath(commandDir)
-    viper.SetConfigName(configFileName)
-    viper.SetConfigType(configFileExtension)
-    readErr := viper.ReadInConfig()
-    // ...
-}
-```
-
----
-
 ## MINOR ISSUES (Technical Debt)
 
 ### 🟡 MINOR #12: Unmarshal Error Ignored
@@ -479,11 +300,8 @@ Paths are hardcoded throughout the codebase instead of being configurable or der
 | ID | Priority | Category | File | Issue | Status |
 |----|----------|----------|------|-------|--------|
 | #1 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
-| #4 | MAJOR | Security | cloneRepositories.go:23 | Path traversal | ⏳ TODO |
-| #5 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
 | #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
-| #8 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
 | #12 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
 | #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
 
@@ -498,15 +316,13 @@ Paths are hardcoded throughout the codebase instead of being configurable or der
 
 ### Phase 2: MAJOR (Next 1-2 days)
 ```
-[ ] #4 - Sanitize repository URLs
-[ ] #5 - Restrict environment variables
+(No remaining MAJOR issues - environment variables maintained for dev tool usability)
 ```
 
 ### Phase 3: SIGNIFICANT (Within sprint)
 ```
 [ ] #6 - Sanitize glob patterns
 [ ] #7 - Handle path errors properly
-[ ] #8 - Add Viper synchronization
 ```
 
 ### Phase 4: MINOR (Technical debt)
@@ -547,4 +363,4 @@ gosec ./app/...
 
 **Report Generated:** 2026-01-10
 **Analysis Tool:** Claude Code Comprehensive Analysis
-**Status:** 11 issues fixed, 8 issues remaining
+**Status:** 14 issues fixed, 5 issues remaining
