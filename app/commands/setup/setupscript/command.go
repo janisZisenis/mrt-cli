@@ -1,6 +1,7 @@
 package setupscript
 
 import (
+	"path/filepath"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -9,8 +10,12 @@ import (
 	"mrt-cli/app/log"
 )
 
+const (
+	setupScriptsDir = "setup"
+)
+
 func GetScriptsPath() string {
-	return "/setup/*/" + core.CommandFileName()
+	return filepath.Join(setupScriptsDir, "*", core.CommandFileName())
 }
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {
