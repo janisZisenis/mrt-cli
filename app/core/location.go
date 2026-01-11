@@ -3,16 +3,24 @@ package core
 import (
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 //nolint:gochecknoglobals // This is a global flag that we can set on every command to change the execution path
-var teamDirectory *string
+var (
+	teamDirectory *string
+	mu            sync.RWMutex
+)
 
 func SetTeamDirectory(directory *string) {
+	mu.Lock()
+	defer mu.Unlock()
 	teamDirectory = directory
 }
 
 func GetExecutionPath() string {
+	mu.RLock()
+	defer mu.RUnlock()
 	if teamDirectory != nil {
 		return *teamDirectory
 	}
