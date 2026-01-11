@@ -14,6 +14,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	runScriptsDir         = "run"
+	commandConfigFileName = "config"
+	commandConfigExtension = "json"
+)
+
 //nolint:gochecknoglobals // See GLOBAL_VIPER_STATE_FIX.md
 var configMutex sync.Mutex
 
@@ -22,7 +28,7 @@ type CommandConfig struct {
 }
 
 func GetScriptsPath() string {
-	return filepath.Join(core.RunScriptsDir, "*", core.CommandFileName())
+	return filepath.Join(runScriptsDir, "*", core.CommandFileName())
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
@@ -35,8 +41,8 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 	var config CommandConfig
 
 	viper.AddConfigPath(commandDir)
-	viper.SetConfigName(core.CommandConfigFileName)
-	viper.SetConfigType(core.CommandConfigExtension)
+	viper.SetConfigName(commandConfigFileName)
+	viper.SetConfigType(commandConfigExtension)
 
 	readErr := viper.ReadInConfig()
 	if readErr != nil {
@@ -44,7 +50,7 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 			return defaultConfig(commandDir)
 		}
 
-		log.Errorf("Error while reading %s/%s.%s", commandDir, core.CommandConfigFileName, core.CommandConfigExtension)
+		log.Errorf("Error while reading %s/%s.%s", commandDir, commandConfigFileName, commandConfigExtension)
 		log.Errorf("%v", readErr)
 		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)

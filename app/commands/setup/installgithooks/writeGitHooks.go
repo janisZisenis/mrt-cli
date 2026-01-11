@@ -9,6 +9,10 @@ import (
 	"mrt-cli/app/log"
 )
 
+const (
+	gitHooksDir = "hooks"
+)
+
 func getHookTemplate() string {
 	return `
 #!/bin/bash -e
@@ -18,7 +22,7 @@ hook_name=$(basename "$0")
 }
 
 func writeGitHook(repositoryDirectory string, hookName string) {
-	hooksPath := filepath.Join(repositoryDirectory, core.GitHooksDir)
+	hooksPath := filepath.Join(repositoryDirectory, gitHooksDir)
 	// #nosec G301 - githooks folder needs 0700 to be private (owner only)
 	_ = os.MkdirAll(hooksPath, 0o700)
 	// #nosec G306 - git hooks need to be executable by owner

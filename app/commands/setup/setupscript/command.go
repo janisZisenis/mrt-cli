@@ -10,8 +10,12 @@ import (
 	"mrt-cli/app/log"
 )
 
+const (
+	setupScriptsDir = "setup"
+)
+
 func GetScriptsPath() string {
-	return filepath.Join(core.SetupScriptsDir, "*", core.CommandFileName())
+	return filepath.Join(setupScriptsDir, "*", core.CommandFileName())
 }
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {

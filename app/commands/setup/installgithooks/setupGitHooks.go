@@ -7,11 +7,15 @@ import (
 	"mrt-cli/app/log"
 )
 
+const (
+	gitMetadataDir = ".git"
+)
+
 func setupGitHooks(teamInfo core.TeamInfo) {
 	reposDir := filepath.Join(core.GetExecutionPath(), teamInfo.RepositoriesPath)
 	log.Infof("Installing git-hooks to repositories located in \"" + reposDir + "\"")
 
-	pattern := filepath.Join(reposDir, "*", core.GitMetadataDir)
+	pattern := filepath.Join(reposDir, "*", gitMetadataDir)
 	repositories, _ := filepath.Glob(pattern)
 	if len(repositories) == 0 {
 		log.Infof("Did not find any repositories. Skip installing git-hooks.")
