@@ -28,31 +28,6 @@ if err != nil {
 
 ---
 
-## 🔴 MAJOR #1: Global Variable Race
-
-**File:** `app/core/location.go`
-
-**Before:**
-```go
-var teamDirectory *string  // No synchronization!
-```
-
-**After:**
-```go
-var (
-    teamDirectory *string
-    mu sync.RWMutex
-)
-
-func GetExecutionPath() string {
-    mu.RLock()
-    defer mu.RUnlock()
-    // ... use teamDirectory
-}
-```
-
----
-
 ## 🔴 MAJOR #4: Path Traversal
 
 **File:** `app/commands/setup/clonerepositories/cloneRepositories.go:23`
@@ -221,7 +196,6 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ### Remaining Issues to Fix
 - [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
-- [ ] #2 - Global race (MAJOR) - ⏳ TODO
 - [ ] #4 - Path traversal (MAJOR) - ⏳ TODO
 - [ ] #5 - Env vars (MAJOR) - ⏳ TODO
 - [ ] #6 - Glob injection (SIGNIFICANT) - ⏳ TODO
