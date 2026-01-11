@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **20 issues** ranging from critical security vulnerabilities to minor performance improvements. (14 issues fixed, 1 dismissed as inapplicable, 5 remain)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **20 issues** ranging from critical security vulnerabilities to minor performance improvements. (15 issues fixed, 1 dismissed as inapplicable, 4 remain)
 
 ### Issue Breakdown
 
@@ -247,15 +247,34 @@ if err := viper.Unmarshal(&config); err != nil {
 
 ---
 
-### 🟡 MINOR #14: Hardcoded Paths
+### ✅ MINOR #14: Hardcoded Paths (FIXED)
 
 **Files:** Multiple locations
 
 **Severity:** MINOR
 **Type:** Maintainability
-**Impact:** Difficulty in configuration and deployment
+**Status:** ✅ FIXED
 
-Paths are hardcoded throughout the codebase instead of being configurable or derived from package structure.
+**Fix Applied:**
+
+Created centralized constants file `app/core/paths.go` with the following constants:
+- `HookScriptsDir` - Directory for hook scripts
+- `GitHooksDir` - Git hooks directory
+- `RunScriptsDir` - Run scripts directory
+- `SetupScriptsDir` - Setup scripts directory
+- `GitMetadataDir` - Git metadata directory
+- `CommandConfigFileName` - Command config filename
+- `CommandConfigExtension` - Command config extension
+
+Updated all hardcoded paths to use `filepath.Join()` with these constants in:
+- `app/commands/githook/command.go` - Hook script discovery
+- `app/commands/setup/installgithooks/setupGitHooks.go` - Repository discovery
+- `app/commands/setup/installgithooks/writeGitHooks.go` - Hook file paths
+- `app/commands/setup/clonerepositories/cloneRepositories.go` - Repository path construction
+- `app/commands/run/runscript/command.go` - Run script patterns and config files
+- `app/commands/setup/setupscript/command.go` - Setup script patterns
+
+All path concatenation now uses `filepath.Join()` instead of string concatenation with "/" to ensure cross-platform compatibility.
 
 ---
 
@@ -267,7 +286,7 @@ Paths are hardcoded throughout the codebase instead of being configurable or der
 | #2 | MAJOR | Error Handling | githook/command.go:47 | Hard exit calls (os.Exit) | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
 | #12 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
-| #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
+| #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ✅ FIXED |
 
 ---
 
@@ -326,4 +345,4 @@ gosec ./app/...
 
 **Report Generated:** 2026-01-10
 **Analysis Tool:** Claude Code Comprehensive Analysis
-**Status:** 14 issues fixed, 1 dismissed as not applicable, 5 issues remaining
+**Status:** 15 issues fixed, 1 dismissed as not applicable, 4 issues remaining

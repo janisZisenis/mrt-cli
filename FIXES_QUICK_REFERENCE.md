@@ -94,7 +94,7 @@ grep -r "os.Exit" app/ --include="*.go"
 - [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
 - [ ] #7 - Path errors (SIGNIFICANT) - ⏳ TODO
 - [ ] #12 - Unmarshal error (MINOR) - ⏳ TODO
-- [ ] #14 - Hardcoded paths (MINOR) - ⏳ TODO
+- [x] #14 - Hardcoded paths (MINOR) - ✅ FIXED
 
 ---
 

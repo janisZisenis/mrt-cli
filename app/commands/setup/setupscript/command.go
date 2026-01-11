@@ -1,6 +1,7 @@
 package setupscript
 
 import (
+	"path/filepath"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -10,7 +11,7 @@ import (
 )
 
 func GetScriptsPath() string {
-	return "/setup/*/" + core.CommandFileName()
+	return filepath.Join(core.SetupScriptsDir, "*", core.CommandFileName())
 }
 
 func MakeCommand(scriptPath string, scriptName string) *cobra.Command {

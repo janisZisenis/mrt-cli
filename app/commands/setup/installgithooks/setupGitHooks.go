@@ -8,10 +8,11 @@ import (
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {
-	log.Infof("Installing git-hooks to repositories located in \"" + core.GetExecutionPath() + "/" +
-		teamInfo.RepositoriesPath + "\"")
+	reposDir := filepath.Join(core.GetExecutionPath(), teamInfo.RepositoriesPath)
+	log.Infof("Installing git-hooks to repositories located in \"" + reposDir + "\"")
 
-	repositories, _ := filepath.Glob(core.GetExecutionPath() + "/" + teamInfo.RepositoriesPath + "/*/.git")
+	pattern := filepath.Join(reposDir, "*", core.GitMetadataDir)
+	repositories, _ := filepath.Glob(pattern)
 	if len(repositories) == 0 {
 		log.Infof("Did not find any repositories. Skip installing git-hooks.")
 	}

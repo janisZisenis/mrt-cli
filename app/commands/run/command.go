@@ -1,6 +1,8 @@
 package run
 
 import (
+	"path/filepath"
+
 	"mrt-cli/app/commands/run/runscript"
 	"mrt-cli/app/core"
 
@@ -15,7 +17,8 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 		Short: "Executes a specified run command",
 	}
 
-	core.ForScriptInPathDo(teamDirectory+runscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
+	scriptPath := filepath.Join(teamDirectory, runscript.GetScriptsPath())
+	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
 		command.AddCommand(runscript.MakeCommand(scriptName, scriptPath))
 	})
 

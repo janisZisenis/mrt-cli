@@ -1,6 +1,8 @@
 package setup
 
 import (
+	"path/filepath"
+
 	"github.com/spf13/cobra"
 
 	"mrt-cli/app/commands/setup/all"
@@ -22,7 +24,8 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.AddCommand(clonerepositories.MakeCommand())
 	command.AddCommand(installgithooks.MakeCommand())
 
-	core.ForScriptInPathDo(teamDirectory+setupscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
+	scriptPath := filepath.Join(teamDirectory, setupscript.GetScriptsPath())
+	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
 		command.AddCommand(setupscript.MakeCommand(scriptPath, scriptName))
 	})
 

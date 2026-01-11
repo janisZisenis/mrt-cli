@@ -1,6 +1,7 @@
 package clonerepositories
 
 import (
+	"path/filepath"
 	"strings"
 
 	"mrt-cli/app/core"
@@ -41,5 +42,5 @@ func getFolderName(repositoryName string, prefixes []string) string {
 }
 
 func getRepositoryPath(repositoriesPath string, folderName string) string {
-	return core.GetExecutionPath() + "/" + repositoriesPath + "/" + folderName
+	return filepath.Join(core.GetExecutionPath(), repositoriesPath, folderName)
 }

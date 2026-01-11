@@ -22,7 +22,7 @@ type CommandConfig struct {
 }
 
 func GetScriptsPath() string {
-	return "/run/*/" + core.CommandFileName()
+	return filepath.Join(core.RunScriptsDir, "*", core.CommandFileName())
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
@@ -35,10 +35,8 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 	var config CommandConfig
 
 	viper.AddConfigPath(commandDir)
-	configFileName := "config"
-	configFileExtension := "json"
-	viper.SetConfigName(configFileName)
-	viper.SetConfigType(configFileExtension)
+	viper.SetConfigName(core.CommandConfigFileName)
+	viper.SetConfigType(core.CommandConfigExtension)
 
 	readErr := viper.ReadInConfig()
 	if readErr != nil {
@@ -46,7 +44,7 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 			return defaultConfig(commandDir)
 		}
 
-		log.Errorf("Error while reading %s/%s.%s", commandDir, configFileName, configFileExtension)
+		log.Errorf("Error while reading %s/%s.%s", commandDir, core.CommandConfigFileName, core.CommandConfigExtension)
 		log.Errorf("%v", readErr)
 		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)

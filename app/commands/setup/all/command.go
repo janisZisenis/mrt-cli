@@ -1,6 +1,8 @@
 package all
 
 import (
+	"path/filepath"
+
 	"mrt-cli/app/commands/setup/clonerepositories"
 	"mrt-cli/app/commands/setup/installgithooks"
 	"mrt-cli/app/commands/setup/setupscript"
@@ -30,7 +32,8 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	setDefaultValueToTrue(command, skipCloneFlag)
 
-	core.ForScriptInPathDo(teamDirectory+setupscript.GetScriptsPath(), func(_ string, scriptName string) {
+	scriptPath := filepath.Join(teamDirectory, setupscript.GetScriptsPath())
+	core.ForScriptInPathDo(scriptPath, func(_ string, scriptName string) {
 		skipFlag := skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
 		setDefaultValueToTrue(command, skipFlag)
@@ -65,8 +68,9 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Infof("Executing setup commands.")
 
+	scriptPath := filepath.Join(core.GetExecutionPath(), setupscript.GetScriptsPath())
 	core.ForScriptInPathDo(
-		core.GetExecutionPath()+setupscript.GetScriptsPath(),
+		scriptPath,
 		func(scriptPath string, scriptName string) {
 			skipFlag, _ := cmd.Flags().GetBool(skipFlagPrefix + scriptName)
 			if !skipFlag {
