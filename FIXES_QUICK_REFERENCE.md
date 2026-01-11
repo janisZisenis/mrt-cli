@@ -28,33 +28,7 @@ if err != nil {
 
 ---
 
-## 🟠 SIGNIFICANT #1: Glob Pattern Injection
-
-**File:** `app/commands/githook/command.go:55`
-
-**Before:**
-```go
-files, _ := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
-```
-
-**After:**
-```go
-func sanitizeForGlob(input string) string {
-    return filepath.Base(filepath.Clean(input))
-}
-
-files, err := filepath.Glob(
-    filepath.Join(repositoryPath, "hook-scripts", sanitizeForGlob(hookName), "*"),
-)
-if err != nil {
-    log.Errorf("Failed to find hook scripts: %v", err)
-    return
-}
-```
-
----
-
-## 🟠 SIGNIFICANT #2: Ignored Path Errors
+## 🟠 SIGNIFICANT #1: Ignored Path Errors
 
 **File:** `app/core/location.go:19, 24, 29`
 
@@ -118,7 +92,6 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ### Remaining Issues to Fix
 - [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
-- [ ] #6 - Glob injection (SIGNIFICANT) - ⏳ TODO
 - [ ] #7 - Path errors (SIGNIFICANT) - ⏳ TODO
 - [ ] #12 - Unmarshal error (MINOR) - ⏳ TODO
 - [ ] #14 - Hardcoded paths (MINOR) - ⏳ TODO

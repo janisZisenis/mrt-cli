@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **14 issues** ranging from critical security vulnerabilities to minor performance improvements. (14 issues have been fixed, 5 remain)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **20 issues** ranging from critical security vulnerabilities to minor performance improvements. (14 issues fixed, 1 dismissed as inapplicable, 5 remain)
 
 ### Issue Breakdown
 
@@ -16,8 +16,8 @@ This report documents a comprehensive analysis of the MRT CLI codebase that iden
 |----------|-------|--------|
 | 🔴 CRITICAL | 1 | Must fix immediately |
 | 🔴 MAJOR | 1 | Fix within days |
-| 🟠 SIGNIFICANT | 2 | Fix within sprint |
-| 🟡 MINOR | 1 | Technical debt |
+| 🟠 SIGNIFICANT | 1 | Fix within sprint |
+| 🟡 MINOR | 2 | Technical debt |
 
 ---
 
@@ -179,45 +179,9 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 
 ## SIGNIFICANT ISSUES (Fix Within Sprint)
 
-### 🟠 SIGNIFICANT #1: Glob Pattern Injection
+### 🟠 SIGNIFICANT #1: Ignored Path Errors
 
-**File:** `app/commands/githook/command.go:55`
-
-**Severity:** SIGNIFICANT
-**Type:** Security
-**Impact:** Unexpected script execution from unintended locations
-
-#### Problem
-
-```go
-files, _ := filepath.Glob(repositoryPath + "/hook-scripts/" + hookName + "/*")
-```
-
-`repositoryPath` or `hookName` can contain glob metacharacters. Example: `repository*` would match multiple directories and execute scripts from all of them.
-
-#### Fix
-
-```go
-// Sanitize inputs to remove glob characters
-func sanitizeForGlob(input string) string {
-    // Remove or escape glob metacharacters: * ? [ ] { } \
-    return filepath.Base(filepath.Clean(input))
-}
-
-files, err := filepath.Glob(
-    filepath.Join(repositoryPath, "hook-scripts", sanitizeForGlob(hookName), "*"),
-)
-if err != nil {
-    log.Errorf("Failed to find hook scripts: %v", err)
-    return
-}
-```
-
----
-
-### 🟠 SIGNIFICANT #2: Ignored Path Errors
-
-**File:** `app/core/location.go:19, 24, 29`
+**File:** `app/core/location.go:31, 36`
 
 **Severity:** SIGNIFICANT
 **Type:** Error Handling
@@ -300,7 +264,7 @@ Paths are hardcoded throughout the codebase instead of being configurable or der
 | ID | Priority | Category | File | Issue | Status |
 |----|----------|----------|------|-------|--------|
 | #1 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
-| #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
+| #2 | MAJOR | Error Handling | githook/command.go:47 | Hard exit calls (os.Exit) | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
 | #12 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
 | #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
@@ -321,7 +285,6 @@ Paths are hardcoded throughout the codebase instead of being configurable or der
 
 ### Phase 3: SIGNIFICANT (Within sprint)
 ```
-[ ] #6 - Sanitize glob patterns
 [ ] #7 - Handle path errors properly
 ```
 
@@ -363,4 +326,4 @@ gosec ./app/...
 
 **Report Generated:** 2026-01-10
 **Analysis Tool:** Claude Code Comprehensive Analysis
-**Status:** 14 issues fixed, 5 issues remaining
+**Status:** 14 issues fixed, 1 dismissed as not applicable, 5 issues remaining
