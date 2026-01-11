@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	runScriptsDir         = "run"
-	commandConfigFileName = "config"
+	runScriptsDir          = "run"
+	commandConfigFileName  = "config"
 	commandConfigExtension = "json"
 )
 
