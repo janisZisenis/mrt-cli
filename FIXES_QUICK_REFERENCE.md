@@ -75,30 +75,6 @@ func GetAbsoluteExecutionPath() (string, error) {
 
 ---
 
-## 🟠 SIGNIFICANT #3: Viper Config Race Condition
-
-**File:** `app/commands/run/runscript/command.go:26-49`
-
-**Before:**
-```go
-func LoadCommandConfig(commandPath string) CommandConfig {
-    // ... no synchronization
-}
-```
-
-**After:**
-```go
-var configMutex sync.Mutex
-
-func LoadCommandConfig(commandPath string) (CommandConfig, error) {
-    configMutex.Lock()
-    defer configMutex.Unlock()
-    // ... rest of function
-}
-```
-
----
-
 ## 🟡 MINOR #12: Unmarshal Error Ignored
 
 **File:** `app/commands/run/runscript/command.go:47`
@@ -144,7 +120,6 @@ grep -r "os.Exit" app/ --include="*.go"
 - [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
 - [ ] #6 - Glob injection (SIGNIFICANT) - ⏳ TODO
 - [ ] #7 - Path errors (SIGNIFICANT) - ⏳ TODO
-- [ ] #8 - Viper race (SIGNIFICANT) - ⏳ TODO
 - [ ] #12 - Unmarshal error (MINOR) - ⏳ TODO
 - [ ] #14 - Hardcoded paths (MINOR) - ⏳ TODO
 
