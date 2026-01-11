@@ -12,9 +12,7 @@ import (
 
 const bufferSize = 64 * 1024
 
-func CloneRepository(repositoryURL, destination string) {
-	log.Infof("Cloning " + repositoryURL)
-
+func CloneRepository(repositoryURL, destination string) error {
 	var waitGroup sync.WaitGroup
 	numberOfPipesToWaitFor := 3
 	waitGroup.Add(numberOfPipesToWaitFor)
@@ -25,7 +23,7 @@ func CloneRepository(repositoryURL, destination string) {
 	bufferedStdout := bufio.NewReaderSize(stdoutReader, bufferSize)
 	bufferedStderr := bufio.NewReaderSize(stderrReader, bufferSize)
 
-	cancel, wait, startErr := NewCommandBuilder().
+	cancel, waitUntilCloneFinished, startErr := NewCommandBuilder().
 		WithCommand("git").
 		WithArgs("clone", "--progress", repositoryURL, destination).
 		WithStdout(stdoutWriter).
@@ -35,16 +33,16 @@ func CloneRepository(repositoryURL, destination string) {
 	defer cancel()
 
 	if startErr != nil {
-		log.Errorf("Error starting command: %v\n", startErr)
 		_ = stdoutWriter.Close()
 		_ = stderrWriter.Close()
-		return
+		return startErr
 	}
 
+	var cloneErr error
 	go func() {
 		defer waitGroup.Done()
-		if waitErr := wait(); waitErr != nil {
-			log.Warningf("Failed to clone repository, skipping it.")
+		if waitErr := waitUntilCloneFinished(); waitErr != nil {
+			cloneErr = waitErr
 		}
 
 		_ = stdoutWriter.Close()
@@ -63,7 +61,11 @@ func CloneRepository(repositoryURL, destination string) {
 
 	waitGroup.Wait()
 
-	log.Successf("Successfully cloned " + repositoryURL)
+	if cloneErr != nil {
+		return cloneErr
+	}
+
+	return nil
 }
 
 func copyWithColor(dst io.Writer, src io.Reader) {

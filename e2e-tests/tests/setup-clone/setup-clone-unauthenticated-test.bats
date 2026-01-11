@@ -29,7 +29,7 @@ test_if_team_file_contains_repository_setup_prints_message_about_cloning_reposit
 	run clone_repositories_using_mrt "${repositories[@]}"
 
 	assert_line --index 0 "Start cloning repositories into \"$repository_path\""
-	assert_line --index 9 "Cloning repositories done"
+	assert_line_reversed_output 0 "Cloning repositories done"
 }
 
 @test "If team json contains 2 repositories it should print out a done message after cloning second" {
