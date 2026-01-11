@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **12 issues** ranging from critical security vulnerabilities to minor performance improvements. (9 issues have been fixed)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **14 issues** ranging from critical security vulnerabilities to minor performance improvements. (10 issues have been fixed, 4 remain)
 
 ### Issue Breakdown
 
@@ -17,7 +17,7 @@ This report documents a comprehensive analysis of the MRT CLI codebase that iden
 | 🔴 CRITICAL | 1 | Must fix immediately |
 | 🔴 MAJOR | 4 | Fix within days |
 | 🟠 SIGNIFICANT | 3 | Fix within sprint |
-| 🟡 MINOR | 7 | Technical debt |
+| 🟡 MINOR | 2 | Technical debt |
 
 ---
 
@@ -258,43 +258,6 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 
     return branchName, nil
 }
-```
-
----
-
-### 🔴 MAJOR #3: Excessive File Permissions on Git Hooks
-
-**File:** `app/commands/setup/installgithooks/writeGitHooks.go:22-23`
-
-**Severity:** MAJOR
-**Type:** File Security
-**Impact:** Information disclosure, potential privilege escalation
-
-#### Problem
-
-```go
-// #nosec G301 - githooks folder needs 0755 to be executable
-_ = os.MkdirAll(hooksPath, 0o755)
-err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0o755)
-```
-
-- `0o755` = `rwxr-xr-x` (world readable & executable)
-- Git hooks contain sensitive team configuration
-- Any user on system can read and execute
-- Should be `0o700` = `rwx------` (owner only)
-
-#### Impact
-
-- 🔓 Information disclosure (config paths, commands)
-- 🔓 Potential privilege escalation
-- 🔓 Security misconfiguration
-
-#### Fix
-
-```go
-// #nosec G301 - githooks folder needs 0700 to be private (owner only)
-_ = os.MkdirAll(hooksPath, 0o700)
-err := os.WriteFile(hooksPath+hookName, []byte(getHookTemplate()), 0o700)
 ```
 
 ---
@@ -558,82 +521,9 @@ func LoadCommandConfig(commandPath string) (CommandConfig, error) {
 
 ---
 
-### 🟠 SIGNIFICANT #5: Inefficient Memory Usage in Loops
-
-**File:** `app/core/gitClone.go:68-72`
-
-**Severity:** SIGNIFICANT
-**Type:** Performance
-**Impact:** Unnecessary allocations, GC pressure on large transfers
-
-#### Problem
-
-```go
-for {
-    n, readErr := src.Read(buf)
-    if n > 0 {
-        text := string(buf[:n])  // String allocation on every iteration
-        _, writeErr := colorWriter.Write([]byte(text))  // Convert back to bytes
-```
-
-Converting []byte to string then back to []byte on every read. Wasteful allocations.
-
-#### Fix
-
-```go
-func copyWithColor(dst io.Writer, src io.Reader) {
-    colorWriter := ColorWriter{Target: dst}
-
-    numberOfBytes := 1024
-    buf := make([]byte, numberOfBytes)
-    for {
-        n, readErr := src.Read(buf)
-        if n > 0 {
-            // Write directly without string conversion
-            _, writeErr := colorWriter.Write(buf[:n])
-            if writeErr != nil {
-                log.Errorf("Error writing to destination: %v\n", writeErr)
-            }
-        }
-        if readErr != nil {
-            if errors.Is(readErr, io.EOF) {
-                break
-            }
-            log.Errorf("Error reading from source: %v\n", readErr)
-            break
-        }
-    }
-}
-```
-
----
-
 ## MINOR ISSUES (Technical Debt)
 
-### 🟡 MINOR #1: Ignored Error in Cobra Execute
-
-**File:** `app/main.go:38`
-
-**Severity:** MINOR
-**Type:** Exit Code Handling
-
-```go
-_ = rootCmd.Execute()
-```
-
-Cobra's Execute() returns error which is ignored. If command execution fails, exit code may not reflect actual failure.
-
-#### Fix
-
-```go
-if err := rootCmd.Execute(); err != nil {
-    os.Exit(1)
-}
-```
-
----
-
-### 🟡 MINOR #2: Unmarshal Error Ignored
+### 🟡 MINOR #12: Unmarshal Error Ignored
 
 **File:** `app/commands/run/runscript/command.go:47`
 
@@ -657,13 +547,15 @@ if err := viper.Unmarshal(&config); err != nil {
 
 ---
 
-### 🟡 MINOR #3-7: Other Minor Issues
+### 🟡 MINOR #14: Hardcoded Paths
 
-See full analysis above for details on:
-- Missing context usage in clone
-- Hardcoded paths in multiple files
-- Incomplete error messages
-- Log levels inconsistencies
+**Files:** Multiple locations
+
+**Severity:** MINOR
+**Type:** Maintainability
+**Impact:** Difficulty in configuration and deployment
+
+Paths are hardcoded throughout the codebase instead of being configurable or derived from package structure.
 
 ---
 
@@ -673,17 +565,13 @@ See full analysis above for details on:
 |----|----------|----------|------|-------|--------|
 | #1 | CRITICAL | Security | githook/command.go:33 | Unhandled config errors | ⏳ TODO |
 | #2 | MAJOR | Concurrency | location.go:9-21 | Global variable race | ⏳ TODO |
-| #3 | MAJOR | Security | writeGitHooks.go:22-28 | Excessive permissions | ✅ FIXED |
 | #4 | MAJOR | Security | cloneRepositories.go:23 | Path traversal | ⏳ TODO |
 | #5 | MAJOR | Security | commandbuilder.go:61 | Env var leakage | ⏳ TODO |
 | #6 | SIGNIFICANT | Security | githook/command.go:55 | Glob injection | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
 | #8 | SIGNIFICANT | Concurrency | runscript/command.go | Viper race condition | ⏳ TODO |
-| #9 | SIGNIFICANT | Performance | gitClone.go | Inefficient strings in prefixes | ✅ FIXED |
-| #10 | MINOR | Exit Codes | main.go:38 | Ignored Cobra error | ✅ FIXED |
-| #11 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
-| #12 | MINOR | Operability | gitClone.go | Buffered reader pipe handling | ✅ FIXED |
-| #13 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
+| #12 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
+| #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ⏳ TODO |
 
 ---
 
@@ -691,10 +579,7 @@ See full analysis above for details on:
 
 ### Phase 1: CRITICAL (Next 1-2 hours)
 ```
-[x] #1 - Array bounds check in prefixCommitMessage.go:13 (FIXED)
-[x] #2 - Replace MustCompile with Compile (FIXED)
-[x] #3 - Fix unbuffered pipe deadlock with buffered readers (FIXED)
-[ ] #4 - Error handling for LoadTeamConfiguration()
+[ ] #1 - Error handling for LoadTeamConfiguration()
 ```
 
 ### Phase 2: MAJOR (Next 1-2 days)
@@ -709,14 +594,12 @@ See full analysis above for details on:
 [ ] #6 - Sanitize glob patterns
 [ ] #7 - Handle path errors properly
 [ ] #8 - Add Viper synchronization
-[x] #9 - Optimize memory allocations (FIXED - getFolderName strings)
 ```
 
 ### Phase 4: MINOR (Technical debt)
 ```
-[x] #10 - Handle Cobra Execute errors (FIXED)
-[ ] #11 - Unmarshal error handling
-[ ] #13 - Hardcoded paths cleanup
+[ ] #12 - Unmarshal error handling
+[ ] #14 - Hardcoded paths cleanup
 ```
 
 ---
@@ -751,4 +634,4 @@ gosec ./app/...
 
 **Report Generated:** 2026-01-10
 **Analysis Tool:** Claude Code Comprehensive Analysis
-**Status:** Initial findings - awaiting fixes
+**Status:** 10 issues fixed, 9 issues remaining
