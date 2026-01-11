@@ -28,6 +28,25 @@ if err != nil {
 
 ---
 
+## 🔴 MAJOR #2: Hard Exit Calls (os.Exit)
+
+**Files:** Multiple locations
+- `app/commands/githook/command.go:47, 51, 72`
+- `app/commands/githook/prefixCommitMessage.go`
+- `app/core/gitBranch.go`
+
+**Problem:**
+```go
+if err != nil {
+    log.Errorf("The given path does not contain a repository.")
+    os.Exit(1)  // ← Hard crash! No cleanup, no error propagation
+}
+```
+
+**Solution:** Return errors instead of calling `os.Exit()`, allowing callers to handle errors gracefully.
+
+---
+
 ## 🟠 SIGNIFICANT #1: Ignored Path Errors
 
 **File:** `app/core/location.go:19, 24, 29`
@@ -92,9 +111,9 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ### Remaining Issues to Fix
 - [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
+- [ ] #2 - Hard exit calls (MAJOR) - ⏳ TODO
 - [ ] #7 - Path errors (SIGNIFICANT) - ⏳ TODO
 - [ ] #12 - Unmarshal error (MINOR) - ⏳ TODO
-- [x] #14 - Hardcoded paths (MINOR) - ✅ FIXED
 
 ---
 

@@ -8,16 +8,16 @@
 
 ## Executive Summary
 
-This report documents a comprehensive analysis of the MRT CLI codebase that identified **20 issues** ranging from critical security vulnerabilities to minor performance improvements. (15 issues fixed, 1 dismissed as inapplicable, 4 remain)
+This report documents a comprehensive analysis of the MRT CLI codebase that identified **19 issues** ranging from critical security vulnerabilities to minor performance improvements. (14 issues fixed, 1 dismissed as inapplicable, 4 remain)
 
 ### Issue Breakdown
 
-| Severity | Count | Status |
-|----------|-------|--------|
-| 🔴 CRITICAL | 1 | Must fix immediately |
-| 🔴 MAJOR | 1 | Fix within days |
-| 🟠 SIGNIFICANT | 1 | Fix within sprint |
-| 🟡 MINOR | 2 | Technical debt |
+| Severity | Count | Status | Estimate | E2E Tests |
+|----------|-------|--------|----------|-----------|
+| 🔴 CRITICAL | 1 | Must fix immediately | 1.5-2 hours | ✅ Yes |
+| 🔴 MAJOR | 1 | Fix within days | 1.5-2 hours | ✅ Yes |
+| 🟠 SIGNIFICANT | 1 | Fix within sprint | 1-1.5 hours | ⚠️ Consider |
+| 🟡 MINOR | 1 | Technical debt | 0.5-1 hour | ✅ Yes |
 
 ---
 
@@ -247,37 +247,6 @@ if err := viper.Unmarshal(&config); err != nil {
 
 ---
 
-### ✅ MINOR #14: Hardcoded Paths (FIXED)
-
-**Files:** Multiple locations
-
-**Severity:** MINOR
-**Type:** Maintainability
-**Status:** ✅ FIXED
-
-**Fix Applied:**
-
-Created centralized constants file `app/core/paths.go` with the following constants:
-- `HookScriptsDir` - Directory for hook scripts
-- `GitHooksDir` - Git hooks directory
-- `RunScriptsDir` - Run scripts directory
-- `SetupScriptsDir` - Setup scripts directory
-- `GitMetadataDir` - Git metadata directory
-- `CommandConfigFileName` - Command config filename
-- `CommandConfigExtension` - Command config extension
-
-Updated all hardcoded paths to use `filepath.Join()` with these constants in:
-- `app/commands/githook/command.go` - Hook script discovery
-- `app/commands/setup/installgithooks/setupGitHooks.go` - Repository discovery
-- `app/commands/setup/installgithooks/writeGitHooks.go` - Hook file paths
-- `app/commands/setup/clonerepositories/cloneRepositories.go` - Repository path construction
-- `app/commands/run/runscript/command.go` - Run script patterns and config files
-- `app/commands/setup/setupscript/command.go` - Setup script patterns
-
-All path concatenation now uses `filepath.Join()` instead of string concatenation with "/" to ensure cross-platform compatibility.
-
----
-
 ## Summary Table
 
 | ID | Priority | Category | File | Issue | Status |
@@ -286,7 +255,6 @@ All path concatenation now uses `filepath.Join()` instead of string concatenatio
 | #2 | MAJOR | Error Handling | githook/command.go:47 | Hard exit calls (os.Exit) | ⏳ TODO |
 | #7 | SIGNIFICANT | Error Handling | location.go | Ignored path errors | ⏳ TODO |
 | #12 | MINOR | Error Handling | runscript/command.go:47 | Unmarshal error ignored | ⏳ TODO |
-| #14 | MINOR | Maintainability | Multiple | Hardcoded paths | ✅ FIXED |
 
 ---
 
@@ -299,7 +267,7 @@ All path concatenation now uses `filepath.Join()` instead of string concatenatio
 
 ### Phase 2: MAJOR (Next 1-2 days)
 ```
-(No remaining MAJOR issues - environment variables maintained for dev tool usability)
+[ ] #2 - Replace os.Exit() with error returns
 ```
 
 ### Phase 3: SIGNIFICANT (Within sprint)
@@ -310,7 +278,6 @@ All path concatenation now uses `filepath.Join()` instead of string concatenatio
 ### Phase 4: MINOR (Technical debt)
 ```
 [ ] #12 - Unmarshal error handling
-[ ] #14 - Hardcoded paths cleanup
 ```
 
 ---
@@ -326,6 +293,32 @@ go run -race ./app
 ```bash
 gosec ./app/...
 ```
+
+### E2E Tests for Fixes
+
+#### CRITICAL #1 - Unhandled Config Errors ✅ E2E Test Required
+Add tests for:
+- git-hook command with missing team.json configuration
+- github-hook command with invalid JSON in team.json
+- Scripts glob with invalid path patterns
+- Expected: Error messages logged, command exits with non-zero status
+
+#### MAJOR #2 - Hard Exit Calls ✅ E2E Test Required
+Add tests for:
+- git-hook with non-existent repository path
+- prefixCommitMessage with missing commit message file
+- Verify errors are properly reported, not hard crashes
+- Expected: Error handling allows e2e test to continue, no process termination
+
+#### SIGNIFICANT #1 - Ignored Path Errors ⚠️ Consider E2E Test
+Platform-specific path operations might not need e2e tests due to OS differences.
+Consider unit tests instead for mocking os.Executable() failures.
+
+#### MINOR #12 - Unmarshal Error Ignored ✅ E2E Test Required
+Add tests for:
+- run command with malformed command config JSON
+- setup command with invalid JSON
+- Expected: Error handling gracefully, no panics
 
 ### Add unit tests for error cases
 - Empty args to git hooks
@@ -345,4 +338,4 @@ gosec ./app/...
 
 **Report Generated:** 2026-01-10
 **Analysis Tool:** Claude Code Comprehensive Analysis
-**Status:** 15 issues fixed, 1 dismissed as not applicable, 4 issues remaining
+**Status:** 4 issues remaining (1 CRITICAL, 1 MAJOR, 1 SIGNIFICANT, 1 MINOR)
