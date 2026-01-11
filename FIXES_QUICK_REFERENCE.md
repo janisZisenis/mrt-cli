@@ -28,60 +28,6 @@ if err != nil {
 
 ---
 
-## 🔴 MAJOR #4: Path Traversal
-
-**File:** `app/commands/setup/clonerepositories/cloneRepositories.go:23`
-
-**Before:**
-```go
-func getRepositoryName(repositoryURL string) string {
-    return strings.TrimSuffix(repositoryURL[strings.LastIndex(repositoryURL, "/")+1:], ".git")
-}
-// Doesn't validate against path traversal (../)
-```
-
-**After:**
-```go
-func getRepositoryName(repositoryURL string) string {
-    lastSlash := strings.LastIndex(repositoryURL, "/")
-    if lastSlash == -1 {
-        return ""
-    }
-    name := repositoryURL[lastSlash+1:]
-    name = strings.TrimSuffix(name, ".git")
-
-    // Reject path traversal
-    if strings.Contains(name, "..") || strings.Contains(name, "/") {
-        return ""
-    }
-    return name
-}
-```
-
----
-
-## 🔴 MAJOR #5: Environment Variable Leakage
-
-**File:** `app/core/commandbuilder.go:61`
-
-**Before:**
-```go
-cmd.Env = os.Environ()  // Leaks ALL credentials!
-```
-
-**After:**
-```go
-cmd.Env = []string{
-    "PATH=" + os.Getenv("PATH"),
-    "HOME=" + os.Getenv("HOME"),
-    "USER=" + os.Getenv("USER"),
-    "SSH_AUTH_SOCK=" + os.Getenv("SSH_AUTH_SOCK"),
-    // Only safe variables - NO credentials!
-}
-```
-
----
-
 ## 🟠 SIGNIFICANT #1: Glob Pattern Injection
 
 **File:** `app/commands/githook/command.go:55`
@@ -196,8 +142,6 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ### Remaining Issues to Fix
 - [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
-- [ ] #4 - Path traversal (MAJOR) - ⏳ TODO
-- [ ] #5 - Env vars (MAJOR) - ⏳ TODO
 - [ ] #6 - Glob injection (SIGNIFICANT) - ⏳ TODO
 - [ ] #7 - Path errors (SIGNIFICANT) - ⏳ TODO
 - [ ] #8 - Viper race (SIGNIFICANT) - ⏳ TODO

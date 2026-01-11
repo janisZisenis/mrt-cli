@@ -58,7 +58,18 @@ func (b *CommandBuilder) Build() (*exec.Cmd, context.Context, context.CancelFunc
 	cmd.Stderr = b.stderr
 	cmd.Stdin = b.stdin
 
-	cmd.Env = os.Environ()
+	// Only pass essential environment variables, not all of them
+	// Prevents credential leakage to spawned processes
+	safeEnv := []string{
+		"PATH=" + os.Getenv("PATH"),
+		"HOME=" + os.Getenv("HOME"),
+		"USER=" + os.Getenv("USER"),
+		"SHELL=" + os.Getenv("SHELL"),
+		"SSH_AUTH_SOCK=" + os.Getenv("SSH_AUTH_SOCK"),
+		"TERM=" + os.Getenv("TERM"),
+		"LANG=" + os.Getenv("LANG"),
+	}
+	cmd.Env = safeEnv
 
 	return cmd, ctx, cancel
 }
