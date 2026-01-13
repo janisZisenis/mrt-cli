@@ -88,12 +88,15 @@ jobs:
       binary-name: mrt-darwin-arm64
     steps:
       - uses: actions/checkout@v4
-      - name: Setup parallel
+      - name: Setup tools
         shell: bash
-        run: brew install parallel
-      - name: Setup bash
+        run: |
+          brew install parallel
+          brew install bash
+          brew install gnu-coreutils
+      - name: Add GNU tools to PATH
         shell: bash
-        run: brew install bash
+        run: echo "/usr/local/opt/gnu-coreutils/libexec/gnubin:$PATH" >> $GITHUB_PATH
       - uses: ./.github/actions/run-tests
         with:
           private-key: ${{ secrets.PRIVATE_KEY }}
