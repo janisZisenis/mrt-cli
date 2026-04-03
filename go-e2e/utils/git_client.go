@@ -19,7 +19,7 @@ type Git struct {
 
 func MakeGitCommand(env []string) GitBaseCommand {
 	command := exec.Command("git")
-	command.Env = append(os.Environ(), env...)
+	command.Env = mergeEnv(os.Environ(), env)
 
 	return &Git{
 		command: command,

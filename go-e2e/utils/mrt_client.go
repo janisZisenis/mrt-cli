@@ -33,7 +33,7 @@ type Mrt struct {
 
 func MakeMrtCommand(binaryPath string, env []string) MrtBaseCommand {
 	command := exec.Command(binaryPath)
-	command.Env = append(os.Environ(), env...)
+	command.Env = mergeEnv(os.Environ(), env)
 
 	return &Mrt{
 		binaryName: binaryPath,

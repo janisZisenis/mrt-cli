@@ -21,5 +21,5 @@ func Test_IfTeamJsonContainsRepositoryAndSomeRepositoryPath_Cloning_ShouldPrintO
 		Execute()
 
 	output.AssertLineEquals(t, 0, "Start cloning repositories into \"some-path\"")
-	output.AssertLineEquals(t, 9, "Cloning repositories done")
+	output.Reversed().AssertLineEquals(t, 0, "Cloning repositories done")
 }
