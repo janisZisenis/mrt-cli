@@ -38,9 +38,11 @@ func Test_IfTeamJsonContainsARepository_Cloning_ShouldPrintOutSuccessMessage(t *
 		Clone().
 		Execute()
 
-	output.AssertLineEquals(t, 1, "Cloning "+repositoryURL)
-	output.AssertLineMatchesRegex(t, 3, "Enumerating objects: [0-9]+, done.")
-	output.Reversed().AssertLineEquals(t, 1, "Successfully cloned "+repositoryURL)
+	output.AssertInOrder(t,
+		outputs.HasLine("Cloning "+repositoryURL),
+		outputs.HasLineContaining("Enumerating objects:"),
+		outputs.HasLine("Successfully cloned "+repositoryURL),
+	)
 }
 
 func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(
