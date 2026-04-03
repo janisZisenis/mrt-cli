@@ -25,7 +25,7 @@ func (o *Output) dump() string {
 	var sb strings.Builder
 	sb.WriteString("captured output:\n")
 	for i, line := range o.lines {
-		sb.WriteString(fmt.Sprintf("  [%d] %s\n", i, line))
+		fmt.Fprintf(&sb, "  [%d] %s\n", i, line)
 	}
 	return sb.String()
 }
@@ -40,14 +40,20 @@ func (o *Output) Reversed() *Output {
 func (o *Output) AssertLineEquals(t *testing.T, index int, expectedText string) {
 	t.Helper()
 
-	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump())
+	require.Less(
+		t, index, len(o.lines),
+		"line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump(),
+	)
 	assert.Equal(t, expectedText, o.lines[index], "line %d does not match expected text\n%s", index, o.dump())
 }
 
 func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string) {
 	t.Helper()
 
-	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump())
+	require.Less(
+		t, index, len(o.lines),
+		"line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump(),
+	)
 	regex, err := regexp.Compile(pattern)
 	require.NoError(t, err, "invalid regex pattern: %s", pattern)
 	assert.True(

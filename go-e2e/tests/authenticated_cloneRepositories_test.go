@@ -65,7 +65,7 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 		Execute()
 
 	output.AssertInOrder(t,
-	    outputs.HasLine("Failed to clone repository, skipping it."),
+		outputs.HasLine("Failed to clone repository, skipping it."),
 		outputs.HasLine("Cloning "+git.MakeCloneURL(secondRepositoryName)),
 		outputs.HasLine("Successfully cloned "+git.MakeCloneURL(secondRepositoryName)),
 	)
