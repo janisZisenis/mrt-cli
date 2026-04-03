@@ -72,7 +72,8 @@ func (f *MrtFixture) MakeMrtCommand() utils.MrtDirectedCommand {
 }
 
 func (f *MrtFixture) isolatedEnv() []string {
-	sshCommand := "ssh -o IdentityFile=" + f.identityFile + " -o IdentitiesOnly=yes"
+	sshConfigPath := utils.GetRepoRootDir() + "/.ssh/config"
+	sshCommand := "ssh -F " + sshConfigPath + " -o IdentityFile=" + f.identityFile + " -o IdentitiesOnly=yes"
 	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
 }
 
