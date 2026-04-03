@@ -9,6 +9,8 @@ common_setup() {
 
 	PATH=$PATH:"$(mrt run binary-location -- --dir)"
 	eval "$(ssh-agent -s 3>&-)"
+	export MRT_BASE_SSH_COMMAND="$GIT_SSH_COMMAND"
+	export GIT_SSH_COMMAND="$GIT_SSH_COMMAND -o PubkeyAuthentication=no"
 }
 
 common_teardown() {

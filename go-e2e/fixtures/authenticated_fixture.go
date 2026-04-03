@@ -11,6 +11,7 @@ var privateKeyPath = utils.GetRepoRootDir() + "/.ssh/private-key"
 func MakeAuthenticatedFixture(t *testing.T) *MrtFixture {
 	t.Helper()
 	f := MakeMrtFixture(t)
+	f.identityFile = privateKeyPath
 
 	if err := f.agent.AddKey(privateKeyPath); err != nil {
 		t.Fatalf("%v", err)

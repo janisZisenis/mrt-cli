@@ -10,10 +10,11 @@ import (
 )
 
 type MrtFixture struct {
-	t          *testing.T
-	binaryPath string
-	agent      *utils.Agent
-	tempDir    string
+	t            *testing.T
+	binaryPath   string
+	agent        *utils.Agent
+	tempDir      string
+	identityFile string
 }
 
 func MakeMrtFixture(t *testing.T) *MrtFixture {
@@ -46,15 +47,30 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 }
 
 func (f *MrtFixture) GitClone(repositoryName string, destination string) {
-	utils.MakeGitCommand(f.agent.Env()).
+	utils.MakeGitCommand(f.fixtureEnv()).
 		Clone(utils.MakeCloneUrlFrom(repositoryName), f.tempDir+"/"+destination).
 		Execute()
 }
 
 func (f *MrtFixture) MakeMrtCommand() utils.MrtDirectedCommand {
 	return utils.
-		MakeMrtCommand(f.binaryPath, f.agent.Env()).
+		MakeMrtCommand(f.binaryPath, f.fixtureEnv()).
 		RunInDirectory(f.tempDir)
+}
+
+func (f *MrtFixture) fixtureEnv() []string {
+	return append(f.agent.Env(), "GIT_SSH_COMMAND="+isolatedSSHCommand(f.identityFile))
+}
+
+func isolatedSSHCommand(identityFile string) string {
+	if identityFile == "" {
+		identityFile = "/dev/null"
+	}
+	existing := os.Getenv("GIT_SSH_COMMAND")
+	if existing == "" {
+		existing = "ssh"
+	}
+	return existing + " -o IdentityFile=" + identityFile + " -o IdentitiesOnly=yes"
 }
 
 func (f *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {

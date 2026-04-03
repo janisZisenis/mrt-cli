@@ -81,10 +81,21 @@ fi
 mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
 # Normally you would add "User git" to the config. But somehow this does not work on the ci. There I have to remove
 # the user from the config.
-cat <<EOF >"$SSH_CONFIG_FILE"
+if [[ "$hostname" == "localhost" ]]; then
+	cat <<EOF >"$SSH_CONFIG_FILE"
 Host $HOST_ALIAS
    HostName $hostname
+   StrictHostKeyChecking no
+   UserKnownHostsFile /dev/null
+   LogLevel ERROR
 EOF
+else
+	cat <<EOF >"$SSH_CONFIG_FILE"
+Host $HOST_ALIAS
+   HostName $hostname
+   StrictHostKeyChecking accept-new
+EOF
+fi
 
 if [[ "$run_mode" == "$FLAG_MANUAL" ]]; then
 	GITHUB_RESPONSE_MATCH="successfully authenticated"
