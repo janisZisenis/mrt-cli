@@ -32,11 +32,24 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	})
 
 	return &MrtFixture{
-		t:          t,
-		binaryPath: getBinaryPath(utils.GetRepoRootDir(), t),
-		agent:      agent,
-		tempDir:    t.TempDir(),
+		t:            t,
+		binaryPath:   getBinaryPath(utils.GetRepoRootDir(), t),
+		agent:        agent,
+		tempDir:      t.TempDir(),
+		identityFile: "/dev/null",
 	}
+}
+
+func (f *MrtFixture) Authenticate() *MrtFixture {
+	f.t.Helper()
+	privateKeyPath := utils.GetRepoRootDir() + "/.ssh/private-key"
+	f.identityFile = privateKeyPath
+
+	if err := f.agent.AddKey(privateKeyPath); err != nil {
+		f.t.Fatalf("%v", err)
+	}
+
+	return f
 }
 
 func (f *MrtFixture) Parallel() *MrtFixture {
@@ -63,9 +76,6 @@ func (f *MrtFixture) fixtureEnv() []string {
 }
 
 func isolatedSSHCommand(identityFile string) string {
-	if identityFile == "" {
-		identityFile = "/dev/null"
-	}
 	existing := os.Getenv("GIT_SSH_COMMAND")
 	if existing == "" {
 		existing = "ssh"
