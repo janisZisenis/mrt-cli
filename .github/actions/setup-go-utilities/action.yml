@@ -14,6 +14,10 @@ inputs:
     description: The version of goimports to install (uses the `golang.org/x/tools` module).
     required: false
     default: "v0.38.0"
+  gotestsum_version:
+    description: The version of gotestsum to install.
+    required: false
+    default: "v1.13.0"
 
 runs:
   using: "composite"
@@ -73,3 +77,22 @@ runs:
     - name: Verify goimports Installation
       shell: bash
       run: which goimports
+
+    - name: Cache gotestsum
+      id: gotestsum-cache
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/gotestsum
+        key: gotestsum-${{ inputs.gotestsum_version }}-ubuntu
+
+    - name: Install gotestsum
+      if: steps.gotestsum-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        echo "Installing gotestsum version: ${{ inputs.gotestsum_version }}"
+        GO111MODULE=on go install gotest.tools/gotestsum@${{ inputs.gotestsum_version }}
+        sudo mv ~/go/bin/gotestsum /usr/local/bin/
+
+    - name: Verify gotestsum Installation
+      shell: bash
+      run: gotestsum --version
