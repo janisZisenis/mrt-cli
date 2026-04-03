@@ -3,6 +3,8 @@ package tests_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/outputs"
 	"mrt-cli/go-e2e/runcommand"
@@ -42,10 +44,7 @@ func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorM
 
 	output, exitCode := f.MakeMrtCommand().Run("-h").Execute()
 
-	if exitCode != 1 {
-		t.Errorf("expected exit code 1, got %d", exitCode)
-	}
-
+	assert.Equal(t, 1, exitCode)
 	output.AssertInOrder(t,
 		outputs.HasLine("Error while reading "+w.ConfigFilePath(commandName)),
 		outputs.HasLineContaining("unexpected end of JSON input"),

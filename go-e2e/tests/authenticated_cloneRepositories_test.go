@@ -5,6 +5,7 @@ import (
 
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/git"
+	"mrt-cli/go-e2e/outputs"
 	"mrt-cli/go-e2e/teamconfig"
 )
 
@@ -25,7 +26,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 	f.AssertRepositoryExists(repositoryName, defaultRepositoriesPath)
 }
 
-func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
+func Test_IfTeamJsonContainsARepository_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryURL := git.MakeCloneURL("1_TestRepository")
 	f.TeamConfigWriter().Write(
@@ -54,13 +55,18 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 			git.MakeCloneURL(secondRepositoryName),
 		}),
 	)
-	f.GitClone(firstRepositoryName, defaultRepositoriesPath)
+	f.GitClone(firstRepositoryName, defaultRepositoriesPath+"/"+firstRepositoryName)
 
-	f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
+	output.AssertInOrder(t,
+	    outputs.HasLine("Failed to clone repository, skipping it."),
+		outputs.HasLine("Cloning "+git.MakeCloneURL(secondRepositoryName)),
+		outputs.HasLine("Successfully cloned "+git.MakeCloneURL(secondRepositoryName)),
+	)
 	f.AssertRepositoryExists(firstRepositoryName, defaultRepositoriesPath)
 	f.AssertRepositoryExists(secondRepositoryName, defaultRepositoriesPath)
 }
@@ -103,11 +109,16 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 		}),
 	)
 
-	f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
+	output.AssertInOrder(t,
+		outputs.HasLine("Cloning "+git.MakeCloneURL("nonExistingRepository")),
+		outputs.HasLine("Failed to clone repository, skipping it."),
+		outputs.HasLine("Successfully cloned "+git.MakeCloneURL(repositoryName)),
+	)
 	f.AssertRepositoryExists(repositoryName, defaultRepositoriesPath)
 }
 
