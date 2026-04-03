@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"strings"
@@ -32,7 +33,7 @@ type Mrt struct {
 }
 
 func MakeMrtCommand(binaryPath string, env []string) MrtBaseCommand {
-	command := exec.Command(binaryPath)
+	command := exec.CommandContext(context.Background(), binaryPath)
 	command.Env = mergeEnv(os.Environ(), env)
 
 	return &Mrt{

@@ -1,12 +1,13 @@
 package utils
 
 import (
+	"context"
 	"os"
 	"os/exec"
 )
 
 type GitBaseCommand interface {
-	Clone(repositoryUrl string, destination string) GitCloneCommand
+	Clone(repositoryURL string, destination string) GitCloneCommand
 }
 
 type GitCloneCommand interface {
@@ -18,7 +19,7 @@ type Git struct {
 }
 
 func MakeGitCommand(env []string) GitBaseCommand {
-	command := exec.Command("git")
+	command := exec.CommandContext(context.Background(), "git")
 	command.Env = mergeEnv(os.Environ(), env)
 
 	return &Git{
@@ -26,8 +27,8 @@ func MakeGitCommand(env []string) GitBaseCommand {
 	}
 }
 
-func (git *Git) Clone(repositoryUrl string, destination string) GitCloneCommand {
-	git.command.Args = append(git.command.Args, "clone", repositoryUrl, destination)
+func (git *Git) Clone(repositoryURL string, destination string) GitCloneCommand {
+	git.command.Args = append(git.command.Args, "clone", repositoryURL, destination)
 
 	return git
 }

@@ -12,18 +12,18 @@ func GetRepoRootDir() string {
 	}
 
 	for {
-		info, err := os.Stat(filepath.Join(dir, ".git"))
+		info, statErr := os.Stat(filepath.Join(dir, ".git"))
 
-		if err == nil && info.IsDir() {
+		if statErr == nil && info.IsDir() {
 			return dir
-		} else {
-			parent := filepath.Dir(dir)
-
-			if parent == dir {
-				panic("Reached root directory without finding .git folder")
-			}
-
-			dir = parent
 		}
+
+		parent := filepath.Dir(dir)
+
+		if parent == dir {
+			panic("Reached root directory without finding .git folder")
+		}
+
+		dir = parent
 	}
 }

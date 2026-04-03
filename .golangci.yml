@@ -423,6 +423,8 @@ linters:
         linters: [ godot ]
       - text: 'should have a package comment'
         linters: [ revive ]
+      - text: 'avoid meaningless package names'
+        linters: [ revive ]
       - text: 'exported \S+ \S+ should have comment( \(or a comment on this block\))? or be unexported'
         linters: [ revive ]
       - text: 'package comment should be of the form ".+"'

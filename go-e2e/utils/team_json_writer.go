@@ -8,16 +8,16 @@ import (
 
 const teamFileName = "team.json"
 
-type TeamJson struct {
+type TeamJSON struct {
 	RepositoriesPath     *string   `json:"repositoriesPath,omitempty"`
 	Repositories         *[]string `json:"repositories,omitempty"`
 	RepositoriesPrefixes *[]string `json:"repositoriesPrefixes,omitempty"`
 }
 
-type TeamConfigOption func(*TeamJson)
+type TeamConfigOption func(*TeamJSON)
 
-func WriteTeamJsonTo(dir string, withOptions ...TeamConfigOption) {
-	createDirError := os.MkdirAll(dir, 0o755)
+func WriteTeamJSONTo(dir string, withOptions ...TeamConfigOption) {
+	createDirError := os.MkdirAll(dir, 0o750)
 	if createDirError != nil {
 		panic("failed to create directory " + dir + ": " + createDirError.Error())
 	}
@@ -25,19 +25,19 @@ func WriteTeamJsonTo(dir string, withOptions ...TeamConfigOption) {
 	config := makeTeamConfig(withOptions...)
 	jsonBytes, marshallError := json.MarshalIndent(config, "", "  ")
 	if marshallError != nil {
-		panic("failed to marshal TeamJson to JSON: " + marshallError.Error())
+		panic("failed to marshal TeamJSON to JSON: " + marshallError.Error())
 	}
 
 	filePath := filepath.Join(dir, teamFileName)
 
-	writeError := os.WriteFile(filePath, jsonBytes, 0o644)
+	writeError := os.WriteFile(filePath, jsonBytes, 0o600)
 	if writeError != nil {
-		panic("failed to write TeamJson to file " + filePath + ": " + writeError.Error())
+		panic("failed to write TeamJSON to file " + filePath + ": " + writeError.Error())
 	}
 }
 
-func makeTeamConfig(options ...TeamConfigOption) *TeamJson {
-	config := &TeamJson{}
+func makeTeamConfig(options ...TeamConfigOption) *TeamJSON {
+	config := &TeamJSON{}
 
 	for _, option := range options {
 		option(config)
@@ -47,19 +47,19 @@ func makeTeamConfig(options ...TeamConfigOption) *TeamJson {
 }
 
 func WithRepositoriesPath(path string) TeamConfigOption {
-	return func(c *TeamJson) {
+	return func(c *TeamJSON) {
 		c.RepositoriesPath = &path
 	}
 }
 
 func WithRepositories(repos []string) TeamConfigOption {
-	return func(c *TeamJson) {
+	return func(c *TeamJSON) {
 		c.Repositories = &repos
 	}
 }
 
 func WithRepositoriesPrefixes(prefixes []string) TeamConfigOption {
-	return func(c *TeamJson) {
+	return func(c *TeamJSON) {
 		c.RepositoriesPrefixes = &prefixes
 	}
 }

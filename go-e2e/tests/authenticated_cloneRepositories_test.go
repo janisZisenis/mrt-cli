@@ -1,4 +1,4 @@
-package tests
+package tests_test
 
 import (
 	"testing"
@@ -7,13 +7,13 @@ import (
 	"mrt-cli/go-e2e/utils"
 )
 
-var defaultRepositoriesPath = "repositories"
+const defaultRepositoriesPath = "repositories"
 
 func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
-	f.WriteTeamJson(
-		utils.WithRepositories([]string{utils.MakeCloneUrlFrom(repositoryName)}),
+	f.WriteTeamJSON(
+		utils.WithRepositories([]string{utils.MakeCloneURLFrom(repositoryName)}),
 	)
 
 	f.MakeMrtCommand().
@@ -26,8 +26,8 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 
 func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	repositoryURL := utils.MakeCloneUrlFrom("1_TestRepository")
-	f.WriteTeamJson(
+	repositoryURL := utils.MakeCloneURLFrom("1_TestRepository")
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{repositoryURL}),
 	)
 
@@ -41,14 +41,16 @@ func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOu
 	output.Reversed().AssertLineEquals(t, 1, "Successfully cloned "+repositoryURL)
 }
 
-func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(t *testing.T) {
+func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	firstRepositoryName := "1_TestRepository"
 	secondRepositoryName := "2_TestRepository"
-	f.WriteTeamJson(
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{
-			utils.MakeCloneUrlFrom(firstRepositoryName),
-			utils.MakeCloneUrlFrom(secondRepositoryName),
+			utils.MakeCloneURLFrom(firstRepositoryName),
+			utils.MakeCloneURLFrom(secondRepositoryName),
 		}),
 	)
 	f.GitClone(firstRepositoryName, defaultRepositoriesPath)
@@ -64,7 +66,7 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 
 func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	f.WriteTeamJson(
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{}),
 	)
 
@@ -78,8 +80,8 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 
 func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	f.WriteTeamJson(
-		utils.WithRepositories([]string{utils.MakeCloneUrlFrom("nonExistingRepository")}),
+	f.WriteTeamJSON(
+		utils.WithRepositories([]string{utils.MakeCloneURLFrom("nonExistingRepository")}),
 	)
 
 	output := f.MakeMrtCommand().
@@ -93,10 +95,10 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
-	f.WriteTeamJson(
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{
-			utils.MakeCloneUrlFrom("nonExistingRepository"),
-			utils.MakeCloneUrlFrom(repositoryName),
+			utils.MakeCloneURLFrom("nonExistingRepository"),
+			utils.MakeCloneURLFrom(repositoryName),
 		}),
 	)
 
@@ -108,14 +110,16 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 	f.AssertRepositoryExists(repositoryName, defaultRepositoriesPath)
 }
 
-func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWhileCloningTheRepositories(t *testing.T) {
+func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWhileCloningTheRepositories(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	firstRepositoryName := "Prefix1_TestRepository1"
 	secondRepositoryName := "Prefix2_TestRepository2"
-	f.WriteTeamJson(
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{
-			utils.MakeCloneUrlFrom(firstRepositoryName),
-			utils.MakeCloneUrlFrom(secondRepositoryName),
+			utils.MakeCloneURLFrom(firstRepositoryName),
+			utils.MakeCloneURLFrom(secondRepositoryName),
 		}),
 		utils.WithRepositoriesPrefixes([]string{"Prefix1_", "Prefix2_"}),
 	)
@@ -133,10 +137,10 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	firstRepositoryName := "Prefix1_TestRepository1"
 	secondRepositoryName := "Prefix2_TestRepository2"
-	f.WriteTeamJson(
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{
-			utils.MakeCloneUrlFrom(firstRepositoryName),
-			utils.MakeCloneUrlFrom(secondRepositoryName),
+			utils.MakeCloneURLFrom(firstRepositoryName),
+			utils.MakeCloneURLFrom(secondRepositoryName),
 		}),
 		utils.WithRepositoriesPrefixes([]string{"FirstPrefix", "SecondPrefix"}),
 	)
@@ -154,9 +158,9 @@ func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesInto
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
 	repositoriesPath := "xyz"
-	f.WriteTeamJson(
+	f.WriteTeamJSON(
 		utils.WithRepositories([]string{
-			utils.MakeCloneUrlFrom(repositoryName),
+			utils.MakeCloneURLFrom(repositoryName),
 		}),
 		utils.WithRepositoriesPath(repositoriesPath),
 	)

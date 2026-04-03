@@ -2,12 +2,11 @@ package utils
 
 import (
 	"regexp"
-	"strings"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/exp/slices"
 )
 
 type Output struct {
@@ -40,7 +39,14 @@ func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string)
 	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines", index, len(o.lines))
 	regex, err := regexp.Compile(pattern)
 	require.NoError(t, err, "invalid regex pattern: %s", pattern)
-	assert.True(t, regex.MatchString(o.lines[index]), "line %d does not match pattern %s\ngot: %s", index, pattern, o.lines[index])
+	assert.True(
+		t,
+		regex.MatchString(o.lines[index]),
+		"line %d does not match pattern %s\ngot: %s",
+		index,
+		pattern,
+		o.lines[index],
+	)
 }
 
 func (o *Output) AssertHasLine(t *testing.T, line string) {
@@ -49,15 +55,27 @@ func (o *Output) AssertHasLine(t *testing.T, line string) {
 	assert.Contains(t, o.lines, line, "output does not have line: %s", line)
 }
 
-func (o *Output) AssertNextLineAfterLineContaining(t *testing.T, containing string, expectedNextLine string) {
-	t.Helper()
+type LineExpectation interface {
+	matches(line string) bool
+	failureMessage() string
+}
 
-	for i, line := range o.lines {
-		if strings.Contains(line, containing) {
-			require.Less(t, i+1, len(o.lines), "no line after line containing: %s", containing)
-			assert.Equal(t, expectedNextLine, o.lines[i+1], "line after line containing %q does not equal expected text", containing)
-			return
+func (o *Output) AssertInOrder(t require.TestingT, expectations ...LineExpectation) {
+	if h, ok := t.(interface{ Helper() }); ok {
+		h.Helper()
+	}
+	cursor := 0
+	for _, exp := range expectations {
+		found := false
+		for i := cursor; i < len(o.lines); i++ {
+			if exp.matches(o.lines[i]) {
+				cursor = i + 1
+				found = true
+				break
+			}
+		}
+		if !found {
+			require.Fail(t, exp.failureMessage())
 		}
 	}
-	assert.Fail(t, "output does not have a line containing: "+containing)
 }

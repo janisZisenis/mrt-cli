@@ -1,6 +1,7 @@
 package fixtures
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"strings"
@@ -26,8 +27,9 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 	}
 
 	t.Cleanup(func() {
-		if err := agent.Stop(); err != nil {
-			t.Fatalf("%v", err)
+		stopErr := agent.Stop()
+		if stopErr != nil {
+			t.Fatalf("%v", stopErr)
 		}
 	})
 
@@ -61,7 +63,7 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 
 func (f *MrtFixture) GitClone(repositoryName string, destination string) {
 	utils.MakeGitCommand(f.isolatedEnv()).
-		Clone(utils.MakeCloneUrlFrom(repositoryName), f.tempDir+"/"+destination).
+		Clone(utils.MakeCloneURLFrom(repositoryName), f.tempDir+"/"+destination).
 		Execute()
 }
 
@@ -77,8 +79,8 @@ func (f *MrtFixture) isolatedEnv() []string {
 	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
 }
 
-func (f *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
-	utils.WriteTeamJsonTo(f.tempDir, withOptions...)
+func (f *MrtFixture) WriteTeamJSON(withOptions ...utils.TeamConfigOption) {
+	utils.WriteTeamJSONTo(f.tempDir, withOptions...)
 }
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
@@ -92,7 +94,7 @@ func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
-	cmd := exec.Command("mrt", "--team-dir", repositoryDir, "run", "binary-location")
+	cmd := exec.CommandContext(context.Background(), "mrt", "--team-dir", repositoryDir, "run", "binary-location")
 	binaryPathBytes, err := cmd.Output()
 
 	output := string(binaryPathBytes)
@@ -107,7 +109,8 @@ func getBinaryPath(repositoryDir string, t *testing.T) string {
 		t.Fatalf("command returned empty directory")
 	}
 
-	if _, err := os.Stat(binaryPath); os.IsNotExist(err) {
+	_, statErr := os.Stat(binaryPath)
+	if os.IsNotExist(statErr) {
 		t.Fatalf("binary not found at: %s", binaryPath)
 	}
 

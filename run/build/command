@@ -34,9 +34,9 @@ build_binary() {
 	GOARCH="${platform#*/}"
 
 	echo "Building for $platform..."
-	if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build \
+	if ! (cd "$rootDir/app" && env GOOS="$GOOS" GOARCH="$GOARCH" go build \
 		-ldflags "-X main.semver=$semver -X main.commit=$commit_sha -X main.date=$(date +'%Y-%m-%d')" \
-		-o "$binaryLocation" ./app; then
+		-o "$binaryLocation" .); then
 		echo "Error occurred while building for ${platform}"
 		exit 1
 	else
