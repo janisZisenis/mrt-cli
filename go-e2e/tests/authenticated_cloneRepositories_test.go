@@ -13,7 +13,7 @@ const defaultRepositoriesPath = "repositories"
 func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
 	)
 
@@ -28,11 +28,11 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryURL := git.MakeCloneURL("1_TestRepository")
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{repositoryURL}),
 	)
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -48,7 +48,7 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	firstRepositoryName := "1_TestRepository"
 	secondRepositoryName := "2_TestRepository"
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
 			git.MakeCloneURL(firstRepositoryName),
 			git.MakeCloneURL(secondRepositoryName),
@@ -67,11 +67,11 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 
 func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{}),
 	)
 
-	_ = f.MakeMrtCommand().
+	f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -81,11 +81,11 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 
 func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{git.MakeCloneURL("nonExistingRepository")}),
 	)
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -96,14 +96,14 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
 			git.MakeCloneURL("nonExistingRepository"),
 			git.MakeCloneURL(repositoryName),
 		}),
 	)
 
-	_ = f.MakeMrtCommand().
+	f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -117,7 +117,7 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	firstRepositoryName := "Prefix1_TestRepository1"
 	secondRepositoryName := "Prefix2_TestRepository2"
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
 			git.MakeCloneURL(firstRepositoryName),
 			git.MakeCloneURL(secondRepositoryName),
@@ -138,7 +138,7 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	firstRepositoryName := "Prefix1_TestRepository1"
 	secondRepositoryName := "Prefix2_TestRepository2"
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
 			git.MakeCloneURL(firstRepositoryName),
 			git.MakeCloneURL(secondRepositoryName),
@@ -159,7 +159,7 @@ func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesInto
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
 	repositoriesPath := "xyz"
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
 			git.MakeCloneURL(repositoryName),
 		}),

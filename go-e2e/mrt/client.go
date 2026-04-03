@@ -13,21 +13,26 @@ import (
 type BaseCommand interface {
 	RunInDirectory(directory string) DirectedCommand
 	Setup() SetupCommand
-	Execute() *outputs.Output
+	Execute() (*outputs.Output, int)
 }
 
 type DirectedCommand interface {
 	Setup() SetupCommand
-	Execute() *outputs.Output
+	Run(args ...string) RunCommand
+	Execute() (*outputs.Output, int)
 }
 
 type SetupCommand interface {
 	Clone() CloneCommand
-	Execute() *outputs.Output
+	Execute() (*outputs.Output, int)
 }
 
 type CloneCommand interface {
-	Execute() *outputs.Output
+	Execute() (*outputs.Output, int)
+}
+
+type RunCommand interface {
+	Execute() (*outputs.Output, int)
 }
 
 type Mrt struct {
@@ -63,15 +68,27 @@ func (m *Mrt) Clone() CloneCommand {
 	return m
 }
 
-func (m *Mrt) Execute() *outputs.Output {
+func (m *Mrt) Run(args ...string) RunCommand {
+	m.command.Args = append(m.command.Args, "run")
+	m.command.Args = append(m.command.Args, args...)
+
+	return m
+}
+
+func (m *Mrt) Execute() (*outputs.Output, int) {
 	byteOutput, err := m.command.CombinedOutput()
 	out := string(byteOutput)
 
+	exitCode := 0
 	if err != nil {
-		panic("executing mrt command failed: " + out)
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			exitCode = exitErr.ExitCode()
+		} else {
+			panic("executing mrt command failed unexpectedly: " + err.Error())
+		}
 	}
 
-	return outputs.Make(splitLines(out))
+	return outputs.Make(splitLines(out)), exitCode
 }
 
 func splitLines(out string) []string {

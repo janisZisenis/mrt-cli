@@ -20,12 +20,12 @@ func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldPrintMessageAboutClon
 func testCloningIntoRepositoriesPath(t *testing.T, repositoryPath string) {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).Parallel()
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositoriesPath(repositoryPath),
 		teamconfig.WithRepositories([]string{git.MakeCloneURL("1_TestRepository")}),
 	)
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -36,14 +36,14 @@ func testCloningIntoRepositoriesPath(t *testing.T, repositoryPath string) {
 
 func Test_IfTeamJsonContains2Repositories_Cloning_ShouldPrintDoneMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
 			git.MakeCloneURL("1_TestRepository"),
 			git.MakeCloneURL("2_TestRepository"),
 		}),
 	)
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -54,11 +54,11 @@ func Test_IfTeamJsonContains2Repositories_Cloning_ShouldPrintDoneMessage(t *test
 func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	repositoryURL := git.MakeCloneURL("1_TestRepository")
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{repositoryURL}),
 	)
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -72,11 +72,11 @@ func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing
 
 func Test_IfTeamJsonDoesNotContainAnyRepositories_Cloning_ShouldPrintMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
-	f.WriteTeamJSON(
+	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{}),
 	)
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
@@ -87,7 +87,7 @@ func Test_IfTeamJsonDoesNotContainAnyRepositories_Cloning_ShouldPrintMessage(t *
 func Test_IfTeamJsonDoesNotExist_Cloning_ShouldPrintMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 
-	output := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
