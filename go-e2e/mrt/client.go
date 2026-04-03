@@ -7,27 +7,27 @@ import (
 	"strings"
 
 	"mrt-cli/go-e2e/internal"
-	"mrt-cli/go-e2e/output"
+	"mrt-cli/go-e2e/outputs"
 )
 
 type BaseCommand interface {
 	RunInDirectory(directory string) DirectedCommand
 	Setup() SetupCommand
-	Execute() *output.Output
+	Execute() *outputs.Output
 }
 
 type DirectedCommand interface {
 	Setup() SetupCommand
-	Execute() *output.Output
+	Execute() *outputs.Output
 }
 
 type SetupCommand interface {
 	Clone() CloneCommand
-	Execute() *output.Output
+	Execute() *outputs.Output
 }
 
 type CloneCommand interface {
-	Execute() *output.Output
+	Execute() *outputs.Output
 }
 
 type Mrt struct {
@@ -63,7 +63,7 @@ func (m *Mrt) Clone() CloneCommand {
 	return m
 }
 
-func (m *Mrt) Execute() *output.Output {
+func (m *Mrt) Execute() *outputs.Output {
 	byteOutput, err := m.command.CombinedOutput()
 	out := string(byteOutput)
 
@@ -71,7 +71,7 @@ func (m *Mrt) Execute() *output.Output {
 		panic("executing mrt command failed: " + out)
 	}
 
-	return output.Make(splitLines(out))
+	return outputs.Make(splitLines(out))
 }
 
 func splitLines(out string) []string {

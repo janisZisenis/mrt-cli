@@ -5,7 +5,7 @@ import (
 
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/git"
-	"mrt-cli/go-e2e/output"
+	"mrt-cli/go-e2e/outputs"
 	"mrt-cli/go-e2e/teamconfig"
 )
 
@@ -25,13 +25,13 @@ func testCloningIntoRepositoriesPath(t *testing.T, repositoryPath string) {
 		teamconfig.WithRepositories([]string{git.MakeCloneURL("1_TestRepository")}),
 	)
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.AssertLineEquals(t, 0, "Start cloning repositories into \""+repositoryPath+"\"")
-	o.Reversed().AssertLineEquals(t, 0, "Cloning repositories done")
+	output.AssertLineEquals(t, 0, "Start cloning repositories into \""+repositoryPath+"\"")
+	output.Reversed().AssertLineEquals(t, 0, "Cloning repositories done")
 }
 
 func Test_IfTeamJsonContains2Repositories_Cloning_ShouldPrintDoneMessage(t *testing.T) {
@@ -43,12 +43,12 @@ func Test_IfTeamJsonContains2Repositories_Cloning_ShouldPrintDoneMessage(t *test
 		}),
 	)
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.Reversed().AssertLineEquals(t, 0, "Cloning repositories done")
+	output.Reversed().AssertLineEquals(t, 0, "Cloning repositories done")
 }
 
 func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing.T) {
@@ -58,15 +58,15 @@ func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing
 		teamconfig.WithRepositories([]string{repositoryURL}),
 	)
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.AssertInOrder(t,
-		output.HasLine("Cloning "+repositoryURL),
-		output.HasLineContaining("Clone operation failed: "),
-		output.HasLine("Failed to clone repository, skipping it."),
+	output.AssertInOrder(t,
+		outputs.HasLine("Cloning "+repositoryURL),
+		outputs.HasLineContaining("Clone operation failed: "),
+		outputs.HasLine("Failed to clone repository, skipping it."),
 	)
 }
 
@@ -76,23 +76,23 @@ func Test_IfTeamJsonDoesNotContainAnyRepositories_Cloning_ShouldPrintMessage(t *
 		teamconfig.WithRepositories([]string{}),
 	)
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.AssertLineEquals(t, 0, "The team file does not contain any repositories, no repositories to clone.")
+	output.AssertLineEquals(t, 0, "The team file does not contain any repositories, no repositories to clone.")
 }
 
 func Test_IfTeamJsonDoesNotExist_Cloning_ShouldPrintMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.AssertLineEquals(
+	output.AssertLineEquals(
 		t,
 		0,
 		"Could not read team file. To setup your repositories create a \"team.json\" file and add repositories to it.",

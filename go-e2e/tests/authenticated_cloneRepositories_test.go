@@ -32,14 +32,14 @@ func Test_IfTeamJsonContainsARepositoryThatExistsOnTheRoot_Cloning_ShouldPrintOu
 		teamconfig.WithRepositories([]string{repositoryURL}),
 	)
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.AssertLineEquals(t, 1, "Cloning "+repositoryURL)
-	o.AssertLineMatchesRegex(t, 3, "Enumerating objects: [0-9]+, done.")
-	o.Reversed().AssertLineEquals(t, 1, "Successfully cloned "+repositoryURL)
+	output.AssertLineEquals(t, 1, "Cloning "+repositoryURL)
+	output.AssertLineMatchesRegex(t, 3, "Enumerating objects: [0-9]+, done.")
+	output.Reversed().AssertLineEquals(t, 1, "Successfully cloned "+repositoryURL)
 }
 
 func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(
@@ -85,12 +85,12 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 		teamconfig.WithRepositories([]string{git.MakeCloneURL("nonExistingRepository")}),
 	)
 
-	o := f.MakeMrtCommand().
+	output := f.MakeMrtCommand().
 		Setup().
 		Clone().
 		Execute()
 
-	o.AssertHasLine(t, "fatal: Could not read from remote repository.")
+	output.AssertHasLine(t, "fatal: Could not read from remote repository.")
 }
 
 func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(t *testing.T) {
