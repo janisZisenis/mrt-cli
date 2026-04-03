@@ -1,6 +1,8 @@
-package utils
+package ssh
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"os/exec"
 	"strings"
@@ -18,22 +20,22 @@ func (a *Agent) Env() []string {
 	}
 }
 
-type SshAddKeyError struct {
+type AddKeyError struct {
 	KeyPath string
 	Err     error
 	Output  string
 }
 
-func (e *SshAddKeyError) Error() string {
+func (e *AddKeyError) Error() string {
 	return fmt.Sprintf("failed to add key %s: %v\noutput: %s", e.KeyPath, e.Err, e.Output)
 }
 
 func (a *Agent) AddKey(pathToKey string) error {
-	cmd := exec.Command("ssh-add", pathToKey)
+	cmd := exec.CommandContext(context.Background(), "ssh-add", pathToKey)
 	cmd.Env = append(cmd.Env, a.Env()...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return &SshAddKeyError{
+		return &AddKeyError{
 			KeyPath: pathToKey,
 			Err:     err,
 			Output:  string(out),
@@ -42,22 +44,22 @@ func (a *Agent) AddKey(pathToKey string) error {
 	return nil
 }
 
-type SshRemoveKeyError struct {
+type RemoveKeyError struct {
 	KeyPath string
 	Err     error
 	Output  string
 }
 
-func (e *SshRemoveKeyError) Error() string {
+func (e *RemoveKeyError) Error() string {
 	return fmt.Sprintf("failed to remove key %s: %v\noutput: %s", e.KeyPath, e.Err, e.Output)
 }
 
 func (a *Agent) RemoveKey(pathToKey string) error {
-	cmd := exec.Command("ssh-add", "-d", pathToKey)
+	cmd := exec.CommandContext(context.Background(), "ssh-add", "-d", pathToKey)
 	cmd.Env = append(cmd.Env, a.Env()...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return &SshRemoveKeyError{
+		return &RemoveKeyError{
 			KeyPath: pathToKey,
 			Err:     err,
 			Output:  string(out),
@@ -66,29 +68,29 @@ func (a *Agent) RemoveKey(pathToKey string) error {
 	return nil
 }
 
-type SshStartError struct {
+type StartError struct {
 	Err error
 }
 
-func (e *SshStartError) Error() string {
+func (e *StartError) Error() string {
 	if e.Err != nil {
 		return fmt.Sprintf("failed to start ssh-agent: %v", e.Err)
 	}
 	return "failed to start ssh-agent"
 }
 
-func StartSSHAgent() (*Agent, error) {
-	output, err := exec.Command("ssh-agent", "-s").Output()
+func StartAgent() (*Agent, error) {
+	output, err := exec.CommandContext(context.Background(), "ssh-agent", "-s").Output()
 	if err != nil {
-		return nil, &SshStartError{Err: err}
+		return nil, &StartError{Err: err}
 	}
 
 	sock := parseVariable(output, "SSH_AUTH_SOCK")
 	pid := parseVariable(output, "SSH_AGENT_PID")
 
 	if sock == nil || pid == nil {
-		return nil, &SshStartError{
-			Err: fmt.Errorf("failed to parse ssh-agent output"),
+		return nil, &StartError{
+			Err: errors.New("failed to parse ssh-agent output"),
 		}
 	}
 
@@ -96,10 +98,11 @@ func StartSSHAgent() (*Agent, error) {
 }
 
 func parseVariable(out []byte, varName string) *string {
+	agentOutputParts := 2
 	for _, line := range strings.Split(string(out), "\n") {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, varName+"=") {
-			parts := strings.SplitN(line, ";", 2)
+			parts := strings.SplitN(line, ";", agentOutputParts)
 			value := strings.TrimPrefix(parts[0], varName+"=")
 			return &value
 		}
@@ -107,20 +110,20 @@ func parseVariable(out []byte, varName string) *string {
 	return nil
 }
 
-type SshStopError struct {
+type StopError struct {
 	PID string
 	Err error
 }
 
-func (e *SshStopError) Error() string {
+func (e *StopError) Error() string {
 	return fmt.Sprintf("failed to stop ssh-agent PID=%s: %v", e.PID, e.Err)
 }
 
 func (a *Agent) Stop() error {
-	cmd := exec.Command("ssh-agent", "-k")
+	cmd := exec.CommandContext(context.Background(), "ssh-agent", "-k")
 	cmd.Env = append(cmd.Env, a.Env()...)
 	if err := cmd.Run(); err != nil {
-		return &SshStopError{
+		return &StopError{
 			PID: a.PID,
 			Err: err,
 		}
@@ -128,26 +131,25 @@ func (a *Agent) Stop() error {
 	return nil
 }
 
-type SshShowKeysError struct {
+type ShowKeysError struct {
 	Err    error
 	Output string
 }
 
-func (e *SshShowKeysError) Error() string {
+func (e *ShowKeysError) Error() string {
 	return fmt.Sprintf("failed to show keys: %v\noutput: %s", e.Err, e.Output)
 }
 
 func (a *Agent) ShowKeys() error {
-	cmd := exec.Command("ssh-add", "-l")
+	cmd := exec.CommandContext(context.Background(), "ssh-add", "-l")
 	cmd.Env = append(cmd.Env, a.Env()...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return &SshShowKeysError{
+		return &ShowKeysError{
 			Err:    err,
 			Output: string(out),
 		}
 	}
 
-	fmt.Println(string(out))
 	return nil
 }

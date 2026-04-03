@@ -4,5 +4,8 @@ set -e
 rootDir="$1"
 shift
 
-cd app
+cd "$rootDir/app"
+golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m
+
+cd "$rootDir/go-e2e"
 golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m

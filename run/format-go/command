@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-gofumpt -w .
-goimports -w .
+rootDir="$1"
+shift
+
+gofumpt -w "$rootDir/app" "$rootDir/go-e2e"
+goimports -w "$rootDir/app" "$rootDir/go-e2e"

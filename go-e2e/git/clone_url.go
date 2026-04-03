@@ -1,5 +1,5 @@
-package utils
+package git
 
-func MakeCloneUrlFrom(repositoryName string) string {
+func MakeCloneURL(repositoryName string) string {
 	return "git@github-testing:janisZisenisTesting/" + repositoryName + ".git"
 }
