@@ -2,6 +2,7 @@ package utils
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -46,4 +47,17 @@ func (o *Output) AssertHasLine(t *testing.T, line string) {
 	t.Helper()
 
 	assert.Contains(t, o.lines, line, "output does not have line: %s", line)
+}
+
+func (o *Output) AssertNextLineAfterLineContaining(t *testing.T, containing string, expectedNextLine string) {
+	t.Helper()
+
+	for i, line := range o.lines {
+		if strings.Contains(line, containing) {
+			require.Less(t, i+1, len(o.lines), "no line after line containing: %s", containing)
+			assert.Equal(t, expectedNextLine, o.lines[i+1], "line after line containing %q does not equal expected text", containing)
+			return
+		}
+	}
+	assert.Fail(t, "output does not have a line containing: "+containing)
 }
