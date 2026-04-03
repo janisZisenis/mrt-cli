@@ -51,12 +51,12 @@ func (w *Writer) WriteConfig(commandName string, options ...ConfigOption) {
 
 	configPath := w.ConfigFilePath(commandName)
 
-	if err := os.MkdirAll(filepath.Dir(configPath), 0o750); err != nil {
-		panic("runcommand: failed to create config directory: " + err.Error())
+	if mkErr := os.MkdirAll(filepath.Dir(configPath), 0o750); mkErr != nil {
+		panic("runcommand: failed to create config directory: " + mkErr.Error())
 	}
 
-	if err := os.WriteFile(configPath, data, 0o600); err != nil {
-		panic("runcommand: failed to write config file: " + err.Error())
+	if writeErr := os.WriteFile(configPath, data, 0o600); writeErr != nil {
+		panic("runcommand: failed to write config file: " + writeErr.Error())
 	}
 }
 

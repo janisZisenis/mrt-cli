@@ -2,6 +2,7 @@ package mrt
 
 import (
 	"context"
+	"errors"
 	"os"
 	"os/exec"
 	"strings"
@@ -9,6 +10,10 @@ import (
 	"mrt-cli/go-e2e/internal"
 	"mrt-cli/go-e2e/outputs"
 )
+
+type ExecutableCommand interface {
+	Execute() (*outputs.Output, int)
+}
 
 type BaseCommand interface {
 	RunInDirectory(directory string) DirectedCommand
@@ -18,20 +23,12 @@ type BaseCommand interface {
 
 type DirectedCommand interface {
 	Setup() SetupCommand
-	Run(args ...string) RunCommand
+	Run(args ...string) ExecutableCommand
 	Execute() (*outputs.Output, int)
 }
 
 type SetupCommand interface {
-	Clone() CloneCommand
-	Execute() (*outputs.Output, int)
-}
-
-type CloneCommand interface {
-	Execute() (*outputs.Output, int)
-}
-
-type RunCommand interface {
+	Clone() ExecutableCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -62,13 +59,13 @@ func (m *Mrt) Setup() SetupCommand {
 	return m
 }
 
-func (m *Mrt) Clone() CloneCommand {
+func (m *Mrt) Clone() ExecutableCommand {
 	m.command.Args = append(m.command.Args, "clone-repositories")
 
 	return m
 }
 
-func (m *Mrt) Run(args ...string) RunCommand {
+func (m *Mrt) Run(args ...string) ExecutableCommand {
 	m.command.Args = append(m.command.Args, "run")
 	m.command.Args = append(m.command.Args, args...)
 
@@ -81,7 +78,8 @@ func (m *Mrt) Execute() (*outputs.Output, int) {
 
 	exitCode := 0
 	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
 			exitCode = exitErr.ExitCode()
 		} else {
 			panic("executing mrt command failed unexpectedly: " + err.Error())
