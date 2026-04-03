@@ -72,15 +72,8 @@ func (f *MrtFixture) MakeMrtCommand() utils.MrtDirectedCommand {
 }
 
 func (f *MrtFixture) fixtureEnv() []string {
-	return append(f.agent.Env(), "GIT_SSH_COMMAND="+isolatedSSHCommand(f.identityFile))
-}
-
-func isolatedSSHCommand(identityFile string) string {
-	existing := os.Getenv("GIT_SSH_COMMAND")
-	if existing == "" {
-		existing = "ssh"
-	}
-	return existing + " -o IdentityFile=" + identityFile + " -o IdentitiesOnly=yes"
+	sshCommand := "ssh -o IdentityFile=" + f.identityFile + " -o IdentitiesOnly=yes"
+	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
 }
 
 func (f *MrtFixture) WriteTeamJson(withOptions ...utils.TeamConfigOption) {
