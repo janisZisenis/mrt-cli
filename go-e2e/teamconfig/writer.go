@@ -1,4 +1,4 @@
-package utils
+package teamconfig
 
 import (
 	"encoding/json"
@@ -14,15 +14,15 @@ type TeamJSON struct {
 	RepositoriesPrefixes *[]string `json:"repositoriesPrefixes,omitempty"`
 }
 
-type TeamConfigOption func(*TeamJSON)
+type Option func(*TeamJSON)
 
-func WriteTeamJSONTo(dir string, withOptions ...TeamConfigOption) {
+func WriteTo(dir string, withOptions ...Option) {
 	createDirError := os.MkdirAll(dir, 0o750)
 	if createDirError != nil {
 		panic("failed to create directory " + dir + ": " + createDirError.Error())
 	}
 
-	config := makeTeamConfig(withOptions...)
+	config := makeConfig(withOptions...)
 	jsonBytes, marshallError := json.MarshalIndent(config, "", "  ")
 	if marshallError != nil {
 		panic("failed to marshal TeamJSON to JSON: " + marshallError.Error())
@@ -36,7 +36,7 @@ func WriteTeamJSONTo(dir string, withOptions ...TeamConfigOption) {
 	}
 }
 
-func makeTeamConfig(options ...TeamConfigOption) *TeamJSON {
+func makeConfig(options ...Option) *TeamJSON {
 	config := &TeamJSON{}
 
 	for _, option := range options {
@@ -46,19 +46,19 @@ func makeTeamConfig(options ...TeamConfigOption) *TeamJSON {
 	return config
 }
 
-func WithRepositoriesPath(path string) TeamConfigOption {
+func WithRepositoriesPath(path string) Option {
 	return func(c *TeamJSON) {
 		c.RepositoriesPath = &path
 	}
 }
 
-func WithRepositories(repos []string) TeamConfigOption {
+func WithRepositories(repos []string) Option {
 	return func(c *TeamJSON) {
 		c.Repositories = &repos
 	}
 }
 
-func WithRepositoriesPrefixes(prefixes []string) TeamConfigOption {
+func WithRepositoriesPrefixes(prefixes []string) Option {
 	return func(c *TeamJSON) {
 		c.RepositoriesPrefixes = &prefixes
 	}

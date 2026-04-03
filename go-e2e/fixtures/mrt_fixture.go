@@ -7,13 +7,18 @@ import (
 	"strings"
 	"testing"
 
-	"mrt-cli/go-e2e/utils"
+	"mrt-cli/go-e2e/assert"
+	"mrt-cli/go-e2e/git"
+	"mrt-cli/go-e2e/internal"
+	mrtclient "mrt-cli/go-e2e/mrt"
+	"mrt-cli/go-e2e/ssh"
+	"mrt-cli/go-e2e/teamconfig"
 )
 
 type MrtFixture struct {
 	t            *testing.T
 	binaryPath   string
-	agent        *utils.Agent
+	agent        *ssh.Agent
 	tempDir      string
 	identityFile string
 }
@@ -21,7 +26,7 @@ type MrtFixture struct {
 func MakeMrtFixture(t *testing.T) *MrtFixture {
 	t.Helper()
 
-	agent, err := utils.StartSSHAgent()
+	agent, err := ssh.StartAgent()
 	if err != nil {
 		t.Fatalf("Could not start SSH agent.")
 	}
@@ -35,7 +40,7 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 
 	return &MrtFixture{
 		t:            t,
-		binaryPath:   getBinaryPath(utils.GetRepoRootDir(), t),
+		binaryPath:   getBinaryPath(internal.GetRepoRoot(), t),
 		agent:        agent,
 		tempDir:      t.TempDir(),
 		identityFile: "/dev/null",
@@ -44,7 +49,7 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 
 func (f *MrtFixture) Authenticate() *MrtFixture {
 	f.t.Helper()
-	privateKeyPath := utils.GetRepoRootDir() + "/.ssh/private-key"
+	privateKeyPath := internal.GetRepoRoot() + "/.ssh/private-key"
 	f.identityFile = privateKeyPath
 
 	if err := f.agent.AddKey(privateKeyPath); err != nil {
@@ -62,35 +67,35 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 }
 
 func (f *MrtFixture) GitClone(repositoryName string, destination string) {
-	utils.MakeGitCommand(f.isolatedEnv()).
-		Clone(utils.MakeCloneURLFrom(repositoryName), f.tempDir+"/"+destination).
+	git.MakeCommand(f.isolatedEnv()).
+		Clone(git.MakeCloneURL(repositoryName), f.tempDir+"/"+destination).
 		Execute()
 }
 
-func (f *MrtFixture) MakeMrtCommand() utils.MrtDirectedCommand {
-	return utils.
-		MakeMrtCommand(f.binaryPath, f.isolatedEnv()).
+func (f *MrtFixture) MakeMrtCommand() mrtclient.DirectedCommand {
+	return mrtclient.
+		MakeCommand(f.binaryPath, f.isolatedEnv()).
 		RunInDirectory(f.tempDir)
 }
 
 func (f *MrtFixture) isolatedEnv() []string {
-	sshConfigPath := utils.GetRepoRootDir() + "/.ssh/config"
+	sshConfigPath := internal.GetRepoRoot() + "/.ssh/config"
 	sshCommand := "ssh -F " + sshConfigPath + " -o IdentityFile=" + f.identityFile + " -o IdentitiesOnly=yes"
 	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
 }
 
-func (f *MrtFixture) WriteTeamJSON(withOptions ...utils.TeamConfigOption) {
-	utils.WriteTeamJSONTo(f.tempDir, withOptions...)
+func (f *MrtFixture) WriteTeamJSON(withOptions ...teamconfig.Option) {
+	teamconfig.WriteTo(f.tempDir, withOptions...)
 }
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
 	f.t.Helper()
-	utils.AssertDirectoryExists(f.t, f.tempDir+"/"+inFolder+"/"+repositoryName+"/.git")
+	assert.DirectoryExists(f.t, f.tempDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
-	utils.AssertDirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
+	assert.DirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {

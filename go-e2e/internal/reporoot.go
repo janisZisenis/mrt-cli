@@ -1,11 +1,11 @@
-package utils
+package internal
 
 import (
 	"os"
 	"path/filepath"
 )
 
-func GetRepoRootDir() string {
+func GetRepoRoot() string {
 	dir, err := os.Getwd()
 	if err != nil {
 		panic("failed to get working directory: " + err.Error())

@@ -1,4 +1,4 @@
-package utils
+package output
 
 import (
 	"regexp"
@@ -13,7 +13,7 @@ type Output struct {
 	lines []string
 }
 
-func MakeOutput(lines []string) *Output {
+func Make(lines []string) *Output {
 	return &Output{
 		lines: lines,
 	}
@@ -23,7 +23,7 @@ func (o *Output) Reversed() *Output {
 	reversed := append([]string(nil), o.lines...)
 	slices.Reverse(reversed)
 
-	return MakeOutput(reversed)
+	return Make(reversed)
 }
 
 func (o *Output) AssertLineEquals(t *testing.T, index int, expectedText string) {

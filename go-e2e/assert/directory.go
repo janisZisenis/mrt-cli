@@ -1,4 +1,4 @@
-package utils
+package assert
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func AssertDirectoryExists(t *testing.T, directory string) {
+func DirectoryExists(t *testing.T, directory string) {
 	t.Helper()
 
 	info, err := os.Stat(directory)
@@ -16,7 +16,7 @@ func AssertDirectoryExists(t *testing.T, directory string) {
 	assert.True(t, info.IsDir(), "%s exists but is not a directory", directory)
 }
 
-func AssertDirectoryDoesNotExist(t *testing.T, directory string) {
+func DirectoryDoesNotExist(t *testing.T, directory string) {
 	t.Helper()
 
 	_, err := os.Stat(directory)

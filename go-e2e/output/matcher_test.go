@@ -1,37 +1,37 @@
-package utils_test
+package output_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"mrt-cli/go-e2e/utils"
+	"mrt-cli/go-e2e/output"
 )
 
-// --- exactLine ---
+// --- ExactLine ---
 
 func Test_exactLine_Matches_IdenticalString(t *testing.T) {
-	assert.True(t, utils.ExactLine{"hello"}.Matches("hello"))
+	assert.True(t, output.ExactLine{"hello"}.Matches("hello"))
 }
 
 func Test_exactLine_DoesNotMatch_WhenLineContainsText(t *testing.T) {
-	assert.False(t, utils.ExactLine{"hello"}.Matches("say hello world"))
+	assert.False(t, output.ExactLine{"hello"}.Matches("say hello world"))
 }
 
 func Test_exactLine_DoesNotMatch_WhenLineIsDifferent(t *testing.T) {
-	assert.False(t, utils.ExactLine{"hello"}.Matches("world"))
+	assert.False(t, output.ExactLine{"hello"}.Matches("world"))
 }
 
-// --- containsLine ---
+// --- ContainsLine ---
 
 func Test_containsLine_Matches_IdenticalString(t *testing.T) {
-	assert.True(t, utils.ContainsLine{"hello"}.Matches("hello"))
+	assert.True(t, output.ContainsLine{"hello"}.Matches("hello"))
 }
 
 func Test_containsLine_Matches_WhenLineContainsText(t *testing.T) {
-	assert.True(t, utils.ContainsLine{"hello"}.Matches("say hello world"))
+	assert.True(t, output.ContainsLine{"hello"}.Matches("say hello world"))
 }
 
 func Test_containsLine_DoesNotMatch_WhenLineDoesNotContainText(t *testing.T) {
-	assert.False(t, utils.ContainsLine{"hello"}.Matches("goodbye"))
+	assert.False(t, output.ContainsLine{"hello"}.Matches("goodbye"))
 }
