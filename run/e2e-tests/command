@@ -94,6 +94,7 @@ else
 Host $HOST_ALIAS
    HostName $hostname
    StrictHostKeyChecking accept-new
+   LogLevel ERROR
 EOF
 fi
 
