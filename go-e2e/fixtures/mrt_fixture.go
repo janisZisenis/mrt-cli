@@ -60,18 +60,18 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 }
 
 func (f *MrtFixture) GitClone(repositoryName string, destination string) {
-	utils.MakeGitCommand(f.fixtureEnv()).
+	utils.MakeGitCommand(f.isolatedEnv()).
 		Clone(utils.MakeCloneUrlFrom(repositoryName), f.tempDir+"/"+destination).
 		Execute()
 }
 
 func (f *MrtFixture) MakeMrtCommand() utils.MrtDirectedCommand {
 	return utils.
-		MakeMrtCommand(f.binaryPath, f.fixtureEnv()).
+		MakeMrtCommand(f.binaryPath, f.isolatedEnv()).
 		RunInDirectory(f.tempDir)
 }
 
-func (f *MrtFixture) fixtureEnv() []string {
+func (f *MrtFixture) isolatedEnv() []string {
 	sshCommand := "ssh -o IdentityFile=" + f.identityFile + " -o IdentitiesOnly=yes"
 	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
 }
