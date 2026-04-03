@@ -27,7 +27,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: /usr/local/bin/gofumpt
-        key: gofumpt-${{ inputs.gofumpt_version }}-ubuntu
+        key: gofumpt-${{ inputs.gofumpt_version }}-${{ runner.os }}
 
     - name: Install gofumpt
       if: steps.gofumpt-cache.outputs.cache-hit != 'true'
@@ -46,7 +46,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: /usr/local/bin/golangci-lint
-        key: golangci-lint-${{ inputs.golangci_lint_version }}-ubuntu
+        key: golangci-lint-${{ inputs.golangci_lint_version }}-${{ runner.os }}
 
     - name: Install golangci-lint
       if: steps.golangci-lint-cache.outputs.cache-hit != 'true'
@@ -64,7 +64,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: /usr/local/bin/goimports
-        key: goimports-${{ inputs.goimports_version }}-ubuntu
+        key: goimports-${{ inputs.goimports_version }}-${{ runner.os }}
 
     - name: Install goimports
       if: steps.goimports-cache.outputs.cache-hit != 'true'
@@ -83,7 +83,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: /usr/local/bin/gotestsum
-        key: gotestsum-${{ inputs.gotestsum_version }}-ubuntu
+        key: gotestsum-${{ inputs.gotestsum_version }}-${{ runner.os }}
 
     - name: Install gotestsum
       if: steps.gotestsum-cache.outputs.cache-hit != 'true'
