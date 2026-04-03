@@ -1,8 +1,10 @@
 package outputs
 
 import (
+	"fmt"
 	"regexp"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,6 +21,15 @@ func Make(lines []string) *Output {
 	}
 }
 
+func (o *Output) dump() string {
+	var sb strings.Builder
+	sb.WriteString("captured output:\n")
+	for i, line := range o.lines {
+		fmt.Fprintf(&sb, "  [%d] %s\n", i, line)
+	}
+	return sb.String()
+}
+
 func (o *Output) Reversed() *Output {
 	reversed := append([]string(nil), o.lines...)
 	slices.Reverse(reversed)
@@ -29,30 +40,36 @@ func (o *Output) Reversed() *Output {
 func (o *Output) AssertLineEquals(t *testing.T, index int, expectedText string) {
 	t.Helper()
 
-	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines", index, len(o.lines))
-	assert.Equal(t, expectedText, o.lines[index], "line %d does not contain expected text", index)
+	require.Less(
+		t, index, len(o.lines),
+		"line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump(),
+	)
+	assert.Equal(t, expectedText, o.lines[index], "line %d does not match expected text\n%s", index, o.dump())
 }
 
 func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string) {
 	t.Helper()
 
-	require.Less(t, index, len(o.lines), "line index %d is out of bounds, have %d lines", index, len(o.lines))
+	require.Less(
+		t, index, len(o.lines),
+		"line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump(),
+	)
 	regex, err := regexp.Compile(pattern)
 	require.NoError(t, err, "invalid regex pattern: %s", pattern)
 	assert.True(
 		t,
 		regex.MatchString(o.lines[index]),
-		"line %d does not match pattern %s\ngot: %s",
+		"line %d does not match pattern %s\n%s",
 		index,
 		pattern,
-		o.lines[index],
+		o.dump(),
 	)
 }
 
 func (o *Output) AssertHasLine(t *testing.T, line string) {
 	t.Helper()
 
-	assert.Contains(t, o.lines, line, "output does not have line: %s", line)
+	assert.Contains(t, o.lines, line, "output does not have line: %s\n%s", line, o.dump())
 }
 
 type LineExpectation interface {
@@ -75,7 +92,7 @@ func (o *Output) AssertInOrder(t require.TestingT, expectations ...LineExpectati
 			}
 		}
 		if !found {
-			require.Fail(t, exp.failureMessage())
+			require.Fail(t, exp.failureMessage(), o.dump())
 		}
 	}
 }

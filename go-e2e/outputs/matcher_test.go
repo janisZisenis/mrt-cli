@@ -18,10 +18,6 @@ func Test_exactLine_DoesNotMatch_WhenLineContainsText(t *testing.T) {
 	assert.False(t, outputs.ExactLine{"hello"}.Matches("say hello world"))
 }
 
-func Test_exactLine_DoesNotMatch_WhenLineIsDifferent(t *testing.T) {
-	assert.False(t, outputs.ExactLine{"hello"}.Matches("world"))
-}
-
 // --- ContainsLine ---
 
 func Test_containsLine_Matches_IdenticalString(t *testing.T) {

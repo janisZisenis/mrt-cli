@@ -16,10 +16,18 @@ type TeamJSON struct {
 
 type Option func(*TeamJSON)
 
-func WriteTo(dir string, withOptions ...Option) {
-	createDirError := os.MkdirAll(dir, 0o750)
+type Writer struct {
+	dir string
+}
+
+func NewWriter(dir string) *Writer {
+	return &Writer{dir: dir}
+}
+
+func (w *Writer) Write(withOptions ...Option) {
+	createDirError := os.MkdirAll(w.dir, 0o750)
 	if createDirError != nil {
-		panic("failed to create directory " + dir + ": " + createDirError.Error())
+		panic("failed to create directory " + w.dir + ": " + createDirError.Error())
 	}
 
 	config := makeConfig(withOptions...)
@@ -28,7 +36,7 @@ func WriteTo(dir string, withOptions ...Option) {
 		panic("failed to marshal TeamJSON to JSON: " + marshallError.Error())
 	}
 
-	filePath := filepath.Join(dir, teamFileName)
+	filePath := filepath.Join(w.dir, teamFileName)
 
 	writeError := os.WriteFile(filePath, jsonBytes, 0o600)
 	if writeError != nil {

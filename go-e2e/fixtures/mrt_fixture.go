@@ -11,6 +11,7 @@ import (
 	"mrt-cli/go-e2e/git"
 	"mrt-cli/go-e2e/internal"
 	mrtclient "mrt-cli/go-e2e/mrt"
+	"mrt-cli/go-e2e/runcommand"
 	"mrt-cli/go-e2e/ssh"
 	"mrt-cli/go-e2e/teamconfig"
 )
@@ -84,8 +85,8 @@ func (f *MrtFixture) isolatedEnv() []string {
 	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
 }
 
-func (f *MrtFixture) WriteTeamJSON(withOptions ...teamconfig.Option) {
-	teamconfig.WriteTo(f.tempDir, withOptions...)
+func (f *MrtFixture) TeamConfigWriter() *teamconfig.Writer {
+	return teamconfig.NewWriter(f.tempDir)
 }
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
@@ -96,6 +97,10 @@ func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder stri
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
 	assert.DirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
+}
+
+func (f *MrtFixture) RunCommandWriter() *runcommand.Writer {
+	return runcommand.NewWriter(f.tempDir)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {

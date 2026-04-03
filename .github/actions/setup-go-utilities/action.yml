@@ -9,7 +9,7 @@ inputs:
   golangci_lint_version:
     description: The version of golangci-lint to install.
     required: false
-    default: "v2.4.0"
+    default: "v2.11.4"
   goimports_version:
     description: The version of goimports to install (uses the `golang.org/x/tools` module).
     required: false
