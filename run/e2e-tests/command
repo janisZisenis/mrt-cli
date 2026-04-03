@@ -81,10 +81,22 @@ fi
 mkdir -p "$(dirname "$SSH_CONFIG_FILE")"
 # Normally you would add "User git" to the config. But somehow this does not work on the ci. There I have to remove
 # the user from the config.
-cat <<EOF >"$SSH_CONFIG_FILE"
+if [[ "$hostname" == "localhost" ]]; then
+	cat <<EOF >"$SSH_CONFIG_FILE"
 Host $HOST_ALIAS
    HostName $hostname
+   StrictHostKeyChecking no
+   UserKnownHostsFile /dev/null
+   LogLevel ERROR
 EOF
+else
+	cat <<EOF >"$SSH_CONFIG_FILE"
+Host $HOST_ALIAS
+   HostName $hostname
+   StrictHostKeyChecking accept-new
+   LogLevel ERROR
+EOF
+fi
 
 if [[ "$run_mode" == "$FLAG_MANUAL" ]]; then
 	GITHUB_RESPONSE_MATCH="successfully authenticated"
@@ -115,6 +127,18 @@ printf "\t%s\n" "${files[@]}"
 
 echo "Running tests with BATS..."
 
-export GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE"
 export BATS_LIB_PATH="$e2eTestDir/3rdParty/test_helper":"$e2eTestDir/helpers"
-"$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10
+
+bats_exit_code=0
+GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE" "$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10 || bats_exit_code=$?
+
+echo "Running Go e2e tests..."
+go_exit_code=0
+go test -v ./go-e2e/tests/... || go_exit_code=$?
+
+if [[ $bats_exit_code -ne 0 ]] || [[ $go_exit_code -ne 0 ]]; then
+	echo "Error: One or more test suites failed."
+	[[ $bats_exit_code -ne 0 ]] && echo "  - BATS tests failed with exit code $bats_exit_code"
+	[[ $go_exit_code -ne 0 ]] && echo "  - Go e2e tests failed with exit code $go_exit_code"
+	exit 1
+fi

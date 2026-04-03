@@ -13,6 +13,9 @@ _check_if_private_key_file_exists() {
 _authenticate() {
 	_check_if_private_key_file_exists
 	ssh-add "$(_private_key_file)"
+	local abs_key_path
+	abs_key_path="$(realpath "$(_private_key_file)")"
+	export GIT_SSH_COMMAND="$MRT_BASE_SSH_COMMAND -o IdentityFile=$abs_key_path -o IdentitiesOnly=yes"
 }
 
 _revoke_authentication() {
