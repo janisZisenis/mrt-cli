@@ -57,7 +57,9 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 			git.MakeCloneURL(secondRepositoryName),
 		}),
 	)
-	f.GitClone(firstRepositoryName, defaultRepositoriesPath+"/"+firstRepositoryName)
+	f.MakeGitCommand().
+		Clone(git.MakeCloneURL(firstRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+firstRepositoryName)).
+		Execute()
 
 	output, _ := f.MakeMrtCommand().
 		Setup().

@@ -12,6 +12,8 @@ type TeamJSON struct {
 	RepositoriesPath     *string   `json:"repositoriesPath,omitempty"`
 	Repositories         *[]string `json:"repositories,omitempty"`
 	RepositoriesPrefixes *[]string `json:"repositoriesPrefixes,omitempty"`
+	BlockedBranches      *[]string `json:"blockedBranches,omitempty"`
+	CommitPrefixRegex    *string   `json:"commitPrefixRegex,omitempty"`
 }
 
 type Option func(*TeamJSON)
@@ -69,5 +71,17 @@ func WithRepositories(repos []string) Option {
 func WithRepositoriesPrefixes(prefixes []string) Option {
 	return func(c *TeamJSON) {
 		c.RepositoriesPrefixes = &prefixes
+	}
+}
+
+func WithBlockedBranches(branches []string) Option {
+	return func(c *TeamJSON) {
+		c.BlockedBranches = &branches
+	}
+}
+
+func WithCommitPrefixRegex(regex string) Option {
+	return func(c *TeamJSON) {
+		c.CommitPrefixRegex = &regex
 	}
 }
