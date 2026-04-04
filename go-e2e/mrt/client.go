@@ -1,6 +1,7 @@
 package mrt
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"os"
@@ -15,6 +16,11 @@ type ExecutableCommand interface {
 	Execute() (*outputs.Output, int)
 }
 
+type RunCommand interface {
+	Execute() (*outputs.Output, int)
+	ExecuteWithInput(input string) (*outputs.Output, int)
+}
+
 type BaseCommand interface {
 	RunInDirectory(directory string) DirectedCommand
 	Setup() SetupCommand
@@ -23,7 +29,7 @@ type BaseCommand interface {
 
 type DirectedCommand interface {
 	Setup() SetupCommand
-	Run(args ...string) ExecutableCommand
+	Run(args ...string) RunCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -65,11 +71,16 @@ func (m *Mrt) Clone() ExecutableCommand {
 	return m
 }
 
-func (m *Mrt) Run(args ...string) ExecutableCommand {
+func (m *Mrt) Run(args ...string) RunCommand {
 	m.command.Args = append(m.command.Args, "run")
 	m.command.Args = append(m.command.Args, args...)
 
 	return m
+}
+
+func (m *Mrt) ExecuteWithInput(input string) (*outputs.Output, int) {
+	m.command.Stdin = bytes.NewBufferString(input)
+	return m.Execute()
 }
 
 func (m *Mrt) Execute() (*outputs.Output, int) {

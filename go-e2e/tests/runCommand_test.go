@@ -1,0 +1,104 @@
+package tests_test
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"mrt-cli/go-e2e/fixtures"
+)
+
+func Test_IfCommandIsRun_ItShouldPassRootDirAndParametersToIt(t *testing.T) {
+	tests := []struct {
+		name        string
+		commandName string
+		parameters  []string
+	}{
+		{"some-command with flags", "some-command", []string{"some", "--flag"}},
+		{"another-command with parameters", "another-command", []string{"another", "parameter"}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testCommandPassesRootDirAndParametersToIt(t, tt.commandName, tt.parameters)
+		})
+	}
+}
+
+func testCommandPassesRootDirAndParametersToIt(t *testing.T, commandName string, parameters []string) {
+	t.Helper()
+	f := fixtures.MakeMrtFixture(t).Parallel()
+	w := f.RunCommandWriter()
+	w.WriteSpyCommand(commandName)
+
+	args := append([]string{commandName, "--"}, parameters...)
+	f.MakeMrtCommand().Run(args...).Execute()
+
+	w.AssertSpyWasCalledWith(t, commandName, strings.Join(parameters, " "))
+}
+
+func Test_IfCommandSucceedsWithOutput_ItShouldPrintTheCommandsOutput(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).Parallel()
+	commandName := "some-command"
+	someOutput := "some-output"
+	w := f.RunCommandWriter()
+	w.WriteStubCommand(commandName, 0, someOutput)
+
+	output, _ := f.MakeMrtCommand().Run(commandName).Execute()
+
+	output.AssertHasLine(t, someOutput)
+}
+
+func Test_IfCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).Parallel()
+	commandName := "input"
+	w := f.RunCommandWriter()
+	w.WriteInputCommand(commandName)
+	input := "some-input"
+
+	f.MakeMrtCommand().Run(commandName).ExecuteWithInput(input + "\n")
+
+	w.AssertInputWasReceived(t, commandName, input)
+}
+
+func Test_IfCommandWritesToStderr_ItShouldOutputStderr(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).Parallel()
+	commandName := "error"
+	errMessage := "some-error"
+	w := f.RunCommandWriter()
+	w.WriteStderrCommand(commandName, errMessage)
+
+	output, _ := f.MakeMrtCommand().Run(commandName).Execute()
+
+	output.AssertHasLine(t, errMessage)
+}
+
+func Test_CommandExitCodeIsForwardedToTheCaller(t *testing.T) {
+	tests := []struct {
+		name     string
+		exitCode int
+	}{
+		{"exits with code 0", 0},
+		{"exits with code 1", 1},
+		{"exits with code 2", 2},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testCommandForwardsExitCode(t, tt.exitCode)
+		})
+	}
+}
+
+func testCommandForwardsExitCode(t *testing.T, expectedExitCode int) {
+	t.Helper()
+	f := fixtures.MakeMrtFixture(t).Parallel()
+	commandName := "some-command"
+	w := f.RunCommandWriter()
+	w.WriteStubCommand(commandName, expectedExitCode, "")
+
+	_, exitCode := f.MakeMrtCommand().Run(commandName).Execute()
+
+	assert.Equal(t, expectedExitCode, exitCode)
+}
