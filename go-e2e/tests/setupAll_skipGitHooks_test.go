@@ -11,21 +11,40 @@ import (
 	"mrt-cli/go-e2e/teamconfig"
 )
 
-func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBeRejected(t *testing.T) {
+type skipGitHooksFixture struct {
+	f                 *fixtures.MrtFixture
+	blockedBranchName string
+	repositoryPath    string
+}
+
+func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...teamconfig.Option) skipGitHooksFixture {
+	t.Helper()
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
-	repositoryURL := git.MakeCloneURL(repositoryName)
-	branchName := fmt.Sprintf("branch-%s", t.Name())
-	f.TeamConfigWriter().Write(
-		teamconfig.WithRepositories([]string{repositoryURL}),
-		teamconfig.WithBlockedBranches([]string{branchName}),
+	blockedBranchName := fmt.Sprintf("branch-%s", t.Name())
+	options := append(
+		[]teamconfig.Option{
+			teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
+			teamconfig.WithBlockedBranches([]string{blockedBranchName}),
+		},
+		extraOptions...,
 	)
+	f.TeamConfigWriter().Write(options...)
 	f.MakeMrtCommand().Setup().All("--skip-install-git-hooks").Execute()
-	repositoryPath := f.AbsolutePath(defaultRepositoriesPath + "/" + repositoryName)
 
-	exitCode, err := f.MakeGitCommand().
-		InDirectory(repositoryPath).
-		MakeCommitOnNewBranch(branchName, "some-message").
+	return skipGitHooksFixture{
+		f:                 f,
+		blockedBranchName: blockedBranchName,
+		repositoryPath:    f.AbsolutePath(defaultRepositoriesPath + "/" + repositoryName),
+	}
+}
+
+func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBeRejected(t *testing.T) {
+	fix := setupRepoWithBlockedBranchButSkippedHooks(t)
+
+	exitCode, err := fix.f.MakeGitCommand().
+		InDirectory(fix.repositoryPath).
+		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
 		Execute()
 
 	assert.NoError(t, err)
@@ -33,21 +52,12 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBe
 }
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRejected(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	repositoryName := "1_TestRepository"
-	repositoryURL := git.MakeCloneURL(repositoryName)
-	branchName := fmt.Sprintf("branch-%s", t.Name())
-	f.TeamConfigWriter().Write(
-		teamconfig.WithRepositories([]string{repositoryURL}),
-		teamconfig.WithBlockedBranches([]string{branchName}),
-	)
-	f.MakeMrtCommand().Setup().All("--skip-install-git-hooks").Execute()
-	repositoryPath := f.AbsolutePath(defaultRepositoriesPath + "/" + repositoryName)
-	f.MakeGitCommand().InDirectory(repositoryPath).MakeCommitOnNewBranch(branchName, "some-message").Execute()
+	fix := setupRepoWithBlockedBranchButSkippedHooks(t)
+	fix.f.MakeGitCommand().InDirectory(fix.repositoryPath).MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").Execute()
 
-	exitCode, err := f.MakeGitCommand().
-		InDirectory(repositoryPath).
-		Push(branchName).
+	exitCode, err := fix.f.MakeGitCommand().
+		InDirectory(fix.repositoryPath).
+		Push(fix.blockedBranchName).
 		Execute()
 
 	assert.NoError(t, err)
@@ -55,21 +65,11 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRej
 }
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingWithMissingPrefixInCommitMessage_ShouldNotBeRejected(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
-	repositoryName := "1_TestRepository"
-	repositoryURL := git.MakeCloneURL(repositoryName)
-	branchName := fmt.Sprintf("branch-%s", t.Name())
-	f.TeamConfigWriter().Write(
-		teamconfig.WithRepositories([]string{repositoryURL}),
-		teamconfig.WithBlockedBranches([]string{branchName}),
-		teamconfig.WithCommitPrefixRegex("Some-Prefix"),
-	)
-	f.MakeMrtCommand().Setup().All("--skip-install-git-hooks").Execute()
-	repositoryPath := f.AbsolutePath(defaultRepositoriesPath + "/" + repositoryName)
+	fix := setupRepoWithBlockedBranchButSkippedHooks(t, teamconfig.WithCommitPrefixRegex("Some-Prefix"))
 
-	exitCode, err := f.MakeGitCommand().
-		InDirectory(repositoryPath).
-		MakeCommitOnNewBranch(branchName, "some-message").
+	exitCode, err := fix.f.MakeGitCommand().
+		InDirectory(fix.repositoryPath).
+		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
 		Execute()
 
 	assert.NoError(t, err)
