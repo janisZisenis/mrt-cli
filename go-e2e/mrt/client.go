@@ -1,8 +1,10 @@
 package mrt
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -13,6 +15,7 @@ import (
 
 type ExecutableCommand interface {
 	Execute() (*outputs.Output, int)
+	WithStdin(input string) ExecutableCommand
 }
 
 type BaseCommand interface {
@@ -35,6 +38,7 @@ type SetupCommand interface {
 type Mrt struct {
 	binaryName string
 	command    *exec.Cmd
+	stdin      io.Reader
 }
 
 func MakeCommand(binaryPath string, sshEnv []string) BaseCommand {
@@ -72,7 +76,16 @@ func (m *Mrt) Run(args ...string) ExecutableCommand {
 	return m
 }
 
+func (m *Mrt) WithStdin(input string) ExecutableCommand {
+	m.stdin = bytes.NewBufferString(input)
+	return m
+}
+
 func (m *Mrt) Execute() (*outputs.Output, int) {
+	if m.stdin != nil {
+		m.command.Stdin = m.stdin
+	}
+
 	byteOutput, err := m.command.CombinedOutput()
 	out := string(byteOutput)
 
