@@ -72,6 +72,17 @@ func (o *Output) AssertHasLine(t *testing.T, line string) {
 	assert.Contains(t, o.lines, line, "output does not have line: %s\n%s", line, o.dump())
 }
 
+func (o *Output) AssertHasNoLineContaining(t *testing.T, text string) {
+	t.Helper()
+
+	for _, line := range o.lines {
+		if strings.Contains(line, text) {
+			assert.Fail(t, "output should not contain: "+text+"\n"+o.dump())
+			return
+		}
+	}
+}
+
 type LineExpectation interface {
 	matches(line string) bool
 	failureMessage() string

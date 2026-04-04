@@ -11,10 +11,11 @@ import (
 	"mrt-cli/go-e2e/git"
 	"mrt-cli/go-e2e/internal"
 	mrtclient "mrt-cli/go-e2e/mrt"
-	"mrt-cli/go-e2e/runcommand"
 	"mrt-cli/go-e2e/ssh"
 	"mrt-cli/go-e2e/teamconfig"
 )
+
+const setupCommandDir = "setup"
 
 type MrtFixture struct {
 	t            *testing.T
@@ -22,6 +23,8 @@ type MrtFixture struct {
 	agent        *ssh.Agent
 	tempDir      string
 	identityFile string
+	RunFixture   *RunCommandFixture
+	SetupFixture *CommandFixture
 }
 
 func MakeMrtFixture(t *testing.T) *MrtFixture {
@@ -39,12 +42,16 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 		}
 	})
 
+	tempDir := t.TempDir()
+
 	return &MrtFixture{
 		t:            t,
 		binaryPath:   getBinaryPath(internal.GetRepoRoot(), t),
 		agent:        agent,
-		tempDir:      t.TempDir(),
+		tempDir:      tempDir,
 		identityFile: "/dev/null",
+		RunFixture:   NewRunCommandFixture(tempDir),
+		SetupFixture: NewCommandFixture(tempDir, setupCommandDir),
 	}
 }
 
@@ -97,10 +104,6 @@ func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder stri
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
 	assert.DirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
-}
-
-func (f *MrtFixture) RunCommandWriter() *runcommand.Writer {
-	return runcommand.NewWriter(f.tempDir)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {

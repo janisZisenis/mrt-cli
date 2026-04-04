@@ -7,16 +7,14 @@ import (
 
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/outputs"
-	"mrt-cli/go-e2e/runcommand"
 )
 
 func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDescription(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
 	shortDescription := "A command that outputs some-output"
-	w := f.RunCommandWriter()
-	w.WriteDummyCommand(commandName)
-	w.WriteConfig(commandName, runcommand.WithShortDescription(shortDescription))
+	f.RunFixture.WriteDummyCommand(commandName)
+	f.RunFixture.WriteConfig(commandName, fixtures.WithShortDescription(shortDescription))
 
 	output, _ := f.MakeMrtCommand().Run("-h").Execute()
 
@@ -26,9 +24,8 @@ func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDesc
 func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDefaultDescription(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
-	w := f.RunCommandWriter()
-	w.WriteDummyCommand(commandName)
-	w.WriteConfig(commandName, []runcommand.ConfigOption{}...)
+	f.RunFixture.WriteDummyCommand(commandName)
+	f.RunFixture.WriteConfig(commandName)
 
 	output, _ := f.MakeMrtCommand().Run("-h").Execute()
 
@@ -38,15 +35,14 @@ func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDef
 func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
-	w := f.RunCommandWriter()
-	w.WriteDummyCommand(commandName)
-	w.WriteCorruptConfig(commandName)
+	f.RunFixture.WriteDummyCommand(commandName)
+	f.RunFixture.WriteCorruptConfig(commandName)
 
 	output, exitCode := f.MakeMrtCommand().Run("-h").Execute()
 
 	assert.Equal(t, 1, exitCode)
 	output.AssertInOrder(t,
-		outputs.HasLine("Error while reading "+w.ConfigFilePath(commandName)),
+		outputs.HasLine("Error while reading "+f.RunFixture.ConfigFilePath(commandName)),
 		outputs.HasLineContaining("unexpected end of JSON input"),
 	)
 }
