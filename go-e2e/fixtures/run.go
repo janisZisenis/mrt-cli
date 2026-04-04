@@ -25,7 +25,7 @@ func (f *RunCommandFixture) ConfigFilePath(commandName string) string {
 	return filepath.Join(filepath.Dir(f.CommandPath(commandName)), configFile)
 }
 
-func (f *RunCommandFixture) WriteConfig(commandName string, options ...runCommandConfigOption) {
+func (f *RunCommandFixture) WriteConfig(commandName string, options ...RunCommandConfigOption) {
 	config := &runCommandConfig{}
 	for _, opt := range options {
 		opt(config)
@@ -59,9 +59,9 @@ type runCommandConfig struct {
 	ShortDescription *string `json:"shortDescription,omitempty"`
 }
 
-type runCommandConfigOption func(*runCommandConfig)
+type RunCommandConfigOption func(*runCommandConfig)
 
-func WithShortDescription(description string) runCommandConfigOption {
+func WithShortDescription(description string) RunCommandConfigOption {
 	return func(c *runCommandConfig) {
 		c.ShortDescription = &description
 	}
