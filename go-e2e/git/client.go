@@ -2,6 +2,7 @@ package git
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -65,12 +66,14 @@ func (g *Git) Push(branch string) ExecutableCommand {
 }
 
 func (g *Git) Execute() (int, error) {
+	//nolint:gosec // args are controlled by internal callers
 	cmd := exec.CommandContext(context.Background(), "git", g.args...)
 	cmd.Env = internal.MergeEnv(os.Environ(), g.sshEnv)
 
 	outputBytes, err := cmd.CombinedOutput()
 	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
 			return exitErr.ExitCode(), fmt.Errorf("%s", string(outputBytes))
 		}
 
@@ -106,12 +109,14 @@ func (c *commitCommand) Execute() (int, error) {
 }
 
 func run(args []string, sshEnv []string) (int, error) {
+	//nolint:gosec // args are controlled by internal callers
 	cmd := exec.CommandContext(context.Background(), args[0], args[1:]...)
 	cmd.Env = internal.MergeEnv(os.Environ(), sshEnv)
 
 	outputBytes, err := cmd.CombinedOutput()
 	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
 			return exitErr.ExitCode(), fmt.Errorf("%s", string(outputBytes))
 		}
 

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"mrt-cli/go-e2e/fixtures"
 	"mrt-cli/go-e2e/git"
@@ -47,20 +48,23 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBe
 		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
 		Execute()
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 0, exitCode)
 }
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRejected(t *testing.T) {
 	fix := setupRepoWithBlockedBranchButSkippedHooks(t)
-	fix.f.MakeGitCommand().InDirectory(fix.repositoryPath).MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").Execute()
+	fix.f.MakeGitCommand().
+		InDirectory(fix.repositoryPath).
+		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
+		Execute()
 
 	exitCode, err := fix.f.MakeGitCommand().
 		InDirectory(fix.repositoryPath).
 		Push(fix.blockedBranchName).
 		Execute()
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 0, exitCode)
 }
 
@@ -72,6 +76,6 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingWithMissingPrefixInCommitMes
 		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
 		Execute()
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 0, exitCode)
 }
