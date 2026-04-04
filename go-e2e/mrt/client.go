@@ -35,6 +35,7 @@ type DirectedCommand interface {
 
 type SetupCommand interface {
 	Clone() ExecutableCommand
+	All(args ...string) ExecutableCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -67,6 +68,13 @@ func (m *Mrt) Setup() SetupCommand {
 
 func (m *Mrt) Clone() ExecutableCommand {
 	m.command.Args = append(m.command.Args, "clone-repositories")
+
+	return m
+}
+
+func (m *Mrt) All(args ...string) ExecutableCommand {
+	m.command.Args = append(m.command.Args, "all")
+	m.command.Args = append(m.command.Args, args...)
 
 	return m
 }

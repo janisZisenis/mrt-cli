@@ -12,6 +12,7 @@ import (
 	"mrt-cli/go-e2e/internal"
 	mrtclient "mrt-cli/go-e2e/mrt"
 	"mrt-cli/go-e2e/runcommand"
+	"mrt-cli/go-e2e/setupcommand"
 	"mrt-cli/go-e2e/ssh"
 	"mrt-cli/go-e2e/teamconfig"
 )
@@ -101,6 +102,14 @@ func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 
 func (f *MrtFixture) RunCommandWriter() *runcommand.Writer {
 	return runcommand.NewWriter(f.tempDir)
+}
+
+func (f *MrtFixture) SetupCommandWriter() *setupcommand.Writer {
+	return setupcommand.NewWriter(f.tempDir)
+}
+
+func (f *MrtFixture) TempDir() string {
+	return f.tempDir
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
