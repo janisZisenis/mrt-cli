@@ -57,7 +57,7 @@ func Test_IfCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) {
 	w.WriteInputCommand(commandName)
 	input := "some-input"
 
-	f.MakeMrtCommand().Run(commandName).WithStdin(input + "\n").Execute()
+	f.MakeMrtCommand().Run(commandName).ExecuteWithInput(input + "\n")
 
 	w.AssertInputWasReceived(t, commandName, input)
 }
