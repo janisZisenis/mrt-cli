@@ -29,21 +29,19 @@ func Test_IfCommandIsRun_ItShouldPassRootDirAndParametersToIt(t *testing.T) {
 func testCommandPassesRootDirAndParametersToIt(t *testing.T, commandName string, parameters []string) {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).Parallel()
-	w := f.RunCommandWriter()
-	w.WriteSpyCommand(commandName)
+	f.RunFixture.WriteSpyCommand(commandName)
 
 	args := append([]string{commandName, "--"}, parameters...)
 	f.MakeMrtCommand().Run(args...).Execute()
 
-	w.AssertSpyWasCalledWith(t, commandName, strings.Join(parameters, " "))
+	f.RunFixture.AssertSpyWasCalledWith(t, commandName, f.RunFixture.RepoDir+" "+strings.Join(parameters, " "))
 }
 
 func Test_IfCommandSucceedsWithOutput_ItShouldPrintTheCommandsOutput(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
 	someOutput := "some-output"
-	w := f.RunCommandWriter()
-	w.WriteStubCommand(commandName, 0, someOutput)
+	f.RunFixture.WriteStubCommand(commandName, 0, someOutput)
 
 	output, _ := f.MakeMrtCommand().Run(commandName).Execute()
 
@@ -53,21 +51,19 @@ func Test_IfCommandSucceedsWithOutput_ItShouldPrintTheCommandsOutput(t *testing.
 func Test_IfCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "input"
-	w := f.RunCommandWriter()
-	w.WriteInputCommand(commandName)
 	input := "some-input"
+	f.RunFixture.WriteInputCommand(commandName)
 
 	f.MakeMrtCommand().Run(commandName).ExecuteWithInput(input + "\n")
 
-	w.AssertInputWasReceived(t, commandName, input)
+	f.RunFixture.AssertInputWasReceived(t, commandName, input)
 }
 
 func Test_IfCommandWritesToStderr_ItShouldOutputStderr(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "error"
 	errMessage := "some-error"
-	w := f.RunCommandWriter()
-	w.WriteStderrCommand(commandName, errMessage)
+	f.RunFixture.WriteStderrCommand(commandName, errMessage)
 
 	output, _ := f.MakeMrtCommand().Run(commandName).Execute()
 
@@ -95,8 +91,7 @@ func testCommandForwardsExitCode(t *testing.T, expectedExitCode int) {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
-	w := f.RunCommandWriter()
-	w.WriteStubCommand(commandName, expectedExitCode, "")
+	f.RunFixture.WriteStubCommand(commandName, expectedExitCode, "")
 
 	_, exitCode := f.MakeMrtCommand().Run(commandName).Execute()
 
