@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"mrt-cli/go-e2e/internal"
 )
@@ -18,6 +19,7 @@ type BaseCommand interface {
 type DirectedCommand interface {
 	MakeCommitOnNewBranch(branch string, message string) ExecutableCommand
 	Push(branch string) ExecutableCommand
+	DeleteRemoteBranchIfExists(branch string) ExecutableCommand
 }
 
 type ExecutableCommand interface {
@@ -63,6 +65,25 @@ func (g *Git) Push(branch string) ExecutableCommand {
 		args:   append(g.args, "push", "--set-upstream", "origin", branch),
 		sshEnv: g.sshEnv,
 	}
+}
+
+func (g *Git) DeleteRemoteBranchIfExists(branch string) ExecutableCommand {
+	return &deleteRemoteBranchIfExistsCommand{
+		git: &Git{args: append(g.args, "push", "origin", "--delete", branch), sshEnv: g.sshEnv},
+	}
+}
+
+type deleteRemoteBranchIfExistsCommand struct {
+	git *Git
+}
+
+func (d *deleteRemoteBranchIfExistsCommand) Execute() (int, error) {
+	exitCode, err := d.git.Execute()
+	if err != nil && strings.Contains(err.Error(), "remote ref does not exist") {
+		return 0, nil
+	}
+
+	return exitCode, err
 }
 
 func (g *Git) Execute() (int, error) {

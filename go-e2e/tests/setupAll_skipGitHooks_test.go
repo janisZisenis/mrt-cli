@@ -1,6 +1,7 @@
 package tests_test
 
 import (
+	"crypto/rand"
 	"fmt"
 	"testing"
 
@@ -18,11 +19,17 @@ type skipGitHooksFixture struct {
 	repositoryPath    string
 }
 
+func uniqueBranchName() string {
+	b := make([]byte, 4)
+	_, _ = rand.Read(b)
+	return fmt.Sprintf("branch-%x", b)
+}
+
 func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...teamconfig.Option) skipGitHooksFixture {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
 	repositoryName := "1_TestRepository"
-	blockedBranchName := fmt.Sprintf("branch-%s", t.Name())
+	blockedBranchName := uniqueBranchName()
 	options := append(
 		[]teamconfig.Option{
 			teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
@@ -54,6 +61,12 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBe
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRejected(t *testing.T) {
 	fix := setupRepoWithBlockedBranchButSkippedHooks(t)
+	t.Cleanup(func() {
+		fix.f.MakeGitCommand().
+			InDirectory(fix.repositoryPath).
+			DeleteRemoteBranchIfExists(fix.blockedBranchName).
+			Execute()
+	})
 	fix.f.MakeGitCommand().
 		InDirectory(fix.repositoryPath).
 		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
