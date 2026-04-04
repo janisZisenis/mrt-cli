@@ -21,7 +21,7 @@ type MrtFixture struct {
 	t            *testing.T
 	binaryPath   string
 	agent        *ssh.Agent
-	tempDir      string
+	teamDir      string
 	identityFile string
 	RunFixture   *RunCommandFixture
 	SetupFixture *CommandFixture
@@ -42,16 +42,16 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 		}
 	})
 
-	tempDir := t.TempDir()
+	teamDir := t.TempDir()
 
 	return &MrtFixture{
 		t:            t,
 		binaryPath:   getBinaryPath(internal.GetRepoRoot(), t),
 		agent:        agent,
-		tempDir:      tempDir,
+		teamDir:      teamDir,
 		identityFile: "/dev/null",
-		RunFixture:   NewRunCommandFixture(tempDir),
-		SetupFixture: NewCommandFixture(tempDir, setupCommandDir),
+		RunFixture:   NewRunCommandFixture(teamDir),
+		SetupFixture: NewCommandFixture(teamDir, setupCommandDir),
 	}
 }
 
@@ -74,16 +74,18 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 	return f
 }
 
-func (f *MrtFixture) GitClone(repositoryName string, destination string) {
-	git.MakeCommand(f.isolatedEnv()).
-		Clone(git.MakeCloneURL(repositoryName), f.tempDir+"/"+destination).
-		Execute()
+func (f *MrtFixture) AbsolutePath(relativePath string) string {
+	return f.teamDir + "/" + relativePath
+}
+
+func (f *MrtFixture) MakeGitCommand() git.BaseCommand {
+	return git.MakeCommand(f.isolatedEnv())
 }
 
 func (f *MrtFixture) MakeMrtCommand() mrtclient.DirectedCommand {
 	return mrtclient.
 		MakeCommand(f.binaryPath, f.isolatedEnv()).
-		RunInDirectory(f.tempDir)
+		RunInDirectory(f.teamDir)
 }
 
 func (f *MrtFixture) isolatedEnv() []string {
@@ -93,17 +95,17 @@ func (f *MrtFixture) isolatedEnv() []string {
 }
 
 func (f *MrtFixture) TeamConfigWriter() *teamconfig.Writer {
-	return teamconfig.NewWriter(f.tempDir)
+	return teamconfig.NewWriter(f.teamDir)
 }
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
 	f.t.Helper()
-	assert.DirectoryExists(f.t, f.tempDir+"/"+inFolder+"/"+repositoryName+"/.git")
+	assert.DirectoryExists(f.t, f.teamDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
-	assert.DirectoryDoesNotExist(f.t, f.tempDir+"/"+folder)
+	assert.DirectoryDoesNotExist(f.t, f.teamDir+"/"+folder)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
