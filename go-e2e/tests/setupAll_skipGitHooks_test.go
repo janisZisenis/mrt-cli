@@ -14,7 +14,7 @@ import (
 )
 
 type skipGitHooksFixture struct {
-	f                 *fixtures.MrtFixture
+	*fixtures.MrtFixture
 	blockedBranchName string
 	repositoryPath    string
 }
@@ -41,18 +41,18 @@ func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...tea
 	f.MakeMrtCommand().Setup().All("--skip-install-git-hooks").Execute()
 
 	return skipGitHooksFixture{
-		f:                 f,
+		MrtFixture:        f,
 		blockedBranchName: blockedBranchName,
 		repositoryPath:    f.AbsolutePath(defaultRepositoriesPath + "/" + repositoryName),
 	}
 }
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBeRejected(t *testing.T) {
-	fix := setupRepoWithBlockedBranchButSkippedHooks(t)
+	f := setupRepoWithBlockedBranchButSkippedHooks(t)
 
-	exitCode, err := fix.f.MakeGitCommand().
-		InDirectory(fix.repositoryPath).
-		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
+	exitCode, err := f.MakeGitCommand().
+		InDirectory(f.repositoryPath).
+		MakeCommitOnNewBranch(f.blockedBranchName, "some-message").
 		Execute()
 
 	require.NoError(t, err)
@@ -60,21 +60,21 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBe
 }
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRejected(t *testing.T) {
-	fix := setupRepoWithBlockedBranchButSkippedHooks(t)
+	f := setupRepoWithBlockedBranchButSkippedHooks(t)
 	t.Cleanup(func() {
-		fix.f.MakeGitCommand().
-			InDirectory(fix.repositoryPath).
-			DeleteRemoteBranchIfExists(fix.blockedBranchName).
+		f.MakeGitCommand().
+			InDirectory(f.repositoryPath).
+			DeleteRemoteBranchIfExists(f.blockedBranchName).
 			Execute()
 	})
-	fix.f.MakeGitCommand().
-		InDirectory(fix.repositoryPath).
-		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
+	f.MakeGitCommand().
+		InDirectory(f.repositoryPath).
+		MakeCommitOnNewBranch(f.blockedBranchName, "some-message").
 		Execute()
 
-	exitCode, err := fix.f.MakeGitCommand().
-		InDirectory(fix.repositoryPath).
-		Push(fix.blockedBranchName).
+	exitCode, err := f.MakeGitCommand().
+		InDirectory(f.repositoryPath).
+		Push(f.blockedBranchName).
 		Execute()
 
 	require.NoError(t, err)
@@ -82,11 +82,11 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRej
 }
 
 func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingWithMissingPrefixInCommitMessage_ShouldNotBeRejected(t *testing.T) {
-	fix := setupRepoWithBlockedBranchButSkippedHooks(t, teamconfig.WithCommitPrefixRegex("Some-Prefix"))
+	f := setupRepoWithBlockedBranchButSkippedHooks(t, teamconfig.WithCommitPrefixRegex("Some-Prefix"))
 
-	exitCode, err := fix.f.MakeGitCommand().
-		InDirectory(fix.repositoryPath).
-		MakeCommitOnNewBranch(fix.blockedBranchName, "some-message").
+	exitCode, err := f.MakeGitCommand().
+		InDirectory(f.repositoryPath).
+		MakeCommitOnNewBranch(f.blockedBranchName, "some-message").
 		Execute()
 
 	require.NoError(t, err)
