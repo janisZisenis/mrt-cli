@@ -12,7 +12,9 @@ import (
 const defaultRepositoriesPath = "repositories"
 
 func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
@@ -27,7 +29,9 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 }
 
 func Test_IfTeamJsonContainsARepository_Cloning_ShouldPrintOutSuccessMessage(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryURL := git.MakeCloneURL("1_TestRepository")
 	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{repositoryURL}),
@@ -48,7 +52,9 @@ func Test_IfTeamJsonContainsARepository_Cloning_ShouldPrintOutSuccessMessage(t *
 func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRepositoriesAndSkipsExistingOnes(
 	t *testing.T,
 ) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	firstRepositoryName := "1_TestRepository"
 	secondRepositoryName := "2_TestRepository"
 	f.TeamConfigWriter().Write(
@@ -76,7 +82,9 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 }
 
 func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{}),
 	)
@@ -90,7 +98,9 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 }
 
 func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{git.MakeCloneURL("nonExistingRepository")}),
 	)
@@ -104,7 +114,9 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 }
 
 func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositories([]string{
@@ -129,7 +141,9 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWhileCloningTheRepositories(
 	t *testing.T,
 ) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	firstRepositoryName := "Prefix1_TestRepository1"
 	secondRepositoryName := "Prefix2_TestRepository2"
 	f.TeamConfigWriter().Write(
@@ -150,7 +164,9 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 }
 
 func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Cloning_ShouldNotTrim(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	firstRepositoryName := "Prefix1_TestRepository1"
 	secondRepositoryName := "Prefix2_TestRepository2"
 	f.TeamConfigWriter().Write(
@@ -171,7 +187,9 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 }
 
 func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesIntoGivenRepositoriesPath(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	repositoriesPath := "xyz"
 	f.TeamConfigWriter().Write(

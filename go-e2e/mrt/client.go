@@ -14,11 +14,12 @@ import (
 
 type ExecutableCommand interface {
 	Execute() (*outputs.Output, int)
+	ExecuteWithInput(input string) (*outputs.Output, int)
 }
 
 type RunCommand interface {
+	SubCommand(name string, args ...string) ExecutableCommand
 	Execute() (*outputs.Output, int)
-	ExecuteWithInput(input string) (*outputs.Output, int)
 }
 
 type BaseCommand interface {
@@ -29,13 +30,14 @@ type BaseCommand interface {
 
 type DirectedCommand interface {
 	Setup() SetupCommand
-	Run(args ...string) RunCommand
+	Run() RunCommand
 	Execute() (*outputs.Output, int)
 }
 
 type SetupCommand interface {
 	Clone() ExecutableCommand
 	All(args ...string) ExecutableCommand
+	SubCommand(name string, args ...string) ExecutableCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -79,19 +81,32 @@ func (m *Mrt) All(args ...string) ExecutableCommand {
 	return m
 }
 
-func (m *Mrt) Run(args ...string) RunCommand {
+func (m *Mrt) SubCommand(name string, args ...string) ExecutableCommand {
+	m.command.Args = append(m.command.Args, name)
+	if len(args) > 0 {
+		m.command.Args = append(m.command.Args, "--")
+		m.command.Args = append(m.command.Args, args...)
+	}
+
+	return m
+}
+
+func (m *Mrt) Run() RunCommand {
 	m.command.Args = append(m.command.Args, "run")
-	m.command.Args = append(m.command.Args, args...)
 
 	return m
 }
 
 func (m *Mrt) ExecuteWithInput(input string) (*outputs.Output, int) {
 	m.command.Stdin = bytes.NewBufferString(input)
-	return m.Execute()
+	return m.execute()
 }
 
 func (m *Mrt) Execute() (*outputs.Output, int) {
+	return m.execute()
+}
+
+func (m *Mrt) execute() (*outputs.Output, int) {
 	byteOutput, err := m.command.CombinedOutput()
 	out := string(byteOutput)
 
