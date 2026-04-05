@@ -48,12 +48,18 @@ func Test_IfCustomRepositoriesPathDoesNotContainRepositories_InstallGitHooks_Sho
 
 	for _, repositoriesPath := range tests {
 		t.Run(repositoriesPath, func(t *testing.T) {
-			testIfCustomRepositoriesPathDoesNotContainRepositories_InstallGitHooks_ShouldPrintNotFoundMessage(t, repositoriesPath)
+			testIfCustomRepositoriesPathDoesNotContainRepositoriesInstallGitHooksShouldPrintNotFoundMessage(
+				t,
+				repositoriesPath,
+			)
 		})
 	}
 }
 
-func testIfCustomRepositoriesPathDoesNotContainRepositories_InstallGitHooks_ShouldPrintNotFoundMessage(t *testing.T, repositoriesPath string) {
+func testIfCustomRepositoriesPathDoesNotContainRepositoriesInstallGitHooksShouldPrintNotFoundMessage(
+	t *testing.T,
+	repositoriesPath string,
+) {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
