@@ -20,6 +20,7 @@ type DirectedCommand interface {
 	MakeCommitOnNewBranch(branch string, message string) ExecutableCommand
 	Push(branch string) ExecutableCommand
 	DeleteRemoteBranchIfExists(branch string) ExecutableCommand
+	GetLastCommitMessage() (string, error)
 }
 
 type ExecutableCommand interface {
@@ -71,6 +72,19 @@ func (g *Git) DeleteRemoteBranchIfExists(branch string) ExecutableCommand {
 	return &deleteRemoteBranchIfExistsCommand{
 		git: &Git{args: append(g.args, "push", "origin", "--delete", branch), sshEnv: g.sshEnv},
 	}
+}
+
+func (g *Git) GetLastCommitMessage() (string, error) {
+	args := append(g.args, "log", "-1", "--pretty=%B") //nolint:gocritic // intentional append to copy slice
+	cmd := exec.CommandContext(context.Background(), "git", args...)
+	cmd.Env = internal.MergeEnv(os.Environ(), g.sshEnv)
+
+	outputBytes, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("git log failed: %w", err)
+	}
+
+	return strings.TrimSpace(string(outputBytes)), nil
 }
 
 type deleteRemoteBranchIfExistsCommand struct {

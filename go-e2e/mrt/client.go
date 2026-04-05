@@ -28,9 +28,14 @@ type BaseCommand interface {
 	Execute() (*outputs.Output, int)
 }
 
+type GitHookCommand interface {
+	Execute() (*outputs.Output, int)
+}
+
 type DirectedCommand interface {
 	Setup() SetupCommand
 	Run() RunCommand
+	GitHook(hookName string, repositoryPath string, args ...string) GitHookCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -94,6 +99,13 @@ func (m *Mrt) SubCommand(name string, args ...string) ExecutableCommand {
 		m.command.Args = append(m.command.Args, "--")
 		m.command.Args = append(m.command.Args, args...)
 	}
+
+	return m
+}
+
+func (m *Mrt) GitHook(hookName string, repositoryPath string, args ...string) GitHookCommand {
+	m.command.Args = append(m.command.Args, "git-hook", "--hook-name", hookName, "--repository-path", repositoryPath)
+	m.command.Args = append(m.command.Args, args...)
 
 	return m
 }
