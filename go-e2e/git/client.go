@@ -80,9 +80,11 @@ func (g *Git) DeleteRemoteBranchIfExists(branch string) ExecutableCommand {
 }
 
 func (g *Git) GetLastCommitMessage() (string, error) {
-	args := append(g.args, "log", "-1", "--pretty=%B") //nolint:gocritic // intentional append to copy slice
-	cmd := exec.CommandContext(context.Background(), "git", args...)
-	cmd.Env = internal.MergeEnv(os.Environ(), g.sshEnv)
+	git := &Git{args: append(g.args, "log", "-1", "--pretty=%B"), sshEnv: g.sshEnv}
+
+	//nolint:gosec // args are controlled by internal callers
+	cmd := exec.CommandContext(context.Background(), "git", git.args...)
+	cmd.Env = internal.MergeEnv(os.Environ(), git.sshEnv)
 
 	outputBytes, err := cmd.Output()
 	if err != nil {
