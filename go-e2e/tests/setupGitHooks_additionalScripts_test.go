@@ -3,6 +3,7 @@ package tests_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"mrt-cli/go-e2e/fixtures"
@@ -39,18 +40,20 @@ func Test_IfCommitMsgScriptExitsWithFailure_Committing_ShouldAlsoFail(t *testing
 	require.NotEqual(t, 0, exitCode)
 }
 
-func Test_IfCommitMsgScriptHasOutput_Committing_ShouldSucceedAndScriptOutputShouldPassThrough(t *testing.T) {
+func Test_IfCommitMsgScriptHasOutput_Committing_ShouldContainThatOutput(t *testing.T) {
+	scriptOutput := "some-output"
 	f := setupOneClonedRepositoryWithGitHooks(t)
 	hooks := fixtures.NewHookScriptFixture(f.repositoryPath)
-	hooks.WriteStubScript("commit-msg", "script", 0, "some-output")
+	hooks.WriteStubScript("commit-msg", "script", 0, scriptOutput)
 
-	exitCode, err := f.MakeGitCommand().
+	output, exitCode, err := f.MakeGitCommand().
 		InDirectory(f.repositoryPath).
 		MakeCommitOnNewBranch("some-branch", "some-message").
-		Execute()
+		ExecuteAndCaptureOutput()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
+	assert.Contains(t, output, scriptOutput)
 }
 
 func Test_IfPreCommitHookIsExecuted_ShouldReceiveEmptyParameters(t *testing.T) {
