@@ -10,7 +10,9 @@ import (
 )
 
 func Test_SetupAll_ShouldCloneInstallGitHooksAndExecuteCommands(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	repositoryURL := git.MakeCloneURL(repositoryName)
 	f.TeamConfigWriter().Write(teamconfig.WithRepositories([]string{repositoryURL}))
@@ -19,7 +21,10 @@ func Test_SetupAll_ShouldCloneInstallGitHooksAndExecuteCommands(t *testing.T) {
 	f.SetupFixture.WriteSpyCommand(someCommand)
 	f.SetupFixture.WriteSpyCommand(anotherCommand)
 
-	output, _ := f.MakeMrtCommand().Setup().All().Execute()
+	output, _ := f.MakeMrtCommand().
+		Setup().
+		All().
+		Execute()
 
 	output.AssertInOrder(t,
 		outputs.HasLine("Start cloning repositories into \"repositories\""),
@@ -38,47 +43,72 @@ func Test_SetupAll_ShouldCloneInstallGitHooksAndExecuteCommands(t *testing.T) {
 }
 
 func Test_IfSetupIsRunWithoutSkippingGitHooks_SetupAll_ShouldNotPrintSkipMessage(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 
-	output, _ := f.MakeMrtCommand().Setup().All().Execute()
+	output, _ := f.MakeMrtCommand().
+		Setup().
+		All().
+		Execute()
 
 	output.AssertHasNoLineContaining(t, "Skipping install-git-hooks step.")
 }
 
 func Test_IfSetupCommandExistsWithoutSkipping_SetupAll_ShouldNotPrintSkipMessage(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	commandName := "some-command"
 	f.SetupFixture.WriteSpyCommand(commandName)
 
-	output, _ := f.MakeMrtCommand().Setup().All().Execute()
+	output, _ := f.MakeMrtCommand().
+		Setup().
+		All().
+		Execute()
 
 	output.AssertHasNoLineContaining(t, "Skipping setup command: "+commandName)
 }
 
 func Test_IfSetupIsRunWithSkipCloneRepositories_SetupAll_ShouldNotCloneRepositories(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	f.TeamConfigWriter().Write(teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}))
 
-	f.MakeMrtCommand().Setup().All("--skip-clone-repositories").Execute()
+	f.MakeMrtCommand().
+		Setup().
+		All("--skip-clone-repositories").
+		Execute()
 
 	f.AssertFolderDoesNotExist("repositories/" + repositoryName)
 }
 
 func Test_IfSetupIsRunWithSkipCloneRepositories_SetupAll_ShouldPrintSkipMessage(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	f.TeamConfigWriter().Write(teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}))
 
-	output, _ := f.MakeMrtCommand().Setup().All("--skip-clone-repositories").Execute()
+	output, _ := f.MakeMrtCommand().
+		Setup().
+		All("--skip-clone-repositories").
+		Execute()
 
 	output.AssertInOrder(t, outputs.HasLine("Skipping clone-repositories step."))
 }
 
 func Test_IfSetupIsRunWithSkipGitHooks_SetupAll_ShouldPrintSkipMessage(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 
-	output, _ := f.MakeMrtCommand().Setup().All("--skip-install-git-hooks").Execute()
+	output, _ := f.MakeMrtCommand().
+		Setup().
+		All("--skip-install-git-hooks").
+		Execute()
 
 	output.AssertHasLine(t, "Skipping install-git-hooks step.")
 }
@@ -90,7 +120,10 @@ func Test_IfTwoSetupCommandsExistAndFirstIsSkipped_SetupAll_ShouldOnlyRunSecond(
 	f.SetupFixture.WriteSpyCommand(someCommand)
 	f.SetupFixture.WriteSpyCommand(anotherCommand)
 
-	f.MakeMrtCommand().Setup().All("--skip-" + someCommand).Execute()
+	f.MakeMrtCommand().
+		Setup().
+		All("--skip-" + someCommand).
+		Execute()
 
 	f.SetupFixture.AssertSpyWasNotCalled(t, someCommand)
 	f.SetupFixture.AssertSpyWasCalledWith(t, anotherCommand, f.SetupFixture.RepoDir)
@@ -103,7 +136,10 @@ func Test_IfTwoSetupCommandsExistAndSecondIsSkipped_SetupAll_ShouldOnlyRunFirst(
 	f.SetupFixture.WriteSpyCommand(someCommand)
 	f.SetupFixture.WriteSpyCommand(anotherCommand)
 
-	f.MakeMrtCommand().Setup().All("--skip-" + anotherCommand).Execute()
+	f.MakeMrtCommand().
+		Setup().
+		All("--skip-" + anotherCommand).
+		Execute()
 
 	f.SetupFixture.AssertSpyWasCalledWith(t, someCommand, f.SetupFixture.RepoDir)
 	f.SetupFixture.AssertSpyWasNotCalled(t, anotherCommand)
@@ -114,7 +150,10 @@ func Test_IfSetupCommandIsSkipped_SetupAll_ShouldPrintSkipMessage(t *testing.T) 
 	commandName := "some-command"
 	f.SetupFixture.WriteSpyCommand(commandName)
 
-	output, _ := f.MakeMrtCommand().Setup().All("--skip-" + commandName).Execute()
+	output, _ := f.MakeMrtCommand().
+		Setup().
+		All("--skip-" + commandName).
+		Execute()
 
 	output.AssertHasLine(t, "Skipping setup command: "+commandName)
 }

@@ -27,7 +27,9 @@ func uniqueBranchName() string {
 
 func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...teamconfig.Option) skipGitHooksFixture {
 	t.Helper()
-	f := fixtures.MakeMrtFixture(t).Authenticate().Parallel()
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate().
+		Parallel()
 	repositoryName := "1_TestRepository"
 	blockedBranchName := uniqueBranchName()
 	options := append(
@@ -38,7 +40,10 @@ func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...tea
 		extraOptions...,
 	)
 	f.TeamConfigWriter().Write(options...)
-	f.MakeMrtCommand().Setup().All("--skip-install-git-hooks").Execute()
+	f.MakeMrtCommand().
+		Setup().
+		All("--skip-install-git-hooks").
+		Execute()
 
 	return skipGitHooksFixture{
 		MrtFixture:        f,

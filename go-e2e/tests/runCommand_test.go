@@ -31,8 +31,10 @@ func testCommandPassesRootDirAndParametersToIt(t *testing.T, commandName string,
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	f.RunFixture.WriteSpyCommand(commandName)
 
-	args := append([]string{commandName, "--"}, parameters...)
-	f.MakeMrtCommand().Run(args...).Execute()
+	f.MakeMrtCommand().
+		Run().
+		SubCommand(commandName, parameters...).
+		Execute()
 
 	f.RunFixture.AssertSpyWasCalledWith(t, commandName, f.RunFixture.RepoDir+" "+strings.Join(parameters, " "))
 }
@@ -43,7 +45,10 @@ func Test_IfCommandSucceedsWithOutput_ItShouldPrintTheCommandsOutput(t *testing.
 	someOutput := "some-output"
 	f.RunFixture.WriteStubCommand(commandName, 0, someOutput)
 
-	output, _ := f.MakeMrtCommand().Run(commandName).Execute()
+	output, _ := f.MakeMrtCommand().
+		Run().
+		SubCommand(commandName).
+		Execute()
 
 	output.AssertHasLine(t, someOutput)
 }
@@ -54,7 +59,10 @@ func Test_IfCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) {
 	input := "some-input"
 	f.RunFixture.WriteInputCommand(commandName)
 
-	f.MakeMrtCommand().Run(commandName).ExecuteWithInput(input + "\n")
+	f.MakeMrtCommand().
+		Run().
+		SubCommand(commandName).
+		ExecuteWithInput(input + "\n")
 
 	f.RunFixture.AssertInputWasReceived(t, commandName, input)
 }
@@ -65,7 +73,10 @@ func Test_IfCommandWritesToStderr_ItShouldOutputStderr(t *testing.T) {
 	errMessage := "some-error"
 	f.RunFixture.WriteStderrCommand(commandName, errMessage)
 
-	output, _ := f.MakeMrtCommand().Run(commandName).Execute()
+	output, _ := f.MakeMrtCommand().
+		Run().
+		SubCommand(commandName).
+		Execute()
 
 	output.AssertHasLine(t, errMessage)
 }
@@ -93,7 +104,10 @@ func testCommandForwardsExitCode(t *testing.T, expectedExitCode int) {
 	commandName := "some-command"
 	f.RunFixture.WriteStubCommand(commandName, expectedExitCode, "")
 
-	_, exitCode := f.MakeMrtCommand().Run(commandName).Execute()
+	_, exitCode := f.MakeMrtCommand().
+		Run().
+		SubCommand(commandName).
+		Execute()
 
 	assert.Equal(t, expectedExitCode, exitCode)
 }

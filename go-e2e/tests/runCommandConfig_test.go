@@ -16,7 +16,9 @@ func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDesc
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteConfig(commandName, fixtures.WithShortDescription(shortDescription))
 
-	output, _ := f.MakeMrtCommand().Run("-h").Execute()
+	output, _ := f.MakeMrtCommand().
+		Run().
+		Execute()
 
 	output.AssertHasLine(t, "  "+commandName+" "+shortDescription)
 }
@@ -27,7 +29,9 @@ func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDef
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteConfig(commandName)
 
-	output, _ := f.MakeMrtCommand().Run("-h").Execute()
+	output, _ := f.MakeMrtCommand().
+		Run().
+		Execute()
 
 	output.AssertHasLine(t, "  "+commandName+" Executes run command "+commandName)
 }
@@ -38,7 +42,9 @@ func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorM
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteCorruptConfig(commandName)
 
-	output, exitCode := f.MakeMrtCommand().Run("-h").Execute()
+	output, exitCode := f.MakeMrtCommand().
+		Run().
+		Execute()
 
 	assert.Equal(t, 1, exitCode)
 	output.AssertInOrder(t,
