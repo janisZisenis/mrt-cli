@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -91,7 +92,11 @@ func (f *MrtFixture) MakeMrtCommand() mrtclient.DirectedCommand {
 func (f *MrtFixture) isolatedEnv() []string {
 	sshConfigPath := internal.GetRepoRoot() + "/.ssh/config"
 	sshCommand := "ssh -F " + sshConfigPath + " -o IdentityFile=" + f.identityFile + " -o IdentitiesOnly=yes"
-	return append(f.agent.Env(), "GIT_SSH_COMMAND="+sshCommand)
+	binaryDir := filepath.Dir(f.binaryPath)
+	return append(f.agent.Env(),
+		"GIT_SSH_COMMAND="+sshCommand,
+		"PATH="+os.Getenv("PATH")+":"+binaryDir,
+	)
 }
 
 func (f *MrtFixture) TeamConfigWriter() *teamconfig.Writer {
