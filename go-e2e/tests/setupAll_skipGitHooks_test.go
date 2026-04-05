@@ -1,8 +1,6 @@
 package tests_test
 
 import (
-	"crypto/rand"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,19 +17,13 @@ type skipGitHooksFixture struct {
 	repositoryPath    string
 }
 
-func uniqueBranchName() string {
-	b := make([]byte, 4)
-	_, _ = rand.Read(b)
-	return fmt.Sprintf("branch-%x", b)
-}
-
 func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...teamconfig.Option) skipGitHooksFixture {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
 	repositoryName := "1_TestRepository"
-	blockedBranchName := uniqueBranchName()
+	blockedBranchName := git.UniqueBranchName()
 	options := append(
 		[]teamconfig.Option{
 			teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),

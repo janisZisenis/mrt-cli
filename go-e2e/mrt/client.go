@@ -36,6 +36,7 @@ type DirectedCommand interface {
 
 type SetupCommand interface {
 	Clone() ExecutableCommand
+	InstallGitHooks() ExecutableCommand
 	All(args ...string) ExecutableCommand
 	SubCommand(name string, args ...string) ExecutableCommand
 	Execute() (*outputs.Output, int)
@@ -70,6 +71,12 @@ func (m *Mrt) Setup() SetupCommand {
 
 func (m *Mrt) Clone() ExecutableCommand {
 	m.command.Args = append(m.command.Args, "clone-repositories")
+
+	return m
+}
+
+func (m *Mrt) InstallGitHooks() ExecutableCommand {
+	m.command.Args = append(m.command.Args, "install-git-hooks")
 
 	return m
 }
