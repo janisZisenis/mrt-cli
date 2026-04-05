@@ -79,10 +79,6 @@ func (f *MrtFixture) AbsolutePath(relativePath string) string {
 	return f.teamDir + "/" + relativePath
 }
 
-func (f *MrtFixture) TeamDir() string {
-	return f.teamDir
-}
-
 func (f *MrtFixture) MakeGitCommand() git.BaseCommand {
 	return git.MakeCommand(f.isolatedEnv())
 }

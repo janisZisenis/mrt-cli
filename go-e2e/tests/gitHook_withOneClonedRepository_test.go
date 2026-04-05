@@ -30,7 +30,7 @@ func Test_IfGitHookIsCalledWithGlobbingPatternInHookName_ShouldFail(t *testing.T
 
 func Test_IfGitHookIsCalledWithPathThatDoesNotContainRepository_ShouldFail(t *testing.T) {
 	f := setupOneClonedRepositoryWithGitHooks(t)
-	nonRepoPath := f.TeamDir()
+	nonRepoPath := f.AbsolutePath("non-repo")
 
 	output, exitCode := f.MakeMrtCommand().
 		GitHook("pre-commit", nonRepoPath).
