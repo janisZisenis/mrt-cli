@@ -25,4 +25,4 @@ runs:
     - name: Run E2E Tests
       shell: bash
       run: |
-        mrt run e2e-tests -- --ci
+        mrt run e2e-tests
