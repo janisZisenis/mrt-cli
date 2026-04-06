@@ -1,4 +1,4 @@
-module mrt-cli/go-e2e
+module mrt-cli/e2e-tests
 
 go 1.24.5
 

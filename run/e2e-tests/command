@@ -87,4 +87,4 @@ if [[ "$clean_build" == true ]]; then
 fi
 
 echo "Running Go e2e tests..."
-cd "$rootDir/go-e2e" && gotestsum --format testname ./... -- -v
+cd "$rootDir/e2e-tests" && gotestsum --format testname ./... -- -v

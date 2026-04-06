@@ -8,6 +8,6 @@ cd "$rootDir/app"
 golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m
 go vet ./...
 
-cd "$rootDir/go-e2e"
+cd "$rootDir/e2e-tests"
 golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m
 go vet ./...

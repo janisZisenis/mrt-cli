@@ -4,5 +4,5 @@ set -e
 rootDir="$1"
 shift
 
-gofumpt -w "$rootDir/app" "$rootDir/go-e2e"
-goimports -w "$rootDir/app" "$rootDir/go-e2e"
+gofumpt -w "$rootDir/app" "$rootDir/e2e-tests"
+goimports -w "$rootDir/app" "$rootDir/e2e-tests"

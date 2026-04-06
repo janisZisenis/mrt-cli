@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"mrt-cli/go-e2e/fixtures"
+	"mrt-cli/e2e-tests/fixtures"
 )
 
 func Test_IfSetupCommandExists_ExecutingIt_WillPassTheTeamFolderAsParameter(t *testing.T) {

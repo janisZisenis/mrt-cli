@@ -3,9 +3,9 @@ package tests_test
 import (
 	"testing"
 
-	"mrt-cli/go-e2e/fixtures"
-	"mrt-cli/go-e2e/git"
-	"mrt-cli/go-e2e/teamconfig"
+	"mrt-cli/e2e-tests/fixtures"
+	"mrt-cli/e2e-tests/git"
+	"mrt-cli/e2e-tests/teamconfig"
 )
 
 const oneClonedRepoName = "1_TestRepository"

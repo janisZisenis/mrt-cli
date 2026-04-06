@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"mrt-cli/go-e2e/fixtures"
-	"mrt-cli/go-e2e/git"
+	"mrt-cli/e2e-tests/fixtures"
+	"mrt-cli/e2e-tests/git"
 )
 
 func Test_IfPreCommitScriptsExist_Committing_ShouldExecuteThem(t *testing.T) {
