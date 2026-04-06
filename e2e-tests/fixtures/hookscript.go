@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"mrt-cli/go-e2e/assert"
+	"mrt-cli/e2e-tests/assert"
 )
 
 type HookScriptFixture struct {

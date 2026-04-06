@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"mrt-cli/go-e2e/fixtures"
+	"mrt-cli/e2e-tests/fixtures"
 )
 
 func Test_IfCommandIsRun_ItShouldPassRootDirAndParametersToIt(t *testing.T) {

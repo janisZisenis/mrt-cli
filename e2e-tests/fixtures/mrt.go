@@ -8,12 +8,12 @@ import (
 	"strings"
 	"testing"
 
-	"mrt-cli/go-e2e/assert"
-	"mrt-cli/go-e2e/git"
-	"mrt-cli/go-e2e/internal"
-	mrtclient "mrt-cli/go-e2e/mrt"
-	"mrt-cli/go-e2e/ssh"
-	"mrt-cli/go-e2e/teamconfig"
+	"mrt-cli/e2e-tests/assert"
+	"mrt-cli/e2e-tests/git"
+	"mrt-cli/e2e-tests/internal"
+	mrtclient "mrt-cli/e2e-tests/mrt"
+	"mrt-cli/e2e-tests/ssh"
+	"mrt-cli/e2e-tests/teamconfig"
 )
 
 const setupCommandDir = "setup"

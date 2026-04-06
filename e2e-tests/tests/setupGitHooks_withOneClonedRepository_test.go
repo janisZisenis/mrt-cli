@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"mrt-cli/go-e2e/git"
-	"mrt-cli/go-e2e/outputs"
-	"mrt-cli/go-e2e/teamconfig"
+	"mrt-cli/e2e-tests/git"
+	"mrt-cli/e2e-tests/outputs"
+	"mrt-cli/e2e-tests/teamconfig"
 )
 
 func Test_IfTeamJsonContainsInvalidCommitPrefixRegex_Committing_ShouldFailGracefully(t *testing.T) {

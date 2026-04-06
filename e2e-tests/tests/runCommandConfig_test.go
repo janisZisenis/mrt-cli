@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"mrt-cli/go-e2e/fixtures"
-	"mrt-cli/go-e2e/outputs"
+	"mrt-cli/e2e-tests/fixtures"
+	"mrt-cli/e2e-tests/outputs"
 )
 
 func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDescription(t *testing.T) {

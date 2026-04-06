@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"mrt-cli/go-e2e/internal"
+	"mrt-cli/e2e-tests/internal"
 )
 
 type BaseCommand interface {

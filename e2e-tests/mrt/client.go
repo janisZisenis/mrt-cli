@@ -8,8 +8,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"mrt-cli/go-e2e/internal"
-	"mrt-cli/go-e2e/outputs"
+	"mrt-cli/e2e-tests/internal"
+	"mrt-cli/e2e-tests/outputs"
 )
 
 type ExecutableCommand interface {

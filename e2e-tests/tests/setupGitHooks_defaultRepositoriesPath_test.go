@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"mrt-cli/go-e2e/fixtures"
-	"mrt-cli/go-e2e/git"
-	"mrt-cli/go-e2e/outputs"
-	"mrt-cli/go-e2e/teamconfig"
+	"mrt-cli/e2e-tests/fixtures"
+	"mrt-cli/e2e-tests/git"
+	"mrt-cli/e2e-tests/outputs"
+	"mrt-cli/e2e-tests/teamconfig"
 )
 
 func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNotInstallGitHooks(t *testing.T) {
