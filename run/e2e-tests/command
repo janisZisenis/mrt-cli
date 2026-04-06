@@ -81,7 +81,6 @@ Host $HOST_ALIAS
 EOF
 fi
 
-
 if [[ "$clean_build" == true ]]; then
 	echo "Performing a clean build for e2e-tests..."
 	mrt --team-dir "$rootDir" run build
