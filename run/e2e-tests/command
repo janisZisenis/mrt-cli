@@ -4,6 +4,8 @@ set -e
 FLAG_LOCAL="--local"
 FLAG_REMOTE="--remote"
 FLAG_CLEAN="--clean"
+FLAG_MANUAL="--manual"
+FLAG_CI="--ci"
 FLAG_HELP="-h|--help"
 
 declare -A HOSTNAME_MAP=(
@@ -13,21 +15,28 @@ declare -A HOSTNAME_MAP=(
 
 function display_help() {
 	cat <<EOF
-Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS]
+Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS] [FILES...]
 
 Run end-to-end tests with various options.
 
 Options:
   $FLAG_LOCAL|$FLAG_REMOTE   Use the local gitlab or github.com to run e2e-tests (default: remote).
-  $FLAG_CLEAN                Perform a clean build before running the tests.
-  $FLAG_HELP                 Display this help message and exit.
+  $FLAG_CLEAN            Perform a clean build before running the tests.
+  $FLAG_MANUAL|FLAG_CI   Determines whether tests are run manually or on from CI.
+  $FLAG_HELP          Display this help message and exit.
+
+FILES:
+  List of specific .bats test files to be executed. If not provided,
+  the script will find all .bats files in the e2e-tests directory.
 EOF
 }
 
 rootDir="$1"
 shift
 clean_build=false
+run_mode="$FLAG_MANUAL"
 hostname="${HOSTNAME_MAP[$FLAG_REMOTE]}"
+declare -a files
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -39,6 +48,10 @@ while [[ $# -gt 0 ]]; do
 		clean_build=true
 		shift
 		;;
+	"$FLAG_MANUAL" | "$FLAG_CI")
+		run_mode="$1"
+		shift
+		;;
 	"$FLAG_HELP")
 		display_help
 		exit 0
@@ -48,6 +61,10 @@ while [[ $# -gt 0 ]]; do
 		echo
 		display_help
 		exit 1
+		;;
+	*)
+		files+=("$@")
+		break
 		;;
 	esac
 done
@@ -81,10 +98,47 @@ Host $HOST_ALIAS
 EOF
 fi
 
+if [[ "$run_mode" == "$FLAG_MANUAL" ]]; then
+	GITHUB_RESPONSE_MATCH="successfully authenticated"
+	GITLAB_RESPONSE_MATCH="Welcome to GitLab"
+
+	# Since "User git" is not in the config. (see above) I have to explicitly use it in the ssh access check below.
+	if ! ssh -F "$SSH_CONFIG_FILE" -T "git@$HOST_ALIAS" 2>&1 | grep -qE "$GITHUB_RESPONSE_MATCH|$GITLAB_RESPONSE_MATCH"; then
+		echo "Error: Could not establish SSH connection to $HOST_ALIAS."
+		echo "Error: Please verify if the private key is correct."
+		exit 1
+	fi
+fi
+
+e2eTestDir="$rootDir/e2e-tests"
+
 if [[ "$clean_build" == true ]]; then
 	echo "Performing a clean build for e2e-tests..."
 	mrt --team-dir "$rootDir" run build
 fi
 
+if [[ "${#files[@]}" -eq 0 ]]; then
+	echo "No specific test files provided. Auto-detecting *.bats files..."
+	mapfile -t files < <(find "$e2eTestDir" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
+fi
+
+echo "Test files to be executed:"
+printf "\t%s\n" "${files[@]}"
+
+echo "Running tests with BATS..."
+
+export BATS_LIB_PATH="$e2eTestDir/3rdParty/test_helper":"$e2eTestDir/helpers"
+
+bats_exit_code=0
+GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE" "$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10 || bats_exit_code=$?
+
 echo "Running Go e2e tests..."
-(cd "$rootDir/go-e2e" && gotestsum --format testname ./... -- -v)
+go_exit_code=0
+(cd "$rootDir/go-e2e" && gotestsum --format testname ./... -- -v) || go_exit_code=$?
+
+if [[ $bats_exit_code -ne 0 ]] || [[ $go_exit_code -ne 0 ]]; then
+	echo "Error: One or more test suites failed."
+	[[ $bats_exit_code -ne 0 ]] && echo "  - BATS tests failed with exit code $bats_exit_code"
+	[[ $go_exit_code -ne 0 ]] && echo "  - Go e2e tests failed with exit code $go_exit_code"
+	exit 1
+fi
