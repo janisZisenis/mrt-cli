@@ -1,0 +1,9 @@
+{
+  "excluded": [
+  ],
+  "included": [
+    "*.sh",
+    "*.bash",
+    "command"
+  ]
+}
