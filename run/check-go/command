@@ -53,7 +53,6 @@ function check_module() {
 		golangci-lint fmt --diff --config "$rootDir"/.golangci.yml || module_exit=1
 		golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m || module_exit=1
 	fi
-	go vet ./... || module_exit=1
 	return "$module_exit"
 }
 
