@@ -1,15 +1,16 @@
 package tests_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/outputs"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDescription(t *testing.T) {
+func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDescription(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
 	shortDescription := "A command that outputs some-output"
@@ -23,7 +24,9 @@ func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDesc
 	output.AssertHasLine(t, "  "+commandName+" "+shortDescription)
 }
 
-func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDefaultDescription(t *testing.T) {
+func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDefaultDescription(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
 	f.RunFixture.WriteDummyCommand(commandName)
@@ -36,7 +39,9 @@ func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDef
 	output.AssertHasLine(t, "  "+commandName+" Executes run command "+commandName)
 }
 
-func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorMessage(t *testing.T) {
+func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorMessage(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	commandName := "some-command"
 	f.RunFixture.WriteDummyCommand(commandName)

@@ -1,9 +1,8 @@
 package outputs_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/outputs"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )

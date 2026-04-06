@@ -1,11 +1,10 @@
 package tests_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/teamconfig"
+	"testing"
 )
 
 const oneClonedRepoName = "1_TestRepository"

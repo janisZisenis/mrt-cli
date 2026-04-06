@@ -2,11 +2,10 @@ package fixtures
 
 import (
 	"fmt"
+	"mrt-cli/e2e-tests/assert"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"mrt-cli/e2e-tests/assert"
 )
 
 const (
@@ -60,7 +59,11 @@ echo "$@" > "$SCRIPT_DIR/%s%s"
 	f.writeScript(commandName, script)
 }
 
-func (f *CommandFixture) AssertSpyWasCalledWith(t *testing.T, commandName string, expectedArgs string) {
+func (f *CommandFixture) AssertSpyWasCalledWith(
+	t *testing.T,
+	commandName string,
+	expectedArgs string,
+) {
 	t.Helper()
 	assert.FileHasContent(t, f.spyFilePath(commandName), expectedArgs+"\n")
 }

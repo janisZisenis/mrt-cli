@@ -1,11 +1,10 @@
 package githook
 
 import (
-	"os"
-	"slices"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+	"os"
+	"slices"
 )
 
 func failIfBranchIsBlocked(teamInfo core.TeamInfo, branch string, action string) {

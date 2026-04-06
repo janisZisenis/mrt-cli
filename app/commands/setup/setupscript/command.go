@@ -1,11 +1,10 @@
 package setupscript
 
 import (
-	"path/filepath"
-	"strconv"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+	"path/filepath"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )

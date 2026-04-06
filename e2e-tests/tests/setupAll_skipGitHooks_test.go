@@ -1,11 +1,10 @@
 package tests_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/teamconfig"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -17,7 +16,10 @@ type skipGitHooksFixture struct {
 	repositoryPath    string
 }
 
-func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...teamconfig.Option) skipGitHooksFixture {
+func setupRepoWithBlockedBranchButSkippedHooks(
+	t *testing.T,
+	extraOptions ...teamconfig.Option,
+) skipGitHooksFixture {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
@@ -44,7 +46,9 @@ func setupRepoWithBlockedBranchButSkippedHooks(t *testing.T, extraOptions ...tea
 	}
 }
 
-func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBeRejected(t *testing.T) {
+func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBeRejected(
+	t *testing.T,
+) {
 	f := setupRepoWithBlockedBranchButSkippedHooks(t)
 
 	exitCode, err := f.MakeGitCommand().
@@ -56,7 +60,9 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingOnABlockedBranch_ShouldNotBe
 	assert.Equal(t, 0, exitCode)
 }
 
-func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRejected(t *testing.T) {
+func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRejected(
+	t *testing.T,
+) {
 	f := setupRepoWithBlockedBranchButSkippedHooks(t)
 	t.Cleanup(func() {
 		f.MakeGitCommand().
@@ -78,8 +84,13 @@ func Test_IfSetupAllIsRunWithSkipGitHooks_PushingToABlockedBranch_ShouldNotBeRej
 	assert.Equal(t, 0, exitCode)
 }
 
-func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingWithMissingPrefixInCommitMessage_ShouldNotBeRejected(t *testing.T) {
-	f := setupRepoWithBlockedBranchButSkippedHooks(t, teamconfig.WithCommitPrefixRegex("Some-Prefix"))
+func Test_IfSetupAllIsRunWithSkipGitHooks_CommittingWithMissingPrefixInCommitMessage_ShouldNotBeRejected(
+	t *testing.T,
+) {
+	f := setupRepoWithBlockedBranchButSkippedHooks(
+		t,
+		teamconfig.WithCommitPrefixRegex("Some-Prefix"),
+	)
 
 	exitCode, err := f.MakeGitCommand().
 		InDirectory(f.repositoryPath).

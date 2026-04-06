@@ -2,12 +2,11 @@ package runscript
 
 import (
 	"errors"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
 	"sync"
-
-	"mrt-cli/app/core"
-	"mrt-cli/app/log"
 
 	"github.com/spf13/viper"
 
@@ -50,7 +49,12 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 			return defaultConfig(commandDir)
 		}
 
-		log.Errorf("Error while reading %s/%s.%s", commandDir, commandConfigFileName, commandConfigExtension)
+		log.Errorf(
+			"Error while reading %s/%s.%s",
+			commandDir,
+			commandConfigFileName,
+			commandConfigExtension,
+		)
 		log.Errorf("%v", readErr)
 		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)

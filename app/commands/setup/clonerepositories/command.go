@@ -22,8 +22,10 @@ func MakeCommand() *cobra.Command {
 func command(_ *cobra.Command, _ []string) {
 	teamInfo, err := core.LoadTeamConfiguration()
 	if err != nil {
-		log.Infof("Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" " +
-			"file and add repositories to it.")
+		log.Infof(
+			"Could not read team file. To setup your repositories create a \"" + core.TeamFile + "\" " +
+				"file and add repositories to it.",
+		)
 		return
 	}
 

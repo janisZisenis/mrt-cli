@@ -4,11 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"mrt-cli/e2e-tests/internal"
 	"os"
 	"os/exec"
 	"strings"
-
-	"mrt-cli/e2e-tests/internal"
 )
 
 type BaseCommand interface {

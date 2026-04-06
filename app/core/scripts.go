@@ -1,12 +1,11 @@
 package core
 
 import (
+	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-
-	"mrt-cli/app/log"
 )
 
 func CommandFileName() string {

@@ -1,50 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-function display_help() {
-	cat <<EOF
-Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS]
-
-Lint Go files with various options.
-
-Options:
-  --fix      Automatically fix formatting issues.
-  -h|--help  Display this help message and exit.
-EOF
-}
-
 rootDir="$1"
-shift
-fix=false
-
-while [[ $# -gt 0 ]]; do
-	case "$1" in
-	"--fix")
-		fix=true
-		shift
-		;;
-	"-h" | "--help")
-		display_help
-		exit 0
-		;;
-	--*)
-		echo "Error: Unknown option '$1'."
-		echo
-		display_help
-		exit 1
-		;;
-	esac
-done
-
-fix_flags=()
-if [[ "$fix" == true ]]; then
-	fix_flags=("--fix")
-fi
 
 function lint_module() {
 	local dir="$1"
 	cd "$dir"
-	golangci-lint run "${fix_flags[@]}" --config "$rootDir"/.golangci.yml --timeout 10m
+	golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m
 	go vet ./...
 }
 

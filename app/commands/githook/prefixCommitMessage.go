@@ -2,12 +2,11 @@ package githook
 
 import (
 	"fmt"
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 	"os"
 	"regexp"
 	"strings"
-
-	"mrt-cli/app/core"
-	"mrt-cli/app/log"
 )
 
 type MissingCommitMessageFileError struct{}
@@ -41,9 +40,12 @@ type InvalidCommitMessageError struct {
 }
 
 func (e *InvalidCommitMessageError) Error() string {
-	return fmt.Sprintf(`The commit message needs a commit prefix that matches the following regex %s.
+	return fmt.Sprintf(
+		`The commit message needs a commit prefix that matches the following regex %s.
 Either add the commit prefix to your commit message, or include it in the branch name.
-Use '--no-verify' to skip git-hooks.`, e.regex)
+Use '--no-verify' to skip git-hooks.`,
+		e.regex,
+	)
 }
 
 func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) error {
@@ -74,7 +76,9 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) e
 
 	matchesFromMessage := regex.FindStringSubmatch(commitMessage)
 	if len(matchesFromMessage) > 0 && strings.HasPrefix(commitMessage, matchesFromMessage[0]+": ") {
-		log.Successf("The commit message contains an issue ID (" + matchesFromMessage[0] + "). Good job!")
+		log.Successf(
+			"The commit message contains an issue ID (" + matchesFromMessage[0] + "). Good job!",
+		)
 		return nil
 	}
 
@@ -82,8 +86,10 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) e
 	if len(matchesFromBranch) > 0 {
 		//nolint:gosec // commitFile is provided by git, not untrusted user input
 		_ = os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0o600)
-		log.Successf("Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, " +
-			"prepended to commit message.")
+		log.Successf(
+			"Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, " +
+				"prepended to commit message.",
+		)
 		return nil
 	}
 

@@ -1,15 +1,14 @@
 package main
 
 import (
-	"os"
-	"path/filepath"
-	"strings"
-
 	"mrt-cli/app/commands/githook"
 	"mrt-cli/app/commands/run"
 	"mrt-cli/app/commands/setup"
 	"mrt-cli/app/commands/version"
 	"mrt-cli/app/core"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -34,7 +33,8 @@ func main() {
 	rootCmd.AddCommand(run.MakeCommand(executionPath))
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
-	rootCmd.PersistentFlags().StringVar(&executionPath, "team-dir", "", "Specifies the path to the team directory.")
+	rootCmd.PersistentFlags().
+		StringVar(&executionPath, "team-dir", "", "Specifies the path to the team directory.")
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

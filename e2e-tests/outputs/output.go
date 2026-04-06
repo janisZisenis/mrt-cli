@@ -44,7 +44,14 @@ func (o *Output) AssertLineEquals(t *testing.T, index int, expectedText string) 
 		t, index, len(o.lines),
 		"line index %d is out of bounds, have %d lines\n%s", index, len(o.lines), o.dump(),
 	)
-	assert.Equal(t, expectedText, o.lines[index], "line %d does not match expected text\n%s", index, o.dump())
+	assert.Equal(
+		t,
+		expectedText,
+		o.lines[index],
+		"line %d does not match expected text\n%s",
+		index,
+		o.dump(),
+	)
 }
 
 func (o *Output) AssertLineMatchesRegex(t *testing.T, index int, pattern string) {

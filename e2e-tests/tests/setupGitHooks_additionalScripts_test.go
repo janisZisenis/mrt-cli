@@ -1,10 +1,9 @@
 package tests_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -93,7 +92,12 @@ func Test_IfPrePushHookIsExecuted_ShouldReceiveRemoteNameAndURLAsParameters(t *t
 		Execute()
 
 	require.NoError(t, pushErr)
-	hooks.AssertWasExecutedWith(t, "pre-push", "script", "origin "+git.MakeCloneURL(oneClonedRepoName))
+	hooks.AssertWasExecutedWith(
+		t,
+		"pre-push",
+		"script",
+		"origin "+git.MakeCloneURL(oneClonedRepoName),
+	)
 }
 
 func Test_IfCommitMsgHookIsExecuted_ShouldReceiveCommitMsgFilePathAsParameter(t *testing.T) {

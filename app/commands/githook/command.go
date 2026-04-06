@@ -1,11 +1,10 @@
 package githook
 
 import (
-	"os"
-	"path/filepath"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )

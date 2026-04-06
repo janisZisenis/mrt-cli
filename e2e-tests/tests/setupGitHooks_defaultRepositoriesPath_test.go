@@ -1,19 +1,20 @@
 package tests_test
 
 import (
-	"os"
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
+	"os"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNotInstallGitHooks(t *testing.T) {
+func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNotInstallGitHooks(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -28,7 +29,9 @@ func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNo
 	f.AssertFolderDoesNotExist(defaultRepositoriesPath + "/1_TestRepository/.git/hooks")
 }
 
-func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSecondRepo_ShouldBeBlocked(t *testing.T) {
+func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSecondRepo_ShouldBeBlocked(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -64,7 +67,9 @@ func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSec
 	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
 }
 
-func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMessages(t *testing.T) {
+func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMessages(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -83,12 +88,21 @@ func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMes
 		InstallGitHooks().
 		Execute()
 
-	output.AssertInOrder(t,
+	output.AssertInOrder(
+		t,
 		outputs.HasLine("Installing git-hooks to repositories located in \""+repositoriesDir+"\""),
-		outputs.HasLine("Installing git-hooks to \""+repositoriesDir+"/"+firstRepositoryName+"/.git\""),
-		outputs.HasLine("Done installing git-hooks to \""+repositoriesDir+"/"+firstRepositoryName+"/.git\""),
-		outputs.HasLine("Installing git-hooks to \""+repositoriesDir+"/"+secondRepositoryName+"/.git\""),
-		outputs.HasLine("Done installing git-hooks to \""+repositoriesDir+"/"+secondRepositoryName+"/.git\""),
+		outputs.HasLine(
+			"Installing git-hooks to \""+repositoriesDir+"/"+firstRepositoryName+"/.git\"",
+		),
+		outputs.HasLine(
+			"Done installing git-hooks to \""+repositoriesDir+"/"+firstRepositoryName+"/.git\"",
+		),
+		outputs.HasLine(
+			"Installing git-hooks to \""+repositoriesDir+"/"+secondRepositoryName+"/.git\"",
+		),
+		outputs.HasLine(
+			"Done installing git-hooks to \""+repositoriesDir+"/"+secondRepositoryName+"/.git\"",
+		),
 		outputs.HasLine("Done installing git-hooks."),
 	)
 }

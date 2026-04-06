@@ -1,11 +1,10 @@
 package clonerepositories
 
 import (
-	"path/filepath"
-	"strings"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+	"path/filepath"
+	"strings"
 )
 
 func CloneRepositories(teamInfo core.TeamInfo) {
