@@ -1,11 +1,9 @@
 {
   "excluded": [
-    "e2e-tests/3rdParty/"
   ],
   "included": [
     "*.sh",
     "*.bash",
-    "*.bats",
     "command"
   ]
 }

@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-mrt
       - uses: ./.github/actions/setup-go-utilities
-      - name: Run bash linting
+      - name: Run go linting
         run: mrt run lint-go
   format-go:
     name: Format go files
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-mrt
       - uses: ./.github/actions/setup-go-utilities
-      - name: Run bash formatting
+      - name: Run go formatting
         run: mrt run format-go
   build:
     name: Build for Platform ${{ matrix.platform }}

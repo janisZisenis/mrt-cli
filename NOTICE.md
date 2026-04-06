@@ -115,51 +115,10 @@ These tools are used during development, testing, and CI/CD processes, but are n
   - URL: https://github.com/golang/tools
   - Description: Go import formatter and organizer
 
-- **ShellCheck v0.11.0**
-  - License: GPL-3.0
-  - URL: https://github.com/koalaman/shellcheck
-  - Description: Bash/shell script linter
-
-- **shfmt v3.12.0**
-  - License: MIT
-  - URL: https://github.com/mvdan/sh
-  - Description: Bash/shell script formatter
-
 - **jq**
   - License: MIT
   - URL: https://stedolan.github.io/jq/
   - Description: JSON command-line processor
-
-- **bats (Bash Automated Testing System)**
-  - License: MIT
-  - URL: https://github.com/bats-core/bats-core
-  - Description: Bash testing framework for end-to-end tests
-
-- **bats-support v0.3.0**
-    - License: MIT
-    - URL: https://github.com/bats-core/bats-support
-    - Description: Common test helper library
-
-- **bats-file v0.4.0**
-    - License: MIT
-    - URL: https://github.com/bats-core/bats-file
-    - Description: File and path assertion helpers
-
-- **bats-assert v2.1.0**
-    - License: MIT
-    - URL: https://github.com/bats-core/bats-assert
-    - Description: Assertion helpers for BATS tests
-
-- **bats-detik v1.3.1**
-    - License: MIT
-    - URL: https://github.com/bats-core/bats-detik
-    - Description: Docker and container testing helpers
-
-- **GNU parallel**
-  - License: GPL-3.0
-  - URL: https://www.gnu.org/software/parallel/
-  - Citation: O. Tange (2018): GNU Parallel 2018, March 2018, https://doi.org/10.5281/zenodo.1146014
-  - Description: Parallel job execution for running tests in parallel
 
 ## Container and Infrastructure Tools
 
@@ -191,7 +150,7 @@ These tools are used during development, testing, and CI/CD processes, but are n
 
 **Project License**: This project is licensed under the MIT License.
 
-**Runtime vs. Development Dependencies**: The runtime dependencies (Go modules) are all compatible with the MIT license. The development and testing tools section includes some GPL-3.0 licensed software (golangci-lint, ShellCheck, and GNU parallel). These tools are used exclusively during development and CI/CD processes and are **not bundled with or compiled into the distributed binary**. They run as separate processes during testing and code quality checks, and therefore do not create a licensing conflict with the MIT license.
+**Runtime vs. Development Dependencies**: The runtime dependencies (Go modules) are all compatible with the MIT license. The development and testing tools section includes some GPL-3.0 licensed software (golangci-lint). These tools are used exclusively during development and CI/CD processes and are **not bundled with or compiled into the distributed binary**. They run as separate processes during testing and code quality checks, and therefore do not create a licensing conflict with the MIT license.
 
 **Distribution**: When distributing this project as a compiled binary or package, only the runtime dependencies are included. Users installing the binary do not need to install or comply with the GPL-3.0 tools.
 

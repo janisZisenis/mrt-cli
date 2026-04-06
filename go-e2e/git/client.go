@@ -17,13 +17,19 @@ type BaseCommand interface {
 }
 
 type DirectedCommand interface {
-	MakeCommitOnNewBranch(branch string, message string) ExecutableCommand
+	MakeCommitOnNewBranch(branch string, message string) CommitExecutableCommand
 	Push(branch string) ExecutableCommand
 	DeleteRemoteBranchIfExists(branch string) ExecutableCommand
+	GetLastCommitMessage() (string, error)
 }
 
 type ExecutableCommand interface {
 	Execute() (int, error)
+}
+
+type CommitExecutableCommand interface {
+	ExecutableCommand
+	ExecuteAndCaptureOutput() (string, int, error)
 }
 
 type Git struct {
@@ -51,7 +57,7 @@ func (g *Git) Clone(repositoryURL string, destination string) ExecutableCommand 
 	}
 }
 
-func (g *Git) MakeCommitOnNewBranch(branch string, message string) ExecutableCommand {
+func (g *Git) MakeCommitOnNewBranch(branch string, message string) CommitExecutableCommand {
 	return &commitCommand{
 		repositoryPath: g.path,
 		branch:         branch,
@@ -71,6 +77,21 @@ func (g *Git) DeleteRemoteBranchIfExists(branch string) ExecutableCommand {
 	return &deleteRemoteBranchIfExistsCommand{
 		git: &Git{args: append(g.args, "push", "origin", "--delete", branch), sshEnv: g.sshEnv},
 	}
+}
+
+func (g *Git) GetLastCommitMessage() (string, error) {
+	git := &Git{args: append(g.args, "log", "-1", "--pretty=%B"), sshEnv: g.sshEnv}
+
+	//nolint:gosec // args are controlled by internal callers
+	cmd := exec.CommandContext(context.Background(), "git", git.args...)
+	cmd.Env = internal.MergeEnv(os.Environ(), git.sshEnv)
+
+	outputBytes, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("git log failed: %w", err)
+	}
+
+	return strings.TrimSpace(string(outputBytes)), nil
 }
 
 type deleteRemoteBranchIfExistsCommand struct {
@@ -112,37 +133,48 @@ type commitCommand struct {
 }
 
 func (c *commitCommand) Execute() (int, error) {
-	steps := [][]string{
+	_, exitCode, err := c.ExecuteAndCaptureOutput()
+	return exitCode, err
+}
+
+func (c *commitCommand) ExecuteAndCaptureOutput() (string, int, error) {
+	prepSteps := [][]string{
 		{"git", "-C", c.repositoryPath, "checkout", "-b", c.branch},
 		{"touch", c.repositoryPath + "/some_file"},
 		{"git", "-C", c.repositoryPath, "add", "."},
-		{"git", "-C", c.repositoryPath, "commit", "-m", c.message},
 	}
 
-	for _, args := range steps {
-		exitCode, err := run(args, c.sshEnv)
+	for _, args := range prepSteps {
+		exitCode, err := runDiscardOutput(args, c.sshEnv)
 		if exitCode != 0 || err != nil {
-			return exitCode, err
+			return "", exitCode, err
 		}
 	}
 
-	return 0, nil
+	commitArgs := []string{"git", "-C", c.repositoryPath, "commit", "-m", c.message}
+	return run(commitArgs, c.sshEnv)
 }
 
-func run(args []string, sshEnv []string) (int, error) {
+func run(args []string, sshEnv []string) (string, int, error) {
 	//nolint:gosec // args are controlled by internal callers
 	cmd := exec.CommandContext(context.Background(), args[0], args[1:]...)
 	cmd.Env = internal.MergeEnv(os.Environ(), sshEnv)
 
 	outputBytes, err := cmd.CombinedOutput()
+	output := string(outputBytes)
 	if err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
-			return exitErr.ExitCode(), fmt.Errorf("%s", string(outputBytes))
+			return output, exitErr.ExitCode(), fmt.Errorf("%s", output)
 		}
 
-		return -1, err
+		return output, -1, err
 	}
 
-	return 0, nil
+	return output, 0, nil
+}
+
+func runDiscardOutput(args []string, sshEnv []string) (int, error) {
+	_, exitCode, err := run(args, sshEnv)
+	return exitCode, err
 }
