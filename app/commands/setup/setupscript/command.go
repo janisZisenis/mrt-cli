@@ -4,10 +4,10 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/spf13/cobra"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+
+	"github.com/spf13/cobra"
 )
 
 const (

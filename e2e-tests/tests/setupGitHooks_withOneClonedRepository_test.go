@@ -3,12 +3,12 @@ package tests_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_IfTeamJsonContainsInvalidCommitPrefixRegex_Committing_ShouldFailGracefully(t *testing.T) {

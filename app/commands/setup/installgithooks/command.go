@@ -1,9 +1,9 @@
 package installgithooks
 
 import (
-	"github.com/spf13/cobra"
-
 	"mrt-cli/app/core"
+
+	"github.com/spf13/cobra"
 )
 
 const CommandName = "install-git-hooks"

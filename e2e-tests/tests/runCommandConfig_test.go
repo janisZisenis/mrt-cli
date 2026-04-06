@@ -3,10 +3,10 @@ package tests_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/outputs"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDescription(t *testing.T) {

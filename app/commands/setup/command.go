@@ -3,13 +3,13 @@ package setup
 import (
 	"path/filepath"
 
-	"github.com/spf13/cobra"
-
 	"mrt-cli/app/commands/setup/all"
 	"mrt-cli/app/commands/setup/clonerepositories"
 	"mrt-cli/app/commands/setup/installgithooks"
 	"mrt-cli/app/commands/setup/setupscript"
 	"mrt-cli/app/core"
+
+	"github.com/spf13/cobra"
 )
 
 const commandName = "setup"

@@ -1,10 +1,10 @@
 package clonerepositories
 
 import (
-	"github.com/spf13/cobra"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+
+	"github.com/spf13/cobra"
 )
 
 const CommandName = "clone-repositories"

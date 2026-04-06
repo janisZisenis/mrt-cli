@@ -36,15 +36,17 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-fix_flag=""
+fix_flags=()
 if [[ "$fix" == true ]]; then
-	fix_flag="--fix"
+	fix_flags=("--fix")
 fi
 
-cd "$rootDir/app"
-golangci-lint run $fix_flag --config "$rootDir"/.golangci.yml --timeout 10m
-go vet ./...
+function lint_module() {
+	local dir="$1"
+	cd "$dir"
+	golangci-lint run "${fix_flags[@]}" --config "$rootDir"/.golangci.yml --timeout 10m
+	go vet ./...
+}
 
-cd "$rootDir/go-e2e"
-golangci-lint run $fix_flag --config "$rootDir"/.golangci.yml --timeout 10m
-go vet ./...
+lint_module "$rootDir/app"
+lint_module "$rootDir/e2e-tests"

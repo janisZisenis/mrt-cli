@@ -11,9 +11,10 @@ import (
 	"mrt-cli/e2e-tests/assert"
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/internal"
-	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/ssh"
 	"mrt-cli/e2e-tests/teamconfig"
+
+	mrtclient "mrt-cli/e2e-tests/mrt"
 )
 
 const setupCommandDir = "setup"
