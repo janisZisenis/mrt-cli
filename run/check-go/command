@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+FLAG_FIX="--fix"
+FLAG_HELP="-h|--help"
+
+function display_help() {
+	cat <<EOF
+Usage: mrt run $(basename "$(dirname "$0")") [OPTIONS]
+
+Check Go code formatting and linting. By default, reports issues without modifying files.
+
+Options:
+  $FLAG_FIX    Fix formatting and auto-fixable lint issues.
+  $FLAG_HELP   Display this help message and exit.
+EOF
+}
+
+rootDir="$1"
+shift
+
+fix=false
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+	"$FLAG_FIX")
+		fix=true
+		shift
+		;;
+	$FLAG_HELP)
+		display_help
+		exit 0
+		;;
+	--*)
+		echo "Error: Unknown option '$1'."
+		echo
+		display_help
+		exit 1
+		;;
+	esac
+done
+
+exit_code=0
+
+function check_module() {
+	local dir="$1"
+	local module_exit=0
+	cd "$dir"
+	if [[ "$fix" == true ]]; then
+		golangci-lint fmt --config "$rootDir"/.golangci.yml || module_exit=1
+		golangci-lint run --fix --config "$rootDir"/.golangci.yml --timeout 10m || module_exit=1
+	else
+		golangci-lint fmt --diff --config "$rootDir"/.golangci.yml || module_exit=1
+		golangci-lint run --config "$rootDir"/.golangci.yml --timeout 10m || module_exit=1
+	fi
+	go vet ./... || module_exit=1
+	return "$module_exit"
+}
+
+check_module "$rootDir/app" || exit_code=1
+check_module "$rootDir/e2e-tests" || exit_code=1
+
+exit "$exit_code"

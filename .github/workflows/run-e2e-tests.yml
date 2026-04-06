@@ -35,15 +35,15 @@ jobs:
       - uses: ./.github/actions/setup-shell-utilities
       - name: Check bash formatting
         run: mrt run format-bash -- --check-only
-  lint-go:
-    name: Lint go files
+  check-go:
+    name: Check Go
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-mrt
       - uses: ./.github/actions/setup-go-utilities
-      - name: Run go linting
-        run: mrt run lint-go
+      - name: Check Go formatting and linting
+        run: mrt run check-go
   build:
     name: Build for Platform ${{ matrix.platform }}
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
   run-linux-tests:
     name: Run tests on linux
     runs-on: ubuntu-latest
-    needs: [build, lint-bash, format-bash, lint-go]
+    needs: [build, lint-bash, format-bash, check-go]
     env:
       binary-path: build/bin
       binary-name: mrt-linux-amd64
@@ -74,7 +74,7 @@ jobs:
   run-darwin-tests:
     name: Run tests on darwin
     runs-on: macos-15
-    needs: [build, lint-bash, format-bash, lint-go]
+    needs: [build, lint-bash, format-bash, check-go]
     env:
       binary-path: build/bin
       binary-name: mrt-darwin-arm64
