@@ -2,11 +2,10 @@ package fixtures
 
 import (
 	"fmt"
+	"mrt-cli/e2e-tests/assert"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"mrt-cli/e2e-tests/assert"
 )
 
 type HookScriptFixture struct {
@@ -40,7 +39,12 @@ echo "$@" > "$SCRIPT_DIR/%s%s"
 	f.writeScript(path, script)
 }
 
-func (f *HookScriptFixture) WriteStubScript(hookName string, scriptName string, exitCode int, output string) {
+func (f *HookScriptFixture) WriteStubScript(
+	hookName string,
+	scriptName string,
+	exitCode int,
+	output string,
+) {
 	path := f.ScriptPath(hookName, scriptName)
 	script := fmt.Sprintf("#!/bin/bash\necho %q\nexit %d\n", output, exitCode)
 	f.writeScript(path, script)

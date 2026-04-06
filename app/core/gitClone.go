@@ -4,10 +4,9 @@ import (
 	"bufio"
 	"errors"
 	"io"
+	"mrt-cli/app/log"
 	"os"
 	"sync"
-
-	"mrt-cli/app/log"
 )
 
 const bufferSize = 64 * 1024

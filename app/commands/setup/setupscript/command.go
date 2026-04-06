@@ -1,13 +1,12 @@
 package setupscript
 
 import (
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 	"path/filepath"
 	"strconv"
 
 	"github.com/spf13/cobra"
-
-	"mrt-cli/app/core"
-	"mrt-cli/app/log"
 )
 
 const (

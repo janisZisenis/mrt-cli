@@ -1,13 +1,12 @@
 package githook
 
 import (
+	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-
-	"mrt-cli/app/core"
-	"mrt-cli/app/log"
 )
 
 const (

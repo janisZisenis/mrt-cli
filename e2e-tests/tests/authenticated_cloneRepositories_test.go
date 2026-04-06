@@ -1,17 +1,18 @@
 package tests_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
+	"testing"
 )
 
 const defaultRepositoriesPath = "repositories"
 
-func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(t *testing.T) {
+func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepositoryIntoDefaultFolder(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -81,7 +82,9 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 	f.AssertRepositoryExists(secondRepositoryName, defaultRepositoriesPath)
 }
 
-func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(t *testing.T) {
+func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Repository(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -97,7 +100,9 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 	f.AssertFolderDoesNotExist(defaultRepositoriesPath)
 }
 
-func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(t *testing.T) {
+func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailureMessage(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -113,7 +118,9 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 	output.AssertHasLine(t, "fatal: Could not read from remote repository.")
 }
 
-func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(t *testing.T) {
+func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldCloneTheExistingOne(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -163,7 +170,9 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 	f.AssertRepositoryExists("TestRepository2", defaultRepositoriesPath)
 }
 
-func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Cloning_ShouldNotTrim(t *testing.T) {
+func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Cloning_ShouldNotTrim(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()
@@ -186,7 +195,9 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 	f.AssertRepositoryExists(secondRepositoryName, defaultRepositoriesPath)
 }
 
-func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesIntoGivenRepositoriesPath(t *testing.T) {
+func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesIntoGivenRepositoriesPath(
+	t *testing.T,
+) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate().
 		Parallel()

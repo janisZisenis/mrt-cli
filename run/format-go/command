@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-rootDir="$1"
-shift
-
-gofumpt -w "$rootDir/app" "$rootDir/e2e-tests"
-goimports -w "$rootDir/app" "$rootDir/e2e-tests"

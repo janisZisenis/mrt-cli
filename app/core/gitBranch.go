@@ -3,10 +3,9 @@ package core
 import (
 	"bytes"
 	"errors"
+	"mrt-cli/app/log"
 	"os"
 	"strings"
-
-	"mrt-cli/app/log"
 )
 
 func GetCurrentBranchShortName(repoDir string) (string, error) {

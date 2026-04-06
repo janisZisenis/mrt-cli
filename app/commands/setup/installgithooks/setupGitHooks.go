@@ -1,10 +1,9 @@
 package installgithooks
 
 import (
-	"path/filepath"
-
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+	"path/filepath"
 )
 
 const (

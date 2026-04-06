@@ -1,11 +1,10 @@
 package outputs_test
 
 import (
+	"mrt-cli/e2e-tests/outputs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"mrt-cli/e2e-tests/outputs"
 )
 
 // --- ExactLine ---

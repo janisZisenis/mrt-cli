@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"mrt-cli/e2e-tests/internal"
+	"mrt-cli/e2e-tests/outputs"
 	"os"
 	"os/exec"
 	"strings"
-
-	"mrt-cli/e2e-tests/internal"
-	"mrt-cli/e2e-tests/outputs"
 )
 
 type ExecutableCommand interface {
@@ -100,7 +99,14 @@ func (m *Mrt) SubCommand(name string, args ...string) ExecutableCommand {
 }
 
 func (m *Mrt) GitHook(hookName string, repositoryPath string, args ...string) ExecutableCommand {
-	m.command.Args = append(m.command.Args, "git-hook", "--hook-name", hookName, "--repository-path", repositoryPath)
+	m.command.Args = append(
+		m.command.Args,
+		"git-hook",
+		"--hook-name",
+		hookName,
+		"--repository-path",
+		repositoryPath,
+	)
 	m.command.Args = append(m.command.Args, args...)
 
 	return m

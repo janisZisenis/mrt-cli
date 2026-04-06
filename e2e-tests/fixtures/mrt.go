@@ -2,18 +2,18 @@ package fixtures
 
 import (
 	"context"
+	"mrt-cli/e2e-tests/assert"
+	"mrt-cli/e2e-tests/git"
+	"mrt-cli/e2e-tests/internal"
+	"mrt-cli/e2e-tests/ssh"
+	"mrt-cli/e2e-tests/teamconfig"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"mrt-cli/e2e-tests/assert"
-	"mrt-cli/e2e-tests/git"
-	"mrt-cli/e2e-tests/internal"
 	mrtclient "mrt-cli/e2e-tests/mrt"
-	"mrt-cli/e2e-tests/ssh"
-	"mrt-cli/e2e-tests/teamconfig"
 )
 
 const setupCommandDir = "setup"
@@ -114,7 +114,14 @@ func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {
-	cmd := exec.CommandContext(context.Background(), "mrt", "--team-dir", repositoryDir, "run", "binary-location")
+	cmd := exec.CommandContext(
+		context.Background(),
+		"mrt",
+		"--team-dir",
+		repositoryDir,
+		"run",
+		"binary-location",
+	)
 	binaryPathBytes, err := cmd.Output()
 
 	output := string(binaryPathBytes)

@@ -1,12 +1,11 @@
 package tests_test
 
 import (
-	"testing"
-
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
+	"testing"
 )
 
 func Test_SetupAll_ShouldCloneInstallGitHooksAndExecuteCommands(t *testing.T) {
@@ -75,7 +74,8 @@ func Test_IfSetupIsRunWithSkipCloneRepositories_SetupAll_ShouldNotCloneRepositor
 		Authenticate().
 		Parallel()
 	repositoryName := "1_TestRepository"
-	f.TeamConfigWriter().Write(teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}))
+	f.TeamConfigWriter().
+		Write(teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}))
 
 	f.MakeMrtCommand().
 		Setup().
@@ -90,7 +90,8 @@ func Test_IfSetupIsRunWithSkipCloneRepositories_SetupAll_ShouldPrintSkipMessage(
 		Authenticate().
 		Parallel()
 	repositoryName := "1_TestRepository"
-	f.TeamConfigWriter().Write(teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}))
+	f.TeamConfigWriter().
+		Write(teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}))
 
 	output, _ := f.MakeMrtCommand().
 		Setup().

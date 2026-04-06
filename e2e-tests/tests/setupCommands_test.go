@@ -1,10 +1,9 @@
 package tests_test
 
 import (
+	"mrt-cli/e2e-tests/fixtures"
 	"strconv"
 	"testing"
-
-	"mrt-cli/e2e-tests/fixtures"
 )
 
 func Test_IfSetupCommandExists_ExecutingIt_WillPassTheTeamFolderAsParameter(t *testing.T) {
@@ -17,7 +16,10 @@ func Test_IfSetupCommandExists_ExecutingIt_WillPassTheTeamFolderAsParameter(t *t
 	}
 }
 
-func testIfSetupCommandExistsExecutingItWillPassTheTeamFolderAsParameter(t *testing.T, commandName string) {
+func testIfSetupCommandExistsExecutingItWillPassTheTeamFolderAsParameter(
+	t *testing.T,
+	commandName string,
+) {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	f.SetupFixture.WriteSpyCommand(commandName)
