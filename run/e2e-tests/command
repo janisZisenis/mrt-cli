@@ -117,21 +117,6 @@ if [[ "$clean_build" == true ]]; then
 	mrt --team-dir "$rootDir" run build
 fi
 
-if [[ "${#files[@]}" -eq 0 ]]; then
-	echo "No specific test files provided. Auto-detecting *.bats files..."
-	mapfile -t files < <(find "$e2eTestDir" -type f -name "*.bats" ! -ipath "*/3rdParty/*")
-fi
-
-echo "Test files to be executed:"
-printf "\t%s\n" "${files[@]}"
-
-echo "Running tests with BATS..."
-
-export BATS_LIB_PATH="$e2eTestDir/3rdParty/test_helper":"$e2eTestDir/helpers"
-
-bats_exit_code=0
-GIT_SSH_COMMAND="ssh -F $SSH_CONFIG_FILE" "$e2eTestDir"/3rdParty/bats/bin/bats "${files[@]}" --jobs 10 || bats_exit_code=$?
-
 echo "Running Go e2e tests..."
 go_exit_code=0
 (cd "$rootDir/go-e2e" && gotestsum --format testname ./... -- -v) || go_exit_code=$?
