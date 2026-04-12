@@ -20,9 +20,9 @@ func getPushedBranchNames(reader io.Reader) []string {
 			continue
 		}
 
-		localRef := fields[2]
-		if strings.HasPrefix(localRef, refsHeadsPrefix) {
-			branches = append(branches, strings.TrimPrefix(localRef, refsHeadsPrefix))
+		remoteRef := fields[2]
+		if strings.HasPrefix(remoteRef, refsHeadsPrefix) {
+			branches = append(branches, strings.TrimPrefix(remoteRef, refsHeadsPrefix))
 		}
 	}
 
