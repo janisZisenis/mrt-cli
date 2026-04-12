@@ -21,7 +21,7 @@ func Test_IfTeamJsonDoesNotContainRepositoriesPath_Cloning_ShouldCloneRepository
 		teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
 	)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -38,7 +38,7 @@ func Test_IfTeamJsonContainsARepository_Cloning_ShouldPrintOutSuccessMessage(t *
 		teamconfig.WithRepositories([]string{repositoryURL}),
 	)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -68,7 +68,7 @@ func Test_IfTeamJsonContainsAlreadyClonedRepositories_Cloning_ClonesRemainingRep
 		Clone(git.MakeCloneURL(firstRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+firstRepositoryName)).
 		Execute()
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -92,7 +92,7 @@ func Test_IfTeamJsonDoesNotContainAnyRepository_Cloning_Should_Not_Clone_Any_Rep
 		teamconfig.WithRepositories([]string{}),
 	)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -110,7 +110,7 @@ func Test_IfTeamJsonContainsNonExistingRepository_Cloning_ShouldPrintOutAFailure
 		teamconfig.WithRepositories([]string{git.MakeCloneURL("nonExistingRepository")}),
 	)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -132,7 +132,7 @@ func Test_IfTeamJsonContainsNonExistingAndExistingRepository_Cloning_ShouldClone
 		}),
 	)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -161,7 +161,7 @@ func Test_IfTeamJsonContainsRepositoriesPrefixes_Cloning_ShouldTrimThePrefixesWh
 		teamconfig.WithRepositoriesPrefixes([]string{"Prefix1_", "Prefix2_"}),
 	)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -186,7 +186,7 @@ func Test_IfTeamJsonContainsRepositoriesPrefixesButUnprefixedRepositories_Clonin
 		teamconfig.WithRepositoriesPrefixes([]string{"FirstPrefix", "SecondPrefix"}),
 	)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -210,7 +210,7 @@ func Test_IfTeamJsonContainsRepositoriesPath_Cloning_ShouldCloneRepositoriesInto
 		teamconfig.WithRepositoriesPath(repositoriesPath),
 	)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()

@@ -34,7 +34,7 @@ func testCommandPassesRootDirAndParametersToIt(
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	f.RunFixture.WriteSpyCommand(commandName)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Run().
 		SubCommand(commandName, parameters...).
 		Execute()
@@ -52,7 +52,7 @@ func Test_IfCommandSucceedsWithOutput_ItShouldPrintTheCommandsOutput(t *testing.
 	someOutput := "some-output"
 	f.RunFixture.WriteStubCommand(commandName, 0, someOutput)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Run().
 		SubCommand(commandName).
 		Execute()
@@ -66,7 +66,7 @@ func Test_IfCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) {
 	input := "some-input"
 	f.RunFixture.WriteInputCommand(commandName)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Run().
 		SubCommand(commandName).
 		ExecuteWithInput(input + "\n")
@@ -80,7 +80,7 @@ func Test_IfCommandWritesToStderr_ItShouldOutputStderr(t *testing.T) {
 	errMessage := "some-error"
 	f.RunFixture.WriteStderrCommand(commandName, errMessage)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Run().
 		SubCommand(commandName).
 		Execute()
@@ -111,7 +111,7 @@ func testCommandForwardsExitCode(t *testing.T, expectedExitCode int) {
 	commandName := "some-command"
 	f.RunFixture.WriteStubCommand(commandName, expectedExitCode, "")
 
-	_, exitCode := f.MakeMrtCommand().
+	_, exitCode := f.MakeMrtCommandInTeamDir().
 		Run().
 		SubCommand(commandName).
 		Execute()

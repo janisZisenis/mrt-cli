@@ -24,6 +24,7 @@ type RunCommand interface {
 type BaseCommand interface {
 	RunInDirectory(directory string) DirectedCommand
 	Setup() SetupCommand
+	Version() ExecutableCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -114,6 +115,12 @@ func (m *Mrt) GitHook(hookName string, repositoryPath string, args ...string) Ex
 
 func (m *Mrt) Run() RunCommand {
 	m.command.Args = append(m.command.Args, "run")
+
+	return m
+}
+
+func (m *Mrt) Version() ExecutableCommand {
+	m.command.Args = append(m.command.Args, "version")
 
 	return m
 }

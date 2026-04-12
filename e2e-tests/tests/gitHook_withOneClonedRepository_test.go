@@ -10,7 +10,7 @@ import (
 func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
-	output, exitCode := f.MakeMrtCommand().
+	output, exitCode := f.MakeMrtCommandInTeamDir().
 		GitHook("unknown-hook", f.ClonedRepositoryPath).
 		Execute()
 
@@ -21,7 +21,7 @@ func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
 func Test_IfGitHookIsCalledWithGlobbingPatternInHookName_ShouldFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
-	output, exitCode := f.MakeMrtCommand().
+	output, exitCode := f.MakeMrtCommandInTeamDir().
 		GitHook("pre-commit*", f.ClonedRepositoryPath).
 		Execute()
 
@@ -33,7 +33,7 @@ func Test_IfGitHookIsCalledWithPathThatDoesNotContainRepository_ShouldFail(t *te
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 	nonRepoPath := f.AbsolutePath("non-repo")
 
-	output, exitCode := f.MakeMrtCommand().
+	output, exitCode := f.MakeMrtCommandInTeamDir().
 		GitHook("pre-commit", nonRepoPath).
 		Execute()
 

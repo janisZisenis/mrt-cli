@@ -37,7 +37,7 @@ func MakeOneClonedRepositoryWithGitHooksFixture(
 		Clone(git.MakeCloneURL(ClonedRepoName), f.AbsolutePath(defaultRepositoriesPath+"/"+ClonedRepoName)).
 		Execute()
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()
@@ -57,7 +57,7 @@ func (f *OneClonedRepositoryWithGitHooksFixture) ConfigureBlockedBranches(branch
 		teamconfig.WithRepositories([]string{git.MakeCloneURL(ClonedRepoName)}),
 		teamconfig.WithBlockedBranches(branches),
 	)
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()

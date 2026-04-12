@@ -17,7 +17,7 @@ func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDesc
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteConfig(commandName, fixtures.WithShortDescription(shortDescription))
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Run().
 		Execute()
 
@@ -32,7 +32,7 @@ func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDef
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteConfig(commandName)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Run().
 		Execute()
 
@@ -47,7 +47,7 @@ func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorM
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteCorruptConfig(commandName)
 
-	output, exitCode := f.MakeMrtCommand().
+	output, exitCode := f.MakeMrtCommandInTeamDir().
 		Run().
 		Execute()
 
