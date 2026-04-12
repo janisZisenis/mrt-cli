@@ -1,16 +1,17 @@
 package tests_test
 
 import (
+	"mrt-cli/e2e-tests/fixtures"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
-	f := setupOneClonedRepositoryWithGitHooks(t)
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommand().
-		GitHook("unknown-hook", f.repositoryPath).
+		GitHook("unknown-hook", f.RepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -18,10 +19,10 @@ func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
 }
 
 func Test_IfGitHookIsCalledWithGlobbingPatternInHookName_ShouldFail(t *testing.T) {
-	f := setupOneClonedRepositoryWithGitHooks(t)
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommand().
-		GitHook("pre-commit*", f.repositoryPath).
+		GitHook("pre-commit*", f.RepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -29,7 +30,7 @@ func Test_IfGitHookIsCalledWithGlobbingPatternInHookName_ShouldFail(t *testing.T
 }
 
 func Test_IfGitHookIsCalledWithPathThatDoesNotContainRepository_ShouldFail(t *testing.T) {
-	f := setupOneClonedRepositoryWithGitHooks(t)
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 	nonRepoPath := f.AbsolutePath("non-repo")
 
 	output, exitCode := f.MakeMrtCommand().
