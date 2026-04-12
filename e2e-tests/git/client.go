@@ -17,7 +17,9 @@ type BaseCommand interface {
 
 type DirectedCommand interface {
 	MakeCommitOnNewBranch(branch string, message string) CommitExecutableCommand
+	CheckoutNewBranch(branch string) ExecutableCommand
 	Push(branch string) ExecutableCommand
+	PushToRemoteBranch(localBranch string, remoteBranch string) ExecutableCommand
 	DeleteRemoteBranchIfExists(branch string) ExecutableCommand
 	GetLastCommitMessage() (string, error)
 }
@@ -58,16 +60,29 @@ func (g *Git) Clone(repositoryURL string, destination string) ExecutableCommand 
 
 func (g *Git) MakeCommitOnNewBranch(branch string, message string) CommitExecutableCommand {
 	return &commitCommand{
-		repositoryPath: g.path,
-		branch:         branch,
-		message:        message,
-		sshEnv:         g.sshEnv,
+		git:     g,
+		branch:  branch,
+		message: message,
+	}
+}
+
+func (g *Git) CheckoutNewBranch(branch string) ExecutableCommand {
+	return &Git{
+		args:   append(g.args, "checkout", "-b", branch),
+		sshEnv: g.sshEnv,
 	}
 }
 
 func (g *Git) Push(branch string) ExecutableCommand {
 	return &Git{
 		args:   append(g.args, "push", "--set-upstream", "origin", branch),
+		sshEnv: g.sshEnv,
+	}
+}
+
+func (g *Git) PushToRemoteBranch(localBranch string, remoteBranch string) ExecutableCommand {
+	return &Git{
+		args:   append(g.args, "push", "--set-upstream", "origin", localBranch+":"+remoteBranch),
 		sshEnv: g.sshEnv,
 	}
 }
@@ -125,10 +140,9 @@ func (g *Git) Execute() (int, error) {
 }
 
 type commitCommand struct {
-	repositoryPath string
-	branch         string
-	message        string
-	sshEnv         []string
+	git     *Git
+	branch  string
+	message string
 }
 
 func (c *commitCommand) Execute() (int, error) {
@@ -137,21 +151,25 @@ func (c *commitCommand) Execute() (int, error) {
 }
 
 func (c *commitCommand) ExecuteAndCaptureOutput() (string, int, error) {
+	exitCode, err := c.git.CheckoutNewBranch(c.branch).Execute()
+	if exitCode != 0 || err != nil {
+		return "", exitCode, err
+	}
+
 	prepSteps := [][]string{
-		{"git", "-C", c.repositoryPath, "checkout", "-b", c.branch},
-		{"touch", c.repositoryPath + "/some_file"},
-		{"git", "-C", c.repositoryPath, "add", "."},
+		{"touch", c.git.path + "/some_file"},
+		{"git", "-C", c.git.path, "add", "."},
 	}
 
 	for _, args := range prepSteps {
-		exitCode, err := runDiscardOutput(args, c.sshEnv)
+		exitCode, err = runDiscardOutput(args, c.git.sshEnv)
 		if exitCode != 0 || err != nil {
 			return "", exitCode, err
 		}
 	}
 
-	commitArgs := []string{"git", "-C", c.repositoryPath, "commit", "-m", c.message}
-	return run(commitArgs, c.sshEnv)
+	commitArgs := []string{"git", "-C", c.git.path, "commit", "-m", c.message}
+	return run(commitArgs, c.git.sshEnv)
 }
 
 func run(args []string, sshEnv []string) (string, int, error) {
