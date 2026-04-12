@@ -14,6 +14,21 @@ type oneClonedRepositoryWithGitHooksFixture struct {
 	repositoryPath string
 }
 
+func (f oneClonedRepositoryWithGitHooksFixture) gitInRepo() git.DirectedCommand {
+	return f.MakeGitCommand().InDirectory(f.repositoryPath)
+}
+
+func (f oneClonedRepositoryWithGitHooksFixture) configureBlockedBranches(branches []string) {
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositories([]string{git.MakeCloneURL(oneClonedRepoName)}),
+		teamconfig.WithBlockedBranches(branches),
+	)
+	f.MakeMrtCommand().
+		Setup().
+		InstallGitHooks().
+		Execute()
+}
+
 func setupOneClonedRepositoryWithGitHooks(
 	t *testing.T,
 	extraOptions ...teamconfig.Option,
