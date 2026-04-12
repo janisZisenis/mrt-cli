@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func getPushedBranchNames(reader io.Reader) []string {
+func getPushedRemoteBranchNames(reader io.Reader) []string {
 	const refsHeadsPrefix = "refs/heads/"
 	// git provides each pushed ref as: <local-ref> <local-sha1> <remote-ref> <remote-sha1>
 	const prePushLineFieldCount = 4

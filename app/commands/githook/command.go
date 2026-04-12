@@ -40,7 +40,7 @@ func command(cmd *cobra.Command, args []string) {
 	case core.PreCommit:
 		failIfBranchIsBlocked(teamInfo, currentBranchName, "commit")
 	case core.PrePush:
-		for _, branch := range getPushedBranchNames(os.Stdin) {
+		for _, branch := range getPushedRemoteBranchNames(os.Stdin) {
 			failIfBranchIsBlocked(teamInfo, branch, "push")
 		}
 	case core.CommitMsg:
