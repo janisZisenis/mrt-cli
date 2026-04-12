@@ -2,6 +2,8 @@ package tests_test
 
 import (
 	"mrt-cli/e2e-tests/fixtures"
+	"mrt-cli/e2e-tests/outputs"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -39,4 +41,28 @@ func Test_IfGitHookIsCalledWithPathThatDoesNotContainRepository_ShouldFail(t *te
 
 	require.NotEqual(t, 0, exitCode)
 	output.AssertHasLine(t, "The given path \""+nonRepoPath+"\" does not contain a repository.")
+}
+
+func Test_IfTeamJsonIsMissing_HookShouldFail(t *testing.T) {
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
+	require.NoError(t, os.Remove(f.AbsolutePath("team.json")))
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		GitHook("pre-commit", f.ClonedRepositoryPath).
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+}
+
+func Test_IfTeamJsonIsCorrupted_HookShouldFail(t *testing.T) {
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
+	require.NoError(t, os.WriteFile(f.AbsolutePath("team.json"), []byte("not valid json {{{"), 0o600))
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		GitHook("pre-commit", f.ClonedRepositoryPath).
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
 }

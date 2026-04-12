@@ -30,7 +30,12 @@ func MakeCommand() *cobra.Command {
 }
 
 func command(cmd *cobra.Command, args []string) {
-	teamInfo, _ := core.LoadTeamConfiguration()
+	teamInfo, err := core.LoadTeamConfiguration()
+	if err != nil {
+		log.Errorf("Failed to load team configuration")
+		os.Exit(1)
+	}
+
 	hookName, _ := cmd.Flags().GetString(hookNameFlag)
 	repositoryPath, _ := cmd.Flags().GetString(repositoryPath)
 
@@ -44,8 +49,8 @@ func command(cmd *cobra.Command, args []string) {
 			failIfBranchIsBlocked(teamInfo, branch, "push")
 		}
 	case core.CommitMsg:
-		if err := prefixCommitMessage(teamInfo, currentBranchName, args); err != nil {
-			log.Errorf(err.Error())
+		if commitMsgErr := prefixCommitMessage(teamInfo, currentBranchName, args); commitMsgErr != nil {
+			log.Errorf(commitMsgErr.Error())
 			os.Exit(1)
 		}
 	default:
