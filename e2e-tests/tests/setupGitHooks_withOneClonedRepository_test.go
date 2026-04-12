@@ -79,7 +79,7 @@ func Test_IfTeamJsonContains2BlockedBranches_CommittingOnSecondOne_ShouldBeBlock
 func Test_IfTeamJsonContainsBlockedBranch_PushingOnBlockedBranch_ShouldBeBlocked(t *testing.T) {
 	branchName := git.UniqueBranchName()
 	f := setupOneClonedRepositoryWithGitHooks(t)
-	f.gitInRepo().MakeCommitOnNewBranch(branchName, "some-message").Execute()
+	_, _ = f.gitInRepo().MakeCommitOnNewBranch(branchName, "some-message").Execute()
 	f.configureBlockedBranches([]string{branchName})
 
 	exitCode, err := f.gitInRepo().Push(branchName).Execute()
@@ -88,15 +88,15 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingOnBlockedBranch_ShouldBeBlocked
 	require.NotEqual(t, 0, exitCode)
 	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+branchName+"\"")
 
-	t.Cleanup(func() { f.gitInRepo().DeleteRemoteBranchIfExists(branchName).Execute() })
+	t.Cleanup(func() { _, _ = f.gitInRepo().DeleteRemoteBranchIfExists(branchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_PushingNonBlockedBranchWhileOnBlockedBranch_ShouldBeAllowed(t *testing.T) {
 	blockedBranchName := git.UniqueBranchName()
 	featureBranchName := git.UniqueBranchName()
 	f := setupOneClonedRepositoryWithGitHooks(t)
-	f.gitInRepo().MakeCommitOnNewBranch(featureBranchName, "some-message").Execute()
-	f.gitInRepo().CheckoutNewBranch(blockedBranchName).Execute()
+	_, _ = f.gitInRepo().MakeCommitOnNewBranch(featureBranchName, "some-message").Execute()
+	_, _ = f.gitInRepo().CheckoutNewBranch(blockedBranchName).Execute()
 	f.configureBlockedBranches([]string{blockedBranchName})
 
 	exitCode, err := f.gitInRepo().Push(featureBranchName).Execute()
@@ -104,15 +104,15 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingNonBlockedBranchWhileOnBlockedB
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
 
-	t.Cleanup(func() { f.gitInRepo().DeleteRemoteBranchIfExists(featureBranchName).Execute() })
+	t.Cleanup(func() { _, _ = f.gitInRepo().DeleteRemoteBranchIfExists(featureBranchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_PushingBlockedBranchWhileOnAnotherBranch_ShouldBeBlocked(t *testing.T) {
 	blockedBranchName := git.UniqueBranchName()
 	anotherBranchName := git.UniqueBranchName()
 	f := setupOneClonedRepositoryWithGitHooks(t)
-	f.gitInRepo().MakeCommitOnNewBranch(blockedBranchName, "some-message").Execute()
-	f.gitInRepo().CheckoutNewBranch(anotherBranchName).Execute()
+	_, _ = f.gitInRepo().MakeCommitOnNewBranch(blockedBranchName, "some-message").Execute()
+	_, _ = f.gitInRepo().CheckoutNewBranch(anotherBranchName).Execute()
 	f.configureBlockedBranches([]string{blockedBranchName})
 
 	exitCode, err := f.gitInRepo().Push(blockedBranchName).Execute()
@@ -121,7 +121,7 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingBlockedBranchWhileOnAnotherBran
 	require.NotEqual(t, 0, exitCode)
 	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+blockedBranchName+"\"")
 
-	t.Cleanup(func() { f.gitInRepo().DeleteRemoteBranchIfExists(blockedBranchName).Execute() })
+	t.Cleanup(func() { _, _ = f.gitInRepo().DeleteRemoteBranchIfExists(blockedBranchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithNeitherMessageNorBranchMatchingPrefix_ShouldBeBlocked(
@@ -198,7 +198,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithMatchingPrefixInMess
 ) {
 	commitMessage := "Test-1: prefixed-message"
 	f := setupOneClonedRepositoryWithGitHooks(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
-	f.gitInRepo().MakeCommitOnNewBranch("no-prefix-branch", commitMessage).Execute() //nolint:errcheck
+	_, _ = f.gitInRepo().MakeCommitOnNewBranch("no-prefix-branch", commitMessage).Execute()
 
 	lastCommitMessage, err := f.gitInRepo().GetLastCommitMessage()
 
@@ -212,7 +212,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingOnBranchContainingPrefix
 	matchingPrefix := "Asdf-99"
 	commitMessage := "not-prefixed-message"
 	f := setupOneClonedRepositoryWithGitHooks(t, teamconfig.WithCommitPrefixRegex("Asdf-[0-9]+"))
-	f.gitInRepo().MakeCommitOnNewBranch("feature/"+matchingPrefix+"/prefixed-branch", commitMessage).Execute() //nolint:errcheck
+	_, _ = f.gitInRepo().MakeCommitOnNewBranch("feature/"+matchingPrefix+"/prefixed-branch", commitMessage).Execute()
 
 	lastCommitMessage, err := f.gitInRepo().GetLastCommitMessage()
 

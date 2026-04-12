@@ -154,7 +154,7 @@ func (c *commitCommand) ExecuteAndCaptureOutput() (string, int, error) {
 	}
 
 	for _, args := range prepSteps {
-		exitCode, err := runDiscardOutput(args, c.git.sshEnv)
+		exitCode, err = runDiscardOutput(args, c.git.sshEnv)
 		if exitCode != 0 || err != nil {
 			return "", exitCode, err
 		}

@@ -62,7 +62,7 @@ func Test_IfPrePushHookIsExecuted_ShouldReceiveRemoteNameAndURLAsParameters(t *t
 	hooks := fixtures.NewHookScriptFixture(f.repositoryPath)
 	hooks.WriteSpyScript("pre-push", "script")
 	branchName := git.UniqueBranchName()
-	t.Cleanup(func() { f.gitInRepo().DeleteRemoteBranchIfExists(branchName).Execute() })
+	t.Cleanup(func() { _, _ = f.gitInRepo().DeleteRemoteBranchIfExists(branchName).Execute() })
 	_, err := f.gitInRepo().MakeCommitOnNewBranch(branchName, "some-message").Execute()
 	require.NoError(t, err)
 
