@@ -48,7 +48,7 @@ func MakeOneClonedRepositoryWithGitHooksFixture(
 	}
 }
 
-func (f *OneClonedRepositoryWithGitHooksFixture) GitInRepo() git.DirectedCommand {
+func (f *OneClonedRepositoryWithGitHooksFixture) GitInClonedRepository() git.DirectedCommand {
 	return f.MakeGitCommand().InDirectory(f.ClonedRepositoryPath)
 }
 

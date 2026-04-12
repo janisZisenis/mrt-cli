@@ -15,7 +15,7 @@ func Test_IfTeamJsonContainsInvalidCommitPrefixRegex_Committing_ShouldFailGracef
 	invalidRegex := "[invalid(regex"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex(invalidRegex))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("test-branch", "test-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("test-branch", "test-message").Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
@@ -50,7 +50,7 @@ func Test_IfTeamJsonContainsBlockedBranch_CommittingOnBlockedBranch_ShouldBeBloc
 	branchName := "some-branch"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithBlockedBranches([]string{branchName}))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch(branchName, "some-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch(branchName, "some-message").Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
@@ -60,7 +60,7 @@ func Test_IfTeamJsonContainsBlockedBranch_CommittingOnBlockedBranch_ShouldBeBloc
 func Test_IfTeamJsonContainsBlockedBranch_CommittingOnAnotherBranch_ShouldBeAllowed(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithBlockedBranches([]string{"some-branch"}))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("another-branch", "some-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("another-branch", "some-message").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -70,7 +70,7 @@ func Test_IfTeamJsonContains2BlockedBranches_CommittingOnSecondOne_ShouldBeBlock
 	branchName := "some-branch"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithBlockedBranches([]string{"another-branch", branchName}))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch(branchName, "some-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch(branchName, "some-message").Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
@@ -80,65 +80,65 @@ func Test_IfTeamJsonContains2BlockedBranches_CommittingOnSecondOne_ShouldBeBlock
 func Test_IfTeamJsonContainsBlockedBranch_PushingOnBlockedBranch_ShouldBeBlocked(t *testing.T) {
 	branchName := git.UniqueBranchName()
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	_, _ = f.GitInRepo().MakeCommitOnNewBranch(branchName, "some-message").Execute()
+	_, _ = f.GitInClonedRepository().MakeCommitOnNewBranch(branchName, "some-message").Execute()
 	f.ConfigureBlockedBranches([]string{branchName})
 
-	exitCode, err := f.GitInRepo().Push(branchName).Execute()
+	exitCode, err := f.GitInClonedRepository().Push(branchName).Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
 	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+branchName+"\"")
 
-	t.Cleanup(func() { _, _ = f.GitInRepo().DeleteRemoteBranchIfExists(branchName).Execute() })
+	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(branchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_PushingNonBlockedBranchWhileOnBlockedBranch_ShouldBeAllowed(t *testing.T) {
 	blockedBranchName := git.UniqueBranchName()
 	featureBranchName := git.UniqueBranchName()
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	_, _ = f.GitInRepo().MakeCommitOnNewBranch(featureBranchName, "some-message").Execute()
-	_, _ = f.GitInRepo().CheckoutNewBranch(blockedBranchName).Execute()
+	_, _ = f.GitInClonedRepository().MakeCommitOnNewBranch(featureBranchName, "some-message").Execute()
+	_, _ = f.GitInClonedRepository().CheckoutNewBranch(blockedBranchName).Execute()
 	f.ConfigureBlockedBranches([]string{blockedBranchName})
 
-	exitCode, err := f.GitInRepo().Push(featureBranchName).Execute()
+	exitCode, err := f.GitInClonedRepository().Push(featureBranchName).Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
 
-	t.Cleanup(func() { _, _ = f.GitInRepo().DeleteRemoteBranchIfExists(featureBranchName).Execute() })
+	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(featureBranchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_PushingBlockedBranchWhileOnAnotherBranch_ShouldBeBlocked(t *testing.T) {
 	blockedBranchName := git.UniqueBranchName()
 	anotherBranchName := git.UniqueBranchName()
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	_, _ = f.GitInRepo().MakeCommitOnNewBranch(blockedBranchName, "some-message").Execute()
-	_, _ = f.GitInRepo().CheckoutNewBranch(anotherBranchName).Execute()
+	_, _ = f.GitInClonedRepository().MakeCommitOnNewBranch(blockedBranchName, "some-message").Execute()
+	_, _ = f.GitInClonedRepository().CheckoutNewBranch(anotherBranchName).Execute()
 	f.ConfigureBlockedBranches([]string{blockedBranchName})
 
-	exitCode, err := f.GitInRepo().Push(blockedBranchName).Execute()
+	exitCode, err := f.GitInClonedRepository().Push(blockedBranchName).Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
 	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+blockedBranchName+"\"")
 
-	t.Cleanup(func() { _, _ = f.GitInRepo().DeleteRemoteBranchIfExists(blockedBranchName).Execute() })
+	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(blockedBranchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_PushingToBlockedRemoteBranchWithDifferentLocalName_ShouldBeBlocked(t *testing.T) {
 	localBranchName := git.UniqueBranchName()
 	blockedRemoteBranchName := git.UniqueBranchName()
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	_, _ = f.GitInRepo().MakeCommitOnNewBranch(localBranchName, "some-message").Execute()
+	_, _ = f.GitInClonedRepository().MakeCommitOnNewBranch(localBranchName, "some-message").Execute()
 	f.ConfigureBlockedBranches([]string{blockedRemoteBranchName})
 
-	exitCode, err := f.GitInRepo().PushToRemoteBranch(localBranchName, blockedRemoteBranchName).Execute()
+	exitCode, err := f.GitInClonedRepository().PushToRemoteBranch(localBranchName, blockedRemoteBranchName).Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
 	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+blockedRemoteBranchName+"\"")
 
-	t.Cleanup(func() { _, _ = f.GitInRepo().DeleteRemoteBranchIfExists(blockedRemoteBranchName).Execute() })
+	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(blockedRemoteBranchName).Execute() })
 }
 
 func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithNeitherMessageNorBranchMatchingPrefix_ShouldBeBlocked(
@@ -147,7 +147,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithNeitherMessageNorBra
 	commitPrefixRegex := "Test-[0-9]+"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex(commitPrefixRegex))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("no-prefix-branch", "no-prefix-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", "no-prefix-message").Execute()
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
@@ -170,7 +170,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithMatchingPrefixInMess
 	matchingPrefix := "Test-1"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("no-prefix-branch", matchingPrefix+": prefixed-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", matchingPrefix+": prefixed-message").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -182,7 +182,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingOnBranchContainingPrefix
 	commitPrefix := "Asdf-99"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Asdf-[0-9]+"))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("feature/"+commitPrefix+"/prefixed-branch", "not-prefix-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("feature/"+commitPrefix+"/prefixed-branch", "not-prefix-message").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -193,7 +193,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithMergeBranchMessage_S
 ) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Asdf-[0-9]+"))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("no-prefix-branch", "Merge branch").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", "Merge branch").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -204,7 +204,7 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithMergeRemoteTrackingB
 ) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Asdf-[0-9]+"))
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("no-prefix-branch", "Merge remote-tracking branch").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", "Merge remote-tracking branch").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -215,9 +215,9 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithMatchingPrefixInMess
 ) {
 	commitMessage := "Test-1: prefixed-message"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
-	_, _ = f.GitInRepo().MakeCommitOnNewBranch("no-prefix-branch", commitMessage).Execute()
+	_, _ = f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", commitMessage).Execute()
 
-	lastCommitMessage, err := f.GitInRepo().GetLastCommitMessage()
+	lastCommitMessage, err := f.GitInClonedRepository().GetLastCommitMessage()
 
 	require.NoError(t, err)
 	assert.Equal(t, commitMessage, lastCommitMessage)
@@ -229,9 +229,9 @@ func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingOnBranchContainingPrefix
 	matchingPrefix := "Asdf-99"
 	commitMessage := "not-prefixed-message"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Asdf-[0-9]+"))
-	_, _ = f.GitInRepo().MakeCommitOnNewBranch("feature/"+matchingPrefix+"/prefixed-branch", commitMessage).Execute()
+	_, _ = f.GitInClonedRepository().MakeCommitOnNewBranch("feature/"+matchingPrefix+"/prefixed-branch", commitMessage).Execute()
 
-	lastCommitMessage, err := f.GitInRepo().GetLastCommitMessage()
+	lastCommitMessage, err := f.GitInClonedRepository().GetLastCommitMessage()
 
 	require.NoError(t, err)
 	assert.Equal(t, matchingPrefix+": "+commitMessage, lastCommitMessage)
@@ -242,7 +242,7 @@ func Test_IfTeamJsonDoesNotContainCommitPrefixRegex_Committing_ShouldNotCheckFor
 ) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("not-prefixed-branch", "not-prefixed-message").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("not-prefixed-branch", "not-prefixed-message").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -253,7 +253,7 @@ func Test_IfTeamJsonDoesNotContainCommitPrefixRegex_CommittingWithMergeBranchMes
 ) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("not-prefixed-branch", "Merge branch").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("not-prefixed-branch", "Merge branch").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
@@ -264,7 +264,7 @@ func Test_IfTeamJsonDoesNotContainCommitPrefixRegex_CommittingWithMergeRemoteTra
 ) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
-	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("not-prefixed-branch", "Merge remote-tracking branch").Execute()
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("not-prefixed-branch", "Merge remote-tracking branch").Execute()
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
