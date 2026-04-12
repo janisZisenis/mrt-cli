@@ -9,6 +9,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func Test_IfHookNameIsMissing_ShouldFail(t *testing.T) {
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		GitHook("", f.ClonedRepositoryPath).
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertHasLine(t, "Missing hook name argument")
+}
+
 func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
