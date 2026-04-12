@@ -29,3 +29,19 @@ func FileHasContent(t *testing.T, path string, expectedContent string) {
 	require.NoError(t, err, "failed to read file: %s", path)
 	assert.Equal(t, expectedContent, string(content))
 }
+
+func FileContains(t *testing.T, path string, expectedSubstring string) {
+	t.Helper()
+
+	content, err := os.ReadFile(path)
+	require.NoError(t, err, "failed to read file: %s", path)
+	assert.Contains(t, string(content), expectedSubstring)
+}
+
+func FileHasPermissions(t *testing.T, path string, expectedMode os.FileMode) {
+	t.Helper()
+
+	info, err := os.Stat(path)
+	require.NoError(t, err, "failed to stat file: %s", path)
+	assert.Equal(t, expectedMode, info.Mode().Perm(), "file %s has wrong permissions", path)
+}
