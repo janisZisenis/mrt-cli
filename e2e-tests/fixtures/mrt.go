@@ -83,7 +83,11 @@ func (f *MrtFixture) MakeGitCommand() git.BaseCommand {
 	return git.MakeCommand(f.isolatedEnv())
 }
 
-func (f *MrtFixture) MakeMrtCommand() mrtclient.DirectedCommand {
+func (f *MrtFixture) MakeMrtCommand() mrtclient.BaseCommand {
+	return mrtclient.MakeCommand(f.binaryPath, f.isolatedEnv())
+}
+
+func (f *MrtFixture) MakeMrtCommandInTeamDir() mrtclient.DirectedCommand {
 	return mrtclient.
 		MakeCommand(f.binaryPath, f.isolatedEnv()).
 		RunInDirectory(f.teamDir)

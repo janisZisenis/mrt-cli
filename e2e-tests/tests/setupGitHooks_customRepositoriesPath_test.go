@@ -28,7 +28,7 @@ func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBe
 	f.MakeGitCommand().
 		Clone(git.MakeCloneURL(repositoryName), f.AbsolutePath(repositoriesPath+"/"+repositoryName)).
 		Execute()
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()
@@ -72,7 +72,7 @@ func testIfCustomRepositoriesPathDoesNotContainRepositoriesInstallGitHooksShould
 		teamconfig.WithRepositoriesPath(repositoriesPath),
 	)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()

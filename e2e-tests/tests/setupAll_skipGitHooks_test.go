@@ -34,7 +34,7 @@ func setupRepoWithBlockedBranchButSkippedHooks(
 		extraOptions...,
 	)
 	f.TeamConfigWriter().Write(options...)
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		All("--skip-install-git-hooks").
 		Execute()

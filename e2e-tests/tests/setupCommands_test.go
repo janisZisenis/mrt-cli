@@ -24,7 +24,7 @@ func testIfSetupCommandExistsExecutingItWillPassTheTeamFolderAsParameter(
 	f := fixtures.MakeMrtFixture(t).Parallel()
 	f.SetupFixture.WriteSpyCommand(commandName)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		SubCommand(commandName).
 		Execute()
@@ -38,7 +38,7 @@ func Test_IfSetupCommandSucceedsWithOutput_ItWillPrintTheCommandsOutput(t *testi
 	someOutput := "some-output"
 	f.SetupFixture.WriteStubCommand(commandName, 0, someOutput)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		SubCommand(commandName).
 		Execute()
@@ -55,7 +55,7 @@ func Test_IfSetupCommandFailsWithOutput_ItWillPrintTheCommandsOutputAndTheFailur
 	exitCode := 15
 	f.SetupFixture.WriteStubCommand(commandName, exitCode, someOutput)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		SubCommand(commandName).
 		Execute()
@@ -71,7 +71,7 @@ func Test_IfSetupCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) 
 	input := "some-input"
 	f.SetupFixture.WriteInputCommand(commandName)
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		SubCommand(commandName).
 		ExecuteWithInput(input + "\n")
@@ -85,7 +85,7 @@ func Test_IfSetupCommandWritesToStderr_ItOutputsStderr(t *testing.T) {
 	errMessage := "some-error"
 	f.SetupFixture.WriteStderrCommand(commandName, errMessage)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		SubCommand(commandName).
 		Execute()

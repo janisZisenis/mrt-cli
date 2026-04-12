@@ -17,7 +17,7 @@ func Test_IfTeamJsonContains2Repositories_Cloning_ShouldPrintDoneMessage(t *test
 		}),
 	)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -32,7 +32,7 @@ func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing
 		teamconfig.WithRepositories([]string{repositoryURL}),
 	)
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()
@@ -47,7 +47,7 @@ func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing
 func Test_IfTeamJsonDoesNotExist_Cloning_ShouldPrintMessage(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		Clone().
 		Execute()

@@ -27,7 +27,7 @@ func Test_IfTeamJsonContainsInvalidCommitPrefixRegex_Committing_ShouldFailGracef
 func Test_IfCommitMessageFileCannotBeRead_HookShouldFailGracefully(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
 
-	output, exitCode := f.MakeMrtCommand().
+	output, exitCode := f.MakeMrtCommandInTeamDir().
 		GitHook("commit-msg", f.ClonedRepositoryPath, "/nonexistent/file.txt").
 		Execute()
 
@@ -38,7 +38,7 @@ func Test_IfCommitMessageFileCannotBeRead_HookShouldFailGracefully(t *testing.T)
 func Test_IfCommitMessageFileArgumentIsMissing_HookShouldFailGracefully(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
 
-	output, exitCode := f.MakeMrtCommand().
+	output, exitCode := f.MakeMrtCommandInTeamDir().
 		GitHook("commit-msg", f.ClonedRepositoryPath).
 		Execute()
 

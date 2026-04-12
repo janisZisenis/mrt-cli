@@ -21,7 +21,7 @@ func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNo
 	folderPath := f.AbsolutePath(defaultRepositoriesPath + "/1_TestRepository")
 	require.NoError(t, os.MkdirAll(folderPath, 0o750))
 
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()
@@ -51,7 +51,7 @@ func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSec
 	f.MakeGitCommand().
 		Clone(git.MakeCloneURL(secondRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+secondRepositoryName)).
 		Execute()
-	f.MakeMrtCommand().
+	f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()
@@ -83,7 +83,7 @@ func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMes
 		Clone(git.MakeCloneURL(secondRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+secondRepositoryName)).
 		Execute()
 
-	output, _ := f.MakeMrtCommand().
+	output, _ := f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()
