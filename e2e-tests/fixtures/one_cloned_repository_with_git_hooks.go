@@ -13,7 +13,7 @@ const (
 
 type OneClonedRepositoryWithGitHooksFixture struct {
 	*MrtFixture
-	RepositoryPath string
+	ClonedRepositoryPath string
 }
 
 func MakeOneClonedRepositoryWithGitHooksFixture(
@@ -43,13 +43,13 @@ func MakeOneClonedRepositoryWithGitHooksFixture(
 		Execute()
 
 	return &OneClonedRepositoryWithGitHooksFixture{
-		MrtFixture:     f,
-		RepositoryPath: f.AbsolutePath(defaultRepositoriesPath + "/" + ClonedRepoName),
+		MrtFixture:           f,
+		ClonedRepositoryPath: f.AbsolutePath(defaultRepositoriesPath + "/" + ClonedRepoName),
 	}
 }
 
 func (f *OneClonedRepositoryWithGitHooksFixture) GitInRepo() git.DirectedCommand {
-	return f.MakeGitCommand().InDirectory(f.RepositoryPath)
+	return f.MakeGitCommand().InDirectory(f.ClonedRepositoryPath)
 }
 
 func (f *OneClonedRepositoryWithGitHooksFixture) ConfigureBlockedBranches(branches []string) {

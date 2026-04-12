@@ -11,7 +11,7 @@ import (
 
 func Test_IfPreCommitScriptsExist_Committing_ShouldExecuteThem(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	hooks := fixtures.NewHookScriptFixture(f.RepositoryPath)
+	hooks := fixtures.NewHookScriptFixture(f.ClonedRepositoryPath)
 	hooks.WriteSpyScript("pre-commit", "script1")
 	hooks.WriteSpyScript("pre-commit", "script2")
 
@@ -24,7 +24,7 @@ func Test_IfPreCommitScriptsExist_Committing_ShouldExecuteThem(t *testing.T) {
 
 func Test_IfCommitMsgScriptExitsWithFailure_Committing_ShouldAlsoFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	hooks := fixtures.NewHookScriptFixture(f.RepositoryPath)
+	hooks := fixtures.NewHookScriptFixture(f.ClonedRepositoryPath)
 	hooks.WriteStubScript("commit-msg", "script", 1, "some-output")
 
 	exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("some-branch", "some-message").Execute()
@@ -36,7 +36,7 @@ func Test_IfCommitMsgScriptExitsWithFailure_Committing_ShouldAlsoFail(t *testing
 func Test_IfCommitMsgScriptHasOutput_Committing_ShouldContainThatOutput(t *testing.T) {
 	scriptOutput := "some-output"
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	hooks := fixtures.NewHookScriptFixture(f.RepositoryPath)
+	hooks := fixtures.NewHookScriptFixture(f.ClonedRepositoryPath)
 	hooks.WriteStubScript("commit-msg", "script", 0, scriptOutput)
 
 	output, exitCode, err := f.GitInRepo().MakeCommitOnNewBranch("some-branch", "some-message").ExecuteAndCaptureOutput()
@@ -48,7 +48,7 @@ func Test_IfCommitMsgScriptHasOutput_Committing_ShouldContainThatOutput(t *testi
 
 func Test_IfPreCommitHookIsExecuted_ShouldReceiveEmptyParameters(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	hooks := fixtures.NewHookScriptFixture(f.RepositoryPath)
+	hooks := fixtures.NewHookScriptFixture(f.ClonedRepositoryPath)
 	hooks.WriteSpyScript("pre-commit", "script")
 
 	_, err := f.GitInRepo().MakeCommitOnNewBranch("some-branch", "some-message").Execute()
@@ -59,7 +59,7 @@ func Test_IfPreCommitHookIsExecuted_ShouldReceiveEmptyParameters(t *testing.T) {
 
 func Test_IfPrePushHookIsExecuted_ShouldReceiveRemoteNameAndURLAsParameters(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	hooks := fixtures.NewHookScriptFixture(f.RepositoryPath)
+	hooks := fixtures.NewHookScriptFixture(f.ClonedRepositoryPath)
 	hooks.WriteSpyScript("pre-push", "script")
 	branchName := git.UniqueBranchName()
 	t.Cleanup(func() { _, _ = f.GitInRepo().DeleteRemoteBranchIfExists(branchName).Execute() })
@@ -79,7 +79,7 @@ func Test_IfPrePushHookIsExecuted_ShouldReceiveRemoteNameAndURLAsParameters(t *t
 
 func Test_IfCommitMsgHookIsExecuted_ShouldReceiveCommitMsgFilePathAsParameter(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
-	hooks := fixtures.NewHookScriptFixture(f.RepositoryPath)
+	hooks := fixtures.NewHookScriptFixture(f.ClonedRepositoryPath)
 	hooks.WriteSpyScript("commit-msg", "script")
 
 	_, err := f.GitInRepo().MakeCommitOnNewBranch("some-branch", "some-message").Execute()

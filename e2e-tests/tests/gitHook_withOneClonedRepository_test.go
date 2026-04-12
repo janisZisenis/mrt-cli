@@ -11,7 +11,7 @@ func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommand().
-		GitHook("unknown-hook", f.RepositoryPath).
+		GitHook("unknown-hook", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -22,7 +22,7 @@ func Test_IfGitHookIsCalledWithGlobbingPatternInHookName_ShouldFail(t *testing.T
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommand().
-		GitHook("pre-commit*", f.RepositoryPath).
+		GitHook("pre-commit*", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
