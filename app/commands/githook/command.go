@@ -51,6 +51,11 @@ func command(cmd *cobra.Command, args []string) {
 
 	currentBranchName := getCurrentBranchName(repositoryPath)
 
+	if !core.IsGitHook(hookName) {
+		log.Errorf("The given git-hook \"" + hookName + "\" does not exist.")
+		os.Exit(1)
+	}
+
 	switch hookName {
 	case core.PreCommit:
 		failIfBranchIsBlocked(teamInfo, currentBranchName, "commit")
@@ -63,9 +68,6 @@ func command(cmd *cobra.Command, args []string) {
 			log.Errorf(commitMsgErr.Error())
 			os.Exit(1)
 		}
-	default:
-		log.Errorf("The given git-hook \"" + hookName + "\" does not exist.")
-		os.Exit(1)
 	}
 
 	executeAdditionalScripts(repositoryPath, hookName, args)
