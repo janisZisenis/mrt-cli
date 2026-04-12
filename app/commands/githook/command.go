@@ -24,7 +24,7 @@ func MakeCommand() *cobra.Command {
 	}
 
 	command.Flags().String(hookNameFlag, "", "The name of the git-hook to be executed")
-	command.Flags().String(repositoryPath, ".", "The path to the repository")
+	command.Flags().String(repositoryPath, "", "The path to the repository")
 
 	return command
 }
@@ -38,6 +38,16 @@ func command(cmd *cobra.Command, args []string) {
 
 	hookName, _ := cmd.Flags().GetString(hookNameFlag)
 	repositoryPath, _ := cmd.Flags().GetString(repositoryPath)
+
+	if repositoryPath == "" {
+		log.Errorf("Missing repository path argument")
+		os.Exit(1)
+	}
+
+	if hookName == "" {
+		log.Errorf("Missing hook name argument")
+		os.Exit(1)
+	}
 
 	currentBranchName := getCurrentBranchName(repositoryPath)
 

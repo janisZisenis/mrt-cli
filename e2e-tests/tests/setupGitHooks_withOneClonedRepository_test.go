@@ -5,6 +5,8 @@ import (
 	"mrt-cli/e2e-tests/git"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -268,4 +270,64 @@ func Test_IfTeamJsonDoesNotContainCommitPrefixRegex_CommittingWithMergeRemoteTra
 
 	require.NoError(t, err)
 	require.Equal(t, 0, exitCode)
+}
+
+func Test_IfRepositoryPathIsMissing_CommitMsgHook_ShouldFail(t *testing.T) {
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
+	commitFile := filepath.Join(t.TempDir(), "COMMIT_EDITMSG")
+	require.NoError(t, os.WriteFile(commitFile, []byte("Test-1: some message"), 0o600))
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		GitHook("commit-msg", "", commitFile).
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertHasLine(t, "Missing repository path argument")
+}
+
+func Test_IfRepositoryPathIsInvalid_CommitMsgHook_ShouldFail(t *testing.T) {
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
+	commitFile := filepath.Join(t.TempDir(), "COMMIT_EDITMSG")
+	require.NoError(t, os.WriteFile(commitFile, []byte("Test-1: some message"), 0o600))
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		GitHook("commit-msg", "/nonexistent/path", commitFile).
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertHasLine(t, "The given path \"/nonexistent/path\" does not contain a repository.")
+}
+
+func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithPrefixInMessageBodyButNotAtStart_ShouldBeBlocked(
+	t *testing.T,
+) {
+	commitPrefixRegex := "Test-[0-9]+"
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex(commitPrefixRegex))
+
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", "fix: Test-1 something").Execute()
+
+	require.Error(t, err)
+	require.NotEqual(t, 0, exitCode)
+	assert.Contains(
+		t,
+		err.Error(),
+		"The commit message needs a commit prefix that matches the following regex "+commitPrefixRegex+".",
+	)
+}
+
+func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithPrefixAtStartButWithoutSeparator_ShouldBeBlocked(
+	t *testing.T,
+) {
+	commitPrefixRegex := "Test-[0-9]+"
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex(commitPrefixRegex))
+
+	exitCode, err := f.GitInClonedRepository().MakeCommitOnNewBranch("no-prefix-branch", "Test-1 some message").Execute()
+
+	require.Error(t, err)
+	require.NotEqual(t, 0, exitCode)
+	assert.Contains(
+		t,
+		err.Error(),
+		"The commit message needs a commit prefix that matches the following regex "+commitPrefixRegex+".",
+	)
 }
