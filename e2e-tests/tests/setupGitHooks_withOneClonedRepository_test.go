@@ -124,6 +124,22 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingBlockedBranchWhileOnAnotherBran
 	t.Cleanup(func() { _, _ = f.gitInRepo().DeleteRemoteBranchIfExists(blockedBranchName).Execute() })
 }
 
+func Test_IfTeamJsonContainsBlockedBranch_PushingToBlockedRemoteBranchWithDifferentLocalName_ShouldBeBlocked(t *testing.T) {
+	localBranchName := git.UniqueBranchName()
+	blockedRemoteBranchName := git.UniqueBranchName()
+	f := setupOneClonedRepositoryWithGitHooks(t)
+	_, _ = f.gitInRepo().MakeCommitOnNewBranch(localBranchName, "some-message").Execute()
+	f.configureBlockedBranches([]string{blockedRemoteBranchName})
+
+	exitCode, err := f.gitInRepo().PushToRemoteBranch(localBranchName, blockedRemoteBranchName).Execute()
+
+	require.Error(t, err)
+	require.NotEqual(t, 0, exitCode)
+	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+blockedRemoteBranchName+"\"")
+
+	t.Cleanup(func() { _, _ = f.gitInRepo().DeleteRemoteBranchIfExists(blockedRemoteBranchName).Execute() })
+}
+
 func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithNeitherMessageNorBranchMatchingPrefix_ShouldBeBlocked(
 	t *testing.T,
 ) {

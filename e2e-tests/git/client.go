@@ -19,6 +19,7 @@ type DirectedCommand interface {
 	MakeCommitOnNewBranch(branch string, message string) CommitExecutableCommand
 	CheckoutNewBranch(branch string) ExecutableCommand
 	Push(branch string) ExecutableCommand
+	PushToRemoteBranch(localBranch string, remoteBranch string) ExecutableCommand
 	DeleteRemoteBranchIfExists(branch string) ExecutableCommand
 	GetLastCommitMessage() (string, error)
 }
@@ -75,6 +76,13 @@ func (g *Git) CheckoutNewBranch(branch string) ExecutableCommand {
 func (g *Git) Push(branch string) ExecutableCommand {
 	return &Git{
 		args:   append(g.args, "push", "--set-upstream", "origin", branch),
+		sshEnv: g.sshEnv,
+	}
+}
+
+func (g *Git) PushToRemoteBranch(localBranch string, remoteBranch string) ExecutableCommand {
+	return &Git{
+		args:   append(g.args, "push", "--set-upstream", "origin", localBranch+":"+remoteBranch),
 		sshEnv: g.sshEnv,
 	}
 }
