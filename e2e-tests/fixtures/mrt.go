@@ -43,6 +43,9 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 		}
 	})
 
+	// EvalSymlinks is needed on macOS where t.TempDir() returns a path under
+	// /var/folders which is a symlink to /private/var/folders. Without this,
+	// assertions comparing TeamDir against paths returned by the OS would fail.
 	teamDir, _ := filepath.EvalSymlinks(t.TempDir())
 
 	return &MrtFixture{
