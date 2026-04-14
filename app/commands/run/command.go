@@ -15,8 +15,7 @@ func MakeCommand() *cobra.Command {
 		Short: "Executes a specified run command",
 	}
 
-	scriptPath := runscript.GetScriptsPath()
-	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(runscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
 		command.AddCommand(runscript.MakeCommand(scriptName, scriptPath))
 	})
 

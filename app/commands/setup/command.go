@@ -22,8 +22,7 @@ func MakeCommand() *cobra.Command {
 	command.AddCommand(clonerepositories.MakeCommand())
 	command.AddCommand(installgithooks.MakeCommand())
 
-	scriptPath := setupscript.GetScriptsPath()
-	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
+	core.ForScriptInPathDo(setupscript.GetScriptsPath(), func(scriptPath string, scriptName string) {
 		command.AddCommand(setupscript.MakeCommand(scriptPath, scriptName))
 	})
 
