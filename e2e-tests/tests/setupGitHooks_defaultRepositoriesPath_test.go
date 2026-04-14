@@ -12,6 +12,31 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func Test_IfTeamJsonIsMissing_InstallGitHooks_ShouldFail(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).Parallel()
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.Equal(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+}
+
+func Test_IfTeamJsonIsCorrupted_InstallGitHooks_ShouldFail(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).Parallel()
+	require.NoError(t, os.WriteFile(f.AbsolutePath("team.json"), []byte("not valid json {{{"), 0o600))
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.Equal(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+}
+
 func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNotInstallGitHooks(
 	t *testing.T,
 ) {
