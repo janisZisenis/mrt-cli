@@ -6,7 +6,6 @@ import (
 	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/spf13/viper"
 
@@ -19,9 +18,6 @@ const (
 	commandConfigExtension = "json"
 )
 
-//nolint:gochecknoglobals // See GLOBAL_VIPER_STATE_FIX.md
-var configMutex sync.Mutex
-
 type CommandConfig struct {
 	ShortDescription string `json:"shortDescription"`
 }
@@ -31,10 +27,7 @@ func GetScriptsPath() string {
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
-	configMutex.Lock()
-	defer configMutex.Unlock()
-
-	commandDir := filepath.Dir(commandPath)
+	commandDir, _ := filepath.Abs(filepath.Dir(commandPath))
 	setupDefaults(commandDir)
 
 	var config CommandConfig
@@ -56,7 +49,6 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 			commandConfigExtension,
 		)
 		log.Errorf("%v", readErr)
-		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)
 	}
 

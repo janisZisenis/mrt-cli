@@ -9,13 +9,14 @@ import (
 
 func Test_IfTeamDirDoesNotExist_ShouldPrintErrorMessageAndExitWithError(t *testing.T) {
 	f := fixtures.MakeMrtFixture(t).Parallel()
+	notExisting := "/some/unknown/path"
 
 	output, exitCode := f.MakeMrtCommand().
-		RunInDirectory("/some/unknown/path").
+		RunInDirectory(notExisting).
 		Setup().
 		All().
 		Execute()
 
 	assert.NotEqual(t, 0, exitCode)
-	output.AssertHasLine(t, "Team directory \"/some/unknown/path\" does not exist.")
+	output.AssertHasLine(t, "Directory \""+notExisting+"\" does not exist.")
 }

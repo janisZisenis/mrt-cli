@@ -31,7 +31,7 @@ type BaseCommand interface {
 type DirectedCommand interface {
 	Setup() SetupCommand
 	Run() RunCommand
-	GitHook(hookName string, repositoryPath string, args ...string) ExecutableCommand
+	GitHook(teamDir string, hookName string, repositoryPath string, args ...string) ExecutableCommand
 	Execute() (*outputs.Output, int)
 }
 
@@ -44,8 +44,7 @@ type SetupCommand interface {
 }
 
 type Mrt struct {
-	binaryName string
-	command    *exec.Cmd
+	command *exec.Cmd
 }
 
 func MakeCommand(binaryPath string, sshEnv []string) BaseCommand {
@@ -53,13 +52,12 @@ func MakeCommand(binaryPath string, sshEnv []string) BaseCommand {
 	command.Env = internal.MergeEnv(os.Environ(), sshEnv)
 
 	return &Mrt{
-		binaryName: binaryPath,
-		command:    command,
+		command: command,
 	}
 }
 
 func (m *Mrt) RunInDirectory(directory string) DirectedCommand {
-	m.command.Args = append(m.command.Args, "--team-dir", directory)
+	m.command.Args = append(m.command.Args, "--dir", directory)
 
 	return m
 }
@@ -99,10 +97,12 @@ func (m *Mrt) SubCommand(name string, args ...string) ExecutableCommand {
 	return m
 }
 
-func (m *Mrt) GitHook(hookName string, repositoryPath string, args ...string) ExecutableCommand {
+func (m *Mrt) GitHook(teamDir string, hookName string, repositoryPath string, args ...string) ExecutableCommand {
 	m.command.Args = append(
 		m.command.Args,
 		"git-hook",
+		"--team-dir",
+		teamDir,
 		"--hook-name",
 		hookName,
 		"--repository-path",

@@ -37,7 +37,7 @@ func Test_IfAdditionalScriptExists_GitHookShouldExecuteIt(t *testing.T) {
 			hooks.WriteSpyScript(hookName, "script")
 
 			f.MakeMrtCommandInTeamDir().
-				GitHook(hookName, f.ClonedRepositoryPath).
+				GitHook(f.TeamDir, hookName, f.ClonedRepositoryPath).
 				Execute()
 
 			hooks.AssertWasExecuted(t, hookName, "script")

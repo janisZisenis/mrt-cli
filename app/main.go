@@ -6,7 +6,6 @@ import (
 	"mrt-cli/app/commands/run"
 	"mrt-cli/app/commands/setup"
 	"mrt-cli/app/commands/version"
-	"mrt-cli/app/core"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,14 +21,12 @@ var (
 )
 
 func main() {
-	teamDir := readTeamDir()
-	if teamDir != nil {
-		if _, err := os.Stat(*teamDir); os.IsNotExist(err) {
-			fmt.Printf("Team directory %q does not exist.\n", *teamDir)
+	if dir := readFlag("--dir"); dir != nil {
+		if err := os.Chdir(*dir); err != nil {
+			fmt.Printf("Directory %q does not exist.\n", *dir)
 			os.Exit(1)
 		}
 	}
-	core.SetTeamDirectory(teamDir)
 
 	rootCmd := &cobra.Command{Use: filepath.Base(os.Args[0])}
 
@@ -38,20 +35,20 @@ func main() {
 	rootCmd.AddCommand(run.MakeCommand())
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
-	rootCmd.PersistentFlags().String("team-dir", "", "Specifies the path to the team directory.")
+	rootCmd.PersistentFlags().String("dir", "", "Specifies the working directory.")
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
-func readTeamDir() *string {
+func readFlag(name string) *string {
 	args := os.Args[1:]
 	for i, arg := range args {
-		_, after, found := strings.Cut(arg, "--team-dir=")
+		_, after, found := strings.Cut(arg, name+"=")
 
 		if found {
 			return &after
-		} else if arg == "--team-dir" && i+1 < len(args) {
+		} else if arg == name && i+1 < len(args) {
 			return &args[i+1]
 		}
 	}

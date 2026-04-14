@@ -13,6 +13,7 @@ const (
 	CommandName    = "git-hook"
 	repositoryPath = "repository-path"
 	hookNameFlag   = "hook-name"
+	teamDirFlag    = "team-dir"
 	hookScriptsDir = "hook-scripts"
 )
 
@@ -25,12 +26,20 @@ func MakeCommand() *cobra.Command {
 
 	command.Flags().String(hookNameFlag, "", "The name of the git-hook to be executed")
 	command.Flags().String(repositoryPath, "", "The path to the repository")
+	command.Flags().String(teamDirFlag, "", "The path to the team directory")
 
 	return command
 }
 
 func command(cmd *cobra.Command, args []string) {
-	teamInfo, err := core.LoadTeamConfiguration()
+	teamDir, _ := cmd.Flags().GetString(teamDirFlag)
+
+	if teamDir == "" {
+		log.Errorf("Missing team dir argument")
+		os.Exit(1)
+	}
+
+	teamInfo, err := core.LoadTeamConfiguration(teamDir)
 	if err != nil {
 		log.Errorf("Failed to load team configuration")
 		os.Exit(1)

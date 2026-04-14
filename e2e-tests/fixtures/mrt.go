@@ -22,7 +22,7 @@ type MrtFixture struct {
 	t            *testing.T
 	binaryPath   string
 	agent        *ssh.Agent
-	teamDir      string
+	TeamDir      string
 	identityFile string
 	RunFixture   *RunCommandFixture
 	SetupFixture *CommandFixture
@@ -43,13 +43,13 @@ func MakeMrtFixture(t *testing.T) *MrtFixture {
 		}
 	})
 
-	teamDir := t.TempDir()
+	teamDir, _ := filepath.EvalSymlinks(t.TempDir())
 
 	return &MrtFixture{
 		t:            t,
 		binaryPath:   getBinaryPath(internal.GetRepoRoot(), t),
 		agent:        agent,
-		teamDir:      teamDir,
+		TeamDir:      teamDir,
 		identityFile: "/dev/null",
 		RunFixture:   NewRunCommandFixture(teamDir),
 		SetupFixture: NewCommandFixture(teamDir, setupCommandDir),
@@ -76,7 +76,7 @@ func (f *MrtFixture) Parallel() *MrtFixture {
 }
 
 func (f *MrtFixture) AbsolutePath(relativePath string) string {
-	return f.teamDir + "/" + relativePath
+	return f.TeamDir + "/" + relativePath
 }
 
 func (f *MrtFixture) MakeGitCommand() git.BaseCommand {
@@ -90,7 +90,7 @@ func (f *MrtFixture) MakeMrtCommand() mrtclient.BaseCommand {
 func (f *MrtFixture) MakeMrtCommandInTeamDir() mrtclient.DirectedCommand {
 	return mrtclient.
 		MakeCommand(f.binaryPath, f.isolatedEnv()).
-		RunInDirectory(f.teamDir)
+		RunInDirectory(f.TeamDir)
 }
 
 func (f *MrtFixture) isolatedEnv() []string {
@@ -104,17 +104,17 @@ func (f *MrtFixture) isolatedEnv() []string {
 }
 
 func (f *MrtFixture) TeamConfigWriter() *teamconfig.Writer {
-	return teamconfig.NewWriter(f.teamDir)
+	return teamconfig.NewWriter(f.TeamDir)
 }
 
 func (f *MrtFixture) AssertRepositoryExists(repositoryName string, inFolder string) {
 	f.t.Helper()
-	assert.DirectoryExists(f.t, f.teamDir+"/"+inFolder+"/"+repositoryName+"/.git")
+	assert.DirectoryExists(f.t, f.TeamDir+"/"+inFolder+"/"+repositoryName+"/.git")
 }
 
 func (f *MrtFixture) AssertFolderDoesNotExist(folder string) {
 	f.t.Helper()
-	assert.DirectoryDoesNotExist(f.t, f.teamDir+"/"+folder)
+	assert.DirectoryDoesNotExist(f.t, f.TeamDir+"/"+folder)
 }
 
 func getBinaryPath(repositoryDir string, t *testing.T) string {

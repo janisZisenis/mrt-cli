@@ -9,11 +9,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func Test_IfTeamDirIsMissing_ShouldFail(t *testing.T) {
+	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		GitHook("", "pre-commit", f.ClonedRepositoryPath).
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertHasLine(t, "Missing team dir argument")
+}
+
 func Test_IfHookNameIsMissing_ShouldFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("", f.ClonedRepositoryPath).
+		GitHook(f.TeamDir, "", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -24,7 +35,7 @@ func Test_IfGitHookIsCalledWithUnknownHookName_ShouldFail(t *testing.T) {
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("unknown-hook", f.ClonedRepositoryPath).
+		GitHook(f.TeamDir, "unknown-hook", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -35,7 +46,7 @@ func Test_IfGitHookIsCalledWithGlobbingPatternInHookName_ShouldFail(t *testing.T
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t)
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("pre-commit*", f.ClonedRepositoryPath).
+		GitHook(f.TeamDir, "pre-commit*", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -47,7 +58,7 @@ func Test_IfGitHookIsCalledWithPathThatDoesNotContainRepository_ShouldFail(t *te
 	nonRepoPath := f.AbsolutePath("non-repo")
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("pre-commit", nonRepoPath).
+		GitHook(f.TeamDir, "pre-commit", nonRepoPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -59,7 +70,7 @@ func Test_IfTeamJsonIsMissing_HookShouldFail(t *testing.T) {
 	require.NoError(t, os.Remove(f.AbsolutePath("team.json")))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("pre-commit", f.ClonedRepositoryPath).
+		GitHook(f.TeamDir, "pre-commit", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -71,7 +82,7 @@ func Test_IfTeamJsonIsCorrupted_HookShouldFail(t *testing.T) {
 	require.NoError(t, os.WriteFile(f.AbsolutePath("team.json"), []byte("not valid json {{{"), 0o600))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("pre-commit", f.ClonedRepositoryPath).
+		GitHook(f.TeamDir, "pre-commit", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
