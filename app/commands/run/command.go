@@ -7,12 +7,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const CommandName = "run"
+const (
+	CommandName = "run"
+	ShortHelp   = "Executes a specified run command"
+	LongHelp    = ShortHelp + ".\n\n" +
+		"No run commands found.\n\n" +
+		"To add a run command, create an executable script at:\n\n" +
+		"  run/<command-name>/command\n\n" +
+		"Example:\n\n" +
+		"  run/build/command\n" +
+		"  run/test/command\n" +
+		"  run/lint/command"
+)
 
 func MakeCommand() *cobra.Command {
 	command := &cobra.Command{
 		Use:   CommandName,
-		Short: "Executes a specified run command",
+		Short: ShortHelp,
+		Long:  LongHelp,
 	}
 
 	core.ForScriptInPathDo(runscript.GetScriptsPath(), func(scriptPath string, scriptName string) {

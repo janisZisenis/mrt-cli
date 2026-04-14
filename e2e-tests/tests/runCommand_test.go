@@ -2,6 +2,7 @@ package tests_test
 
 import (
 	"mrt-cli/e2e-tests/fixtures"
+	"mrt-cli/e2e-tests/outputs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -112,4 +113,23 @@ func testCommandForwardsExitCode(t *testing.T, expectedExitCode int) {
 		Execute()
 
 	assert.Equal(t, expectedExitCode, exitCode)
+}
+
+func Test_IfNoRunCommandsExist_RunShouldExplainHowToCreateARunCommand(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).Parallel()
+
+	output, _ := f.MakeMrtCommandInTeamDir().
+		Run().
+		Execute()
+
+	output.AssertInOrder(t,
+		outputs.HasLine("Executes a specified run command."),
+		outputs.HasLine("No run commands found."),
+		outputs.HasLine("To add a run command, create an executable script at:"),
+		outputs.HasLine("  run/<command-name>/command"),
+		outputs.HasLine("Example:"),
+		outputs.HasLine("  run/build/command"),
+		outputs.HasLine("  run/test/command"),
+		outputs.HasLine("  run/lint/command"),
+	)
 }
