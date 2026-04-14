@@ -84,7 +84,11 @@ func command(cmd *cobra.Command, args []string) {
 
 func executeAdditionalScripts(repositoryPath string, hookName string, args []string) {
 	hookScriptsPath := filepath.Join(repositoryPath, hookScriptsDir, hookName, "*")
-	files, _ := filepath.Glob(hookScriptsPath)
+	files, err := filepath.Glob(hookScriptsPath)
+	if err != nil {
+		log.Errorf("Failed to find hook scripts: %v", err)
+		return
+	}
 	for _, file := range files {
 		exitCode := core.ExecuteScript(file, args)
 

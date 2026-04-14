@@ -15,7 +15,11 @@ func setupGitHooks(teamInfo core.TeamInfo) {
 	log.Infof("Installing git-hooks to repositories located in \"" + reposDir + "\"")
 
 	pattern := filepath.Join(reposDir, "*", gitMetadataDir)
-	repositories, _ := filepath.Glob(pattern)
+	repositories, err := filepath.Glob(pattern)
+	if err != nil {
+		log.Errorf("Failed to find repositories: %v", err)
+		return
+	}
 	if len(repositories) == 0 {
 		log.Infof("Did not find any repositories. Skip installing git-hooks.")
 	}
