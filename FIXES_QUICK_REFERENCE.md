@@ -2,24 +2,6 @@
 
 Fast access to unfixed issues.
 
-## MAJOR #1: Hard Exit Calls (os.Exit)
-
-**Files:**
-- `app/commands/githook/command.go` (lines 39, 45, 53, 58, 65, 78, 92, 101)
-- `app/core/gitBranch.go` (line 20)
-
-**Problem:**
-```go
-if err != nil {
-    log.Errorf("The given path does not contain a repository.")
-    os.Exit(1)  // Hard crash - no cleanup, no error propagation
-}
-```
-
-**Solution:** Return errors instead of calling `os.Exit()`, allowing callers to handle errors gracefully.
-
----
-
 ## SIGNIFICANT #1: Ignored Config Errors
 
 **File:** `app/commands/setup/installgithooks/command.go:22`
@@ -89,7 +71,6 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ## Priority Checklist
 
-- [ ] MAJOR #1 - Hard exit calls (`githook/command.go`, `gitBranch.go`)
 - [ ] SIGNIFICANT #1 - Ignored config error (`installgithooks/command.go`)
 - [ ] SIGNIFICANT #2 - Ignored Glob errors (3 files)
 - [ ] MINOR #1 - Unmarshal error ignored (`runscript/command.go`)
