@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"mrt-cli/app/commands/githook"
 	"mrt-cli/app/commands/run"
 	"mrt-cli/app/commands/setup"
 	"mrt-cli/app/commands/version"
+	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,7 +23,7 @@ var (
 func main() {
 	if dir := readFlag("--dir"); dir != nil {
 		if err := os.Chdir(*dir); err != nil {
-			fmt.Printf("Directory %q does not exist.\n", *dir)
+			log.Errorf("Directory %q does not exist.", *dir)
 			os.Exit(1)
 		}
 	}
