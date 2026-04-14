@@ -295,7 +295,7 @@ func Test_IfRepositoryPathIsInvalid_CommitMsgHook_ShouldFail(t *testing.T) {
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
-	output.AssertHasLine(t, "The given path \"/nonexistent/path\" does not contain a repository.")
+	output.AssertHasLine(t, "The given path \"/nonexistent/path\" does not contain a repository: failed reading branch short name: exit status 128")
 }
 
 func Test_IfTeamJsonContainsCommitPrefixRegex_CommittingWithPrefixInMessageBodyButNotAtStart_ShouldBeBlocked(
