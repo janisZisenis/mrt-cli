@@ -24,10 +24,10 @@ type TeamInfo struct {
 
 var ErrCouldNotReadTeamFile = errors.New("could not read team file")
 
-func LoadTeamConfiguration() (TeamInfo, error) {
+func LoadTeamConfiguration(teamDir string) (TeamInfo, error) {
 	var teamInfo TeamInfo
 
-	viper.AddConfigPath(GetExecutionPath())
+	viper.AddConfigPath(teamDir)
 	viper.SetConfigName(teamFileName)
 	viper.SetConfigType(teamFileExtension)
 

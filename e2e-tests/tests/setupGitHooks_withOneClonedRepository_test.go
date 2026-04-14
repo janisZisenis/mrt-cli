@@ -30,7 +30,7 @@ func Test_IfCommitMessageFileCannotBeRead_HookShouldFailGracefully(t *testing.T)
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("commit-msg", f.ClonedRepositoryPath, "/nonexistent/file.txt").
+		GitHook(f.TeamDir, "commit-msg", f.ClonedRepositoryPath, "/nonexistent/file.txt").
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -41,7 +41,7 @@ func Test_IfCommitMessageFileArgumentIsMissing_HookShouldFailGracefully(t *testi
 	f := fixtures.MakeOneClonedRepositoryWithGitHooksFixture(t, teamconfig.WithCommitPrefixRegex("Test-[0-9]+"))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("commit-msg", f.ClonedRepositoryPath).
+		GitHook(f.TeamDir, "commit-msg", f.ClonedRepositoryPath).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -278,7 +278,7 @@ func Test_IfRepositoryPathIsMissing_CommitMsgHook_ShouldFail(t *testing.T) {
 	require.NoError(t, os.WriteFile(commitFile, []byte("Test-1: some message"), 0o600))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("commit-msg", "", commitFile).
+		GitHook(f.TeamDir, "commit-msg", "", commitFile).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
@@ -291,7 +291,7 @@ func Test_IfRepositoryPathIsInvalid_CommitMsgHook_ShouldFail(t *testing.T) {
 	require.NoError(t, os.WriteFile(commitFile, []byte("Test-1: some message"), 0o600))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
-		GitHook("commit-msg", "/nonexistent/path", commitFile).
+		GitHook(f.TeamDir, "commit-msg", "/nonexistent/path", commitFile).
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)

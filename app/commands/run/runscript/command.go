@@ -6,7 +6,6 @@ import (
 	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/spf13/viper"
 
@@ -19,9 +18,6 @@ const (
 	commandConfigExtension = "json"
 )
 
-//nolint:gochecknoglobals // See GLOBAL_VIPER_STATE_FIX.md
-var configMutex sync.Mutex
-
 type CommandConfig struct {
 	ShortDescription string `json:"shortDescription"`
 }
@@ -31,9 +27,6 @@ func GetScriptsPath() string {
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
-	configMutex.Lock()
-	defer configMutex.Unlock()
-
 	commandDir := filepath.Dir(commandPath)
 	setupDefaults(commandDir)
 
@@ -49,14 +42,14 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 			return defaultConfig(commandDir)
 		}
 
+		absCommandDir, _ := filepath.Abs(commandDir)
 		log.Errorf(
 			"Error while reading %s/%s.%s",
-			commandDir,
+			absCommandDir,
 			commandConfigFileName,
 			commandConfigExtension,
 		)
 		log.Errorf("%v", readErr)
-		//nolint:gocritic // See GLOBAL_VIPER_STATE_FIX.md
 		os.Exit(1)
 	}
 
@@ -83,15 +76,9 @@ func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 		Use:   scriptName,
 		Short: config.ShortDescription,
 		Run: func(_ *cobra.Command, args []string) {
-			command(scriptPath, args)
+			os.Exit(core.ExecuteScript(scriptPath, args))
 		},
 	}
 
 	return command
-}
-
-func command(scriptPath string, args []string) {
-	scriptArgs := append([]string{core.GetAbsoluteExecutionPath()}, args...)
-	exitCode := core.ExecuteScript(scriptPath, scriptArgs)
-	os.Exit(exitCode)
 }

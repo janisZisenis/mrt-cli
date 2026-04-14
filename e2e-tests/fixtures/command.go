@@ -16,16 +16,16 @@ const (
 )
 
 type CommandFixture struct {
-	RepoDir    string
+	repoDir    string
 	commandDir string
 }
 
 func NewCommandFixture(repoDir string, commandDir string) *CommandFixture {
-	return &CommandFixture{RepoDir: repoDir, commandDir: commandDir}
+	return &CommandFixture{repoDir: repoDir, commandDir: commandDir}
 }
 
 func (f *CommandFixture) CommandPath(commandName string) string {
-	return filepath.Join(f.RepoDir, f.commandDir, commandName, commandFile)
+	return filepath.Join(f.repoDir, f.commandDir, commandName, commandFile)
 }
 
 func (f *CommandFixture) spyFilePath(commandName string) string {
@@ -66,6 +66,11 @@ func (f *CommandFixture) AssertSpyWasCalledWith(
 ) {
 	t.Helper()
 	assert.FileHasContent(t, f.spyFilePath(commandName), expectedArgs+"\n")
+}
+
+func (f *CommandFixture) AssertSpyWasCalled(t *testing.T, commandName string) {
+	t.Helper()
+	assert.FileExists(t, f.spyFilePath(commandName))
 }
 
 func (f *CommandFixture) AssertSpyWasNotCalled(t *testing.T, commandName string) {

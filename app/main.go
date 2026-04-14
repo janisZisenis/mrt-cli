@@ -5,7 +5,7 @@ import (
 	"mrt-cli/app/commands/run"
 	"mrt-cli/app/commands/setup"
 	"mrt-cli/app/commands/version"
-	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,34 +20,42 @@ var (
 	date   = "1979-01-01"
 )
 
-func main() {
-	teamDirFromFlag := readTeamDir()
-	core.SetTeamDirectory(teamDirFromFlag)
+const (
+	changeDirFlag = "cwd"
+)
 
-	executionPath := core.GetExecutionPath()
+func main() {
+	// --cwd must be applied before constructing subcommands, because setup and run
+	// scan the filesystem for scripts at construction time. PersistentPreRunE would
+	// be too late — Cobra only runs hooks after the command tree is fully built.
+	if dir := readFlag("--" + changeDirFlag); dir != nil {
+		if err := os.Chdir(*dir); err != nil {
+			log.Errorf("Directory %q does not exist.", *dir)
+			os.Exit(1)
+		}
+	}
 
 	rootCmd := &cobra.Command{Use: filepath.Base(os.Args[0])}
+	rootCmd.PersistentFlags().String(changeDirFlag, "", "Specifies the working directory.")
 
-	rootCmd.AddCommand(setup.MakeCommand(executionPath))
+	rootCmd.AddCommand(setup.MakeCommand())
 	rootCmd.AddCommand(githook.MakeCommand())
-	rootCmd.AddCommand(run.MakeCommand(executionPath))
+	rootCmd.AddCommand(run.MakeCommand())
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
-	rootCmd.PersistentFlags().
-		StringVar(&executionPath, "team-dir", "", "Specifies the path to the team directory.")
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
-func readTeamDir() *string {
+func readFlag(name string) *string {
 	args := os.Args[1:]
 	for i, arg := range args {
-		_, after, found := strings.Cut(arg, "--team-dir=")
+		_, after, found := strings.Cut(arg, name+"=")
 
 		if found {
 			return &after
-		} else if arg == "--team-dir" && i+1 < len(args) {
+		} else if arg == name && i+1 < len(args) {
 			return &args[i+1]
 		}
 	}

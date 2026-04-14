@@ -2,7 +2,6 @@ package installgithooks
 
 import (
 	"mrt-cli/app/commands/githook"
-	"mrt-cli/app/core"
 	"mrt-cli/app/log"
 	"os"
 	"path/filepath"
@@ -17,7 +16,7 @@ func getHookTemplate() string {
 #!/bin/bash -e
 
 hook_name=$(basename "$0")
-` + core.GetExecutableName() + " --team-dir " + core.GetAbsoluteExecutionPath() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $PWD $@`
+` + getExecutableName() + " --team-dir " + getAbsoluteExecutionPath() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $PWD $@`
 }
 
 func writeGitHook(repositoryDirectory string, hookName string) {
