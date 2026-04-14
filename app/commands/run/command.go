@@ -10,13 +10,13 @@ import (
 
 const CommandName = "run"
 
-func MakeCommand(teamDirectory string) *cobra.Command {
+func MakeCommand() *cobra.Command {
 	command := &cobra.Command{
 		Use:   CommandName,
 		Short: "Executes a specified run command",
 	}
 
-	scriptPath := filepath.Join(teamDirectory, runscript.GetScriptsPath())
+	scriptPath := filepath.Join(core.GetExecutionPath(), runscript.GetScriptsPath())
 	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
 		command.AddCommand(runscript.MakeCommand(scriptName, scriptPath))
 	})

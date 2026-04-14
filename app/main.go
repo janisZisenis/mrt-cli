@@ -21,20 +21,16 @@ var (
 )
 
 func main() {
-	teamDirFromFlag := readTeamDir()
-	core.SetTeamDirectory(teamDirFromFlag)
-
-	executionPath := core.GetExecutionPath()
+	core.SetTeamDirectory(readTeamDir())
 
 	rootCmd := &cobra.Command{Use: filepath.Base(os.Args[0])}
 
-	rootCmd.AddCommand(setup.MakeCommand(executionPath))
+	rootCmd.AddCommand(setup.MakeCommand())
 	rootCmd.AddCommand(githook.MakeCommand())
-	rootCmd.AddCommand(run.MakeCommand(executionPath))
+	rootCmd.AddCommand(run.MakeCommand())
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
-	rootCmd.PersistentFlags().
-		StringVar(&executionPath, "team-dir", "", "Specifies the path to the team directory.")
+	rootCmd.PersistentFlags().String("team-dir", "", "Specifies the path to the team directory.")
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

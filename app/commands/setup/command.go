@@ -13,17 +13,17 @@ import (
 
 const commandName = "setup"
 
-func MakeCommand(teamDirectory string) *cobra.Command {
+func MakeCommand() *cobra.Command {
 	command := &cobra.Command{
 		Use:   commandName,
 		Short: "Sets up you machine for development",
 	}
 
-	command.AddCommand(all.MakeCommand(teamDirectory))
+	command.AddCommand(all.MakeCommand())
 	command.AddCommand(clonerepositories.MakeCommand())
 	command.AddCommand(installgithooks.MakeCommand())
 
-	scriptPath := filepath.Join(teamDirectory, setupscript.GetScriptsPath())
+	scriptPath := filepath.Join(core.GetExecutionPath(), setupscript.GetScriptsPath())
 	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
 		command.AddCommand(setupscript.MakeCommand(scriptPath, scriptName))
 	})

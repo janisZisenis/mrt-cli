@@ -18,7 +18,7 @@ const (
 	skipHooksFlag  = skipFlagPrefix + installgithooks.CommandName
 )
 
-func MakeCommand(teamDirectory string) *cobra.Command {
+func MakeCommand() *cobra.Command {
 	command := &cobra.Command{
 		Use:   scriptName,
 		Short: "Executes all setup commands",
@@ -31,7 +31,7 @@ func MakeCommand(teamDirectory string) *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	setDefaultValueToTrue(command, skipCloneFlag)
 
-	scriptPath := filepath.Join(teamDirectory, setupscript.GetScriptsPath())
+	scriptPath := filepath.Join(core.GetExecutionPath(), setupscript.GetScriptsPath())
 	core.ForScriptInPathDo(scriptPath, func(_ string, scriptName string) {
 		skipFlag := skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
