@@ -3,8 +3,7 @@ package core
 import (
 	"bytes"
 	"errors"
-	"mrt-cli/app/log"
-	"os"
+	"fmt"
 	"strings"
 )
 
@@ -16,8 +15,7 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 		WithStdout(&stdout).
 		Run()
 	if err != nil {
-		log.Errorf("The given path \"" + repoDir + "\" does not contain a repository.")
-		os.Exit(1)
+		return "", fmt.Errorf("failed reading branch short name: %w", err)
 	}
 
 	branchName := strings.TrimSpace(stdout.String())

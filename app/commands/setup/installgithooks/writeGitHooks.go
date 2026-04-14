@@ -22,11 +22,13 @@ hook_name=$(basename "$0")
 func writeGitHook(repositoryDirectory string, hookName string) {
 	hooksPath := filepath.Join(repositoryDirectory, gitHooksDir)
 	// #nosec G301 - githooks folder needs 0700 to be private (owner only)
-	_ = os.MkdirAll(hooksPath, 0o700)
+	if err := os.MkdirAll(hooksPath, 0o700); err != nil {
+		log.Errorf("Failed to create hooks directory %q: %v", hooksPath, err)
+		return
+	}
 	hookFilePath := filepath.Join(hooksPath, hookName)
 	// #nosec G306 - git hooks need to be executable by owner
-	err := os.WriteFile(hookFilePath, []byte(getHookTemplate()), 0o700)
-	if err != nil {
-		log.Infof("unable to write file: " + err.Error())
+	if err := os.WriteFile(hookFilePath, []byte(getHookTemplate()), 0o700); err != nil {
+		log.Errorf("Failed to write hook file %q: %v", hookFilePath, err)
 	}
 }

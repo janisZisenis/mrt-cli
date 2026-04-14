@@ -53,7 +53,10 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 		os.Exit(1)
 	}
 
-	_ = viper.Unmarshal(&config)
+	if err := viper.Unmarshal(&config); err != nil {
+		log.Errorf("Failed to parse command config: %v", err)
+		os.Exit(1)
+	}
 
 	return config
 }

@@ -13,7 +13,11 @@ func CommandFileName() string {
 }
 
 func ForScriptInPathDo(path string, do func(scriptPath string, scriptName string)) {
-	scripts, _ := filepath.Glob(path)
+	scripts, err := filepath.Glob(path)
+	if err != nil {
+		log.Errorf("Failed to find scripts: %v", err)
+		return
+	}
 
 	for _, script := range scripts {
 		dirPath := filepath.Dir(script)

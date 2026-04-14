@@ -2,6 +2,7 @@ package installgithooks
 
 import (
 	"mrt-cli/app/core"
+	"mrt-cli/app/log"
 
 	"github.com/spf13/cobra"
 )
@@ -19,6 +20,9 @@ func MakeCommand() *cobra.Command {
 }
 
 func command(_ *cobra.Command, _ []string) {
-	teamInfo, _ := core.LoadTeamConfiguration(".")
+	teamInfo, err := core.LoadTeamConfiguration(".")
+	if err != nil {
+		log.Errorf("Failed to load team configuration")
+	}
 	setupGitHooks(teamInfo)
 }

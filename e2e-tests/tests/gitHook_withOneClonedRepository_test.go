@@ -62,7 +62,7 @@ func Test_IfGitHookIsCalledWithPathThatDoesNotContainRepository_ShouldFail(t *te
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
-	output.AssertHasLine(t, "The given path \""+nonRepoPath+"\" does not contain a repository.")
+	output.AssertHasLine(t, "The given path \""+nonRepoPath+"\" does not contain a repository: failed reading branch short name: exit status 128")
 }
 
 func Test_IfTeamJsonIsMissing_HookShouldFail(t *testing.T) {
