@@ -97,7 +97,7 @@ func executeAdditionalScripts(repositoryPath string, hookName string, args []str
 func getCurrentBranchName(repositoryPath string) string {
 	shortBranchName, err := core.GetCurrentBranchShortName(repositoryPath)
 	if err != nil {
-		log.Errorf("The given path \"" + repositoryPath + "\" does not contain a repository.")
+		log.Errorf("The given path \"%s\" does not contain a repository: %v", repositoryPath, err)
 		os.Exit(1)
 	}
 

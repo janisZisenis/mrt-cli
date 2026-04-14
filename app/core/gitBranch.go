@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -14,7 +15,7 @@ func GetCurrentBranchShortName(repoDir string) (string, error) {
 		WithStdout(&stdout).
 		Run()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed reading branch short name: %w", err)
 	}
 
 	branchName := strings.TrimSpace(stdout.String())
