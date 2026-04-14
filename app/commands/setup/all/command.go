@@ -6,7 +6,6 @@ import (
 	"mrt-cli/app/commands/setup/setupscript"
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -31,7 +30,7 @@ func MakeCommand() *cobra.Command {
 	command.Flags().Bool(skipCloneFlag, false, "Skips cloning the repositories")
 	setDefaultValueToTrue(command, skipCloneFlag)
 
-	scriptPath := filepath.Join(".", setupscript.GetScriptsPath())
+	scriptPath := setupscript.GetScriptsPath()
 	core.ForScriptInPathDo(scriptPath, func(_ string, scriptName string) {
 		skipFlag := skipFlagPrefix + scriptName
 		command.Flags().Bool(skipFlag, false, "Skips setup command: "+scriptName)
@@ -67,7 +66,7 @@ func command(cmd *cobra.Command, args []string) {
 func executeAdditionalSetupScripts(cmd *cobra.Command, args []string) {
 	log.Infof("Executing setup commands.")
 
-	scriptPath := filepath.Join(".", setupscript.GetScriptsPath())
+	scriptPath := setupscript.GetScriptsPath()
 	core.ForScriptInPathDo(
 		scriptPath,
 		func(scriptPath string, scriptName string) {

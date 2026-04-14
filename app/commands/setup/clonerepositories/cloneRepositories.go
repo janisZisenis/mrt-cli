@@ -41,5 +41,5 @@ func getFolderName(repositoryName string, prefixes []string) string {
 }
 
 func getRepositoryPath(repositoriesPath string, folderName string) string {
-	return filepath.Join(".", repositoriesPath, folderName)
+	return filepath.Join(repositoriesPath, folderName)
 }

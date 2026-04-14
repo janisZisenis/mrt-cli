@@ -6,7 +6,6 @@ import (
 	"mrt-cli/app/commands/setup/installgithooks"
 	"mrt-cli/app/commands/setup/setupscript"
 	"mrt-cli/app/core"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -23,7 +22,7 @@ func MakeCommand() *cobra.Command {
 	command.AddCommand(clonerepositories.MakeCommand())
 	command.AddCommand(installgithooks.MakeCommand())
 
-	scriptPath := filepath.Join(".", setupscript.GetScriptsPath())
+	scriptPath := setupscript.GetScriptsPath()
 	core.ForScriptInPathDo(scriptPath, func(scriptPath string, scriptName string) {
 		command.AddCommand(setupscript.MakeCommand(scriptPath, scriptName))
 	})
