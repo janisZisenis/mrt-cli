@@ -57,7 +57,7 @@ func MakeCommand(binaryPath string, sshEnv []string) BaseCommand {
 }
 
 func (m *Mrt) RunInDirectory(directory string) DirectedCommand {
-	m.command.Args = append(m.command.Args, "--dir", directory)
+	m.command.Args = append(m.command.Args, "--cwd", directory)
 
 	return m
 }

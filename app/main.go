@@ -20,11 +20,15 @@ var (
 	date   = "1979-01-01"
 )
 
+const (
+	changeDirFlag = "cwd"
+)
+
 func main() {
-	// --dir must be applied before constructing subcommands, because setup and run
+	// --cwd must be applied before constructing subcommands, because setup and run
 	// scan the filesystem for scripts at construction time. PersistentPreRunE would
 	// be too late — Cobra only runs hooks after the command tree is fully built.
-	if dir := readFlag("--dir"); dir != nil {
+	if dir := readFlag("--" + changeDirFlag); dir != nil {
 		if err := os.Chdir(*dir); err != nil {
 			log.Errorf("Directory %q does not exist.", *dir)
 			os.Exit(1)
@@ -32,13 +36,13 @@ func main() {
 	}
 
 	rootCmd := &cobra.Command{Use: filepath.Base(os.Args[0])}
+	rootCmd.PersistentFlags().String(changeDirFlag, "", "Specifies the working directory.")
 
 	rootCmd.AddCommand(setup.MakeCommand())
 	rootCmd.AddCommand(githook.MakeCommand())
 	rootCmd.AddCommand(run.MakeCommand())
 	rootCmd.AddCommand(version.MakeCommand(semver, commit, date))
 
-	rootCmd.PersistentFlags().String("dir", "", "Specifies the working directory.")
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
