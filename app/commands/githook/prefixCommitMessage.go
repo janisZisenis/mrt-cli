@@ -85,7 +85,9 @@ func prefixCommitMessage(teamInfo core.TeamInfo, branch string, args []string) e
 	matchesFromBranch := regex.FindStringSubmatch(branch)
 	if len(matchesFromBranch) > 0 {
 		//nolint:gosec // commitFile is provided by git, not untrusted user input
-		_ = os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0o600)
+		if err := os.WriteFile(commitFile, []byte(matchesFromBranch[0]+": "+commitMessage), 0o600); err != nil {
+			return fmt.Errorf("failed to write commit message file: %w", err)
+		}
 		log.Successf(
 			"Commit prefix '" + matchesFromBranch[0] + "' was found in current branch name, " +
 				"prepended to commit message.",
