@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"mrt-cli/app/commands/githook"
 	"mrt-cli/app/commands/run"
 	"mrt-cli/app/commands/setup"
@@ -21,7 +22,14 @@ var (
 )
 
 func main() {
-	core.SetTeamDirectory(readTeamDir())
+	teamDir := readTeamDir()
+	if teamDir != nil {
+		if _, err := os.Stat(*teamDir); os.IsNotExist(err) {
+			fmt.Printf("Team directory %q does not exist.\n", *teamDir)
+			os.Exit(1)
+		}
+	}
+	core.SetTeamDirectory(teamDir)
 
 	rootCmd := &cobra.Command{Use: filepath.Base(os.Args[0])}
 
