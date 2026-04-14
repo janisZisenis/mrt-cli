@@ -27,7 +27,7 @@ func GetScriptsPath() string {
 }
 
 func LoadCommandConfig(commandPath string) CommandConfig {
-	commandDir, _ := filepath.Abs(filepath.Dir(commandPath))
+	commandDir := filepath.Dir(commandPath)
 	setupDefaults(commandDir)
 
 	var config CommandConfig
@@ -42,9 +42,10 @@ func LoadCommandConfig(commandPath string) CommandConfig {
 			return defaultConfig(commandDir)
 		}
 
+		absCommandDir, _ := filepath.Abs(commandDir)
 		log.Errorf(
 			"Error while reading %s/%s.%s",
-			commandDir,
+			absCommandDir,
 			commandConfigFileName,
 			commandConfigExtension,
 		)
