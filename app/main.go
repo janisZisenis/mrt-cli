@@ -21,6 +21,9 @@ var (
 )
 
 func main() {
+	// --dir must be applied before constructing subcommands, because setup and run
+	// scan the filesystem for scripts at construction time. PersistentPreRunE would
+	// be too late — Cobra only runs hooks after the command tree is fully built.
 	if dir := readFlag("--dir"); dir != nil {
 		if err := os.Chdir(*dir); err != nil {
 			log.Errorf("Directory %q does not exist.", *dir)
