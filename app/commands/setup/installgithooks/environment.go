@@ -1,17 +1,17 @@
-package core
+package installgithooks
 
 import (
 	"os"
 	"path/filepath"
 )
 
-func GetAbsoluteExecutionPath() string {
+func getAbsoluteExecutionPath() string {
 	pwd, _ := os.Getwd()
 	absolute, _ := filepath.Abs(pwd)
 	return absolute
 }
 
-func GetExecutableName() string {
+func getExecutableName() string {
 	executable, _ := os.Executable()
 	return filepath.Base(executable)
 }

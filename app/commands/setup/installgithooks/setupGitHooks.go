@@ -11,7 +11,7 @@ const (
 )
 
 func setupGitHooks(teamInfo core.TeamInfo) {
-	reposDir := filepath.Join(core.GetAbsoluteExecutionPath(), teamInfo.RepositoriesPath)
+	reposDir := filepath.Join(getAbsoluteExecutionPath(), teamInfo.RepositoriesPath)
 	log.Infof("Installing git-hooks to repositories located in \"" + reposDir + "\"")
 
 	pattern := filepath.Join(reposDir, "*", gitMetadataDir)
