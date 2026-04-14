@@ -6,17 +6,17 @@ import (
 	"testing"
 )
 
-func Test_IfSetupCommandExists_ExecutingIt_WillPassTheTeamFolderAsParameter(t *testing.T) {
+func Test_IfSetupCommandExists_ExecutingIt_WillRunIt(t *testing.T) {
 	tests := []string{"some-command", "another-command"}
 
 	for _, commandName := range tests {
 		t.Run(commandName, func(t *testing.T) {
-			testIfSetupCommandExistsExecutingItWillPassTheTeamFolderAsParameter(t, commandName)
+			testIfSetupCommandExistsExecutingItWillRunIt(t, commandName)
 		})
 	}
 }
 
-func testIfSetupCommandExistsExecutingItWillPassTheTeamFolderAsParameter(
+func testIfSetupCommandExistsExecutingItWillRunIt(
 	t *testing.T,
 	commandName string,
 ) {
@@ -29,7 +29,7 @@ func testIfSetupCommandExistsExecutingItWillPassTheTeamFolderAsParameter(
 		SubCommand(commandName).
 		Execute()
 
-	f.SetupFixture.AssertSpyWasCalledWith(t, commandName, f.SetupFixture.RepoDir)
+	f.SetupFixture.AssertSpyWasCalled(t, commandName)
 }
 
 func Test_IfSetupCommandSucceedsWithOutput_ItWillPrintTheCommandsOutput(t *testing.T) {

@@ -68,6 +68,11 @@ func (f *CommandFixture) AssertSpyWasCalledWith(
 	assert.FileHasContent(t, f.spyFilePath(commandName), expectedArgs+"\n")
 }
 
+func (f *CommandFixture) AssertSpyWasCalled(t *testing.T, commandName string) {
+	t.Helper()
+	assert.FileExists(t, f.spyFilePath(commandName))
+}
+
 func (f *CommandFixture) AssertSpyWasNotCalled(t *testing.T, commandName string) {
 	t.Helper()
 	assert.FileDoesNotExist(t, f.spyFilePath(commandName))

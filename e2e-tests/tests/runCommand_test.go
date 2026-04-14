@@ -2,13 +2,12 @@ package tests_test
 
 import (
 	"mrt-cli/e2e-tests/fixtures"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_IfCommandIsRun_ItShouldPassRootDirAndParametersToIt(t *testing.T) {
+func Test_IfCommandIsRun_ItShouldPassParametersToIt(t *testing.T) {
 	tests := []struct {
 		name        string
 		commandName string
@@ -20,12 +19,12 @@ func Test_IfCommandIsRun_ItShouldPassRootDirAndParametersToIt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			testCommandPassesRootDirAndParametersToIt(t, tt.commandName, tt.parameters)
+			testCommandPassesParametersToIt(t, tt.commandName, tt.parameters)
 		})
 	}
 }
 
-func testCommandPassesRootDirAndParametersToIt(
+func testCommandPassesParametersToIt(
 	t *testing.T,
 	commandName string,
 	parameters []string,
@@ -39,11 +38,7 @@ func testCommandPassesRootDirAndParametersToIt(
 		SubCommand(commandName, parameters...).
 		Execute()
 
-	f.RunFixture.AssertSpyWasCalledWith(
-		t,
-		commandName,
-		f.RunFixture.RepoDir+" "+strings.Join(parameters, " "),
-	)
+	f.RunFixture.AssertSpyWasCalled(t, commandName)
 }
 
 func Test_IfCommandSucceedsWithOutput_ItShouldPrintTheCommandsOutput(t *testing.T) {

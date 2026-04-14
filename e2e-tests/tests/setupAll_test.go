@@ -127,7 +127,7 @@ func Test_IfTwoSetupCommandsExistAndFirstIsSkipped_SetupAll_ShouldOnlyRunSecond(
 		Execute()
 
 	f.SetupFixture.AssertSpyWasNotCalled(t, someCommand)
-	f.SetupFixture.AssertSpyWasCalledWith(t, anotherCommand, f.SetupFixture.RepoDir)
+	f.SetupFixture.AssertSpyWasCalled(t, anotherCommand)
 }
 
 func Test_IfTwoSetupCommandsExistAndSecondIsSkipped_SetupAll_ShouldOnlyRunFirst(t *testing.T) {
@@ -142,7 +142,7 @@ func Test_IfTwoSetupCommandsExistAndSecondIsSkipped_SetupAll_ShouldOnlyRunFirst(
 		All("--skip-" + anotherCommand).
 		Execute()
 
-	f.SetupFixture.AssertSpyWasCalledWith(t, someCommand, f.SetupFixture.RepoDir)
+	f.SetupFixture.AssertSpyWasCalled(t, someCommand)
 	f.SetupFixture.AssertSpyWasNotCalled(t, anotherCommand)
 }
 

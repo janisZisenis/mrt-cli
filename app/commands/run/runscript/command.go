@@ -75,15 +75,9 @@ func MakeCommand(scriptName string, scriptPath string) *cobra.Command {
 		Use:   scriptName,
 		Short: config.ShortDescription,
 		Run: func(_ *cobra.Command, args []string) {
-			command(scriptPath, args)
+			os.Exit(core.ExecuteScript(scriptPath, args))
 		},
 	}
 
 	return command
-}
-
-func command(scriptPath string, args []string) {
-	scriptArgs := append([]string{core.GetAbsoluteExecutionPath()}, args...)
-	exitCode := core.ExecuteScript(scriptPath, scriptArgs)
-	os.Exit(exitCode)
 }
