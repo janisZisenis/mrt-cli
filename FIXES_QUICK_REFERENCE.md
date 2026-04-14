@@ -1,45 +1,18 @@
 # Quick Reference: Remaining Issues
 
-Fast access to unfixed critical issues.
+Fast access to unfixed issues.
 
-## 🔴 CRITICAL #1: Unhandled Config Errors
+## MAJOR #1: Hard Exit Calls (os.Exit)
 
-**Files:** Multiple locations
-
-**Pattern:**
-```go
-// BEFORE - DON'T DO THIS
-teamInfo, _ := core.LoadTeamConfiguration()
-scripts, _ := filepath.Glob(path)
-
-// AFTER - DO THIS
-teamInfo, err := core.LoadTeamConfiguration()
-if err != nil {
-    log.Errorf("Failed to load configuration: %v", err)
-    return err
-}
-
-scripts, err := filepath.Glob(path)
-if err != nil {
-    log.Errorf("Failed to find scripts: %v", err)
-    return err
-}
-```
-
----
-
-## 🔴 MAJOR #2: Hard Exit Calls (os.Exit)
-
-**Files:** Multiple locations
-- `app/commands/githook/command.go:47, 51, 72`
-- `app/commands/githook/prefixCommitMessage.go`
-- `app/core/gitBranch.go`
+**Files:**
+- `app/commands/githook/command.go` (lines 39, 45, 53, 58, 65, 78, 92, 101)
+- `app/core/gitBranch.go` (line 20)
 
 **Problem:**
 ```go
 if err != nil {
     log.Errorf("The given path does not contain a repository.")
-    os.Exit(1)  // ← Hard crash! No cleanup, no error propagation
+    os.Exit(1)  // Hard crash - no cleanup, no error propagation
 }
 ```
 
@@ -47,38 +20,50 @@ if err != nil {
 
 ---
 
-## 🟠 SIGNIFICANT #1: Ignored Path Errors
+## SIGNIFICANT #1: Ignored Config Errors
 
-**File:** `app/core/location.go:19, 24, 29`
+**File:** `app/commands/setup/installgithooks/command.go:22`
 
-**Before:**
 ```go
-func GetAbsoluteExecutionPath() string {
-    absolute, _ := filepath.Abs(GetExecutionPath())
-    return absolute
-}
-```
+// CURRENT - ignores error
+teamInfo, _ := core.LoadTeamConfiguration(".")
 
-**After:**
-```go
-func GetAbsoluteExecutionPath() (string, error) {
-    return filepath.Abs(GetExecutionPath())
+// SHOULD BE
+teamInfo, err := core.LoadTeamConfiguration(".")
+if err != nil {
+    log.Errorf("Failed to load team configuration: %v", err)
+    return
 }
 ```
 
 ---
 
-## 🟡 MINOR #12: Unmarshal Error Ignored
+## SIGNIFICANT #2: Ignored filepath.Glob Errors
 
-**File:** `app/commands/run/runscript/command.go:47`
+**Files:**
+- `app/commands/githook/command.go:87`
+- `app/commands/setup/installgithooks/setupGitHooks.go:18`
+- `app/core/scripts.go:16`
 
-**Before:**
 ```go
-_ = viper.Unmarshal(&config)
+// CURRENT - ignores error
+files, _ := filepath.Glob(pattern)
+
+// Note: filepath.Glob only errors on malformed patterns,
+// so this is low-risk but still bad practice.
 ```
 
-**After:**
+---
+
+## MINOR #1: Unmarshal Error Ignored
+
+**File:** `app/commands/run/runscript/command.go:56`
+
 ```go
+// CURRENT
+_ = viper.Unmarshal(&config)
+
+// SHOULD BE
 if err := viper.Unmarshal(&config); err != nil {
     log.Errorf("Failed to parse command config: %v", err)
     return CommandConfig{}, err
@@ -94,11 +79,6 @@ if err := viper.Unmarshal(&config); err != nil {
 go run -race ./app
 ```
 
-### Run security scanner
-```bash
-gosec ./app/...
-```
-
 ### Find all error suppressions
 ```bash
 grep -r ", _" app/ --include="*.go"
@@ -109,12 +89,7 @@ grep -r "os.Exit" app/ --include="*.go"
 
 ## Priority Checklist
 
-### Remaining Issues to Fix
-- [ ] #1 - Config errors (CRITICAL) - ⏳ TODO
-- [ ] #2 - Hard exit calls (MAJOR) - ⏳ TODO
-- [ ] #7 - Path errors (SIGNIFICANT) - ⏳ TODO
-- [ ] #12 - Unmarshal error (MINOR) - ⏳ TODO
-
----
-
-See `SECURITY_AND_BUGS_ANALYSIS.md` for detailed analysis and code examples.
+- [ ] MAJOR #1 - Hard exit calls (`githook/command.go`, `gitBranch.go`)
+- [ ] SIGNIFICANT #1 - Ignored config error (`installgithooks/command.go`)
+- [ ] SIGNIFICANT #2 - Ignored Glob errors (3 files)
+- [ ] MINOR #1 - Unmarshal error ignored (`runscript/command.go`)
