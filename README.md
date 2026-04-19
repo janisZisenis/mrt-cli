@@ -83,10 +83,10 @@ mrt version
 
 The team folder is a crucial element for organizing and managing your team's repositories using the *Multi Repository Tool*. It defines the execution path for the command-line tool and serves as the central location for the team configuration file (team.json).
 
-Whenever you execute the command line tool make sure you are in the team folder or you added the *--team-dir* flag as shown below. The passed argument to this flag also decides where the command line tool searches for the configuration file as well as the setup and run commands.
+Whenever you execute the command line tool make sure you are in the team folder or you added the *--cwd* flag as shown below. The passed argument to this flag also decides where the command line tool searches for the configuration file as well as the setup and run commands.
 
 ```sh
-  mrt <subcommand> --team-dir <path-to-team-dir>
+  mrt <subcommand> --cwd <path-to-team-dir>
 ```
 
 Since the team folder is home to the team configuration file as well as scripts, that define key automations, it should be version-controlled itself.
@@ -195,10 +195,10 @@ Below you can see an example folder structure:
   |   |   |-- command
 ```
 
-With the folder structure above in place you can run the following code snippet to execute the custom setup commands. Here, every setup command gets passed the absolute path to the team folder as first argument.
+With the folder structure above in place you can run the following code snippet to execute the custom setup commands.
 
 ```sh
-  mrt setup upgrade-tools
+  mrt setup install-tools
   mrt setup setup-aws
 ```
 
@@ -206,10 +206,10 @@ With the folder structure above in place you can run the following code snippet 
 
 Once you installed the git-hooks using the setup flow, the *Multi Repository Tool* provides a convenient way to add tasks that run as part of a git-hook.
 
->Currently, the *Multi Repository Tool* only supports the following git-hooks:
+>Currently, the *Multi Repository Tool* has built-in logic for the following git-hooks:
 >- commit-msg
 >- pre-commit
->- post-commit
+>- pre-push
 
 When you perform some actions in your repositories (e.g. committing/pushing) the respective git-hooks are called. These git-hooks execute the tool's `git-hook` subcommand passing their git-hook name (e.g. pre-commit/pre-push) and their repository's root path.
 
@@ -303,7 +303,7 @@ Below you can see an example folder structure:
   |   |   |-- command
 ```
 
-With the folder structure above in place you can run the following code snippet to execute the custom run commands. Here, every run command gets passed the absolute path to the team folder as first argument.
+With the folder structure above in place you can run the following code snippet to execute the custom run commands.
 
 ```sh
   mrt run build-binary
@@ -342,7 +342,7 @@ When you run `mrt run build-binary -h`, the short description will be displayed 
 
 ### Use your run commands in the pipeline
 
-You can use the *Multi Repository Tool* without the setup flow to just add key automations in the style of run commands to all your repositories. In that case you don't manage cloned repositories and also don't need a team configuration file. You can just add run commands in a *./run* folder to any of your repositories and execute the tools *run* subcommand in them (or use the *--team-dir* flag).
+You can use the *Multi Repository Tool* without the setup flow to just add key automations in the style of run commands to all your repositories. In that case you don't manage cloned repositories and also don't need a team configuration file. You can just add run commands in a *./run* folder to any of your repositories and execute the tools *run* subcommand in them (or use the *--cwd* flag).
 
 After setting up mrt on your github runner you can use the exact same run commands within your CI/CD pipeline.
 
