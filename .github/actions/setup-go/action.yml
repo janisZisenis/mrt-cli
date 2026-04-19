@@ -12,3 +12,6 @@ runs:
       with:
         go-version: ${{ inputs.go-version }}
         cache: true
+        cache-dependency-path: |
+          app/go.sum
+          e2e-tests/go.sum
