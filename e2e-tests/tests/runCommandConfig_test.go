@@ -11,7 +11,7 @@ import (
 func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDescription(
 	t *testing.T,
 ) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "some-command"
 	shortDescription := "A command that outputs some-output"
 	f.RunFixture.WriteDummyCommand(commandName)
@@ -27,7 +27,7 @@ func Test_IfRunCommandConfigContainsShortDescription_Help_ShouldDisplayShortDesc
 func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDefaultDescription(
 	t *testing.T,
 ) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "some-command"
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteConfig(commandName)
@@ -42,7 +42,7 @@ func Test_IfRunCommandConfigDoesNotContainShortDescription_Help_ShouldDisplayDef
 func Test_IfRunCommandConfigIsAnEmptyFile_Help_ShouldExitWithErrorAndPrintErrorMessage(
 	t *testing.T,
 ) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "some-command"
 	f.RunFixture.WriteDummyCommand(commandName)
 	f.RunFixture.WriteCorruptConfig(commandName)

@@ -22,8 +22,7 @@ func MakeOneClonedRepositoryWithGitHooksFixture(
 ) *OneClonedRepositoryWithGitHooksFixture {
 	t.Helper()
 	f := MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 
 	options := append(
 		[]teamconfig.Option{

@@ -15,8 +15,7 @@ func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBe
 	t *testing.T,
 ) {
 	f := fixtures.MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 	repositoriesPath := "some-path"
 	repositoryName := "1_TestRepository"
 	branchName := git.UniqueBranchName()
@@ -65,8 +64,7 @@ func testIfCustomRepositoriesPathDoesNotContainRepositoriesInstallGitHooksShould
 ) {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 	repositoriesDir := f.AbsolutePath(repositoriesPath)
 	f.TeamConfigWriter().Write(
 		teamconfig.WithRepositoriesPath(repositoriesPath),
