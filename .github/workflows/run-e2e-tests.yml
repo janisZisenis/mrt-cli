@@ -72,9 +72,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-go
-      - name: Setup parallel
-        shell: bash
-        run: brew install parallel
       - name: Setup bash
         shell: bash
         run: brew install bash
