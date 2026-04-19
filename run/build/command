@@ -5,80 +5,42 @@ set -e
 rootDir=$1
 shift
 
-SEMVER_FLAG="--semver"
-COMMIT_SHA_FLAG="--commit-sha"
+ALL_FLAG="--all"
 
 help() {
 	dir=$(dirname "$0")
 	commandName=${dir##*/}
 
-	printf 'Pass in a list of platforms you want to build a binary for like shown below.\n'
+	printf 'Builds a binary for the current platform.\n'
 	printf '\n'
-	printf '\tmrt run %s "darwin/arm64" "linux/amd64"\n' "$commandName"
-	printf '\n'
-	printf "Without any parameters it will build for your machine's platform: %s.\n" "$(mrt --team-dir "$rootDir" run detect-platform)"
+	printf '\tmrt run %s\n' "$commandName"
 	printf '\n'
 	printf "Flags: \n"
 	printf -- "-h, --help\tShow this help message\n"
-	printf -- '%s\tThe semantic version used for the build\n' "$SEMVER_FLAG"
-	printf -- '%s\tThe commit-sha used for the build\n' "$COMMIT_SHA_FLAG"
+	printf -- '%s\t\tBuild for all supported platforms\n' "$ALL_FLAG"
 }
 
-build_binary() {
-	local platform="$1"
-	local semver="$2"
-	local commit_sha="$3"
-
-	binaryLocation="$(mrt --team-dir "$rootDir" run binary-location -- "$platform")"
-	GOOS="${platform%/*}"
-	GOARCH="${platform#*/}"
-
-	echo "Building for $platform..."
-	if ! (cd "$rootDir/app" && env GOOS="$GOOS" GOARCH="$GOARCH" go build \
-		-ldflags "-X main.semver=$semver -X main.commit=$commit_sha -X main.date=$(date +'%Y-%m-%d')" \
-		-o "$binaryLocation" .); then
-		echo "Error occurred while building for ${platform}"
-		exit 1
-	else
-		echo "Successfully build for ${platform}"
-	fi
-}
-
-semver="unknown"
-commit_sha="unknown"
+all=false
 while [ "$#" -gt 0 ]; do
 	case $1 in
 	"--help" | "-h")
 		help
 		exit 0
 		;;
-	"$SEMVER_FLAG")
-		if [[ -z "$2" || "$2" == -* ]]; then
-			echo "You have to specify a semver." >&2
-			exit 1
-		fi
-		semver=$2
-		shift 2
-		;;
-	"$COMMIT_SHA_FLAG")
-		if [[ -z "$2" || "$2" == -* ]]; then
-			echo "You have to specify a commit-sha." >&2
-			exit 1
-		fi
-		commit_sha=$2
-		shift 2
+	"$ALL_FLAG")
+		all=true
+		shift
 		;;
 	*)
-		platforms+=("$1")
-		shift
+		echo "Unknown argument: $1" >&2
+		help
+		exit 1
 		;;
 	esac
 done
 
-if [[ "${#platforms[@]}" -eq 0 ]]; then
-	platforms=("$(mrt --team-dir "$rootDir" run detect-platform)")
+if [[ "$all" == true ]]; then
+	(cd "$rootDir" && goreleaser build --snapshot --clean)
+else
+	(cd "$rootDir" && goreleaser build --snapshot --clean --single-target)
 fi
-
-for platform in "${platforms[@]}"; do
-	build_binary "$platform" "$semver" "$commit_sha"
-done

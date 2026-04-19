@@ -9,6 +9,26 @@ EXE_NAME_FLAG="--exe-name"
 BIN_DIR_FLAG="--dir"
 FULL_PATH_FLAG="--full"
 
+detect_platform() {
+	local unameOut
+	unameOut="$(uname -s)"
+	case "${unameOut}" in
+	Linux*) os=linux ;;
+	Darwin*) os=darwin ;;
+	*) os="UNKNOWN:${unameOut}" ;;
+	esac
+
+	local archOut
+	archOut="$(uname -m)"
+	case "${archOut}" in
+	x64 | x86_64) arch=amd64 ;;
+	aarch64 | arm64) arch=arm64 ;;
+	*) arch="UNKNOWN:${archOut}" ;;
+	esac
+
+	echo "${os}/${arch}"
+}
+
 help() {
 	dir=$(dirname "$0")
 	commandName=${dir##*/}
@@ -17,7 +37,7 @@ help() {
 	printf '\n'
 	printf '\tmrt run %s "darwin/arm64"\n' "$commandName"
 	printf '\n'
-	printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(mrt --team-dir "$rootDir" run detect-platform)"
+	printf "Without any parameters it will return the binary location for your machine's platform: %s.\n" "$(detect_platform)"
 	printf "Flags: \n"
 	printf -- "-h, --help\t\tShow this help message\n"
 	printf -- '%s|%s|%s\tOutputs the executable name or path (default: %s)\n' "$FULL_PATH_FLAG" "$EXE_NAME_FLAG" "$BIN_DIR_FLAG" "$FULL_PATH_FLAG"
@@ -46,17 +66,29 @@ while [ "$#" -gt 0 ]; do
 	esac
 done
 
-platform=${platform-$(mrt --team-dir "$rootDir" run detect-platform)}
+platform=${platform-$(detect_platform)}
 
 os="${platform%/*}"
 arch="${platform#*/}"
 
-binPath="$(mrt --team-dir "$rootDir" run build-location)/bin"
-binaryLocation="$binPath/mrt-${os}-${arch}"
+artifactsFile="$rootDir/dist/artifacts.json"
 
-if [ "$os" = "windows" ]; then
-	binaryLocation+='.exe'
+if [[ ! -f "$artifactsFile" ]]; then
+	echo "Error: $artifactsFile not found. Run 'mrt run build' first." >&2
+	exit 1
 fi
+
+binaryLocation=$(jq -r --arg os "$os" --arg arch "$arch" \
+	'.[] | select(.type == "Binary" and .goos == $os and .goarch == $arch) | .path' \
+	"$artifactsFile")
+
+if [[ -z "$binaryLocation" ]]; then
+	echo "Error: no binary found for platform $platform in $artifactsFile" >&2
+	exit 1
+fi
+
+# path in artifacts.json is relative to the dist directory's parent (rootDir)
+binaryLocation="$rootDir/$binaryLocation"
 
 case $strategy in
 "$EXE_NAME_FLAG")

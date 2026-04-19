@@ -1,0 +1,42 @@
+version: 2
+
+project_name: mrt
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - dir: app
+    binary: mrt
+    ldflags:
+      - -X main.semver={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - format: binary
+    name_template: "mrt-{{ .Os }}-{{ .Arch }}"
+
+homebrew_casks:
+  - name: cli
+    directory: .
+    repository:
+      owner: janisZisenis
+      name: homebrew-mrt
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    binaries:
+      - mrt
+    homepage: "https://github.com/janisZisenis/mrt-cli"
+    description: "Multi Repository Tool - CLI utility for managing multiple repositories"
+
+release:
+  github:
+    owner: janisZisenis
+    name: mrt-cli

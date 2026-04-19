@@ -1,0 +1,16 @@
+name: Setup goreleaser
+description: Install goreleaser.
+
+inputs:
+  goreleaser_version:
+    description: The version of goreleaser to install.
+    required: false
+    default: "v2.15.3"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: goreleaser/goreleaser-action@v6
+      with:
+        install-only: true
+        version: ${{ inputs.goreleaser_version }}
