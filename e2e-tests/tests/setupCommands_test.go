@@ -21,7 +21,7 @@ func testIfSetupCommandExistsExecutingItWillRunIt(
 	commandName string,
 ) {
 	t.Helper()
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	f.SetupFixture.WriteSpyCommand(commandName)
 
 	f.MakeMrtCommandInTeamDir().
@@ -33,7 +33,7 @@ func testIfSetupCommandExistsExecutingItWillRunIt(
 }
 
 func Test_IfSetupCommandSucceedsWithOutput_ItWillPrintTheCommandsOutput(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "some-command"
 	someOutput := "some-output"
 	f.SetupFixture.WriteStubCommand(commandName, 0, someOutput)
@@ -49,7 +49,7 @@ func Test_IfSetupCommandSucceedsWithOutput_ItWillPrintTheCommandsOutput(t *testi
 }
 
 func Test_IfSetupCommandFailsWithOutput_ItWillPrintTheCommandsOutputAndTheFailure(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "another-command"
 	someOutput := "another-output"
 	exitCode := 15
@@ -66,7 +66,7 @@ func Test_IfSetupCommandFailsWithOutput_ItWillPrintTheCommandsOutputAndTheFailur
 }
 
 func Test_IfSetupCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "input"
 	input := "some-input"
 	f.SetupFixture.WriteInputCommand(commandName)
@@ -80,7 +80,7 @@ func Test_IfSetupCommandIsRequestingInput_ItShouldProcessTheInput(t *testing.T) 
 }
 
 func Test_IfSetupCommandWritesToStderr_ItOutputsStderr(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	commandName := "error"
 	errMessage := "some-error"
 	f.SetupFixture.WriteStderrCommand(commandName, errMessage)

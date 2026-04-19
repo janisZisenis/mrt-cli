@@ -13,7 +13,7 @@ import (
 )
 
 func Test_IfTeamJsonIsMissing_InstallGitHooks_ShouldFail(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
 		Setup().
@@ -25,7 +25,7 @@ func Test_IfTeamJsonIsMissing_InstallGitHooks_ShouldFail(t *testing.T) {
 }
 
 func Test_IfTeamJsonIsCorrupted_InstallGitHooks_ShouldFail(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	require.NoError(t, os.WriteFile(f.AbsolutePath("team.json"), []byte("not valid json {{{"), 0o600))
 
 	output, exitCode := f.MakeMrtCommandInTeamDir().
@@ -41,8 +41,7 @@ func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNo
 	t *testing.T,
 ) {
 	f := fixtures.MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 	folderPath := f.AbsolutePath(defaultRepositoriesPath + "/1_TestRepository")
 	require.NoError(t, os.MkdirAll(folderPath, 0o750))
 
@@ -58,8 +57,7 @@ func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSec
 	t *testing.T,
 ) {
 	f := fixtures.MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 	firstRepositoryName := "1_TestRepository"
 	secondRepositoryName := "2_TestRepository"
 	branchName := git.UniqueBranchName()
@@ -96,8 +94,7 @@ func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMes
 	t *testing.T,
 ) {
 	f := fixtures.MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 	firstRepositoryName := "1_TestRepository"
 	secondRepositoryName := "2_TestRepository"
 	repositoriesDir := f.AbsolutePath(defaultRepositoriesPath)

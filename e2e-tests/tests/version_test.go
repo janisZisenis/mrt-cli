@@ -8,7 +8,7 @@ import (
 )
 
 func Test_VersionCommand_PrintsVersionInfo(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 
 	output, exitCode := f.MakeMrtCommand().
 		Version().

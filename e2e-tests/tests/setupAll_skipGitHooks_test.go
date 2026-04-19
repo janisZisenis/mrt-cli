@@ -22,8 +22,7 @@ func setupRepoWithBlockedBranchButSkippedHooks(
 ) skipGitHooksFixture {
 	t.Helper()
 	f := fixtures.MakeMrtFixture(t).
-		Authenticate().
-		Parallel()
+		Authenticate()
 	repositoryName := "1_TestRepository"
 	blockedBranchName := git.UniqueBranchName()
 	options := append(

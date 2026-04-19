@@ -30,6 +30,7 @@ type MrtFixture struct {
 
 func MakeMrtFixture(t *testing.T) *MrtFixture {
 	t.Helper()
+	t.Parallel()
 
 	agent, err := ssh.StartAgent()
 	if err != nil {
@@ -67,13 +68,6 @@ func (f *MrtFixture) Authenticate() *MrtFixture {
 	if err := f.agent.AddKey(privateKeyPath); err != nil {
 		f.t.Fatalf("%v", err)
 	}
-
-	return f
-}
-
-func (f *MrtFixture) Parallel() *MrtFixture {
-	f.t.Helper()
-	f.t.Parallel()
 
 	return f
 }

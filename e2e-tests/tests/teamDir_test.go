@@ -8,7 +8,7 @@ import (
 )
 
 func Test_IfTeamDirDoesNotExist_ShouldPrintErrorMessageAndExitWithError(t *testing.T) {
-	f := fixtures.MakeMrtFixture(t).Parallel()
+	f := fixtures.MakeMrtFixture(t)
 	notExisting := "/some/unknown/path"
 
 	output, exitCode := f.MakeMrtCommand().
