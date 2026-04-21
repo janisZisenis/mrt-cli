@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
 	"testing"
@@ -26,9 +27,9 @@ func Test_SetupAll_ShouldCloneInstallGitHooksAndExecuteCommands(t *testing.T) {
 
 	output.AssertInOrder(t,
 		outputs.HasLine("Start cloning repositories into \"repositories\""),
-		outputs.HasLine("Cloning "+repositoryURL),
+		outputs.HasLine(mrtclient.MsgCloning(repositoryURL)),
 		outputs.HasLineContaining("Enumerating objects:"),
-		outputs.HasLine("Successfully cloned "+repositoryURL),
+		outputs.HasLine(mrtclient.MsgSuccessfullyCloned(repositoryURL)),
 		outputs.HasLine("Cloning repositories done"),
 		outputs.HasLine("Done installing git-hooks."),
 		outputs.HasLine("Executing setup commands."),

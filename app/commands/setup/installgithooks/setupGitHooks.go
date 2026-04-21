@@ -3,6 +3,7 @@ package installgithooks
 import (
 	"mrt-cli/app/core"
 	"mrt-cli/app/log"
+	"os"
 	"path/filepath"
 )
 
@@ -32,6 +33,15 @@ func setupGitHooks(teamInfo core.TeamInfo) {
 		relPath, _ := filepath.Rel(hookFileDir, teamDir)
 		writeHooks(r, relPath)
 		log.Successf("Done installing git-hooks to \"" + r + "\"")
+	}
+
+	teamGitDir := filepath.Join(teamDir, gitMetadataDir)
+	if _, statErr := os.Stat(teamGitDir); statErr == nil {
+		log.Infof("Installing git-hooks to team repository")
+		teamHookFileDir := filepath.Join(teamGitDir, gitHooksDir)
+		relPath, _ := filepath.Rel(teamHookFileDir, teamDir)
+		writeHooks(teamGitDir, relPath)
+		log.Successf("Done installing git-hooks to team repository.")
 	}
 
 	log.Successf("Done installing git-hooks.")

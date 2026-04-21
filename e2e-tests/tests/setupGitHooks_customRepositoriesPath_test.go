@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
 	"testing"
@@ -37,7 +38,7 @@ func Test_IfRepositoriesPathIsDot_CommittingOnBlockedBranch_ShouldBeBlocked(t *t
 
 	require.Error(t, err)
 	assert.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
 }
 
 func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBeBlocked(
@@ -69,7 +70,7 @@ func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBe
 
 	require.Error(t, err)
 	assert.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
 }
 
 func Test_IfCustomRepositoriesPathDoesNotContainRepositories_InstallGitHooks_ShouldPrintNotFoundMessage(
@@ -105,7 +106,7 @@ func testIfCustomRepositoriesPathDoesNotContainRepositoriesInstallGitHooksShould
 		Execute()
 
 	output.AssertInOrder(t,
-		outputs.HasLine("Installing git-hooks to repositories located in \""+repositoriesDir+"\""),
+		outputs.HasLine(mrtclient.MsgInstallingGitHooksToRepositoriesLocatedIn(repositoriesDir)),
 		outputs.HasLine("Did not find any repositories. Skip installing git-hooks."),
 		outputs.HasLine("Done installing git-hooks."),
 	)

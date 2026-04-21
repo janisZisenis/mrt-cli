@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
 	"testing"
@@ -38,9 +39,9 @@ func Test_IfAuthenticationIsMissing_Cloning_ShouldPrintFailureMessage(t *testing
 		Execute()
 
 	output.AssertInOrder(t,
-		outputs.HasLine("Cloning "+repositoryURL),
+		outputs.HasLine(mrtclient.MsgCloning(repositoryURL)),
 		outputs.HasLineContaining("Clone operation failed: "),
-		outputs.HasLine("Failed to clone repository, skipping it."),
+		outputs.HasLine(mrtclient.MsgFailedToCloneRepository),
 	)
 }
 

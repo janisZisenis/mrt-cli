@@ -2,14 +2,12 @@ package fixtures
 
 import (
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/teamconfig"
 	"testing"
 )
 
-const (
-	ClonedRepoName          = "1_TestRepository"
-	defaultRepositoriesPath = "repositories"
-)
+const ClonedRepoName = "1_TestRepository"
 
 type OneClonedRepositoryWithGitHooksFixture struct {
 	*MrtFixture
@@ -33,7 +31,7 @@ func MakeOneClonedRepositoryWithGitHooksFixture(
 	f.TeamConfigWriter().Write(options...)
 
 	f.MakeGitCommand().
-		Clone(git.MakeCloneURL(ClonedRepoName), f.AbsolutePath(defaultRepositoriesPath+"/"+ClonedRepoName)).
+		Clone(git.MakeCloneURL(ClonedRepoName), f.AbsolutePath(mrtclient.DefaultRepositoriesPath+"/"+ClonedRepoName)).
 		Execute()
 
 	f.MakeMrtCommandInTeamDir().
@@ -43,7 +41,7 @@ func MakeOneClonedRepositoryWithGitHooksFixture(
 
 	return &OneClonedRepositoryWithGitHooksFixture{
 		MrtFixture:           f,
-		ClonedRepositoryPath: f.AbsolutePath(defaultRepositoriesPath + "/" + ClonedRepoName),
+		ClonedRepositoryPath: f.AbsolutePath(mrtclient.DefaultRepositoriesPath + "/" + ClonedRepoName),
 	}
 }
 

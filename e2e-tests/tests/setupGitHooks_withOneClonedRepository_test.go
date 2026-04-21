@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
 	"os"
@@ -56,7 +57,7 @@ func Test_IfTeamJsonContainsBlockedBranch_CommittingOnBlockedBranch_ShouldBeBloc
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_CommittingOnAnotherBranch_ShouldBeAllowed(t *testing.T) {
@@ -76,7 +77,7 @@ func Test_IfTeamJsonContains2BlockedBranches_CommittingOnSecondOne_ShouldBeBlock
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
 }
 
 func Test_IfTeamJsonContainsBlockedBranch_PushingOnBlockedBranch_ShouldBeBlocked(t *testing.T) {
@@ -89,7 +90,7 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingOnBlockedBranch_ShouldBeBlocked
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("push", branchName))
 
 	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(branchName).Execute() })
 }
@@ -122,7 +123,7 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingBlockedBranchWhileOnAnotherBran
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+blockedBranchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("push", blockedBranchName))
 
 	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(blockedBranchName).Execute() })
 }
@@ -138,7 +139,7 @@ func Test_IfTeamJsonContainsBlockedBranch_PushingToBlockedRemoteBranchWithDiffer
 
 	require.Error(t, err)
 	require.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"push\" not allowed on branch \""+blockedRemoteBranchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("push", blockedRemoteBranchName))
 
 	t.Cleanup(func() { _, _ = f.GitInClonedRepository().DeleteRemoteBranchIfExists(blockedRemoteBranchName).Execute() })
 }
