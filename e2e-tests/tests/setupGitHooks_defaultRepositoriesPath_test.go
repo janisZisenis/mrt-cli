@@ -37,6 +37,50 @@ func Test_IfTeamJsonIsCorrupted_InstallGitHooks_ShouldFail(t *testing.T) {
 	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
 }
 
+func Test_IfRepositoriesPathIsAbsolute_InstallGitHooks_ShouldExitNonZeroAndPrintError(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t)
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("/absolute/path"),
+	)
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining("repositoriesPath must be a relative path within the team repository"))
+}
+
+func Test_IfRepositoriesPathEscapesTeamDir_InstallGitHooks_ShouldExitNonZeroAndPrintError(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t)
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("../outside"),
+	)
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining("repositoriesPath must be a relative path within the team repository"))
+}
+
+func Test_IfRepositoriesPathIsValidRelativePath_InstallGitHooks_ShouldSucceed(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t)
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("some-relative-path"),
+	)
+
+	_, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.Equal(t, 0, exitCode)
+}
+
 func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNotInstallGitHooks(
 	t *testing.T,
 ) {

@@ -2,6 +2,8 @@ package core
 
 import (
 	"errors"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -23,6 +25,7 @@ type TeamInfo struct {
 }
 
 var ErrCouldNotReadTeamFile = errors.New("could not read team file")
+var ErrInvalidRepositoriesPath = errors.New("repositoriesPath must be a relative path within the team repository")
 
 func LoadTeamConfiguration(teamDir string) (TeamInfo, error) {
 	var teamInfo TeamInfo
@@ -39,6 +42,20 @@ func LoadTeamConfiguration(teamDir string) (TeamInfo, error) {
 	}
 
 	if readErr == nil && unmarshalErr == nil {
+		absTeamDir, err := filepath.Abs(teamDir)
+		if err != nil {
+			return teamInfo, ErrCouldNotReadTeamFile
+		}
+
+		if filepath.IsAbs(teamInfo.RepositoriesPath) {
+			return teamInfo, ErrInvalidRepositoriesPath
+		}
+
+		resolved := filepath.Clean(filepath.Join(absTeamDir, teamInfo.RepositoriesPath))
+		if !strings.HasPrefix(resolved+string(filepath.Separator), absTeamDir+string(filepath.Separator)) {
+			return teamInfo, ErrInvalidRepositoriesPath
+		}
+
 		return teamInfo, nil
 	}
 
