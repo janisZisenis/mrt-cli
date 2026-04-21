@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/teamconfig"
 	"testing"
 
@@ -41,7 +42,7 @@ func setupRepoWithBlockedBranchButSkippedHooks(
 	return skipGitHooksFixture{
 		MrtFixture:        f,
 		blockedBranchName: blockedBranchName,
-		repositoryPath:    f.AbsolutePath(defaultRepositoriesPath + "/" + repositoryName),
+		repositoryPath:    f.AbsolutePath(mrtclient.DefaultRepositoriesPath + "/" + repositoryName),
 	}
 }
 

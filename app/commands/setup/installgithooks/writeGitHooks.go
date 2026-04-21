@@ -11,15 +11,15 @@ const (
 	gitHooksDir = "hooks"
 )
 
-func getHookTemplate() string {
+func getHookTemplate(relativePathToTeamDir string) string {
 	return `
 #!/bin/bash -e
 
 hook_name=$(basename "$0")
-` + getExecutableName() + " --team-dir " + getAbsoluteExecutionPath() + " " + githook.CommandName + ` --hook-name "$hook_name" --repository-path $PWD $@`
+` + getExecutableName() + ` --team-dir "$(cd "$(dirname "$0")/` + relativePathToTeamDir + `" && pwd)" ` + githook.CommandName + ` --hook-name "$hook_name" --repository-path $PWD $@`
 }
 
-func writeGitHook(repositoryDirectory string, hookName string) {
+func writeGitHook(repositoryDirectory string, hookName string, relativePathToTeamDir string) {
 	hooksPath := filepath.Join(repositoryDirectory, gitHooksDir)
 	// #nosec G301 - githooks folder needs 0700 to be private (owner only)
 	if err := os.MkdirAll(hooksPath, 0o700); err != nil {
@@ -28,7 +28,7 @@ func writeGitHook(repositoryDirectory string, hookName string) {
 	}
 	hookFilePath := filepath.Join(hooksPath, hookName)
 	// #nosec G306 - git hooks need to be executable by owner
-	if err := os.WriteFile(hookFilePath, []byte(getHookTemplate()), 0o700); err != nil {
+	if err := os.WriteFile(hookFilePath, []byte(getHookTemplate(relativePathToTeamDir)), 0o700); err != nil {
 		log.Errorf("Failed to write hook file %q: %v", hookFilePath, err)
 	}
 }

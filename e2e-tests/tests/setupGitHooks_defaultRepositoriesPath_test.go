@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
 	"os"
@@ -21,7 +22,7 @@ func Test_IfTeamJsonIsMissing_InstallGitHooks_ShouldFail(t *testing.T) {
 		Execute()
 
 	require.Equal(t, 0, exitCode)
-	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+	output.AssertInOrder(t, outputs.HasLineContaining(mrtclient.MsgFailedToLoadTeamConfiguration))
 }
 
 func Test_IfTeamJsonIsCorrupted_InstallGitHooks_ShouldFail(t *testing.T) {
@@ -34,7 +35,51 @@ func Test_IfTeamJsonIsCorrupted_InstallGitHooks_ShouldFail(t *testing.T) {
 		Execute()
 
 	require.Equal(t, 0, exitCode)
-	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+	output.AssertInOrder(t, outputs.HasLineContaining(mrtclient.MsgFailedToLoadTeamConfiguration))
+}
+
+func Test_IfRepositoriesPathIsAbsolute_InstallGitHooks_ShouldExitNonZeroAndPrintError(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t)
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("/absolute/path"),
+	)
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining(mrtclient.MsgInvalidRepositoriesPath))
+}
+
+func Test_IfRepositoriesPathEscapesTeamDir_InstallGitHooks_ShouldExitNonZeroAndPrintError(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t)
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("../outside"),
+	)
+
+	output, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.NotEqual(t, 0, exitCode)
+	output.AssertInOrder(t, outputs.HasLineContaining(mrtclient.MsgInvalidRepositoriesPath))
+}
+
+func Test_IfRepositoriesPathIsValidRelativePath_InstallGitHooks_ShouldSucceed(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t)
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("some-relative-path"),
+	)
+
+	_, exitCode := f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+
+	require.Equal(t, 0, exitCode)
 }
 
 func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNotInstallGitHooks(
@@ -42,7 +87,7 @@ func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNo
 ) {
 	f := fixtures.MakeMrtFixture(t).
 		Authenticate()
-	folderPath := f.AbsolutePath(defaultRepositoriesPath + "/1_TestRepository")
+	folderPath := f.AbsolutePath(mrtclient.DefaultRepositoriesPath + "/1_TestRepository")
 	require.NoError(t, os.MkdirAll(folderPath, 0o750))
 
 	f.MakeMrtCommandInTeamDir().
@@ -50,7 +95,7 @@ func Test_IfRepositoriesPathContainsNonRepositoryFolder_InstallGitHooks_ShouldNo
 		InstallGitHooks().
 		Execute()
 
-	f.AssertFolderDoesNotExist(defaultRepositoriesPath + "/1_TestRepository/.git/hooks")
+	f.AssertFolderDoesNotExist(mrtclient.DefaultRepositoriesPath + "/1_TestRepository/.git/hooks")
 }
 
 func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSecondRepo_ShouldBeBlocked(
@@ -69,16 +114,16 @@ func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSec
 		teamconfig.WithBlockedBranches([]string{branchName}),
 	)
 	f.MakeGitCommand().
-		Clone(git.MakeCloneURL(firstRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+firstRepositoryName)).
+		Clone(git.MakeCloneURL(firstRepositoryName), f.AbsolutePath(mrtclient.DefaultRepositoriesPath+"/"+firstRepositoryName)).
 		Execute()
 	f.MakeGitCommand().
-		Clone(git.MakeCloneURL(secondRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+secondRepositoryName)).
+		Clone(git.MakeCloneURL(secondRepositoryName), f.AbsolutePath(mrtclient.DefaultRepositoriesPath+"/"+secondRepositoryName)).
 		Execute()
 	f.MakeMrtCommandInTeamDir().
 		Setup().
 		InstallGitHooks().
 		Execute()
-	secondRepositoryPath := f.AbsolutePath(defaultRepositoriesPath + "/" + secondRepositoryName)
+	secondRepositoryPath := f.AbsolutePath(mrtclient.DefaultRepositoriesPath + "/" + secondRepositoryName)
 
 	exitCode, err := f.MakeGitCommand().
 		InDirectory(secondRepositoryPath).
@@ -87,7 +132,7 @@ func Test_IfRepositoriesPathContains2Repositories_CommittingOnBlockedBranchInSec
 
 	require.Error(t, err)
 	assert.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
 }
 
 func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMessages(
@@ -97,12 +142,12 @@ func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMes
 		Authenticate()
 	firstRepositoryName := "1_TestRepository"
 	secondRepositoryName := "2_TestRepository"
-	repositoriesDir := f.AbsolutePath(defaultRepositoriesPath)
+	repositoriesDir := f.AbsolutePath(mrtclient.DefaultRepositoriesPath)
 	f.MakeGitCommand().
-		Clone(git.MakeCloneURL(firstRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+firstRepositoryName)).
+		Clone(git.MakeCloneURL(firstRepositoryName), f.AbsolutePath(mrtclient.DefaultRepositoriesPath+"/"+firstRepositoryName)).
 		Execute()
 	f.MakeGitCommand().
-		Clone(git.MakeCloneURL(secondRepositoryName), f.AbsolutePath(defaultRepositoriesPath+"/"+secondRepositoryName)).
+		Clone(git.MakeCloneURL(secondRepositoryName), f.AbsolutePath(mrtclient.DefaultRepositoriesPath+"/"+secondRepositoryName)).
 		Execute()
 
 	output, _ := f.MakeMrtCommandInTeamDir().
@@ -112,7 +157,7 @@ func Test_IfRepositoriesPathContains2Repositories_InstallGitHooks_ShouldPrintMes
 
 	output.AssertInOrder(
 		t,
-		outputs.HasLine("Installing git-hooks to repositories located in \""+repositoriesDir+"\""),
+		outputs.HasLine(mrtclient.MsgInstallingGitHooksToRepositoriesLocatedIn(repositoriesDir)),
 		outputs.HasLine(
 			"Installing git-hooks to \""+repositoriesDir+"/"+firstRepositoryName+"/.git\"",
 		),

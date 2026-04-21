@@ -3,6 +3,7 @@ package tests_test
 import (
 	"mrt-cli/e2e-tests/fixtures"
 	"mrt-cli/e2e-tests/git"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"mrt-cli/e2e-tests/teamconfig"
 	"testing"
@@ -10,6 +11,35 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func Test_IfRepositoriesPathIsDot_CommittingOnBlockedBranch_ShouldBeBlocked(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate()
+	repositoryName := "1_TestRepository"
+	branchName := git.UniqueBranchName()
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("."),
+		teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
+		teamconfig.WithBlockedBranches([]string{branchName}),
+	)
+	f.MakeGitCommand().
+		Clone(git.MakeCloneURL(repositoryName), f.AbsolutePath(repositoryName)).
+		Execute()
+	f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+	repositoryPath := f.AbsolutePath(repositoryName)
+
+	exitCode, err := f.MakeGitCommand().
+		InDirectory(repositoryPath).
+		MakeCommitOnNewBranch(branchName, "some-message").
+		Execute()
+
+	require.Error(t, err)
+	assert.NotEqual(t, 0, exitCode)
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
+}
 
 func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBeBlocked(
 	t *testing.T,
@@ -40,7 +70,7 @@ func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBe
 
 	require.Error(t, err)
 	assert.NotEqual(t, 0, exitCode)
-	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+	assert.Contains(t, err.Error(), mrtclient.MsgActionNotAllowedOnBranch("commit", branchName))
 }
 
 func Test_IfCustomRepositoriesPathDoesNotContainRepositories_InstallGitHooks_ShouldPrintNotFoundMessage(
@@ -76,7 +106,7 @@ func testIfCustomRepositoriesPathDoesNotContainRepositoriesInstallGitHooksShould
 		Execute()
 
 	output.AssertInOrder(t,
-		outputs.HasLine("Installing git-hooks to repositories located in \""+repositoriesDir+"\""),
+		outputs.HasLine(mrtclient.MsgInstallingGitHooksToRepositoriesLocatedIn(repositoriesDir)),
 		outputs.HasLine("Did not find any repositories. Skip installing git-hooks."),
 		outputs.HasLine("Done installing git-hooks."),
 	)

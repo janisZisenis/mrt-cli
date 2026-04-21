@@ -2,6 +2,7 @@ package tests_test
 
 import (
 	"mrt-cli/e2e-tests/fixtures"
+	mrtclient "mrt-cli/e2e-tests/mrt"
 	"mrt-cli/e2e-tests/outputs"
 	"os"
 	"testing"
@@ -74,7 +75,7 @@ func Test_IfTeamJsonIsMissing_HookShouldFail(t *testing.T) {
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
-	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+	output.AssertInOrder(t, outputs.HasLineContaining(mrtclient.MsgFailedToLoadTeamConfiguration))
 }
 
 func Test_IfTeamJsonIsCorrupted_HookShouldFail(t *testing.T) {
@@ -86,5 +87,5 @@ func Test_IfTeamJsonIsCorrupted_HookShouldFail(t *testing.T) {
 		Execute()
 
 	require.NotEqual(t, 0, exitCode)
-	output.AssertInOrder(t, outputs.HasLineContaining("Failed to load team configuration"))
+	output.AssertInOrder(t, outputs.HasLineContaining(mrtclient.MsgFailedToLoadTeamConfiguration))
 }
