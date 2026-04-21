@@ -38,6 +38,14 @@ func FileContains(t *testing.T, path string, expectedSubstring string) {
 	assert.Contains(t, string(content), expectedSubstring)
 }
 
+func FileNotContains(t *testing.T, path string, unexpectedSubstring string) {
+	t.Helper()
+
+	content, err := os.ReadFile(path)
+	require.NoError(t, err, "failed to read file: %s", path)
+	assert.NotContains(t, string(content), unexpectedSubstring)
+}
+
 func FileHasPermissions(t *testing.T, path string, expectedMode os.FileMode) {
 	t.Helper()
 

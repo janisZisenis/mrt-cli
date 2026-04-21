@@ -24,8 +24,10 @@ type TeamInfo struct {
 	BlockedBranches      []string `json:"blockedBranches"`
 }
 
-var ErrCouldNotReadTeamFile = errors.New("could not read team file")
-var ErrInvalidRepositoriesPath = errors.New("repositoriesPath must be a relative path within the team repository")
+var (
+	ErrCouldNotReadTeamFile    = errors.New("could not read team file")
+	ErrInvalidRepositoriesPath = errors.New("repositoriesPath must be a relative path within the team repository")
+)
 
 func LoadTeamConfiguration(teamDir string) (TeamInfo, error) {
 	var teamInfo TeamInfo

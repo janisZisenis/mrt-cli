@@ -24,17 +24,21 @@ func setupGitHooks(teamInfo core.TeamInfo) {
 		log.Infof("Did not find any repositories. Skip installing git-hooks.")
 	}
 
+	teamDir := getAbsoluteExecutionPath()
+
 	for _, r := range repositories {
 		log.Infof("Installing git-hooks to \"" + r + "\"")
-		writeHooks(r)
+		hookFileDir := filepath.Join(r, gitHooksDir)
+		relPath, _ := filepath.Rel(hookFileDir, teamDir)
+		writeHooks(r, relPath)
 		log.Successf("Done installing git-hooks to \"" + r + "\"")
 	}
 
 	log.Successf("Done installing git-hooks.")
 }
 
-func writeHooks(repository string) {
+func writeHooks(repository string, relativePathToTeamDir string) {
 	for _, hook := range core.GetGitHooks() {
-		writeGitHook(repository, hook)
+		writeGitHook(repository, hook, relativePathToTeamDir)
 	}
 }

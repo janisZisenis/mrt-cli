@@ -40,6 +40,8 @@ func Test_InstallGitHooks_ShouldInstallAllGitHooks(t *testing.T) {
 			assert.FileContains(t, hookFile, "git-hook")
 			assert.FileContains(t, hookFile, "--hook-name \"$hook_name\"")
 			assert.FileContains(t, hookFile, "--repository-path $PWD")
+			assert.FileContains(t, hookFile, `--team-dir "$(cd "$(dirname "$0")/`)
+			assert.FileNotContains(t, hookFile, "--team-dir /")
 			assert.FileHasPermissions(t, hookFile, 0o700)
 		})
 	}

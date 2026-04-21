@@ -11,6 +11,35 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func Test_IfRepositoriesPathIsDot_CommittingOnBlockedBranch_ShouldBeBlocked(t *testing.T) {
+	f := fixtures.MakeMrtFixture(t).
+		Authenticate()
+	repositoryName := "1_TestRepository"
+	branchName := git.UniqueBranchName()
+	f.TeamConfigWriter().Write(
+		teamconfig.WithRepositoriesPath("."),
+		teamconfig.WithRepositories([]string{git.MakeCloneURL(repositoryName)}),
+		teamconfig.WithBlockedBranches([]string{branchName}),
+	)
+	f.MakeGitCommand().
+		Clone(git.MakeCloneURL(repositoryName), f.AbsolutePath(repositoryName)).
+		Execute()
+	f.MakeMrtCommandInTeamDir().
+		Setup().
+		InstallGitHooks().
+		Execute()
+	repositoryPath := f.AbsolutePath(repositoryName)
+
+	exitCode, err := f.MakeGitCommand().
+		InDirectory(repositoryPath).
+		MakeCommitOnNewBranch(branchName, "some-message").
+		Execute()
+
+	require.Error(t, err)
+	assert.NotEqual(t, 0, exitCode)
+	assert.Contains(t, err.Error(), "Action \"commit\" not allowed on branch \""+branchName+"\"")
+}
+
 func Test_IfRepositoriesAreClonedToCustomPath_CommittingOnBlockedBranch_ShouldBeBlocked(
 	t *testing.T,
 ) {
