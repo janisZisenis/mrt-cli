@@ -94,9 +94,9 @@ Since the team folder is home to the team configuration file as well as scripts,
 ## The Setup Flow
 
 The *Multi Repository Tool* provides a *setup flow* that assists you in setting up your developer machine. Part of this flow is
-  1. cloning the team's repositories,
-  2. installing git-hooks to the cloned repositories,
-  3. and executing custom setup commands.
+1. cloning the team's repositories,
+2. installing git-hooks to the cloned repositories,
+3. and executing custom setup commands.
 
 You can execute the setup flow by running the following command in your teams folder.
 
@@ -142,7 +142,7 @@ To specify which repositories to clone during the setup flow, create a `team.jso
 
 With the repositories array in the team configuration file, the setup flow will automatically clone the specified repositories to a *repositories* folder next to your `team.json`.
 
-If you want to change the location of the repositories, you can set the new repositories path in your team configuration file as shown below. The specified path can be relative or absolute.
+If you want to change the location of the repositories, you can set the new repositories path in your team configuration file as shown below. The path must be relative and must point to a location inside the team folder. This is required because the installed git hooks navigate from the repository's `.git/hooks` directory back to the team folder using a relative path, so they can locate and read the `team.json` at runtime. As a result, moving the team folder and the repositories together as a unit is safe, whereas moving them independently would break the hooks.
 
 ```json
 {
@@ -169,7 +169,7 @@ Sometimes, teams in a bigger organization add prefixes to their repository names
 
 ### Add custom setup commands
 
-Commonly, before a new developer in the team can start to develop, they need to follow some setup steps – usually documented in a documentation tool such as Confluence. 
+Commonly, before a new developer in the team can start to develop, they need to follow some setup steps – usually documented in a documentation tool such as Confluence.
 
 > Examples:
 > - Installing tools
@@ -206,14 +206,18 @@ With the folder structure above in place you can run the following code snippet 
 
 Once you installed the git-hooks using the setup flow, the *Multi Repository Tool* provides a convenient way to add tasks that run as part of a git-hook.
 
->Currently, the *Multi Repository Tool* has built-in logic for the following git-hooks:
->- commit-msg
->- pre-commit
->- pre-push
+>The *Multi Repository Tool* installs all client-side git hooks. Additonally, built-in logic is provided for the following hooks:
+>- `commit-msg` – prefixes commit messages based on `commitPrefixRegex`
+>- `pre-commit` – blocks commits on branches listed in `blockedBranches`
+>- `pre-push` – blocks pushes on branches listed in `blockedBranches`
+>
+>All other client-side hooks (e.g. `pre-rebase`, `post-checkout`, `post-merge`, `prepare-commit-msg`, etc.) are installed as well but contain no built-in logic. They still support custom hook scripts via the `hook-scripts` directory.
 
 When you perform some actions in your repositories (e.g. committing/pushing) the respective git-hooks are called. These git-hooks execute the tool's `git-hook` subcommand passing their git-hook name (e.g. pre-commit/pre-push) and their repository's root path.
 
-Delegating the execution of the git-hook to the *Multi Repository Tool* allows to add automated rules across all the repositories located in your `repositoriesPath` such as blocking branches and prefixing the commit messages. 
+Delegating the execution of the git-hook to the *Multi Repository Tool* allows to add automated rules across all the repositories located in your `repositoriesPath` such as blocking branches and prefixing the commit messages.
+
+> If the team folder itself is a git repository, the *Multi Repository Tool* will also install the git hooks to it.
 
 > Because the git-hooks need a direct link to the team folder, you need to re-install the git-hooks when the team folder is relocated. To re-install the git-hooks run the following command.
 >```sh
