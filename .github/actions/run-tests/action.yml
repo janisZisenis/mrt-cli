@@ -5,11 +5,18 @@ inputs:
     description: 'Private key for tests'
     required: true
 runs:
-  using: 'composite'      
+  using: 'composite'
   steps:
     - uses: ./.github/actions/setup-mrt
     - uses: ./.github/actions/setup-go-utilities
-    - uses: ./.github/actions/download-binaries
+    - name: Download dist
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+    - name: Make binaries executable
+      shell: bash
+      run: chmod +x dist/**/mrt
     - name: Setup ssh
       shell: bash
       run: |

@@ -6,17 +6,9 @@ on:
       - '**'
     tags:
       - 'v*'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
-  build-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      build-matrix: ${{ steps.set-build-matrix.outputs.build-matrix }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: set-build-matrix
-        uses: ./.github/actions/set-build-matrix
   check-bash:
     name: Check Bash
     runs-on: ubuntu-latest
@@ -36,26 +28,17 @@ jobs:
       - name: Check Go formatting and linting
         run: mrt run check-go
   build:
-    name: Build for Platform ${{ matrix.platform }}
+    name: Build
     runs-on: ubuntu-latest
-    needs: build-matrix
-    strategy:
-      matrix: 
-        platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/build
         with:
-          platform: ${{ matrix.platform }}
-          commit-sha: ${{ github.sha }}
-          version: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: ./.github/actions/build
   run-linux-tests:
     name: Run tests on linux
     runs-on: ubuntu-latest
     needs: [build, check-bash, check-go]
-    env:
-      binary-path: build/bin
-      binary-name: mrt-linux-amd64
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-go
@@ -66,9 +49,6 @@ jobs:
     name: Run tests on darwin
     runs-on: macos-15
     needs: [build, check-bash, check-go]
-    env:
-      binary-path: build/bin
-      binary-name: mrt-darwin-arm64
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-go
@@ -78,36 +58,20 @@ jobs:
       - uses: ./.github/actions/run-tests
         with:
           private-key: ${{ secrets.PRIVATE_KEY }}
-  create-release:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     needs: [run-linux-tests, run-darwin-tests]
-    outputs:
-      upload-url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}
-          body: ""
-          draft: false
-          prerelease: false
-  release-binaries:
-    name: Release binaries for ${{ matrix.platform }}
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [ create-release, build-matrix ]
-    strategy:
-      matrix:
-        platform: ${{ fromJson(needs.build-matrix.outputs.build-matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/upload-binaries
         with:
-          platform: ${{ matrix.platform }}
-          upload-url: ${{ needs.create-release.outputs.upload-url }}
-          github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-go
+      - uses: ./.github/actions/setup-goreleaser
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
